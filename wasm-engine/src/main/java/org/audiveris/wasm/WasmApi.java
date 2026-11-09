@@ -16,7 +16,7 @@ public final class WasmApi {
 
     @JSExport
     public static void start(int width, int height, int stride, JSObject pixels,
-                             int radius, double mean, double deviation, boolean estimateScale, boolean buildRuns) {
+                             int radius, double mean, double deviation, boolean estimateScale, boolean buildRuns, boolean buildSections) {
         if (active != null) { throw new IllegalStateException("Worker already has an active page"); }
         int length = byteLength(pixels);
         if (width <= 0 || height <= 0 || stride < width || (long) stride * height > length
@@ -27,7 +27,7 @@ public final class WasmApi {
         ByteBuffer buffer = transferBuffer(length);
         copyInput(pixels, buffer);
         buffer.get(input);
-        active = new Page(new GrayImage(width, height, stride, input), radius, mean, deviation, estimateScale, buildRuns);
+        active = new Page(new GrayImage(width, height, stride, input), radius, mean, deviation, estimateScale, buildRuns, buildSections);
     }
 
     @JSExport
@@ -37,6 +37,7 @@ public final class WasmApi {
     public static int completedColumns() {
         Page page = requireActive();
         return page.binarizer != null ? page.binarizer.completedColumns()
+                : page.horizontalSections != null ? page.currentSections().completedLanes()
                 : page.buildRuns ? page.currentRuns().completedLanes()
                 : page.scale != null ? page.scale.completedColumns() : page.width;
     }
@@ -44,13 +45,15 @@ public final class WasmApi {
     @JSExport
     public static String stage() {
         Page page = requireActive();
-        return page.binarizer != null ? "BINARY" : page.buildRuns ? "RUNS" : page.scale != null ? "SCALE" : "BINARY";
+        return page.binarizer != null ? "BINARY" : page.horizontalSections != null ? "SECTIONS"
+                : page.buildRuns ? "RUNS" : page.scale != null ? "SCALE" : "BINARY";
     }
 
     @JSExport
     public static int totalUnits() {
         Page page = requireActive();
-        return page.binarizer == null && page.buildRuns ? page.currentRuns().laneCount() : page.width;
+        return page.horizontalSections != null ? page.currentSections().laneCount()
+                : page.binarizer == null && page.buildRuns ? page.currentRuns().laneCount() : page.width;
     }
 
     @JSExport
@@ -58,7 +61,18 @@ public final class WasmApi {
         Page page = requireActive();
         CompactRunTable table = horizontal ? page.horizontal : page.vertical;
         if (table == null) { throw new IllegalStateException("Run table has not been requested or reached"); }
-        int[] data = table.packed();
+        return intOutput(table.packed());
+    }
+
+    @JSExport
+    public static JSObject sections(boolean horizontal) {
+        Page page = requireActive();
+        CompactSections sections = horizontal ? page.horizontalSections : page.verticalSections;
+        if (sections == null) { throw new IllegalStateException("Sections have not been requested or reached"); }
+        return intOutput(sections.packed());
+    }
+
+    private static JSObject intOutput(int[] data) {
         ByteBuffer buffer = transferBuffer(Math.multiplyExact(data.length, Integer.BYTES));
         buffer.order(ByteOrder.LITTLE_ENDIAN).asIntBuffer().put(data);
         return copyIntOutput(buffer, data.length);
@@ -113,16 +127,19 @@ public final class WasmApi {
         final int width, height;
         final boolean estimateScale;
         final boolean buildRuns;
+        final boolean buildSections;
         AdaptiveBinarizer binarizer;
         ScaleEstimator scale;
         byte[] output;
         CompactRunTable horizontal, vertical;
+        CompactSections horizontalSections, verticalSections;
 
-        Page(GrayImage image, int radius, double mean, double deviation, boolean estimateScale, boolean buildRuns) {
+        Page(GrayImage image, int radius, double mean, double deviation, boolean estimateScale, boolean buildRuns, boolean buildSections) {
             width = image.width;
             height = image.height;
             this.estimateScale = estimateScale;
             this.buildRuns = buildRuns;
+            this.buildSections = buildSections;
             binarizer = new AdaptiveBinarizer(image, radius, mean, deviation);
         }
 
@@ -140,16 +157,29 @@ public final class WasmApi {
                 }
                 return false;
             }
+            if (horizontalSections != null) {
+                if (verticalSections == null) {
+                    if (horizontalSections.advance(columns)) { verticalSections = new CompactSections(vertical.packed()); }
+                    return false;
+                }
+                return verticalSections.advance(columns);
+            }
             if (buildRuns) {
                 if (vertical == null) {
                     if (horizontal.advance(columns)) { vertical = new CompactRunTable(width, height, output, false); }
                     return false;
                 }
-                return vertical.advance(columns);
+                if (!vertical.advance(columns)) { return false; }
+                if (buildSections) {
+                    horizontalSections = new CompactSections(horizontal.packed());
+                    return false;
+                }
+                return true;
             }
             return scale == null || scale.advance(columns);
         }
 
         CompactRunTable currentRuns() { return vertical != null ? vertical : horizontal; }
+        CompactSections currentSections() { return verticalSections != null ? verticalSections : horizontalSections; }
     }
 }

@@ -88,6 +88,7 @@ function verifyScale(sample, result) {
             const scaleResult = await run(first.worker, sample);
             verifyScale(sample, scaleResult);
             let runCounts = null;
+            let sectionCounts = null;
             const horizontalReference = path.join(fixtures, sample.id + '.horizontal.runs');
             if (fs.existsSync(horizontalReference)) {
                 const runs = await run(first.worker, sample, 1, false, 'RUNS');
@@ -102,10 +103,22 @@ function verifyScale(sample, result) {
                     runCounts[orientation] = actual.readInt32LE(4 * (laneCount + 1));
                 }
             }
+            if (fs.existsSync(path.join(fixtures, sample.id + '.horizontal.sections'))) {
+                const sections = await run(first.worker, sample, 1, false, 'SECTIONS');
+                verifyBinary(sample, sections);
+                sectionCounts = {};
+                for (const orientation of ['horizontal', 'vertical']) {
+                    const actual = Buffer.from(sections[orientation + 'Sections']);
+                    const expected = fs.readFileSync(path.join(fixtures, sample.id + '.' + orientation + '.sections'));
+                    assert.equal(actual.length, expected.length, `${sample.id}: ${orientation} section data length differs`);
+                    assert.equal(actual.equals(expected), true, `${sample.id}: ${orientation} sections differ from upstream`);
+                    sectionCounts[orientation] = actual.readInt32LE(0);
+                }
+            }
             results.push({ name: sample.name, width: sample.width, height: sample.height,
                 upstreamJvmMs: sample.upstreamJvmMs, portableJvmMs: sample.portableJvmMs,
                 wasmWorkerMs: result.workerMs, scalePipelineMs: scaleResult.workerMs,
-                scale: scaleResult.scale ?? null, scaleError: scaleResult.error ?? null, runCounts });
+                scale: scaleResult.scale ?? null, scaleError: scaleResult.error ?? null, runCounts, sectionCounts });
             console.log(`${sample.name}: exact binary match; Wasm worker ${result.workerMs.toFixed(1)} ms`);
         }
         const cancelled = await run(first.worker, manifest[0], 2, true);

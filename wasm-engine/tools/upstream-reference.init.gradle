@@ -19,6 +19,7 @@ gradle.projectsEvaluated {
         dependsOn compileTools
         classpath = app.sourceSets.main.runtimeClasspath + rootProject.files(toolClasses)
         mainClass = 'UpstreamRunReference'
+        systemProperty 'logback.configurationFile', new File(rootProject.projectDir, 'wasm-engine/tools/reference-logback.xml').absolutePath
         workingDir = app.projectDir
         maxHeapSize = '512m'
         args fixtureDir.absolutePath

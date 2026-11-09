@@ -38,33 +38,61 @@ const manifest = JSON.parse(fs.readFileSync(path.join(fixtures, 'manifest.json')
                     worker.onmessage = ({ data }) => data.type === 'ready' ? resolve() : reject(new Error(JSON.stringify(data)));
                 });
                 const initializationMs = performance.now() - start;
+                const hash = async bytes => Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)),
+                    b => b.toString(16).padStart(2, '0')).join('');
+                const execute = async (sample, targetStage, generation, cancelAtSections = false) => {
+                    const pixels = await (await fetch('/' + sample.id + '.gray')).arrayBuffer();
+                    return new Promise((resolve, reject) => {
+                        const timeout = setTimeout(() => reject(new Error('Browser worker timed out')), 60_000);
+                        let cancelSent = false;
+                        worker.onerror = error => { clearTimeout(timeout); reject(error); };
+                        worker.onmessage = ({ data }) => {
+                            if (cancelAtSections && !cancelSent && data.type === 'progress' && data.stage === 'SECTIONS') {
+                                cancelSent = true;
+                                worker.postMessage({ type: 'cancel', jobId: sample.id, pageId: sample.id, generation });
+                            }
+                            if (data.type === 'done' || data.type === 'cancelled') { clearTimeout(timeout); resolve(data); }
+                            else if (data.type === 'failed') { clearTimeout(timeout); reject(new Error(JSON.stringify(data))); }
+                        };
+                        worker.postMessage({ type: 'start', jobId: sample.id, pageId: sample.id, generation,
+                            width: sample.width, height: sample.height, targetStage, pixels }, [pixels]);
+                    });
+                };
                 const output = [];
                 for (const sample of samples) {
-                    const pixels = await (await fetch('/' + sample.id + '.gray')).arrayBuffer();
                     const before = performance.now();
-                    const result = await new Promise((resolve, reject) => {
-                        worker.onerror = reject;
-                        worker.onmessage = ({ data }) => {
-                            if (data.type === 'done') { resolve(data); }
-                            else if (data.type === 'failed') { reject(new Error(JSON.stringify(data))); }
-                        };
-                        worker.postMessage({ type: 'start', jobId: sample.id, pageId: sample.id, generation: 1,
-                            width: sample.width, height: sample.height, targetStage: 'BINARY', pixels }, [pixels]);
-                    });
+                    const result = await execute(sample, 'BINARY', 1);
                     const elapsedMs = performance.now() - before;
-                    const hash = await crypto.subtle.digest('SHA-256', result.binary);
-                    output.push({ id: sample.id, elapsedMs, sha256: Array.from(new Uint8Array(hash), b => b.toString(16).padStart(2, '0')).join('') });
+                    const structures = await execute(sample, 'SECTIONS', 2);
+                    const hashes = {};
+                    for (const key of ['horizontalRuns', 'verticalRuns', 'horizontalSections', 'verticalSections']) {
+                        hashes[key] = await hash(structures[key]);
+                    }
+                    output.push({ id: sample.id, elapsedMs, sha256: await hash(result.binary), structures: hashes });
                 }
-                return { initializationMs, output };
+                const cancelled = await execute(samples[0], 'SECTIONS', 3, true);
+                if (cancelled.type !== 'cancelled') { throw new Error('Section cancellation did not take effect'); }
+                const reused = await execute(samples[0], 'BINARY', 4);
+                return { initializationMs, output, cancelledAndReused: await hash(reused.binary) === output[0].sha256 };
             } finally { worker.terminate(); }
         }, manifest);
         for (const result of results.output) {
             const expected = createHash('sha256').update(fs.readFileSync(path.join(fixtures, result.id + '.binary'))).digest('hex');
             assert.equal(result.sha256, expected, result.id + ': browser differs from upstream JVM');
+            for (const orientation of ['horizontal', 'vertical']) {
+                for (const kind of ['runs', 'sections']) {
+                    const file = path.join(fixtures, result.id + '.' + orientation + '.' + kind);
+                    const expectedHash = createHash('sha256').update(fs.readFileSync(file)).digest('hex');
+                    const key = orientation + kind[0].toUpperCase() + kind.slice(1);
+                    assert.equal(result.structures[key], expectedHash, `${result.id}: browser ${key} differs from upstream`);
+                }
+            }
         }
+        assert.equal(results.cancelledAndReused, true);
         const report = { browser: browser.version(), ...results };
         fs.writeFileSync(path.join(root, 'build/browser-verification.json'), JSON.stringify(report, null, 2));
-        console.log(JSON.stringify(report, null, 2));
+        console.log(JSON.stringify({ browser: report.browser, matchedPages: report.output.length,
+            binaryRunsAndSectionsMatch: true, cancelledAndReused: report.cancelledAndReused }));
     } finally {
         if (browser) { await browser.close(); }
         await new Promise(resolve => server.close(resolve));
