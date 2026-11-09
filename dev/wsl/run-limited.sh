@@ -36,8 +36,8 @@ cpus=$(python3 -c 'import os; print(",".join(map(str, sorted(os.sched_getaffinit
 printf '%s\n' "$(cat /sys/fs/cgroup/cpuset.mems.effective)" > "$group/cpuset.mems"
 printf '%s\n' "$cpus" > "$group/cpuset.cpus"
 printf '300000 100000\n' > "$group/cpu.max"
-printf '3221225472\n' > "$group/memory.max"
-printf '2684354560\n' > "$group/memory.high"
+printf '8589934592\n' > "$group/memory.max"
+printf '7516192768\n' > "$group/memory.high"
 printf '0\n' > "$group/memory.swap.max"
 printf '1\n' > "$group/memory.oom.group"
 printf '256\n' > "$group/pids.max"
@@ -47,7 +47,7 @@ printf '%s\n' "$$" > "$group/jobs/cgroup.procs"
 flock -u 8
 exec 8>&-
 
-printf 'Resource limits: CPUs %s (max 3), memory 3 GiB total, swap 0\n' "$cpus"
+printf 'Resource limits: CPUs %s (max 3), memory 8 GiB total, swap 0\n' "$cpus"
 cd "$cwd"
 if $as_root; then
     limited_command=(taskset -c "$cpus" "$@")
