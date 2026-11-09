@@ -110,6 +110,68 @@ JDK 25 so they can call recent API names directly; compatibility implementations
 
 ## Reproduction
 
+### Worker platform boundaries
+
+`-Pheadless=true -Pcompat=true` enables application/platform substitutions in addition to the
+generic API compatibility layer. The default audit remains unchanged. This mode rewrites TeaVM's
+class model; `app` and `buildSrc` sources, root selection and dependency JARs remain unchanged.
+
+| Boundary | Worker policy |
+| --- | --- |
+| `WellKnowns.<clinit>` | Preserve identity constants; use UTF-8, browser platform flags and bundled `resource:` URIs. Define `/audiveris/config`, `/audiveris/data`, `/audiveris/log` paths without desktop discovery, Logback setup, reflection-based dumps or GTK/JNA initialization. |
+| `OmrExecutors` | Separate high/low/cached serial queues within each module. Report one engine CPU and disable Java pool parallelism; host Workers own parallel job scheduling. Preserve pool shutdown/restart and rejection after shutdown. |
+| `LoggerFactory`, `MDC`, `LogUtil` | Console/event logger with SLF4J formatting and an MDC adapter, without provider discovery. Preserve book/sheet context hooks. Desktop file/GUI appender setup explicitly throws `UnsupportedOperationException`. |
+| `StepMonitoring` | Emit progress/step/message events through `HeadlessEvents.Sink`. The host supplies `setSheetId` before a job and clears it afterward; notification does not query desktop sheet/book formatting. Creating a Swing monitor explicitly fails. |
+| `OMR.gui` guards | Reads are compiler constants (`null`); null-branch elimination runs before dependency analysis. Non-null GUI assignments explicitly fail. Work outside the UI branch remains. |
+| Index presentation services | Disable `BasicIndex.entityService` and `GlyphIndex.glyphService` using the same null/rejection policy. Index registration and recognition data remain outside this policy. |
+
+Six private synthetic callbacks are desktop-only in the pinned baseline: `Book.lambda$setModified$0`,
+`Sheet.lambda$reset$0`, `SheetStub.lambda$setUpgraded$0`, and `lambda$publish$0` in `BasicIndex`,
+`GlyphIndex` and `FilamentIndex`. Their ordinary callers are guarded by the policies above, but
+the all-method audit also roots the callbacks independently. Their bodies explicitly reject desktop
+execution; they are not removed from the root manifest. The compiler checks that the named callbacks
+still exist. Recognition callbacks such as `SheetStub.lambda$doOneStep$0` are retained.
+
+The serial executor queues work until `Future.get`, `invokeAll`/`invokeAny`, `OmrExecutors.shutdown` or an explicit
+`SerialExecutor.drain()` drives it. Fire-and-forget `execute` needs that host drain call; there is no
+automatic event-loop scheduling yet. Nested waits pump the queue; cyclic waits fail explicitly.
+Cancellation and deadlines are observed at task boundaries. A timed wait cannot preempt a synchronous
+task; a host deadline must terminate an unresponsive Worker. `cancel(true)` does not create a Java
+interruptible thread. MDC and the host sheet ID are captured on submission and restored around tasks.
+The host must bind job context before submission. Each Worker/module has independent queues and context;
+Java objects/Callables are not transferable between Workers.
+
+Folders are logical backend paths, not Windows directories or persistent browser storage. Startup
+does not create directories or implement file access. A storage adapter remains necessary for actual
+configuration/model writes. Likewise, the event sink is a synchronous Java boundary; a host bridge
+must forward events to `postMessage`. These substitutions do not yet make the full engine runnable.
+
+```powershell
+.\dev\wsl\Manage-WasmDev.ps1 Build -GradleArgs @(
+  'verifyWasmCompatibilityBrowser', 'traceTeaVMExclusions', 'compareWasmCompatibilityAudit',
+  '-I', 'dev/teavm-audit/audit.init.gradle', '-PauditScope=selected',
+  '-Pcompat=true', '-Pheadless=true', '--console=plain')
+```
+
+The same **9,001 roots / 8,588 bodies** are analyzed. Relative to generic compatibility alone,
+diagnostics fall **544 → 525**; the three diagnostics directly in engine sources disappear.
+Excluded linked classes fall **538 → 441**, and excluded used methods **2,521 → 1,863**.
+The exclusion guard still fails: 441 classes remain, including type-only dependencies. Fast analysis
+is conservative, not a runtime trace. Original-reference crossing tables include original UI branches
+even after substitution; use the modified-method and changed-call tables to inspect actual changes.
+
+`verifyHeadlessProbe` runs shared serial-scheduling checks on the JVM and compiles real `WellKnowns`,
+`OmrExecutors`, logging and progress API calls into Wasm. Node loads two module instances; Chromium
+runs two dedicated Workers. Closing one instance leaves the other operational. Tests cover resource
+URI resolution, FIFO/nested futures, errors, cancellation, zero-budget timeouts, shutdown/restart,
+task context restoration and GUI guard pruning that preserves a fixture's engine work. This does not
+validate real sheet recognition or all rewritten model methods. Review snapshots are in
+[headless-results](headless-results); raw graphs/probes are under `wsl-artifacts/wasm-headless/stage1`.
+Use `dev/teavm-audit/export_headless.py` with the Windows checkout, Linux build directory and tool SHA
+to export the comparison against the archived stage-5 generic audit.
+
+### Generic compatibility reproduction
+
 Run from the Windows repository using the existing WSL launcher. It synchronizes sources to the
 Linux mirror and enforces the shared limit of eight logical CPUs and 8 GiB RAM, with no swap.
 
