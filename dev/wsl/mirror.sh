@@ -34,6 +34,8 @@ echo "Synchronized to $mirror ($revision)"
 if [[ "$mode" == build ]]; then
     export AUDIVERIS_SOURCE_COMMIT="$revision"
     cd "$mirror"
+    # Existing Windows checkouts can still contain CRLF despite .gitattributes.
+    sed -i 's/\r$//' ./gradlew
     # The mirror has no .git. Override only the existing commit-query task.
-    bash ./gradlew --init-script dev/wsl/source-commit.init.gradle "$@"
+    bash ./gradlew --init-script "$mirror/dev/wsl/source-commit.init.gradle" "$@"
 fi
