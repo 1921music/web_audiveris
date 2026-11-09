@@ -35,6 +35,15 @@
     });
 
     function dispatch(message) {
+        if (message.type === 'curve') {
+            try {
+                const values = Array.from(api.evaluateCurve(message.axis, message.values, message.queries));
+                send({ type: 'curveResult', requestId: message.requestId, values });
+            } catch (error) {
+                send({ type: 'curveFailed', requestId: message.requestId, error: String(error?.message ?? error) });
+            }
+            return;
+        }
         if (message.type === 'start') {
             if (active) { fail(message, new Error('Worker is busy')); return; }
             try {
@@ -70,13 +79,15 @@
                 const verticalSections = job.targetStage === 'SECTIONS' ? api.sections(false).buffer : null;
                 const horizontalGeometry = job.targetStage === 'SECTIONS' ? api.sectionGeometry(true).buffer : null;
                 const verticalGeometry = job.targetStage === 'SECTIONS' ? api.sectionGeometry(false).buffer : null;
+                const horizontalLines = job.targetStage === 'SECTIONS' ? api.sectionLines(true).buffer : null;
+                const verticalLines = job.targetStage === 'SECTIONS' ? api.sectionLines(false).buffer : null;
                 api.dispose();
                 active = null;
                 send({ type: 'done', ...identity(job), width: job.width, height: job.height,
                     binary: binary.buffer, scale, horizontalRuns, verticalRuns, horizontalSections, verticalSections,
-                    horizontalGeometry, verticalGeometry },
+                    horizontalGeometry, verticalGeometry, horizontalLines, verticalLines },
                     [binary.buffer, horizontalRuns, verticalRuns, horizontalSections, verticalSections,
-                        horizontalGeometry, verticalGeometry].filter(Boolean));
+                        horizontalGeometry, verticalGeometry, horizontalLines, verticalLines].filter(Boolean));
             } else {
                 send({ type: 'progress', ...identity(job), stage: api.stage(), completed: api.completedColumns(), total: api.totalUnits() });
                 schedule(() => tick(job));

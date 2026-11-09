@@ -39,6 +39,8 @@ SECTIONSはそのラン列からセクションを構築し、`horizontalSection
 
 `horizontalGeometry`と`verticalGeometry`には、各セクションの境界・整数重心・画素数なども返す。先頭はセクション数、以降は各セクションの`x,y,width,height,centroidX,centroidY,weight,runCount,maxRun,meanRun`。AWTのポリゴンを作らずにランから計算し、上流の半画素・整数丸めの規約を維持する。
 
+`horizontalLines`と`verticalLines`は各セクションの直線近似を照合するFloat64配列。先頭はセクション数、以降は`画素数,有効フラグ,原点までの符号付き距離,(1,0)までの距離,(0,1)までの距離,RMS距離`。直線モデルと自然スプラインは描画クラスを使用しない。`curve`要求（`requestId,axis,values,queries`）は補間値と傾きを返す検証用APIで、五線検出結果を返すものではない。
+
 キャンセル要求は`type: 'cancel'`と同じ`jobId, pageId, generation`を送る。計算の区切りでキャンセルでき、以後は同じWorkerを再利用できる。実装済み工程に外部非同期処理はまだないため、OCRの要求・応答はTEXTS工程の移植時に接続する。
 
 ## WSLでのビルドと検証
@@ -57,6 +59,8 @@ Windows側のリポジトリ直下から実行する。
 JVMテストでは、上流の画像フィルタのソースを変更せず別途コンパイルする。テスト専用の設定シムは既定の窓サイズを提供し、Wasmには含めない。画像デコード、上流フィルタ、比較用ライブラリも配布対象外。
 
 `verifyWorker`は全サンプルで、上流JVMフィルタとWasmの二値画像を比較し、移植版JVMとWasmのスケール結果・失敗を比較する。キャンセル後の再利用と2 Workerでの同時実行も確認する。画像サイズが大きい場合から小さい場合へのバッファ再利用も対象に含む。
+
+`verifyCurves`は上流GRID出力に保存された五線の制御点を読み、補間値・傾きを元の`NaturalSpline`と照合する。`verifyWorker`とブラウザ検証も同じ数値をWasmで確認するため、事前に`-PreferenceStep=GRID`で基準出力を作る。3制御点の二次曲線や不均一な間隔も上流のパラメータ規約を維持する。直線近似のRMSは大きい値の相殺があるため絶対誤差1e-4、その他の直線値は1e-7、スプラインは1e-9を許容する。
 
 元のJVMアプリ全体との比較は、上の入力生成後に実行する。
 

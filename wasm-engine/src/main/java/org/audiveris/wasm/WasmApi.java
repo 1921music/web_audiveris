@@ -15,6 +15,18 @@ public final class WasmApi {
     public static void main(String[] args) { }
 
     @JSExport
+    public static double[] evaluateCurve(double[] axis, double[] values, double[] queries) {
+        if (queries == null) { throw new IllegalArgumentException("Curve queries are required"); }
+        NaturalCurve curve = new NaturalCurve(axis, values);
+        double[] result = new double[Math.multiplyExact(queries.length, 2)];
+        for (int i = 0; i < queries.length; i++) {
+            result[2 * i] = curve.valueAt(queries[i]);
+            result[2 * i + 1] = curve.slopeAt(queries[i]);
+        }
+        return result;
+    }
+
+    @JSExport
     public static void start(int width, int height, int stride, JSObject pixels,
                              int radius, double mean, double deviation, boolean estimateScale, boolean buildRuns, boolean buildSections) {
         if (active != null) { throw new IllegalStateException("Worker already has an active page"); }
@@ -80,6 +92,17 @@ public final class WasmApi {
         return intOutput(SectionGeometry.compute(sections.packed(), horizontal));
     }
 
+    @JSExport
+    public static JSObject sectionLines(boolean horizontal) {
+        Page page = requireActive();
+        CompactSections sections = horizontal ? page.horizontalSections : page.verticalSections;
+        if (sections == null) { throw new IllegalStateException("Sections have not been requested or reached"); }
+        double[] data = LineFit.sections(sections.packed());
+        ByteBuffer buffer = transferBuffer(Math.multiplyExact(data.length, Double.BYTES));
+        buffer.order(ByteOrder.LITTLE_ENDIAN).asDoubleBuffer().put(data);
+        return copyDoubleOutput(buffer, data.length);
+    }
+
     private static JSObject intOutput(int[] data) {
         ByteBuffer buffer = transferBuffer(Math.multiplyExact(data.length, Integer.BYTES));
         buffer.order(ByteOrder.LITTLE_ENDIAN).asIntBuffer().put(data);
@@ -125,6 +148,9 @@ public final class WasmApi {
 
     @JSBody(params = {"buffer", "length"}, script = "return new Int32Array(buffer.buffer, buffer.byteOffset, length).slice();")
     private static native JSObject copyIntOutput(ByteBuffer buffer, int length);
+
+    @JSBody(params = {"buffer", "length"}, script = "const result = new Float64Array(length); new Uint8Array(result.buffer).set(new Uint8Array(buffer.buffer, buffer.byteOffset, length * 8)); return result;")
+    private static native JSObject copyDoubleOutput(ByteBuffer buffer, int length);
 
     private static Page requireActive() {
         if (active == null) { throw new IllegalStateException("No active page"); }

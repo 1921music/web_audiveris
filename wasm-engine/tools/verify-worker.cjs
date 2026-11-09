@@ -78,10 +78,35 @@ function verifyScale(sample, result) {
     }
 }
 
+async function verifyCurves(worker) {
+    const curves = JSON.parse(fs.readFileSync(path.join(root, 'build/curve-fixtures.json'), 'utf8'));
+    for (const curve of curves) {
+        const values = await new Promise((resolve, reject) => {
+            const timer = setTimeout(() => finish(new Error('Curve evaluation timed out')), 10_000);
+            const handler = message => {
+                if (message.requestId !== curve.id) { return; }
+                finish(message.type === 'curveResult' ? null : new Error(JSON.stringify(message)), message.values);
+            };
+            function finish(error, result) {
+                clearTimeout(timer);
+                worker.off('message', handler);
+                if (error) { reject(error); } else { resolve(result); }
+            }
+            worker.on('message', handler);
+            worker.postMessage({ type: 'curve', requestId: curve.id, ...curve });
+        });
+        assert.equal(values.length, curve.expected.length);
+        values.forEach((value, i) => assert.ok(Math.abs(value - curve.expected[i]) <= 1e-9,
+            `${curve.id}: curve value ${i} differs from upstream`));
+    }
+    return curves.length;
+}
+
 (async () => {
     const first = await createWorker();
     const results = [];
     try {
+        const matchedCurves = await verifyCurves(first.worker);
         for (const sample of manifest) {
             const result = await run(first.worker, sample, 1, false, 'BINARY');
             verifyBinary(sample, result);
@@ -116,6 +141,16 @@ function verifyScale(sample, result) {
                     const expectedGeometry = fs.readFileSync(path.join(fixtures, sample.id + '.' + orientation + '.geometry'));
                     assert.equal(geometry.length, expectedGeometry.length, `${sample.id}: ${orientation} geometry length differs`);
                     assert.equal(geometry.equals(expectedGeometry), true, `${sample.id}: ${orientation} geometry differs from upstream`);
+                    const lines = Buffer.from(sections[orientation + 'Lines']);
+                    const expectedLines = fs.readFileSync(path.join(fixtures, sample.id + '.' + orientation + '.lines'));
+                    assert.equal(lines.length, expectedLines.length);
+                    for (let offset = 0; offset < lines.length; offset += 8) {
+                        const actualValue = lines.readDoubleLE(offset), expectedValue = expectedLines.readDoubleLE(offset);
+                        const field = (offset / 8 - 1) % 6;
+                        const tolerance = field === 5 ? 1e-4 : 1e-7;
+                        assert.ok(Math.abs(actualValue - expectedValue) <= tolerance,
+                            `${sample.id}: ${orientation} line value ${offset / 8} differs (${actualValue}, ${expectedValue})`);
+                    }
                     sectionCounts[orientation] = actual.readInt32LE(0);
                 }
             }
@@ -140,9 +175,9 @@ function verifyScale(sample, result) {
         const report = { node: process.version, initializationMs: first.initializationMs,
             verificationProcessPeakRssKiB: process.resourceUsage().maxRSS,
             sizes: { wasm: wasm.length, runtime: runtime.length, wasmBrotli: compress(wasm), runtimeBrotli: compress(runtime) },
-            results, cancelledAndReused: true, concurrentWorkers: 2 };
+            results, matchedCurves, cancelledAndReused: true, concurrentWorkers: 2 };
         fs.writeFileSync(path.join(root, 'build/verification.json'), JSON.stringify(report, null, 2));
         console.log(JSON.stringify({ initializationMs: report.initializationMs, sizes: report.sizes,
-            cancelledAndReused: true, concurrentWorkers: 2 }));
+            matchedCurves, cancelledAndReused: true, concurrentWorkers: 2 }));
     } finally { await first.worker.terminate(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });

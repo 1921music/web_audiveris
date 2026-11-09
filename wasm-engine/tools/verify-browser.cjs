@@ -12,10 +12,17 @@ const manifest = JSON.parse(fs.readFileSync(path.join(fixtures, 'manifest.json')
 (async () => {
     // Serve only explicitly listed fixtures and distribution files, without a general path resolver.
     const files = new Map();
+    files.set('/curve-fixtures.json', path.join(root, 'build/curve-fixtures.json'));
     for (const name of ['engine-worker.js', 'wasm-gc/engine.wasm', 'wasm-gc/engine.wasm-runtime.js']) {
         files.set('/' + name, path.join(root, 'build/dist', name));
     }
-    for (const sample of manifest) { files.set('/' + sample.id + '.gray', path.join(fixtures, sample.id + '.gray')); }
+    for (const sample of manifest) {
+        files.set('/' + sample.id + '.gray', path.join(fixtures, sample.id + '.gray'));
+        for (const orientation of ['horizontal', 'vertical']) {
+            const name = sample.id + '.' + orientation + '.lines';
+            files.set('/' + name, path.join(fixtures, name));
+        }
+    }
     const server = http.createServer((request, response) => {
         if (request.url === '/') { response.setHeader('Content-Type', 'text/html'); response.end('<!doctype html><title>Engine verification</title>'); return; }
         const file = files.get(request.url);
@@ -38,6 +45,22 @@ const manifest = JSON.parse(fs.readFileSync(path.join(fixtures, 'manifest.json')
                     worker.onmessage = ({ data }) => data.type === 'ready' ? resolve() : reject(new Error(JSON.stringify(data)));
                 });
                 const initializationMs = performance.now() - start;
+                const curves = await (await fetch('/curve-fixtures.json')).json();
+                for (const curve of curves) {
+                    const values = await new Promise((resolve, reject) => {
+                        const timer = setTimeout(() => reject(new Error('Browser curve evaluation timed out')), 10_000);
+                        worker.onmessage = ({ data }) => {
+                            if (data.requestId !== curve.id) { return; }
+                            clearTimeout(timer);
+                            if (data.type === 'curveResult') { resolve(data.values); }
+                            else { reject(new Error(JSON.stringify(data))); }
+                        };
+                        worker.postMessage({ type: 'curve', requestId: curve.id, ...curve });
+                    });
+                    if (values.length !== curve.expected.length || values.some((v, i) => Math.abs(v - curve.expected[i]) > 1e-9)) {
+                        throw new Error(curve.id + ': browser curve differs from upstream');
+                    }
+                }
                 const hash = async bytes => Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)),
                     b => b.toString(16).padStart(2, '0')).join('');
                 const execute = async (sample, targetStage, generation, cancelAtSections = false) => {
@@ -68,12 +91,25 @@ const manifest = JSON.parse(fs.readFileSync(path.join(fixtures, 'manifest.json')
                     for (const key of ['horizontalRuns', 'verticalRuns', 'horizontalSections', 'verticalSections', 'horizontalGeometry', 'verticalGeometry']) {
                         hashes[key] = await hash(structures[key]);
                     }
-                    output.push({ id: sample.id, elapsedMs, sha256: await hash(result.binary), structures: hashes });
+                    let maxLineError = 0;
+                    for (const orientation of ['horizontal', 'vertical']) {
+                        const expected = new Float64Array(await (await fetch('/' + sample.id + '.' + orientation + '.lines')).arrayBuffer());
+                        const actual = new Float64Array(structures[orientation + 'Lines']);
+                        if (actual.length !== expected.length) { throw new Error('Line data length differs'); }
+                        for (let i = 0; i < actual.length; i++) {
+                            const error = Math.abs(actual[i] - expected[i]);
+                            const tolerance = (i - 1) % 6 === 5 ? 1e-4 : 1e-7;
+                            if (!(error <= tolerance)) { throw new Error(`${sample.id}: ${orientation} line value ${i} differs`); }
+                            maxLineError = Math.max(maxLineError, error);
+                        }
+                    }
+                    output.push({ id: sample.id, elapsedMs, sha256: await hash(result.binary), structures: hashes, maxLineError });
                 }
                 const cancelled = await execute(samples[0], 'SECTIONS', 3, true);
                 if (cancelled.type !== 'cancelled') { throw new Error('Section cancellation did not take effect'); }
                 const reused = await execute(samples[0], 'BINARY', 4);
-                return { initializationMs, output, cancelledAndReused: await hash(reused.binary) === output[0].sha256 };
+                return { initializationMs, matchedCurves: curves.length, output,
+                    cancelledAndReused: await hash(reused.binary) === output[0].sha256 };
             } finally { worker.terminate(); }
         }, manifest);
         for (const result of results.output) {
@@ -92,7 +128,7 @@ const manifest = JSON.parse(fs.readFileSync(path.join(fixtures, 'manifest.json')
         const report = { browser: browser.version(), ...results };
         fs.writeFileSync(path.join(root, 'build/browser-verification.json'), JSON.stringify(report, null, 2));
         console.log(JSON.stringify({ browser: report.browser, matchedPages: report.output.length,
-            binaryRunsAndSectionsMatch: true, cancelledAndReused: report.cancelledAndReused }));
+            binaryRunsAndSectionsMatch: true, matchedCurves: report.matchedCurves, cancelledAndReused: report.cancelledAndReused }));
     } finally {
         if (browser) { await browser.close(); }
         await new Promise(resolve => server.close(resolve));

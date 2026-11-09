@@ -36,6 +36,8 @@ tasks.register('prepareReference', Copy) {
         include 'org/audiveris/omr/image/VerticalFilter.java'
         include 'org/audiveris/omr/image/GlobalFilter.java'
         include 'org/audiveris/omr/math/Population.java'
+        include 'org/audiveris/omr/math/GeoPath.java'
+        include 'org/audiveris/omr/math/NaturalSpline.java'
     }
     into layout.buildDirectory.dir('reference-java')
 }
@@ -64,8 +66,16 @@ tasks.register('verifySamples', JavaExec) {
 }
 
 tasks.register('verifyWorker', Exec) {
-    dependsOn 'verifySamples', 'dist'
+    dependsOn 'verifySamples', 'verifyCurves', 'dist'
     commandLine 'node', '--max-old-space-size=512', 'tools/verify-worker.cjs'
+}
+
+tasks.register('verifyCurves', JavaExec) {
+    dependsOn 'testClasses'
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'org.audiveris.wasm.CurveReference'
+    args layout.buildDirectory.dir('upstream-reference').get().asFile.absolutePath,
+        layout.buildDirectory.file('curve-fixtures.json').get().asFile.absolutePath
 }
 
 tasks.register('compareUpstream', JavaExec) {
