@@ -21,9 +21,11 @@
   "utilities": true,
   "properties": true,
   "resources": true,
+  "modules": true,
+  "loggers": true,
   "gcFence": {
     "rootGlobalEmitted": true,
     "storeAndClearEmitted": true
   },
-  "wasmBytes": 740088
+  "wasmBytes": 759071
 }

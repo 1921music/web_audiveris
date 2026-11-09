@@ -11,6 +11,8 @@
   "utilities": true,
   "properties": true,
   "resources": true,
+  "modules": true,
+  "loggers": true,
   "gcFence": true,
   "webWorker": true
 }

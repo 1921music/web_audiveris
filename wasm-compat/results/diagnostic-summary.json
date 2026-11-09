@@ -10,40 +10,38 @@
       "engine": 9001
     }
   },
-  "diagnostics": 609,
-  "uniqueMessages": 240,
+  "diagnostics": 545,
+  "uniqueMessages": 221,
   "bySeverity": {
-    "ERROR": 609
+    "ERROR": 545
   },
   "byOrigin": {
-    "engine-side": 607,
+    "engine-side": 543,
     "unattributed": 2
   },
   "byFamily": {
-    "Reflection and class loading": 241,
-    "Other Java runtime": 210,
-    "Threads and synchronization": 74,
+    "Reflection and class loading": 209,
+    "Other Java runtime": 183,
+    "Threads and synchronization": 71,
     "Files and streams": 36,
     "Other libraries or compiler diagnostics": 20,
-    "OCR and native bindings": 1,
-    "Desktop UI": 1,
     "XML and JAXB": 26
   },
   "byDirectOwner": {
-    "dependency": 603,
+    "dependency": 539,
     "engine": 3,
     "unattributed": 2,
     "ui": 1
   },
   "byClassDecision": {
-    "external": 603,
+    "external": 539,
     "boundary": 3,
     "unattributed": 2,
     "exclude": 1
   },
   "callGraph": {
-    "callers": 82232,
-    "edges": 1998075
+    "callers": 80066,
+    "edges": 1836507
   },
   "apis": [
     {
@@ -74,21 +72,6 @@
         "org.glassfish.jaxb.runtime.v2.runtime.output.FastInfosetStreamWriterOutput.attribute(ILjava/lang/String;Ljava/lang/String;)V @ org/glassfish/jaxb/runtime/v2/runtime/output/FastInfosetStreamWriterOutput.java:433",
         "org.glassfish.jaxb.runtime.v2.runtime.output.FastInfosetStreamWriterOutput.attribute(ILjava/lang/String;Ljava/lang/String;)V @ org/glassfish/jaxb/runtime/v2/runtime/output/FastInfosetStreamWriterOutput.java:439",
         "org.glassfish.jaxb.runtime.v2.runtime.output.FastInfosetStreamWriterOutput.attribute(ILjava/lang/String;Ljava/lang/String;)V @ org/glassfish/jaxb/runtime/v2/runtime/output/FastInfosetStreamWriterOutput.java:437"
-      ]
-    },
-    {
-      "family": "Reflection and class loading",
-      "message": "Method java.lang.Class.getModule()Ljava/lang/Module; was not found",
-      "count": 23,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "javax.xml.bind.ModuleUtil.delegateAddOpensToImplModule([Ljava/lang/Class;Ljava/lang/Class;)V @ null:-1",
-        "jakarta.xml.bind.ModuleUtil.delegateAddOpensToImplModule([Ljava/lang/Class;Ljava/lang/Class;)V @ jakarta/xml/bind/ModuleUtil.java:128",
-        "jakarta.xml.bind.ModuleUtil.delegateAddOpensToImplModule([Ljava/lang/Class;Ljava/lang/Class;)V @ jakarta/xml/bind/ModuleUtil.java:144",
-        "sun.util.logging.PlatformLogger.getLogger(Ljava/lang/String;)Lsun/util/logging/PlatformLogger; @ sun/util/logging/PlatformLogger.java:297",
-        "jakarta.xml.bind.ModuleUtil.<clinit>()V @ jakarta/xml/bind/ModuleUtil.java:38"
       ]
     },
     {
@@ -164,21 +147,6 @@
         "sun.awt.util.ThreadGroupUtils.getRootThreadGroup()Ljava/lang/ThreadGroup; @ sun/awt/util/ThreadGroupUtils.java:46",
         "java.util.concurrent.Executors$DefaultThreadFactory.<init>()V @ java/util/concurrent/Executors.java:616",
         "java.awt.EventQueue.<init>()V @ java/awt/EventQueue.java:142"
-      ]
-    },
-    {
-      "family": "Other Java runtime",
-      "message": "Method java.lang.System$Logger.log(Ljava/lang/System$Logger$Level;Ljava/lang/String;[Ljava/lang/Object;)V was not found",
-      "count": 12,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "jdk.internal.net.http.common.Log.logTrace(Ljava/lang/String;[Ljava/lang/Object;)V @ jdk/internal/net/http/common/Log.java:218",
-        "jdk.internal.net.http.common.Log.logChannel(Ljava/lang/String;[Ljava/lang/Object;)V @ jdk/internal/net/http/common/Log.java:205",
-        "jdk.internal.net.http.common.Log.logError(Ljava/lang/String;[Ljava/lang/Object;)V @ jdk/internal/net/http/common/Log.java:180",
-        "java.io.ObjectInputFilter$Config.<clinit>()V @ java/io/ObjectInputFilter.java:642",
-        "java.io.ObjectInputFilter$Config.<clinit>()V @ java/io/ObjectInputFilter.java:674"
       ]
     },
     {
@@ -329,36 +297,6 @@
         "org.glassfish.jaxb.core.v2.model.nav.ReflectionNavigator$1.onClass(Ljava/lang/Class;Ljava/lang/Class;)Ljava/lang/reflect/Type; @ org/glassfish/jaxb/core/v2/model/nav/ReflectionNavigator.java:70",
         "org.glassfish.jaxb.core.v2.model.nav.ReflectionNavigator$1.onParameterizdType(Ljava/lang/reflect/ParameterizedType;Ljava/lang/Class;)Ljava/lang/reflect/Type; @ org/glassfish/jaxb/core/v2/model/nav/ReflectionNavigator.java:96",
         "com.fasterxml.jackson.databind.util.ClassUtil.getGenericSuperclass(Ljava/lang/Class;)Ljava/lang/reflect/Type; @ com/fasterxml/jackson/databind/util/ClassUtil.java:1413"
-      ]
-    },
-    {
-      "family": "Reflection and class loading",
-      "message": "Method java.lang.ClassLoader.registerAsParallelCapable()Z was not found",
-      "count": 5,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "java.net.URLClassLoader.<clinit>()V @ java/net/URLClassLoader.java:640",
-        "java.security.SecureClassLoader.<clinit>()V @ java/security/SecureClassLoader.java:60",
-        "jdk.internal.loader.ClassLoaders$PlatformClassLoader.<clinit>()V @ jdk/internal/loader/ClassLoaders.java:148",
-        "jdk.internal.loader.ClassLoaders$AppClassLoader.<clinit>()V @ jdk/internal/loader/ClassLoaders.java:163",
-        "jdk.internal.loader.BuiltinClassLoader.<clinit>()V @ jdk/internal/loader/BuiltinClassLoader.java:93"
-      ]
-    },
-    {
-      "family": "Other Java runtime",
-      "message": "Method java.lang.Package.getImplementationVersion()Ljava/lang/String; was not found",
-      "count": 5,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "com.github.jaiimageio.impl.common.PackageUtil.<clinit>()V @ com/github/jaiimageio/impl/common/PackageUtil.java:92",
-        "com.github.jaiimageio.impl.common.PackageUtil.<clinit>()V @ com/github/jaiimageio/impl/common/PackageUtil.java:91",
-        "org.glassfish.jaxb.runtime.v2.runtime.JAXBContextImpl.getBuildId()Ljava/lang/String; @ org/glassfish/jaxb/runtime/v2/runtime/JAXBContextImpl.java:925",
-        "ch.qos.logback.core.util.EnvUtil.logbackVersion()Ljava/lang/String; @ ch/qos/logback/core/util/EnvUtil.java:44",
-        "ch.qos.logback.classic.spi.PackagingDataCalculator.getImplementationVersion(Ljava/lang/Class;)Ljava/lang/String; @ ch/qos/logback/classic/spi/PackagingDataCalculator.java:152"
       ]
     },
     {
@@ -855,19 +793,6 @@
       ]
     },
     {
-      "family": "Other Java runtime",
-      "message": "Method java.util.jar.JarFile.runtimeVersion()Ljava/lang/Runtime$Version; was not found",
-      "count": 3,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "jdk.internal.loader.URLClassPath$JarLoader.getJarFile(Ljava/net/URL;)Ljava/util/jar/JarFile; @ jdk/internal/loader/URLClassPath.java:682",
-        "sun.net.www.protocol.jar.URLJarFile.getJarFile(Ljava/net/URL;Lsun/net/www/protocol/jar/URLJarFile$URLJarFileCloseController;)Ljava/util/jar/JarFile; @ sun/net/www/protocol/jar/URLJarFile.java:54",
-        "sun.net.www.protocol.jar.URLJarFile.retrieve(Ljava/net/URL;Lsun/net/www/protocol/jar/URLJarFile$URLJarFileCloseController;)Ljava/util/jar/JarFile; @ sun/net/www/protocol/jar/URLJarFile.java:147"
-      ]
-    },
-    {
       "family": "Other libraries or compiler diagnostics",
       "message": "Class okhttp3.OkHttpClient$Builder was not found",
       "count": 2,
@@ -947,8 +872,8 @@
         "engine-side"
       ],
       "examples": [
-        "org.audiveris.omr.util.OmrExecutors$Factory.newThread(Ljava/lang/Runnable;)Ljava/lang/Thread; @ org/audiveris/omr/util/OmrExecutors.java:318",
-        "java.util.concurrent.Executors$DefaultThreadFactory.newThread(Ljava/lang/Runnable;)Ljava/lang/Thread; @ java/util/concurrent/Executors.java:624"
+        "java.util.concurrent.Executors$DefaultThreadFactory.newThread(Ljava/lang/Runnable;)Ljava/lang/Thread; @ java/util/concurrent/Executors.java:624",
+        "org.audiveris.omr.util.OmrExecutors$Factory.newThread(Ljava/lang/Runnable;)Ljava/lang/Thread; @ org/audiveris/omr/util/OmrExecutors.java:318"
       ]
     },
     {
@@ -961,18 +886,6 @@
       "examples": [
         "java.util.concurrent.ThreadPoolExecutor.addWorker(Ljava/lang/Runnable;Z)Z @ java/util/concurrent/ThreadPoolExecutor.java:887",
         "java.util.concurrent.ForkJoinPool$WorkQueue.isApparentlyUnblocked()Z @ java/util/concurrent/ForkJoinPool.java:1595"
-      ]
-    },
-    {
-      "family": "Threads and synchronization",
-      "message": "Method java.lang.Thread.setContextClassLoader(Ljava/lang/ClassLoader;)V was not found",
-      "count": 2,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "java.util.concurrent.ForkJoinWorkerThread.<init>(Ljava/lang/ThreadGroup;Ljava/util/concurrent/ForkJoinPool;ZZ)V @ java/util/concurrent/ForkJoinWorkerThread.java:84",
-        "ij.plugin.JavaScriptEvaluator.run()V @ ij/plugin/JavaScriptEvaluator.java:47"
       ]
     },
     {
@@ -1336,18 +1249,6 @@
     },
     {
       "family": "Other Java runtime",
-      "message": "Method java.util.jar.JarFile.baseVersion()Ljava/lang/Runtime$Version; was not found",
-      "count": 2,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "sun.net.www.protocol.jar.URLJarFile.getJarFile(Ljava/net/URL;Lsun/net/www/protocol/jar/URLJarFile$URLJarFileCloseController;)Ljava/util/jar/JarFile; @ sun/net/www/protocol/jar/URLJarFile.java:55",
-        "sun.net.www.protocol.jar.URLJarFile.retrieve(Ljava/net/URL;Lsun/net/www/protocol/jar/URLJarFile$URLJarFileCloseController;)Ljava/util/jar/JarFile; @ sun/net/www/protocol/jar/URLJarFile.java:148"
-      ]
-    },
-    {
-      "family": "Other Java runtime",
       "message": "Method java.util.logging.Logger.setUseParentHandlers(Z)V was not found",
       "count": 2,
       "origins": [
@@ -1502,17 +1403,6 @@
       ]
     },
     {
-      "family": "Desktop UI",
-      "message": "Method java.awt.EventDispatchThread.setContextClassLoader(Ljava/lang/ClassLoader;)V was not found",
-      "count": 1,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "java.awt.EventQueue.initDispatchThread()V @ java/awt/EventQueue.java:1067"
-      ]
-    },
-    {
       "family": "Files and streams",
       "message": "Method java.io.BufferedReader.readLine(Z[Z)Ljava/lang/String; was not found",
       "count": 1,
@@ -1642,61 +1532,6 @@
       ],
       "examples": [
         "java.io.ObjectStreamClass$RecordSupport.deserializationCtr(Ljava/io/ObjectStreamClass;)Ljava/lang/invoke/MethodHandle; @ java/io/ObjectStreamClass.java:2227"
-      ]
-    },
-    {
-      "family": "Reflection and class loading",
-      "message": "Method java.lang.ClassLoader.<init>(Ljava/lang/String;Ljava/lang/ClassLoader;)V was not found",
-      "count": 1,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "java.security.SecureClassLoader.<init>(Ljava/lang/String;Ljava/lang/ClassLoader;)V @ java/security/SecureClassLoader.java:107"
-      ]
-    },
-    {
-      "family": "Reflection and class loading",
-      "message": "Method java.lang.ClassLoader.findResource(Ljava/lang/String;Ljava/lang/String;)Ljava/net/URL; was not found",
-      "count": 1,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "java.lang.Module.getResourceAsStream(Ljava/lang/String;)Ljava/io/InputStream; @ java/lang/Module.java:1710"
-      ]
-    },
-    {
-      "family": "Reflection and class loading",
-      "message": "Method java.lang.ClassLoader.getPlatformClassLoader()Ljava/lang/ClassLoader; was not found",
-      "count": 1,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "jdk.internal.misc.VM.latestUserDefinedLoader()Ljava/lang/ClassLoader; @ jdk/internal/misc/VM.java:354"
-      ]
-    },
-    {
-      "family": "Reflection and class loading",
-      "message": "Method java.lang.ClassLoader.getUnnamedModule()Ljava/lang/Module; was not found",
-      "count": 1,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "jdk.internal.reflect.Reflection.ensureNativeAccess(Ljava/lang/Class;Ljava/lang/Class;Ljava/lang/String;Z)V @ jdk/internal/reflect/Reflection.java:117"
-      ]
-    },
-    {
-      "family": "Other Java runtime",
-      "message": "Method java.lang.Package.getImplementationVendor()Ljava/lang/String; was not found",
-      "count": 1,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "com.github.jaiimageio.impl.common.PackageUtil.<clinit>()V @ com/github/jaiimageio/impl/common/PackageUtil.java:91"
       ]
     },
     {
@@ -2790,17 +2625,6 @@
     },
     {
       "family": "Threads and synchronization",
-      "message": "Method java.util.concurrent.ForkJoinWorkerThread.setContextClassLoader(Ljava/lang/ClassLoader;)V was not found",
-      "count": 1,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "java.util.concurrent.ForkJoinWorkerThread$InnocuousForkJoinWorkerThread.onThreadLocalReset()V @ java/util/concurrent/ForkJoinWorkerThread.java:278"
-      ]
-    },
-    {
-      "family": "Threads and synchronization",
       "message": "Method java.util.concurrent.ThreadLocalRandom.advanceProbe(I)I was not found",
       "count": 1,
       "origins": [
@@ -2823,24 +2647,13 @@
     },
     {
       "family": "Other Java runtime",
-      "message": "Method java.util.jar.JarEntry.getRealName()Ljava/lang/String; was not found",
+      "message": "Method java.util.stream.Stream.ofNullable(Ljava/lang/Object;)Ljava/util/stream/Stream; was not found",
       "count": 1,
       "origins": [
         "engine-side"
       ],
       "examples": [
-        "jdk.internal.loader.URLClassPath$JarLoader.createResource(Ljava/lang/String;Ljava/util/jar/JarEntry;)Ljdk/internal/loader/Resource; @ jdk/internal/loader/URLClassPath.java:700"
-      ]
-    },
-    {
-      "family": "Other Java runtime",
-      "message": "Method java.util.jar.JarFile.isMultiRelease()Z was not found",
-      "count": 1,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "jdk.internal.loader.URLClassPath$JarLoader.createResource(Ljava/lang/String;Ljava/util/jar/JarEntry;)Ljdk/internal/loader/Resource; @ jdk/internal/loader/URLClassPath.java:699"
+        "javax.script.ScriptEngineManager.getEngineBy(Ljava/lang/String;Ljava/util/Map;Ljava/util/function/Function;)Ljavax/script/ScriptEngine; @ javax/script/ScriptEngineManager.java:218"
       ]
     },
     {
@@ -2852,50 +2665,6 @@
       ],
       "examples": [
         "org.audiveris.proxymusic.mxl.Mxl$Output$MxlOutputStream.<init>(Lorg/audiveris/proxymusic/mxl/Mxl$Output;Ljava/io/OutputStream;)V @ org/audiveris/proxymusic/mxl/Mxl.java:346"
-      ]
-    },
-    {
-      "family": "Other Java runtime",
-      "message": "Method jdk.internal.net.http.common.Logger.log(Ljava/lang/System$Logger$Level;Ljava/lang/String;[Ljava/lang/Object;)V was not found",
-      "count": 1,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "jdk.internal.net.http.common.Logger.log(Ljava/lang/String;[Ljava/lang/Object;)V @ jdk/internal/net/http/common/Logger.java:154"
-      ]
-    },
-    {
-      "family": "OCR and native bindings",
-      "message": "Method org.bytedeco.javacpp.Pointer$DeallocatorThread.setContextClassLoader(Ljava/lang/ClassLoader;)V was not found",
-      "count": 1,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "org.bytedeco.javacpp.Pointer$DeallocatorThread.<init>()V @ org/bytedeco/javacpp/Pointer.java:406"
-      ]
-    },
-    {
-      "family": "Other Java runtime",
-      "message": "Method sun.net.www.protocol.jar.JarURLConnection.guessContentTypeFromName(Ljava/lang/String;)Ljava/lang/String; was not found",
-      "count": 1,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "sun.net.www.protocol.jar.JarURLConnection.getContentType()Ljava/lang/String; @ sun/net/www/protocol/jar/JarURLConnection.java:238"
-      ]
-    },
-    {
-      "family": "Other Java runtime",
-      "message": "Method sun.net.www.protocol.jar.JarURLConnection.guessContentTypeFromStream(Ljava/io/InputStream;)Ljava/lang/String; was not found",
-      "count": 1,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "sun.net.www.protocol.jar.JarURLConnection.getContentType()Ljava/lang/String; @ sun/net/www/protocol/jar/JarURLConnection.java:230"
       ]
     },
     {

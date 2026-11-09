@@ -1,0 +1,66 @@
+{
+  "identicalOriginalRoots": true,
+  "rootCount": 9001,
+  "baselineDiagnostics": 609,
+  "patchedDiagnostics": 545,
+  "diagnosticReduction": 64,
+  "baselineUniqueMessages": 240,
+  "patchedUniqueMessages": 221,
+  "removedMessages": [
+    "Method java.awt.EventDispatchThread.setContextClassLoader(Ljava/lang/ClassLoader;)V was not found",
+    "Method java.lang.Class.getModule()Ljava/lang/Module; was not found",
+    "Method java.lang.ClassLoader.<init>(Ljava/lang/String;Ljava/lang/ClassLoader;)V was not found",
+    "Method java.lang.ClassLoader.findResource(Ljava/lang/String;Ljava/lang/String;)Ljava/net/URL; was not found",
+    "Method java.lang.ClassLoader.getPlatformClassLoader()Ljava/lang/ClassLoader; was not found",
+    "Method java.lang.ClassLoader.getUnnamedModule()Ljava/lang/Module; was not found",
+    "Method java.lang.ClassLoader.registerAsParallelCapable()Z was not found",
+    "Method java.lang.Package.getImplementationVendor()Ljava/lang/String; was not found",
+    "Method java.lang.Package.getImplementationVersion()Ljava/lang/String; was not found",
+    "Method java.lang.System$Logger.log(Ljava/lang/System$Logger$Level;Ljava/lang/String;[Ljava/lang/Object;)V was not found",
+    "Method java.lang.Thread.setContextClassLoader(Ljava/lang/ClassLoader;)V was not found",
+    "Method java.util.concurrent.ForkJoinWorkerThread.setContextClassLoader(Ljava/lang/ClassLoader;)V was not found",
+    "Method java.util.jar.JarEntry.getRealName()Ljava/lang/String; was not found",
+    "Method java.util.jar.JarFile.baseVersion()Ljava/lang/Runtime$Version; was not found",
+    "Method java.util.jar.JarFile.isMultiRelease()Z was not found",
+    "Method java.util.jar.JarFile.runtimeVersion()Ljava/lang/Runtime$Version; was not found",
+    "Method jdk.internal.net.http.common.Logger.log(Ljava/lang/System$Logger$Level;Ljava/lang/String;[Ljava/lang/Object;)V was not found",
+    "Method org.bytedeco.javacpp.Pointer$DeallocatorThread.setContextClassLoader(Ljava/lang/ClassLoader;)V was not found",
+    "Method sun.net.www.protocol.jar.JarURLConnection.guessContentTypeFromName(Ljava/lang/String;)Ljava/lang/String; was not found",
+    "Method sun.net.www.protocol.jar.JarURLConnection.guessContentTypeFromStream(Ljava/io/InputStream;)Ljava/lang/String; was not found"
+  ],
+  "newMessages": [
+    "Method java.util.stream.Stream.ofNullable(Ljava/lang/Object;)Ljava/util/stream/Stream; was not found"
+  ],
+  "newDiagnosticCount": 1,
+  "remainingTargetedApiMessages": [],
+  "baselineByFamily": {
+    "Reflection and class loading": 241,
+    "Other Java runtime": 210,
+    "Threads and synchronization": 74,
+    "Files and streams": 36,
+    "Other libraries or compiler diagnostics": 20,
+    "OCR and native bindings": 1,
+    "Desktop UI": 1,
+    "XML and JAXB": 26
+  },
+  "patchedByFamily": {
+    "Reflection and class loading": 209,
+    "Other Java runtime": 183,
+    "Threads and synchronization": 71,
+    "Files and streams": 36,
+    "Other libraries or compiler diagnostics": 20,
+    "XML and JAXB": 26
+  },
+  "baselineByDirectOwner": {
+    "dependency": 603,
+    "engine": 3,
+    "unattributed": 2,
+    "ui": 1
+  },
+  "patchedByDirectOwner": {
+    "dependency": 539,
+    "engine": 3,
+    "unattributed": 2,
+    "ui": 1
+  }
+}
