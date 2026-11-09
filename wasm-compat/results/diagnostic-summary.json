@@ -10,42 +10,42 @@
       "engine": 9001
     }
   },
-  "diagnostics": 789,
-  "uniqueMessages": 276,
+  "diagnostics": 702,
+  "uniqueMessages": 254,
   "bySeverity": {
-    "ERROR": 789
+    "ERROR": 702
   },
   "byOrigin": {
-    "engine-side": 787,
+    "engine-side": 700,
     "unattributed": 2
   },
   "byFamily": {
-    "Other Java runtime": 258,
-    "Reflection and class loading": 339,
-    "Threads and synchronization": 105,
+    "Other Java runtime": 253,
+    "Reflection and class loading": 292,
+    "Threads and synchronization": 72,
     "Files and streams": 36,
     "Other libraries or compiler diagnostics": 20,
     "OCR and native bindings": 1,
-    "Network": 3,
     "Desktop UI": 1,
+    "Network": 1,
     "XML and JAXB": 26
   },
   "byDirectOwner": {
     "engine": 5,
-    "dependency": 779,
+    "dependency": 693,
     "unattributed": 2,
-    "ui": 3
+    "ui": 2
   },
   "byClassDecision": {
     "keep": 1,
     "boundary": 4,
-    "external": 779,
+    "external": 693,
     "unattributed": 2,
-    "exclude": 3
+    "exclude": 2
   },
   "callGraph": {
-    "callers": 81954,
-    "edges": 1979197
+    "callers": 82100,
+    "edges": 1987787
   },
   "apis": [
     {
@@ -58,9 +58,9 @@
       "examples": [
         "jdk.internal.net.http.HttpClientFacade.send(Ljava/net/http/HttpRequest;Ljava/net/http/HttpResponse$BodyHandler;)Ljava/net/http/HttpResponse; @ jdk/internal/net/http/HttpClientFacade.java:135",
         "java.lang.ScopedValue$Carrier.runWith(Ljava/lang/ScopedValue$Snapshot;Ljava/lang/Runnable;)V @ java/lang/ScopedValue.java:484",
-        "java.nio.DirectByteBuffer.getInt()I @ java/nio/DirectByteBuffer.java:767",
-        "java.nio.DirectByteBuffer.get()B @ java/nio/DirectByteBuffer.java:334",
-        "java.nio.DirectByteBuffer.get(I)B @ java/nio/DirectByteBuffer.java:342"
+        "jdk.internal.misc.ScopedMemoryAccess.copyMemoryInternal(Ljdk/internal/foreign/MemorySessionImpl;Ljdk/internal/foreign/MemorySessionImpl;Ljava/lang/Object;JLjava/lang/Object;JJ)V @ jdk/internal/misc/ScopedMemoryAccess.java:150",
+        "jdk.internal.misc.ScopedMemoryAccess.copySwapMemoryInternal(Ljdk/internal/foreign/MemorySessionImpl;Ljdk/internal/foreign/MemorySessionImpl;Ljava/lang/Object;JLjava/lang/Object;JJJ)V @ jdk/internal/misc/ScopedMemoryAccess.java:181",
+        "java.nio.DirectByteBuffer.getInt()I @ java/nio/DirectByteBuffer.java:767"
       ]
     },
     {
@@ -161,11 +161,11 @@
         "engine-side"
       ],
       "examples": [
-        "java.nio.DirectByteBuffer.address()J @ java/nio/DirectByteBuffer.java:323",
         "java.nio.DirectByteBuffer.asCharBuffer()Ljava/nio/CharBuffer; @ java/nio/DirectByteBuffer.java:622",
         "java.nio.DirectByteBuffer.asCharBuffer()Ljava/nio/CharBuffer; @ java/nio/DirectByteBuffer.java:630",
         "java.nio.DirectByteBuffer.asCharBuffer()Ljava/nio/CharBuffer; @ java/nio/DirectByteBuffer.java:624",
-        "java.nio.DirectByteBuffer.asIntBuffer()Ljava/nio/IntBuffer; @ java/nio/DirectByteBuffer.java:818"
+        "java.nio.DirectByteBuffer.asIntBuffer()Ljava/nio/IntBuffer; @ java/nio/DirectByteBuffer.java:818",
+        "java.nio.DirectByteBuffer.asIntBuffer()Ljava/nio/IntBuffer; @ java/nio/DirectByteBuffer.java:826"
       ]
     },
     {
@@ -184,21 +184,6 @@
       ]
     },
     {
-      "family": "Threads and synchronization",
-      "message": "Method java.lang.Thread.onSpinWait()V was not found",
-      "count": 14,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "java.util.concurrent.locks.AbstractQueuedSynchronizer.acquire(Ljava/util/concurrent/locks/AbstractQueuedSynchronizer$Node;IZZZJ)I @ java/util/concurrent/locks/AbstractQueuedSynchronizer.java:734",
-        "java.util.concurrent.locks.AbstractQueuedSynchronizer.acquire(Ljava/util/concurrent/locks/AbstractQueuedSynchronizer$Node;IZZZJ)I @ java/util/concurrent/locks/AbstractQueuedSynchronizer.java:782",
-        "java.util.concurrent.locks.AbstractQueuedSynchronizer.tryInitializeHead()Ljava/util/concurrent/locks/AbstractQueuedSynchronizer$Node; @ java/util/concurrent/locks/AbstractQueuedSynchronizer.java:588",
-        "java.util.concurrent.LinkedTransferQueue$DualNode.await(Ljava/lang/Object;JLjava/lang/Object;Z)Ljava/lang/Object; @ java/util/concurrent/LinkedTransferQueue.java:435",
-        "java.util.concurrent.LinkedTransferQueue$DualNode.await(Ljava/lang/Object;JLjava/lang/Object;Z)Ljava/lang/Object; @ java/util/concurrent/LinkedTransferQueue.java:450"
-      ]
-    },
-    {
       "family": "Reflection and class loading",
       "message": "Method java.lang.ClassLoader.getResource(Ljava/lang/String;)Ljava/net/URL; was not found",
       "count": 13,
@@ -214,6 +199,21 @@
       ]
     },
     {
+      "family": "Threads and synchronization",
+      "message": "Method java.lang.Thread.getThreadGroup()Ljava/lang/ThreadGroup; was not found",
+      "count": 13,
+      "origins": [
+        "engine-side"
+      ],
+      "examples": [
+        "java.beans.ThreadGroupContext.getContext()Ljava/beans/ThreadGroupContext; @ java/beans/ThreadGroupContext.java:57",
+        "sun.awt.AppContext.getAppContext()Lsun/awt/AppContext; @ sun/awt/AppContext.java:284",
+        "sun.awt.util.ThreadGroupUtils.getRootThreadGroup()Ljava/lang/ThreadGroup; @ sun/awt/util/ThreadGroupUtils.java:46",
+        "java.util.concurrent.Executors$DefaultThreadFactory.<init>()V @ java/util/concurrent/Executors.java:616",
+        "java.awt.EventQueue.<init>()V @ java/awt/EventQueue.java:142"
+      ]
+    },
+    {
       "family": "Other Java runtime",
       "message": "Method java.lang.System$Logger.log(Ljava/lang/System$Logger$Level;Ljava/lang/String;[Ljava/lang/Object;)V was not found",
       "count": 12,
@@ -226,21 +226,6 @@
         "jdk.internal.net.http.common.Log.logError(Ljava/lang/String;[Ljava/lang/Object;)V @ jdk/internal/net/http/common/Log.java:180",
         "java.io.ObjectInputFilter$Config.<clinit>()V @ java/io/ObjectInputFilter.java:642",
         "java.io.ObjectInputFilter$Config.<clinit>()V @ java/io/ObjectInputFilter.java:674"
-      ]
-    },
-    {
-      "family": "Threads and synchronization",
-      "message": "Method java.lang.Thread.getThreadGroup()Ljava/lang/ThreadGroup; was not found",
-      "count": 12,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "java.beans.ThreadGroupContext.getContext()Ljava/beans/ThreadGroupContext; @ java/beans/ThreadGroupContext.java:57",
-        "sun.awt.AppContext.getAppContext()Lsun/awt/AppContext; @ sun/awt/AppContext.java:284",
-        "sun.awt.util.ThreadGroupUtils.getRootThreadGroup()Ljava/lang/ThreadGroup; @ sun/awt/util/ThreadGroupUtils.java:46",
-        "java.util.concurrent.Executors$DefaultThreadFactory.<init>()V @ java/util/concurrent/Executors.java:616",
-        "java.awt.EventQueue.<init>()V @ java/awt/EventQueue.java:142"
       ]
     },
     {
@@ -274,51 +259,6 @@
       ]
     },
     {
-      "family": "Threads and synchronization",
-      "message": "Method java.lang.Thread.dumpStack()V was not found",
-      "count": 10,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "javax.swing.KeyboardManager.registerKeyStroke(Ljavax/swing/KeyStroke;Ljavax/swing/JComponent;)V @ javax/swing/KeyboardManager.java:123",
-        "javax.swing.KeyboardManager.unregisterKeyStroke(Ljavax/swing/KeyStroke;Ljavax/swing/JComponent;)V @ javax/swing/KeyboardManager.java:165",
-        "javax.swing.KeyboardManager.unregisterKeyStroke(Ljavax/swing/KeyStroke;Ljavax/swing/JComponent;)V @ javax/swing/KeyboardManager.java:171",
-        "sun.font.SunFontManager.loadFonts()V @ sun/font/SunFontManager.java:2886",
-        "sun.font.SunFontManager.loadFontFiles()V @ sun/font/SunFontManager.java:2999"
-      ]
-    },
-    {
-      "family": "Threads and synchronization",
-      "message": "Method java.lang.Thread.isVirtual()Z was not found",
-      "count": 10,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "java.util.concurrent.locks.LockSupport.unpark(Ljava/lang/Thread;)V @ java/util/concurrent/locks/LockSupport.java:180",
-        "java.util.concurrent.locks.LockSupport.park(Ljava/lang/Object;)V @ java/util/concurrent/locks/LockSupport.java:220",
-        "java.util.concurrent.locks.LockSupport.parkNanos(Ljava/lang/Object;J)V @ java/util/concurrent/locks/LockSupport.java:268",
-        "java.lang.StackStreamFactory$AbstractStackWalker.<init>(Ljava/lang/StackWalker;II)V @ java/lang/StackStreamFactory.java:155",
-        "jdk.internal.misc.Blocker.begin()Z @ jdk/internal/misc/Blocker.java:68"
-      ]
-    },
-    {
-      "family": "Reflection and class loading",
-      "message": "Method java.lang.Class.descriptorString()Ljava/lang/String; was not found",
-      "count": 7,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "jdk.internal.foreign.layout.ValueLayouts$AbstractValueLayout.toString()Ljava/lang/String; @ jdk/internal/foreign/layout/ValueLayouts.java:100",
-        "java.io.ObjectStreamField.getSignature()Ljava/lang/String; @ java/io/ObjectStreamField.java:287",
-        "java.io.ObjectStreamClass$MemberSignature.<init>(Ljava/lang/reflect/Field;)V @ java/io/ObjectStreamClass.java:1755",
-        "java.io.ObjectStreamClass.getMethodSignature([Ljava/lang/Class;Ljava/lang/Class;)Ljava/lang/String; @ java/io/ObjectStreamClass.java:1441",
-        "java.io.ObjectStreamClass.getMethodSignature([Ljava/lang/Class;Ljava/lang/Class;)Ljava/lang/String; @ java/io/ObjectStreamClass.java:1438"
-      ]
-    },
-    {
       "family": "Files and streams",
       "message": "Method java.nio.file.Files.createSymbolicLink(Ljava/nio/file/Path;Ljava/nio/file/Path;[Ljava/nio/file/attribute/FileAttribute;)Ljava/nio/file/Path; was not found",
       "count": 7,
@@ -346,36 +286,6 @@
         "com.sun.jna.NativeLibrary.mapSharedLibraryName(Ljava/lang/String;)Ljava/lang/String; @ com/sun/jna/NativeLibrary.java:782",
         "com.sun.jna.NativeLibrary.mapSharedLibraryName(Ljava/lang/String;)Ljava/lang/String; @ com/sun/jna/NativeLibrary.java:809",
         "org.bytedeco.javacpp.Loader.loadProperties(Ljava/lang/String;Ljava/lang/String;)Ljava/util/Properties; @ org/bytedeco/javacpp/Loader.java:202"
-      ]
-    },
-    {
-      "family": "Reflection and class loading",
-      "message": "Method java.lang.invoke.VarHandle.get([BI)I was not found",
-      "count": 6,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "jdk.internal.util.ByteArrayLittleEndian.getInt([BI)I @ jdk/internal/util/ByteArrayLittleEndian.java:132",
-        "jdk.internal.util.ByteArray.getInt([BI)I @ jdk/internal/util/ByteArray.java:132",
-        "jdk.internal.util.ByteArray.getFloat([BI)F @ jdk/internal/util/ByteArray.java:152",
-        "jdk.internal.util.ByteArrayLittleEndian.getFloat([BI)F @ jdk/internal/util/ByteArrayLittleEndian.java:152",
-        "com.fasterxml.jackson.core.internal.shaded.fdp.v2_20_0.BigSignificand.x(I)I @ com/fasterxml/jackson/core/internal/shaded/fdp/v2_20_0/BigSignificand.java:95"
-      ]
-    },
-    {
-      "family": "Reflection and class loading",
-      "message": "Method java.lang.invoke.VarHandle.set([BII)V was not found",
-      "count": 6,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "jdk.internal.util.ByteArray.setInt([BII)V @ jdk/internal/util/ByteArray.java:316",
-        "jdk.internal.util.ByteArray.setFloat([BIF)V @ jdk/internal/util/ByteArray.java:337",
-        "jdk.internal.util.ByteArrayLittleEndian.setInt([BII)V @ jdk/internal/util/ByteArrayLittleEndian.java:316",
-        "jdk.internal.util.ByteArrayLittleEndian.setFloat([BIF)V @ jdk/internal/util/ByteArrayLittleEndian.java:337",
-        "com.fasterxml.jackson.core.internal.shaded.fdp.v2_20_0.FastDoubleSwar.writeIntBE([BII)V @ com/fasterxml/jackson/core/internal/shaded/fdp/v2_20_0/FastDoubleSwar.java:539"
       ]
     },
     {
@@ -566,11 +476,11 @@
         "engine-side"
       ],
       "examples": [
-        "java.nio.DirectByteBuffer.address()J @ java/nio/DirectByteBuffer.java:316",
         "java.nio.DirectByteBuffer.get()B @ java/nio/DirectByteBuffer.java:332",
         "java.nio.DirectByteBuffer.get(I)B @ java/nio/DirectByteBuffer.java:340",
         "java.nio.DirectByteBuffer.put(B)Ljava/nio/ByteBuffer; @ java/nio/DirectByteBuffer.java:360",
-        "java.nio.DirectByteBuffer.compact()Ljava/nio/MappedByteBuffer; @ java/nio/DirectByteBuffer.java:391"
+        "java.nio.DirectByteBuffer.compact()Ljava/nio/MappedByteBuffer; @ java/nio/DirectByteBuffer.java:391",
+        "java.nio.DirectByteBuffer.address()J @ java/nio/DirectByteBuffer.java:316"
       ]
     },
     {
@@ -600,20 +510,6 @@
         "org.kohsuke.github.extras.okhttp3.OkHttpGitHubConnector.send(Lorg/kohsuke/github/connector/GitHubConnectorRequest;)Lorg/kohsuke/github/connector/GitHubConnectorResponse; @ org/kohsuke/github/extras/okhttp3/OkHttpGitHubConnector.java:76",
         "org.kohsuke.github.extras.okhttp3.OkHttpGitHubConnector.send(Lorg/kohsuke/github/connector/GitHubConnectorRequest;)Lorg/kohsuke/github/connector/GitHubConnectorResponse; @ org/kohsuke/github/extras/okhttp3/OkHttpGitHubConnector.java:82",
         "org.kohsuke.github.extras.okhttp3.OkHttpGitHubConnector.send(Lorg/kohsuke/github/connector/GitHubConnectorRequest;)Lorg/kohsuke/github/connector/GitHubConnectorResponse; @ org/kohsuke/github/extras/okhttp3/OkHttpGitHubConnector.java:90"
-      ]
-    },
-    {
-      "family": "Reflection and class loading",
-      "message": "Method java.lang.Class.getPackageName()Ljava/lang/String; was not found",
-      "count": 4,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "org.audiveris.omr.sheet.ui.SheetPainter.getJumboSpecs()Ljava/util/List; @ org/audiveris/omr/sheet/ui/SheetPainter.java:515",
-        "org.glassfish.jaxb.runtime.v2.MUtils.open([Ljava/lang/Class;)V @ org/glassfish/jaxb/runtime/v2/MUtils.java:48",
-        "java.lang.StackStreamFactory.filterStackWalkImpl(Ljava/lang/Class;)Z @ java/lang/StackStreamFactory.java:1005",
-        "javax.crypto.JceSecurityManager.lambda$getCryptoPermission$1(Ljava/lang/Class;)Z @ javax/crypto/JceSecurityManager.java:102"
       ]
     },
     {
@@ -656,20 +552,6 @@
         "com.sun.jna.Native.loadNativeDispatchLibrary()V @ com/sun/jna/Native.java:988",
         "com.sun.jna.Native.loadNativeDispatchLibraryFromClasspath()V @ com/sun/jna/Native.java:1041",
         "org.bytedeco.javacpp.Loader.loadLibrary(Ljava/lang/Class;[Ljava/net/URL;Ljava/lang/String;[Ljava/lang/String;)Ljava/lang/String; @ org/bytedeco/javacpp/Loader.java:1779"
-      ]
-    },
-    {
-      "family": "Reflection and class loading",
-      "message": "Method java.lang.invoke.MethodHandles.byteArrayViewVarHandle(Ljava/lang/Class;Ljava/nio/ByteOrder;)Ljava/lang/invoke/VarHandle; was not found",
-      "count": 4,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "jdk.internal.util.ByteArray.create(Ljava/lang/Class;)Ljava/lang/invoke/VarHandle; @ jdk/internal/util/ByteArray.java:421",
-        "jdk.internal.util.ByteArrayLittleEndian.createLittleEndian(Ljava/lang/Class;)Ljava/lang/invoke/VarHandle; @ jdk/internal/util/ByteArrayLittleEndian.java:421",
-        "com.fasterxml.jackson.core.internal.shaded.fdp.v2_20_0.FastDoubleSwar.<clinit>()V @ com/fasterxml/jackson/core/internal/shaded/fdp/v2_20_0/FastDoubleSwar.java:34",
-        "com.fasterxml.jackson.core.internal.shaded.fdp.v2_20_0.BigSignificand.<clinit>()V @ com/fasterxml/jackson/core/internal/shaded/fdp/v2_20_0/BigSignificand.java:18"
       ]
     },
     {
@@ -800,20 +682,6 @@
     },
     {
       "family": "Reflection and class loading",
-      "message": "Method java.lang.invoke.VarHandle.set([BIS)V was not found",
-      "count": 4,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "jdk.internal.util.ByteArray.setShort([BIS)V @ jdk/internal/util/ByteArray.java:282",
-        "jdk.internal.util.ByteArrayLittleEndian.setShort([BIS)V @ jdk/internal/util/ByteArrayLittleEndian.java:282",
-        "jdk.internal.util.ByteArrayLittleEndian.setUnsignedShort([BII)V @ jdk/internal/util/ByteArrayLittleEndian.java:299",
-        "jdk.internal.util.ByteArray.setUnsignedShort([BII)V @ jdk/internal/util/ByteArray.java:299"
-      ]
-    },
-    {
-      "family": "Reflection and class loading",
       "message": "Method java.lang.invoke.VarHandle.weakCompareAndSet(Ljava/util/concurrent/ConcurrentLinkedDeque;Ljava/util/concurrent/ConcurrentLinkedDeque$Node;Ljava/util/concurrent/ConcurrentLinkedDeque$Node;)Z was not found",
       "count": 4,
       "origins": [
@@ -863,8 +731,8 @@
       ],
       "examples": [
         "java.util.concurrent.ThreadLocalRandom$Access$1.getThreadLocalRandomProbe()I @ java/util/concurrent/ThreadLocalRandom.java:403",
-        "java.util.concurrent.ForkJoinPool.externalQueue(Ljava/util/concurrent/ForkJoinPool;)Ljava/util/concurrent/ForkJoinPool$WorkQueue; @ java/util/concurrent/ForkJoinPool.java:2648",
         "java.util.concurrent.ForkJoinPool.poolSubmit(ZLjava/util/concurrent/ForkJoinTask;)Ljava/util/concurrent/ForkJoinTask; @ java/util/concurrent/ForkJoinPool.java:2623",
+        "java.util.concurrent.ForkJoinPool.externalQueue(Ljava/util/concurrent/ForkJoinPool;)Ljava/util/concurrent/ForkJoinPool$WorkQueue; @ java/util/concurrent/ForkJoinPool.java:2648",
         "java.util.concurrent.ForkJoinPool.externalSubmissionQueue(Z)Ljava/util/concurrent/ForkJoinPool$WorkQueue; @ java/util/concurrent/ForkJoinPool.java:2635"
       ]
     },
@@ -879,6 +747,19 @@
         "org.glassfish.jaxb.runtime.v2.runtime.output.StAXExStreamWriterOutput.text(Lorg/glassfish/jaxb/runtime/v2/runtime/output/Pcdata;Z)V @ org/glassfish/jaxb/runtime/v2/runtime/output/StAXExStreamWriterOutput.java:35",
         "org.glassfish.jaxb.runtime.v2.runtime.output.StAXExStreamWriterOutput.text(Lorg/glassfish/jaxb/runtime/v2/runtime/output/Pcdata;Z)V @ org/glassfish/jaxb/runtime/v2/runtime/output/StAXExStreamWriterOutput.java:42",
         "org.glassfish.jaxb.runtime.v2.runtime.output.StAXExStreamWriterOutput.text(Lorg/glassfish/jaxb/runtime/v2/runtime/output/Pcdata;Z)V @ org/glassfish/jaxb/runtime/v2/runtime/output/StAXExStreamWriterOutput.java:39"
+      ]
+    },
+    {
+      "family": "Other Java runtime",
+      "message": "Field java.lang.VirtualThread.interrupted was not found",
+      "count": 3,
+      "origins": [
+        "engine-side"
+      ],
+      "examples": [
+        "java.lang.VirtualThread.interrupt()V @ java/lang/VirtualThread.java:1074",
+        "java.lang.VirtualThread.interrupt()V @ java/lang/VirtualThread.java:1045",
+        "java.lang.VirtualThread.isInterrupted()Z @ java/lang/VirtualThread.java:1082"
       ]
     },
     {
@@ -986,19 +867,6 @@
       ]
     },
     {
-      "family": "Threads and synchronization",
-      "message": "Method java.lang.Thread.threadId()J was not found",
-      "count": 3,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "sun.security.util.Debug.extraInfo()Ljava/lang/String; @ sun/security/util/Debug.java:240",
-        "java.util.concurrent.ForkJoinPool.cleanQueues()Z @ java/util/concurrent/ForkJoinPool.java:2813",
-        "java.util.concurrent.locks.LockSupport.getThreadId(Ljava/lang/Thread;)J @ java/util/concurrent/locks/LockSupport.java:456"
-      ]
-    },
-    {
       "family": "Reflection and class loading",
       "message": "Method java.lang.invoke.VarHandle.compareAndSet(Ljava/util/concurrent/ConcurrentSkipListMap$Node;Ljava/util/concurrent/ConcurrentSkipListMap$Node;Ljava/util/concurrent/ConcurrentSkipListMap$Node;)Z was not found",
       "count": 3,
@@ -1009,32 +877,6 @@
         "java.util.concurrent.ConcurrentSkipListMap.doPut(Ljava/lang/Object;Ljava/lang/Object;Z)Ljava/lang/Object; @ java/util/concurrent/ConcurrentSkipListMap.java:653",
         "java.util.concurrent.ConcurrentSkipListMap.unlinkNode(Ljava/util/concurrent/ConcurrentSkipListMap$Node;Ljava/util/concurrent/ConcurrentSkipListMap$Node;)V @ java/util/concurrent/ConcurrentSkipListMap.java:422",
         "java.util.concurrent.ConcurrentSkipListMap.unlinkNode(Ljava/util/concurrent/ConcurrentSkipListMap$Node;Ljava/util/concurrent/ConcurrentSkipListMap$Node;)V @ java/util/concurrent/ConcurrentSkipListMap.java:428"
-      ]
-    },
-    {
-      "family": "Reflection and class loading",
-      "message": "Method java.lang.invoke.VarHandle.get([BI)J was not found",
-      "count": 3,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "jdk.internal.util.ByteArray.getDouble([BI)D @ jdk/internal/util/ByteArray.java:208",
-        "jdk.internal.util.ByteArray.getLong([BI)J @ jdk/internal/util/ByteArray.java:188",
-        "jdk.internal.util.ByteArrayLittleEndian.getDouble([BI)D @ jdk/internal/util/ByteArrayLittleEndian.java:208"
-      ]
-    },
-    {
-      "family": "Reflection and class loading",
-      "message": "Method java.lang.invoke.VarHandle.set([BIJ)V was not found",
-      "count": 3,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "jdk.internal.util.ByteArray.setLong([BIJ)V @ jdk/internal/util/ByteArray.java:375",
-        "jdk.internal.util.ByteArray.setDouble([BID)V @ jdk/internal/util/ByteArray.java:396",
-        "jdk.internal.util.ByteArrayLittleEndian.setDouble([BID)V @ jdk/internal/util/ByteArrayLittleEndian.java:396"
       ]
     },
     {
@@ -1074,19 +916,6 @@
         "java.nio.DirectByteBuffer.putShort(S)Ljava/nio/ByteBuffer; @ java/nio/DirectByteBuffer.java:697",
         "java.nio.DirectByteBuffer.putInt(I)Ljava/nio/ByteBuffer; @ java/nio/DirectByteBuffer.java:795",
         "java.nio.DirectByteBuffer.putLong(J)Ljava/nio/ByteBuffer; @ java/nio/DirectByteBuffer.java:893"
-      ]
-    },
-    {
-      "family": "Other Java runtime",
-      "message": "Method java.nio.charset.Charset.isSupported(Ljava/lang/String;)Z was not found",
-      "count": 3,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "sun.datatransfer.DataFlavorUtil.isEncodingSupported(Ljava/lang/String;)Z @ sun/datatransfer/DataFlavorUtil.java:278",
-        "com.github.jaiimageio.impl.plugins.gif.GIFWritableImageMetadata.mergeStandardTree(Lorg/w3c/dom/Node;)V @ com/github/jaiimageio/impl/plugins/gif/GIFWritableImageMetadata.java:380",
-        "com.sun.imageio.plugins.gif.GIFWritableImageMetadata.mergeStandardTree(Lorg/w3c/dom/Node;)V @ com/sun/imageio/plugins/gif/GIFWritableImageMetadata.java:363"
       ]
     },
     {
@@ -1154,6 +983,18 @@
       ]
     },
     {
+      "family": "Other Java runtime",
+      "message": "Field java.lang.VirtualThread.interruptLock was not found",
+      "count": 2,
+      "origins": [
+        "engine-side"
+      ],
+      "examples": [
+        "java.lang.VirtualThread.carrierThreadAccessLock()Ljava/lang/Object; @ java/lang/VirtualThread.java:1336",
+        "java.lang.VirtualThread.interrupt()V @ java/lang/VirtualThread.java:1044"
+      ]
+    },
+    {
       "family": "Files and streams",
       "message": "Method java.io.Externalizable.writeExternal(Ljava/io/ObjectOutput;)V was not found",
       "count": 2,
@@ -1187,18 +1028,6 @@
       "examples": [
         "java.lang.ProcessImpl.start([Ljava/lang/String;Ljava/util/Map;Ljava/lang/String;[Ljava/lang/ProcessBuilder$Redirect;Z)Ljava/lang/Process; @ java/lang/ProcessImpl.java:223",
         "java.lang.ProcessImpl.start([Ljava/lang/String;Ljava/util/Map;Ljava/lang/String;[Ljava/lang/ProcessBuilder$Redirect;Z)Ljava/lang/Process; @ java/lang/ProcessImpl.java:211"
-      ]
-    },
-    {
-      "family": "Reflection and class loading",
-      "message": "Method java.lang.Class.arrayType()Ljava/lang/Class; was not found",
-      "count": 2,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "sun.reflect.annotation.AnnotationParser.toClass(Ljava/lang/reflect/Type;)Ljava/lang/Class; @ sun/reflect/annotation/AnnotationParser.java:443",
-        "sun.reflect.generics.factory.CoreReflectionFactory.makeArrayType(Ljava/lang/reflect/Type;)Ljava/lang/reflect/Type; @ sun/reflect/generics/factory/CoreReflectionFactory.java:126"
       ]
     },
     {
@@ -1259,6 +1088,30 @@
       "examples": [
         "java.lang.ScopedValue.scopedValueBindings()Ljava/lang/ScopedValue$Snapshot; @ java/lang/ScopedValue.java:686",
         "java.lang.ScopedValue$Carrier.runWith(Ljava/lang/ScopedValue$Snapshot;Ljava/lang/Runnable;)V @ java/lang/ScopedValue.java:480"
+      ]
+    },
+    {
+      "family": "Threads and synchronization",
+      "message": "Method java.lang.Thread.threadState()Ljava/lang/Thread$State; was not found",
+      "count": 2,
+      "origins": [
+        "engine-side"
+      ],
+      "examples": [
+        "java.lang.VirtualThread.appendCarrierInfo(Ljava/lang/StringBuilder;)Z @ java/lang/VirtualThread.java:1296",
+        "java.lang.VirtualThread.threadState()Ljava/lang/Thread$State; @ java/lang/VirtualThread.java:1129"
+      ]
+    },
+    {
+      "family": "Other Java runtime",
+      "message": "Method java.lang.VirtualThread.threadContainer()Ljdk/internal/vm/ThreadContainer; was not found",
+      "count": 2,
+      "origins": [
+        "engine-side"
+      ],
+      "examples": [
+        "java.lang.VirtualThread.threadState()Ljava/lang/Thread$State; @ java/lang/VirtualThread.java:1111",
+        "java.lang.VirtualThread.start(Ljdk/internal/vm/ThreadContainer;)V @ java/lang/VirtualThread.java:695"
       ]
     },
     {
@@ -1419,30 +1272,6 @@
     },
     {
       "family": "Reflection and class loading",
-      "message": "Method java.lang.invoke.VarHandle.get([BI)C was not found",
-      "count": 2,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "jdk.internal.util.ByteArray.getChar([BI)C @ jdk/internal/util/ByteArray.java:82",
-        "jdk.internal.util.ByteArrayLittleEndian.getChar([BI)C @ jdk/internal/util/ByteArrayLittleEndian.java:82"
-      ]
-    },
-    {
-      "family": "Reflection and class loading",
-      "message": "Method java.lang.invoke.VarHandle.get([BI)S was not found",
-      "count": 2,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "jdk.internal.util.ByteArrayLittleEndian.getShort([BI)S @ jdk/internal/util/ByteArrayLittleEndian.java:99",
-        "jdk.internal.util.ByteArray.getShort([BI)S @ jdk/internal/util/ByteArray.java:99"
-      ]
-    },
-    {
-      "family": "Reflection and class loading",
       "message": "Method java.lang.invoke.VarHandle.getVolatile(Ljdk/internal/foreign/SharedSession$SharedResourceList;)Ljdk/internal/foreign/MemorySessionImpl$ResourceList$ResourceCleanup; was not found",
       "count": 2,
       "origins": [
@@ -1451,18 +1280,6 @@
       "examples": [
         "jdk.internal.foreign.SharedSession$SharedResourceList.cleanup()V @ jdk/internal/foreign/SharedSession.java:137",
         "jdk.internal.foreign.SharedSession$SharedResourceList.add(Ljdk/internal/foreign/MemorySessionImpl$ResourceList$ResourceCleanup;)V @ jdk/internal/foreign/SharedSession.java:115"
-      ]
-    },
-    {
-      "family": "Reflection and class loading",
-      "message": "Method java.lang.invoke.VarHandle.set([BIC)V was not found",
-      "count": 2,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "jdk.internal.util.ByteArray.setChar([BIC)V @ jdk/internal/util/ByteArray.java:265",
-        "jdk.internal.util.ByteArrayLittleEndian.setChar([BIC)V @ jdk/internal/util/ByteArrayLittleEndian.java:265"
       ]
     },
     {
@@ -1537,18 +1354,6 @@
       ]
     },
     {
-      "family": "Network",
-      "message": "Method java.net.URLConnection.getContentLengthLong()J was not found",
-      "count": 2,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "org.bytedeco.javacpp.Loader.cacheResource(Ljava/net/URL;Ljava/lang/String;)Ljava/io/File; @ org/bytedeco/javacpp/Loader.java:564",
-        "sun.net.www.protocol.jar.JarURLConnection.getContentLengthLong()J @ sun/net/www/protocol/jar/JarURLConnection.java:199"
-      ]
-    },
-    {
       "family": "Other Java runtime",
       "message": "Method java.nio.ByteBuffer.alignedSlice(I)Ljava/nio/ByteBuffer; was not found",
       "count": 2,
@@ -1598,18 +1403,6 @@
     },
     {
       "family": "Other Java runtime",
-      "message": "Method java.util.Arrays.compare([B[B)I was not found",
-      "count": 2,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "java.lang.ProcessEnvironment$Variable.compareTo(Ljava/lang/ProcessEnvironment$Variable;)I @ java/lang/ProcessEnvironment.java:180",
-        "java.lang.ProcessEnvironment$Value.compareTo(Ljava/lang/ProcessEnvironment$Value;)I @ java/lang/ProcessEnvironment.java:213"
-      ]
-    },
-    {
-      "family": "Other Java runtime",
       "message": "Method java.util.Locale.getUnicodeLocaleType(Ljava/lang/String;)Ljava/lang/String; was not found",
       "count": 2,
       "origins": [
@@ -1630,18 +1423,6 @@
       "examples": [
         "java.util.spi.LocaleServiceProvider.isSupportedLocale(Ljava/util/Locale;)Z @ java/util/spi/LocaleServiceProvider.java:273",
         "java.util.spi.LocaleServiceProvider.isSupportedLocale(Ljava/util/Locale;)Z @ java/util/spi/LocaleServiceProvider.java:275"
-      ]
-    },
-    {
-      "family": "Other Java runtime",
-      "message": "Method java.util.ServiceLoader.findFirst()Ljava/util/Optional; was not found",
-      "count": 2,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "java.net.InetAddress.loadResolver()Ljava/net/spi/InetAddressResolver; @ java/net/InetAddress.java:491",
-        "java.nio.channels.spi.SelectorProvider$Holder.loadProviderAsService()Ljava/nio/channels/spi/SelectorProvider; @ java/nio/channels/spi/SelectorProvider.java:112"
       ]
     },
     {
@@ -1958,28 +1739,6 @@
     },
     {
       "family": "Reflection and class loading",
-      "message": "Method java.lang.Class.componentType()Ljava/lang/Class; was not found",
-      "count": 1,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "jdk.internal.foreign.AbstractMemorySegmentImpl.copy(Ljava/lang/Object;ILjava/lang/foreign/MemorySegment;Ljava/lang/foreign/ValueLayout;JI)V @ jdk/internal/foreign/AbstractMemorySegmentImpl.java:668"
-      ]
-    },
-    {
-      "family": "Reflection and class loading",
-      "message": "Method java.lang.Class.forPrimitiveName(Ljava/lang/String;)Ljava/lang/Class; was not found",
-      "count": 1,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "java.io.ObjectInputStream.resolveClass(Ljava/io/ObjectStreamClass;)Ljava/lang/Class; @ java/io/ObjectInputStream.java:747"
-      ]
-    },
-    {
-      "family": "Reflection and class loading",
       "message": "Method java.lang.Class.getEnclosingConstructor()Ljava/lang/reflect/Constructor; was not found",
       "count": 1,
       "origins": [
@@ -2053,39 +1812,6 @@
       ],
       "examples": [
         "jdk.internal.reflect.Reflection.ensureNativeAccess(Ljava/lang/Class;Ljava/lang/Class;Ljava/lang/String;Z)V @ jdk/internal/reflect/Reflection.java:117"
-      ]
-    },
-    {
-      "family": "Other Java runtime",
-      "message": "Method java.lang.Integer.parseUnsignedInt(Ljava/lang/String;)I was not found",
-      "count": 1,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "com.sun.imageio.plugins.tiff.TIFFImageMetadata.parseIFD(Lorg/w3c/dom/Node;)Lcom/sun/imageio/plugins/tiff/TIFFIFD; @ com/sun/imageio/plugins/tiff/TIFFImageMetadata.java:1515"
-      ]
-    },
-    {
-      "family": "Other Java runtime",
-      "message": "Method java.lang.Math.fma(DDD)D was not found",
-      "count": 1,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "com.fasterxml.jackson.core.internal.shaded.fdp.v2_20_0.FastDoubleSwar.fma(DDD)D @ com/fasterxml/jackson/core/internal/shaded/fdp/v2_20_0/FastDoubleSwar.java:547"
-      ]
-    },
-    {
-      "family": "Other Java runtime",
-      "message": "Method java.lang.Math.unsignedMultiplyHigh(JJ)J was not found",
-      "count": 1,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "com.fasterxml.jackson.core.internal.shaded.fdp.v2_20_0.FastIntegerMath.unsignedMultiplyHigh(JJ)J @ com/fasterxml/jackson/core/internal/shaded/fdp/v2_20_0/FastIntegerMath.java:142"
       ]
     },
     {
@@ -2200,6 +1926,17 @@
     },
     {
       "family": "Threads and synchronization",
+      "message": "Method java.lang.Thread.setInterrupt()V was not found",
+      "count": 1,
+      "origins": [
+        "engine-side"
+      ],
+      "examples": [
+        "java.lang.VirtualThread.interrupt()V @ java/lang/VirtualThread.java:1053"
+      ]
+    },
+    {
+      "family": "Threads and synchronization",
       "message": "Method java.lang.Thread.stop()V was not found",
       "count": 1,
       "origins": [
@@ -2207,6 +1944,39 @@
       ],
       "examples": [
         "ij.macro.Interpreter.abortAllMacroThreads()V @ ij/macro/Interpreter.java:2168"
+      ]
+    },
+    {
+      "family": "Threads and synchronization",
+      "message": "Method java.lang.Thread.virtualThreadGroup()Ljava/lang/ThreadGroup; was not found",
+      "count": 1,
+      "origins": [
+        "engine-side"
+      ],
+      "examples": [
+        "java.lang.VirtualThread.<clinit>()V @ java/lang/VirtualThread.java:1426"
+      ]
+    },
+    {
+      "family": "Other Java runtime",
+      "message": "Method java.lang.VirtualThread.inheritScopedValueBindings(Ljdk/internal/vm/ThreadContainer;)V was not found",
+      "count": 1,
+      "origins": [
+        "engine-side"
+      ],
+      "examples": [
+        "java.lang.VirtualThread.start(Ljdk/internal/vm/ThreadContainer;)V @ java/lang/VirtualThread.java:706"
+      ]
+    },
+    {
+      "family": "Other Java runtime",
+      "message": "Method java.lang.VirtualThread.setThreadContainer(Ljdk/internal/vm/ThreadContainer;)V was not found",
+      "count": 1,
+      "origins": [
+        "engine-side"
+      ],
+      "examples": [
+        "java.lang.VirtualThread.start(Ljdk/internal/vm/ThreadContainer;)V @ java/lang/VirtualThread.java:696"
       ]
     },
     {
@@ -3102,39 +2872,6 @@
     },
     {
       "family": "Other Java runtime",
-      "message": "Method java.util.Collections.singletonSpliterator(Ljava/lang/Object;)Ljava/util/Spliterator; was not found",
-      "count": 1,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "java.util.ImmutableCollections$List12.spliterator()Ljava/util/Spliterator; @ java/util/ImmutableCollections.java:690"
-      ]
-    },
-    {
-      "family": "Other Java runtime",
-      "message": "Method java.util.Date.from(Ljava/time/Instant;)Ljava/util/Date; was not found",
-      "count": 1,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "org.kohsuke.github.GitHubClient.parseDate(Ljava/lang/String;)Ljava/util/Date; @ org/kohsuke/github/GitHubClient.java:920"
-      ]
-    },
-    {
-      "family": "Other Java runtime",
-      "message": "Method java.util.Enumeration.asIterator()Ljava/util/Iterator; was not found",
-      "count": 1,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "javax.swing.JToggleButton.getGroupSelection(Ljava/awt/event/FocusEvent$Cause;)Ljavax/swing/JToggleButton; @ javax/swing/JToggleButton.java:237"
-      ]
-    },
-    {
-      "family": "Other Java runtime",
       "message": "Method java.util.Locale.forLanguageTag(Ljava/lang/String;)Ljava/util/Locale; was not found",
       "count": 1,
       "origins": [
@@ -3212,17 +2949,6 @@
     },
     {
       "family": "Other Java runtime",
-      "message": "Method java.util.Spliterators.emptySpliterator()Ljava/util/Spliterator; was not found",
-      "count": 1,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "java.util.concurrent.SynchronousQueue.spliterator()Ljava/util/Spliterator; @ java/util/concurrent/SynchronousQueue.java:476"
-      ]
-    },
-    {
-      "family": "Other Java runtime",
       "message": "Method java.util.UUID.getLeastSignificantBits()J was not found",
       "count": 1,
       "origins": [
@@ -3274,17 +3000,6 @@
       ],
       "examples": [
         "java.util.concurrent.ForkJoinPool.registerWorker(Ljava/util/concurrent/ForkJoinPool$WorkQueue;)V @ java/util/concurrent/ForkJoinPool.java:1784"
-      ]
-    },
-    {
-      "family": "Threads and synchronization",
-      "message": "Method java.util.concurrent.atomic.AtomicLong.compareAndExchange(JJ)J was not found",
-      "count": 1,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "jdk.internal.net.http.MultiExchange$ConnectTimeoutTracker.getRemaining()Ljava/time/Duration; @ jdk/internal/net/http/MultiExchange.java:139"
       ]
     },
     {

@@ -3,5 +3,9 @@
   "matchedValues": 4096,
   "matchedStringValues": 30,
   "matchedPathValues": 24,
+  "matchedStandardCases": 75,
+  "matchedByteCases": 640,
+  "matchedNumberCases": 322,
+  "dumpStack": true,
   "collections": true
 }

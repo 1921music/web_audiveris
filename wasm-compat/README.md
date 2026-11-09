@@ -108,7 +108,7 @@ The original root manifests match exactly: **9,001 methods**, including **8,588 
 Diagnostics fall from **1,276 to 702** (574 fewer); unique messages fall from **336 to 254**.
 The second compatibility stage reduces the previous **789 to 702**, a net improvement of 87
 diagnostics. There are no remaining missing-API messages for the APIs targeted above. The broad
-fast analysis newly exposes eight unique messages in JDK virtual-thread internals, including
+fast analysis newly exposes eight unique messages (13 occurrences) in JDK virtual-thread internals, including
 interrupt fields and thread-container/state accessors. They remain unsupported and are recorded
 in `results/new-diagnostics.tsv`, rather than supplied with inert implementations. These are
 dependency-analysis results, not a successful full-engine

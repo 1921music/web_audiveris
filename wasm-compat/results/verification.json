@@ -13,6 +13,10 @@
   ],
   "matchedStringValues": 30,
   "matchedPathValues": 24,
+  "matchedStandardCases": 75,
+  "matchedByteCases": 640,
+  "matchedNumberCases": 322,
   "maxError": 0,
-  "wasmBytes": 70725
+  "dumpStack": true,
+  "wasmBytes": 535024
 }
