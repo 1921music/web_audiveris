@@ -12,5 +12,6 @@ public final class CompilerSubstitutions extends SimpleSubstitutionPolicy {
                 .replacePackage("java.awt", "org.audiveris.wasm.compat.awt");
         sink.selectClasses(named("jdk.internal.util.ByteArrayLittleEndian").or(named("jdk.internal.util.ByteArray")))
                 .replacePackage("jdk.internal.util", "org.audiveris.wasm.compat.bytes");
+        sink.selectClasses(named("java.util.UUID")).replacePackage("java.util", "org.audiveris.wasm.compat.util");
     }
 }

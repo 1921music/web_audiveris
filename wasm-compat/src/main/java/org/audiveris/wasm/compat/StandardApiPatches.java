@@ -33,7 +33,11 @@ final class StandardApiPatches {
             case "java.util.Spliterators":
                 add(cls, "emptySpliterator", "emptySpliterator", true, object("java.util.Spliterator")); break;
             case "java.util.Collections":
+                delegate(cls, "emptySortedMap", "emptySortedMap", SortedMaps.class.getName(), true, false, object("java.util.SortedMap"));
+                delegate(cls, "unmodifiableSortedMap", "unmodifiableSortedMap", SortedMaps.class.getName(), true, false, object("java.util.SortedMap"), object("java.util.SortedMap"));
                 add(cls, "singletonSpliterator", "singletonSpliterator", true, object("java.lang.Object"), object("java.util.Spliterator")); break;
+            case "java.lang.reflect.Method":
+                add(cls, "isDefault", "methodIsDefault", false, ValueType.BOOLEAN); break;
             case "java.util.Date":
                 add(cls, "from", "dateFrom", true, object("java.time.Instant"), object("java.util.Date")); break;
             case "java.net.URLConnection":
@@ -69,7 +73,7 @@ final class StandardApiPatches {
     private static void add(ClassHolder cls, String name, String helper, boolean isStatic, ValueType... signature) {
         delegate(cls, name, helper, StandardApis.class.getName(), isStatic, false, signature);
     }
-    private static void delegate(ClassHolder cls, String name, String helper, String helperClass, boolean isStatic, boolean replace, ValueType... signature) {
+    static void delegate(ClassHolder cls, String name, String helper, String helperClass, boolean isStatic, boolean replace, ValueType... signature) {
         MethodDescriptor descriptor = new MethodDescriptor(name, signature);
         MethodHolder method = cls.getMethod(descriptor);
         if (method != null && !replace) { return; }

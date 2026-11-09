@@ -18,8 +18,12 @@ import org.teavm.vm.spi.TeaVMPlugin;
 public final class CompilerPatches implements TeaVMPlugin {
     @Override public void install(TeaVMHost host) {
         if (!Boolean.getBoolean("audiveris.compat.enabled")) { return; }
+        ReachabilityFenceIntrinsic.install(host);
         host.add((cls, context) -> {
             StandardApiPatches.apply(cls);
+            PropertyApiPatches.apply(cls);
+            ResourceApiPatches.apply(cls);
+            ReflectionApiPatches.apply(cls);
             if (cls.getName().equals("java.nio.file.impl.DefaultPath")
                     || cls.getName().equals("org.teavm.classlib.java.nio.file.impl.TDefaultPath")) {
                 for (MethodHolder method : cls.getMethods()) {

@@ -147,4 +147,9 @@ public final class StandardApis {
     // The Java contract permits no action: this is a processor hint, never a scheduling/yield point.
     public static void onSpinWait() { }
     public static void dumpStack() { new Exception("Stack trace").printStackTrace(); }
+    public static boolean methodIsDefault(java.lang.reflect.Method method) {
+        int modifiers = method.getModifiers();
+        return method.getDeclaringClass().isInterface()
+                && (modifiers & (java.lang.reflect.Modifier.PUBLIC | java.lang.reflect.Modifier.ABSTRACT | java.lang.reflect.Modifier.STATIC)) == java.lang.reflect.Modifier.PUBLIC;
+    }
 }

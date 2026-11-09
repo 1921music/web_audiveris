@@ -36,6 +36,8 @@ public final class OracleTest {
         checks += StandardApiTest.run();
         checks += ByteArrayTest.run();
         checks += FloatingPointTest.run();
+        checks += UtilityApiTest.run();
+        checks += PropertyApiTest.run();
         compareSortedSets();
         compareStrings();
         comparePaths();
@@ -98,6 +100,10 @@ public final class OracleTest {
         Files.writeString(Path.of(args[0]).resolveSibling("standard.txt"), CompatibilityProbe.standard());
         Files.writeString(Path.of(args[0]).resolveSibling("bytes.txt"), CompatibilityProbe.bytes());
         Files.writeString(Path.of(args[0]).resolveSibling("numbers.txt"), CompatibilityProbe.numbers());
+        Files.writeString(Path.of(args[0]).resolveSibling("utilities.txt"), CompatibilityProbe.utilities());
+        Files.writeString(Path.of(args[0]).resolveSibling("properties.txt"), CompatibilityProbe.properties());
+        Files.writeString(Path.of(args[0]).resolveSibling("resources.txt"), CompatibilityProbe.resources());
+        Files.writeString(Path.of(args[0]).resolveSibling("fence.json"), Integer.toString(CompatibilityProbe.fenceProbe()));
         Files.writeString(Path.of(args[0]).resolveSibling("jvm-verification.json"), "{\"checks\":" + checks + ",\"probeValues\":" + fixture.length + ",\"passed\":true}\n");
         System.out.println("JVM oracle passed " + checks + " checks; exported " + fixture.length + " Wasm reference values");
     }

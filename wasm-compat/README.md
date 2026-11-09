@@ -33,6 +33,29 @@ It does not yet make the complete recognition engine executable in a browser.
   integer arithmetic followed by one nearest-even rounding step. This also rejects trailing junk
   and handles overflow, underflow and signed zero. It is a deliberate correctness repair, not a
   missing-only addition, and should be reviewed on a TeaVM upgrade.
+- `UUID` is replaced by a two-long value implementation with JDK-compatible formatting, parsing,
+  ordering and time-based fields. Version-4 generation uses TeaVM's `SecureRandom`/host crypto.
+  `Collections.emptySortedMap`, `unmodifiableSortedMap` and `Method.isDefault` are supplied too.
+- Classpath resources are an explicit bundle described by `resources.json`. Standard class/classloader
+  resource methods return streams and `resource:` URLs that survive URI conversion. This includes
+  the real language dictionary. The URL handler is registered once per Wasm instance; arbitrary
+  JVM classloader/module resource namespaces are outside this initial monolithic bundle.
+- `Properties.loadFromXML` uses `new KXmlParser()` directly, avoiding reflective factory lookup.
+  The adapter checks the properties DTD/elements and preserves stream ownership. A build-generated
+  overlay fixes kxml2 2.3.0's truncation of supplementary numeric character references, including
+  attribute values, without modifying the original JAR. Its source/output hashes are recorded.
+  `-PxmlBackend=jdk` keeps the original pure-Java JDK handler available for comparison.
+- `Properties.store(Writer,String)` is supplied, and a compiler-model mask fix preserves 16-bit
+  Reader characters in TeaVM's existing text-properties loader.
+- Reflection metadata is explicit (`audiveris.compat.reflectionClasses` on the compiler JVM).
+  Original method flags are retained for those classes, because TeaVM lowers default/private
+  interface bodies to abstract declarations. Static methods are not currently returned by TeaVM's
+  reflective `getDeclaredMethods`; that separate limitation remains. The probe's reflection
+  allowlist does not add engine audit roots or become an implicit application-wide reflection list.
+- `Reference.reachabilityFence` is a Wasm GC body intrinsic. It stores the argument in a nullable
+  module-local GC root, then clears it; it is not an empty Java method. Tests inspect the emitted
+  store/null/store sequence and verify the root is clear after calls. Recheck this invariant before
+  adding a separate Wasm post-optimizer. Each worker/module instance has its own root.
 
 The compiler-side service providers are placed before the standard class library on the compiler
 classpath. Both providers require `audiveris.compat.enabled=true`; the original inventory and
@@ -105,40 +128,62 @@ are under `build/wasm-compat/probe`; audit outputs are under
 ## Verified result
 
 The original root manifests match exactly: **9,001 methods**, including **8,588 method bodies**.
-Diagnostics fall from **1,276 to 702** (574 fewer); unique messages fall from **336 to 254**.
-The second compatibility stage reduces the previous **789 to 702**, a net improvement of 87
-diagnostics. There are no remaining missing-API messages for the APIs targeted above. The broad
-fast analysis newly exposes eight unique messages (13 occurrences) in JDK virtual-thread internals, including
-interrupt fields and thread-container/state accessors. They remain unsupported and are recorded
-in `results/new-diagnostics.tsv`, rather than supplied with inert implementations. These are
+Diagnostics fall from **1,276 to 609** (667 fewer); unique messages fall from **336 to 240**.
+The stages are **1,276 → 789 → 702 → 609**. There are no remaining missing-API messages for the
+targeted APIs. The broad fast analysis also exposes additional unsupported dependency paths;
+new messages and their callers are recorded in `results/new-diagnostics.tsv`. These are
 dependency-analysis results, not a successful full-engine
 Wasm build or proof that every selected method executes correctly.
 
-- JVM oracle: **582,229 checks**, comparing the replacements with the standard JDK, including
+- JVM oracle: **652,726 checks**, comparing the replacements with the standard JDK, including
   randomized and edge-case inputs.
 - A probe compiled from code that imports the original standard Java API names executes under
   Wasm GC in Node and Chromium **158.0.8127.18**. Its 4,096 numeric values match the JVM exactly,
   along with sorted-set, string and path result arrays; 75 standard-API cases, 640 byte-array cases,
-  322 numeric-parser cases and captured stack output also match. The JVM fixture uses Jackson's
+  322 numeric-parser cases, UUID/collection/reflection cases, XML/resource payloads and captured
+  stack output also match. Chromium Web Worker checks exercise XML, resources, crypto-backed UUIDs
+  and the GC fence without DOMParser. The JVM fixture uses Jackson's
   original multi-release JAR; Wasm uses the selected unchanged base entries.
-- The expanded probe Wasm is **535,024 bytes**, now including Jackson's large-number parsers.
+- The expanded probe Wasm is **740,088 bytes**, including XML/resources and Jackson's large-number parsers.
   This is a compatibility test program, not an engine
   size estimate. No engine throughput claim is made from these tests.
 - `app` and `buildSrc` remain unchanged from upstream baseline
   `04697c74fae431ef8436a9429386957a5cb25993`. The capped runs recorded no OOM or hard memory-limit hits.
 
 Reviewable snapshots are in [results](results); bulky audit graphs and runnable probe artifacts
-are kept outside Git in `wsl-artifacts/wasm-compat/stage2`. The original stage's artifacts remain
+are kept outside Git in `wsl-artifacts/wasm-compat/stage3`. The original stage's artifacts remain
 in `wsl-artifacts/wasm-compat/audit` and `probe`; its comparison is retained in
-`results/stage1-comparison.json`. `results/stage2-comparison.json` compares the second stage
-directly with the first. `dev/teavm-audit/export_compat.py` packages these reports and provenance.
+`results/stage1-comparison.json`. Each `results/stageN-comparison.json` compares that stage directly
+with its predecessor. `dev/teavm-audit/export_compat.py --stage N` packages reports and provenance.
 
 ## Remaining work
 
-The remaining 702 diagnostics include reflection/classloading, thread APIs, file/XML operations,
-OCR/native dependencies and transitive UI code. The five diagnostics located directly in selected
-engine sources concern `Properties.loadFromXML`, `ClassLoader.getResource`,
-`Class.getProtectionDomain`, `Thread.getThreadGroup` and a `Thread` constructor taking a group.
+### TODO: reconsider the XML properties parser
+
+The user requested a performance/size review, then preferred kxml2. It is now the default;
+the JDK handler remains a comparison backend. Neither path uses runtime reflection to load XML.
+The first local Node 24/Wasm GC measurement uses separate processes and a small XML-only module:
+
+| Measurement | JDK handler | kxml2 |
+| --- | ---: | ---: |
+| Wasm bytes | 160,377 | 132,349 |
+| Gzip bytes | 56,093 | 48,829 |
+| `ISO639-3.xml` (5,162 bytes), median parse | 0.154 ms | 0.141 ms |
+| Synthetic 2,000 entries (117,912 bytes), median parse | 3.854 ms | 4.570 ms |
+
+Output checksums match. kxml2 saves about 17.5% of the component Wasm size; these timings do not
+establish a universal speed advantage. TODO: repeat in Chromium/Worker with representative input
+distributions, measure incremental engine size and parser allocation separately from process RSS,
+and reconsider if needed. `results/xml-benchmark.json` records first-load/cold/warm timings and
+sampling details. Build with `buildXmlBenchmark -PxmlBackend=jdk` and `-PxmlBackend=kxml2`, then run
+`node wasm-compat/tools/bench-xml.cjs build/wasm-compat/xml-bench-jdk build/wasm-compat/xml-bench-kxml2`
+through the capped launcher. Build-time conversion of fixed resources and a browser DOM/SAX
+adapter remain options; DOMParser itself is Window-only, so a Worker path needs a separate plan.
+
+The remaining 609 diagnostics include reflection/classloading, thread APIs, file/XML operations,
+OCR/native dependencies and transitive UI code. The three diagnostics located directly in selected
+engine sources concern `Class.getProtectionDomain`, `Thread.getThreadGroup` and a `Thread`
+constructor taking a group.
 Those need decisions about resources, execution and platform boundaries; replacing them with
 successful no-ops would not preserve recognition behavior. The existing excluded-class reentry
 report still applies: choosing roots alone does not cut transitive dependencies.

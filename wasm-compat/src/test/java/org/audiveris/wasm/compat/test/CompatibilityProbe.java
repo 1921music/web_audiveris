@@ -12,6 +12,19 @@ import org.teavm.jso.JSExport;
 /** Exactly the same standard-API bytecode runs against the JVM and the Wasm substitutions. */
 public final class CompatibilityProbe {
     public static void main(String[] args) { }
+    @JSExport public static int fenceProbe() {
+        java.lang.ref.Reference.reachabilityFence(null);
+        int checksum = 0;
+        for (int i = 0; i < 1024; i++) {
+            byte[] object = new byte[257]; object[i % 257] = (byte) i;
+            checksum += object[i % 257];
+            java.lang.ref.Reference.reachabilityFence(object);
+        }
+        return checksum;
+    }
+    @JSExport public static String utilities() { return UtilityProbe.values(); }
+    @JSExport public static String properties() { return PropertyProbe.values(); }
+    @JSExport public static String resources() { return ResourceProbe.values(); }
     @JSExport public static void dumpStack() { Thread.dumpStack(); }
     @JSExport public static String numbers() {
         StringBuilder result = new StringBuilder();

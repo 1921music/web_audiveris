@@ -3,18 +3,24 @@ gradle.projectsEvaluated {
     def app = rootProject.findProject(':app')
     if (app == null) { return }
     def auditDependencies = rootProject.configurations.create('teavmAuditDependencies')
+    def compatDependencies = rootProject.configurations.create('wasmCompatibilityDependencies')
+    def patchToolDependencies = rootProject.configurations.create('wasmPatchToolDependencies')
     rootProject.repositories { mavenCentral() }
     rootProject.dependencies {
         teavmAuditDependencies 'org.teavm:teavm-tooling:0.16.0'
         teavmAuditDependencies 'org.teavm:teavm-classlib:0.16.0'
         teavmAuditDependencies 'org.teavm:teavm-jso:0.16.0'
         teavmAuditDependencies 'org.teavm:teavm-jso-impl:0.16.0'
+        wasmCompatibilityDependencies 'net.sf.kxml:kxml2:2.3.0'
+        wasmPatchToolDependencies 'org.ow2.asm:asm:9.9.1'
     }
     def harness = new File(rootProject.projectDir, 'dev/teavm-audit')
     def classes = rootProject.layout.buildDirectory.dir('teavm-audit/classes')
     def scope = rootProject.findProperty('auditScope') ?: 'all'
     def mode = rootProject.findProperty('auditMode') ?: 'fast'
     def useCompat = (rootProject.findProperty('compat') ?: 'false').toBoolean()
+    def xmlBackend = rootProject.findProperty('xmlBackend') ?: 'kxml2'
+    if (!(xmlBackend in ['kxml2', 'jdk'])) { throw new GradleException('xmlBackend must be kxml2 or jdk') }
     if (!(scope in ['all', 'ui', 'engine', 'inventory', 'selected']) || !(mode in ['fast', 'precise'])) {
         throw new GradleException('Unknown auditScope or auditMode')
     }
@@ -23,7 +29,7 @@ gradle.projectsEvaluated {
     def compile = rootProject.tasks.register('compileTeaVMAudit', JavaCompile) {
         dependsOn app.tasks.named('classes')
         source new File(harness, 'src')
-        classpath = auditDependencies
+        classpath = auditDependencies + patchToolDependencies
         destinationDirectory = classes
         javaCompiler = app.tasks.named('compileJava').flatMap { it.javaCompiler }
         options.release = 17
@@ -35,11 +41,32 @@ gradle.projectsEvaluated {
     def compat = new File(rootProject.projectDir, 'wasm-compat')
     def compatClasses = new File(rootProject.projectDir, 'build/wasm-compat/classes')
     def compatBaseClasses = new File(rootProject.projectDir, 'build/wasm-compat/upstream-base')
+    def patchedKxml = new File(rootProject.projectDir, 'build/wasm-compat/kxml2-patched')
+    rootProject.tasks.register('patchKxmlCompatibility', JavaExec) {
+        dependsOn compile
+        classpath = rootProject.files(classes) + auditDependencies + patchToolDependencies
+        mainClass = 'audit.PatchKxml2'
+        maxHeapSize = '128m'
+        inputs.files compatDependencies
+        outputs.dir patchedKxml
+        doFirst { args compatDependencies.singleFile.absolutePath, patchedKxml.absolutePath }
+    }
     def compatTests = new File(rootProject.projectDir, 'build/wasm-compat/test-classes')
-    def probeOutput = new File(rootProject.projectDir, 'build/wasm-compat/probe')
+    def probeOutput = new File(rootProject.projectDir, 'build/wasm-compat/' + (xmlBackend == 'jdk' ? 'probe-jdk' : 'probe'))
+    def bundledResources = new File(rootProject.projectDir, 'build/wasm-compat/bundled-resources')
+    rootProject.tasks.register('generateWasmResources', Exec) {
+        inputs.file(new File(compat, 'resources.json'))
+        inputs.file(new File(compat, 'tools/generate-resources.py'))
+        inputs.files(new File(rootProject.projectDir, 'app/res'), new File(compat, 'src/test/resources'))
+        outputs.dir bundledResources
+        commandLine 'python3', new File(compat, 'tools/generate-resources.py').absolutePath,
+                rootProject.projectDir.absolutePath, bundledResources.absolutePath
+    }
     rootProject.tasks.register('compileWasmCompatibility', JavaCompile) {
+        dependsOn 'generateWasmResources'
         source new File(compat, 'src/main/java')
-        classpath = auditDependencies
+        source new File(bundledResources, 'src')
+        classpath = auditDependencies + compatDependencies
         destinationDirectory = compatClasses
         javaCompiler = app.tasks.named('compileJava').flatMap { it.javaCompiler }
         sourceCompatibility = '17'; targetCompatibility = '17'; options.release = 17
@@ -63,19 +90,19 @@ gradle.projectsEvaluated {
         include 'com/fasterxml/jackson/core/internal/shaded/fdp/v2_20_0/FastIntegerMath.class'
         into compatBaseClasses
     }
-    def compatRuntime = rootProject.files(compatClasses, compatBaseClasses) + runtime
+    def compatRuntime = rootProject.files(compatClasses, compatBaseClasses, patchedKxml) + compatDependencies + runtime
     rootProject.tasks.register('compileWasmCompatibilityTests', JavaCompile) {
         dependsOn 'copyWasmCompatibilityResources'
         source new File(compat, 'src/test/java')
-        classpath = rootProject.files(compatClasses) + auditDependencies + app.sourceSets.main.runtimeClasspath
+        classpath = rootProject.files(compatClasses) + auditDependencies + compatDependencies + app.sourceSets.main.runtimeClasspath
         destinationDirectory = compatTests
         javaCompiler = app.tasks.named('compileJava').flatMap { it.javaCompiler }
         sourceCompatibility = '25'; targetCompatibility = '25'; options.release = 25
         options.encoding = 'UTF-8'
     }
     rootProject.tasks.register('testWasmCompatibilityJvm', JavaExec) {
-        dependsOn compile, 'compileWasmCompatibilityTests'
-        classpath = rootProject.files(compatTests, compatClasses) + runtime
+        dependsOn compile, 'compileWasmCompatibilityTests', 'patchKxmlCompatibility'
+        classpath = rootProject.files(compatTests, compatClasses, patchedKxml, new File(bundledResources, 'classpath')) + compatDependencies + runtime
         mainClass = 'org.audiveris.wasm.compat.test.OracleTest'
         maxHeapSize = '384m'
         jvmArgs '--add-exports=java.base/jdk.internal.util=ALL-UNNAMED'
@@ -89,11 +116,24 @@ gradle.projectsEvaluated {
         mainClass = 'audit.CompileCompatibilityProbe'
         maxHeapSize = '1g'
         systemProperty 'audiveris.compat.enabled', 'true'
+        systemProperty 'audiveris.compat.reflectionClasses', 'org.audiveris.wasm.compat.test.UtilityProbe$DefaultMethods,org.audiveris.wasm.compat.test.ResourceProbe$LookupFixture'
+        systemProperty 'audiveris.compat.probeGC', 'true'
+        systemProperty 'audiveris.compat.xmlBackend', xmlBackend
         args probeOutput.absolutePath
     }
     rootProject.tasks.register('verifyWasmCompatibility', Exec) {
         dependsOn 'buildCompatibilityProbe'
         commandLine 'node', '--max-old-space-size=256', new File(compat, 'tools/verify-probe.cjs').absolutePath, probeOutput.absolutePath
+    }
+    rootProject.tasks.register('buildXmlBenchmark', JavaExec) {
+        dependsOn compile, 'compileWasmCompatibilityTests', 'patchKxmlCompatibility', 'selectWasmLibraryImplementations'
+        classpath = rootProject.files(compatTests) + compatRuntime
+        mainClass = 'audit.CompileCompatibilityProbe'
+        maxHeapSize = '1g'
+        systemProperty 'audiveris.compat.enabled', 'true'
+        systemProperty 'audiveris.compat.xmlBackend', xmlBackend
+        args new File(rootProject.projectDir, "build/wasm-compat/xml-bench-${xmlBackend}").absolutePath,
+                'org.audiveris.wasm.compat.test.XmlBenchmark', 'xml'
     }
     rootProject.tasks.register('verifyWasmCompatibilityBrowser', Exec) {
         dependsOn 'verifyWasmCompatibility'
@@ -130,12 +170,13 @@ gradle.projectsEvaluated {
         classpath = useCompat ? compatRuntime : runtime
         mainClass = 'audit.TeaVMAudit'
         maxHeapSize = '5g'
-        jvmArgs '-XX:MaxMetaspaceSize=512m', '-XX:ActiveProcessorCount=3'
+        jvmArgs '-XX:MaxMetaspaceSize=512m', '-XX:ActiveProcessorCount=8'
         args applicationClasses, output.absolutePath, scope, mode
         if (scope == 'selected') { args new File(output, 'root-plan.tsv').absolutePath }
         systemProperty 'org.slf4j.simpleLogger.defaultLogLevel', 'warn'
         systemProperty 'logback.configurationFile', new File(harness, 'logback.xml').absolutePath
         systemProperty 'audiveris.compat.enabled', useCompat.toString()
+        systemProperty 'audiveris.compat.xmlBackend', xmlBackend
     }
     if (scope == 'selected') {
         rootProject.tasks.register('classifyTeaVMClasses') { dependsOn 'auditTeaVM' }

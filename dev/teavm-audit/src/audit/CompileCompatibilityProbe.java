@@ -9,9 +9,10 @@ public final class CompileCompatibilityProbe {
     public static void main(String[] args) throws Exception {
         TeaVMTool tool = new TeaVMTool();
         tool.setTargetType(TeaVMTargetType.WEBASSEMBLY_GC);
-        tool.setMainClass("org.audiveris.wasm.compat.test.CompatibilityProbe");
+        tool.setMainClass(args.length > 1 ? args[1] : "org.audiveris.wasm.compat.test.CompatibilityProbe");
         tool.setTargetDirectory(new File(args[0]));
-        tool.setTargetFileName("compat.wasm");
+        String name = args.length > 2 ? args[2] : "compat";
+        tool.setTargetFileName(name + ".wasm");
         tool.setStrict(true);
         tool.generate();
         for (var problem : tool.getProblemProvider().getProblems()) {
@@ -21,7 +22,7 @@ public final class CompileCompatibilityProbe {
         if (!tool.getProblemProvider().getSevereProblems().isEmpty()) { throw new IllegalStateException("Compatibility probe compilation failed"); }
         try (var runtime = CompileCompatibilityProbe.class.getResourceAsStream("/org/teavm/backend/wasm/wasm-gc-runtime.min.js")) {
             if (runtime == null) { throw new IllegalStateException("TeaVM Wasm GC runtime resource missing"); }
-            java.nio.file.Files.copy(runtime, new File(args[0], "compat.wasm-runtime.js").toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+            java.nio.file.Files.copy(runtime, new File(args[0], name + ".wasm-runtime.js").toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
         }
         System.out.println("Compiled compatibility probe to Wasm GC");
     }

@@ -36,7 +36,14 @@ def compare(baseline, patched):
                 'Method java.util.Date.from(', 'Method java.net.URLConnection.getContentLengthLong(',
                 'Method java.util.concurrent.atomic.AtomicLong.compareAndExchange(',
                 'Method java.lang.Thread.threadId(', 'Method java.lang.Thread.isVirtual(', 'Method java.lang.Thread.onSpinWait(',
-                'Method java.lang.Thread.dumpStack(']
+                'Method java.lang.Thread.dumpStack(', 'Method java.lang.ref.Reference.reachabilityFence(',
+                'Method java.util.UUID.<init>(JJ)', 'Method java.util.UUID.getMostSignificantBits(',
+                'Method java.util.UUID.getLeastSignificantBits(', 'Method java.util.Collections.emptySortedMap(',
+                'Method java.util.Collections.unmodifiableSortedMap(', 'Method java.lang.reflect.Method.isDefault(',
+                'Method java.util.Properties.loadFromXML(', 'Method java.util.Properties.store(Ljava/io/Writer;',
+                'Method java.lang.ClassLoader.loadClass(Ljava/lang/String;)',
+                'Method java.lang.ClassLoader.getResource', 'Method java.lang.ClassLoader.getSystemResource',
+                'Method java.lang.Class.getResource']
     remaining_targets = [message for message in after_apis if any(message.startswith(prefix) for prefix in prefixes)]
     result = {'identicalOriginalRoots': True, 'rootCount': len(before_roots),
               'baselineDiagnostics': before['diagnostics'], 'patchedDiagnostics': after['diagnostics'],
