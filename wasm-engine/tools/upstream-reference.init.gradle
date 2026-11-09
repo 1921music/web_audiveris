@@ -4,6 +4,25 @@ gradle.projectsEvaluated {
     if (app == null) { return }
     def fixtureDir = new File(rootProject.projectDir, 'wasm-engine/build/sample-reference')
     def manifestFile = new File(fixtureDir, 'manifest.json')
+    def toolClasses = new File(rootProject.projectDir, 'wasm-engine/build/upstream-tools')
+    def compileTools = rootProject.tasks.register('compileUpstreamTools', JavaCompile) {
+        dependsOn app.tasks.named('classes')
+        source new File(rootProject.projectDir, 'wasm-engine/tools/UpstreamRunReference.java')
+        classpath = app.sourceSets.main.runtimeClasspath
+        destinationDirectory = toolClasses
+        sourceCompatibility = '25'
+        targetCompatibility = '25'
+        javaCompiler = app.tasks.named('compileJava').flatMap { it.javaCompiler }
+        options.encoding = 'UTF-8'
+    }
+    rootProject.tasks.register('upstreamRunReference', JavaExec) {
+        dependsOn compileTools
+        classpath = app.sourceSets.main.runtimeClasspath + rootProject.files(toolClasses)
+        mainClass = 'UpstreamRunReference'
+        workingDir = app.projectDir
+        maxHeapSize = '512m'
+        args fixtureDir.absolutePath
+    }
     rootProject.tasks.register('upstreamReference', JavaExec) {
         dependsOn app.tasks.named('classes')
         classpath = app.sourceSets.main.runtimeClasspath

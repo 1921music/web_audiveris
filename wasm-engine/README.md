@@ -4,6 +4,8 @@ TeaVM Wasm GCで動かす、UIを持たないエンジンの移植先。デス�
 
 現在の対象は適応的二値化と、スケール推定のうち線幅・五線間隔・連桁の太さの測定。五線の位置検出、音符認識、OCR、MusicXML出力はまだ移植していない。スケール推定の成功は五線位置の検出完了を意味しない。
 
+五線検出に向けた基礎処理として、横・縦の黒画素ランをプリミティブ配列へ変換する`CompactRunTable`も備える。ラン同士の接続や五線へのグループ化は未実装。
+
 ## 実装の境界
 
 - 入力はGRAY8画素列、幅、高さ、行ストライド。デコードはエンジン外で行う。
@@ -29,7 +31,9 @@ worker.postMessage({
 }, [pixels]);
 ```
 
-`targetStage`は`BINARY`または`SCALE`。`done`には二値画像のArrayBufferと、SCALEの場合は`scale`を返す。scaleの暫定配列は、線幅、主間隔、小間隔の順にそれぞれ`min, main, max`を並べ、その後に連桁の太さ、小さい連桁の太さ、連桁が推定値かどうか（1/0）を並べる。存在しない小間隔・小さい連桁は0とする。API名や型は移植範囲に合わせて変更できる。
+`targetStage`は`BINARY`、`SCALE`、または中間データ検証用の`RUNS`。`done`には二値画像のArrayBufferと、SCALEの場合は`scale`を返す。scaleの暫定配列は、線幅、主間隔、小間隔の順にそれぞれ`min, main, max`を並べ、その後に連桁の太さ、小さい連桁の太さ、連桁が推定値かどうか（1/0）を並べる。存在しない小間隔・小さい連桁は0とする。
+
+RUNSはスケール推定を実行せず、二値化後に横・縦のラン列を構築する。`horizontalRuns`と`verticalRuns`はInt32配列のArrayBufferで、先頭が走査列数、続いて走査列数+1個のラン開始オフセット、最後に各ランの`start, length`を並べる。API名や型は移植範囲に合わせて変更できる。
 
 キャンセル要求は`type: 'cancel'`と同じ`jobId, pageId, generation`を送る。計算の区切りでキャンセルでき、以後は同じWorkerを再利用できる。実装済み工程に外部非同期処理はまだないため、OCRの要求・応答はTEXTS工程の移植時に接続する。
 
@@ -60,6 +64,14 @@ JVMテストでは、上流の画像フィルタのソースを変更せず別�
 ```
 
 こちらは移植側でスケールを測定できた入力について、同じグレースケール画像を元のアプリへ渡し、保存された`.omr`内の二値画像・線幅・間隔と比較する。上流のGRID工程の基準出力も必要なら`-PreferenceStep=GRID`を追加できる。
+
+ラン列の上流比較データは、入力生成後に次で作成する。その後の`verifyWorker`は横・縦のラン列も上流の`RunTableFactory`と照合する。
+
+```powershell
+.\dev\wsl\Manage-WasmDev.ps1 Build -GradleArgs @(
+    'upstreamRunReference', '-I', 'wasm-engine/tools/upstream-reference.init.gradle'
+)
+```
 
 Chromiumの実ブラウザ検証は、WSL内の`~/work/web_audiveris/wasm-engine`で実行する。
 

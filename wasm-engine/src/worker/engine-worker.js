@@ -41,8 +41,8 @@
                 const { width, height, stride = width, pixels } = message;
                 if (!(pixels instanceof ArrayBuffer)) { throw new Error('pixels must be an ArrayBuffer'); }
                 const targetStage = message.targetStage ?? 'SCALE';
-                if (!['BINARY', 'SCALE'].includes(targetStage)) { throw new Error('Unsupported target stage'); }
-                api.start(width, height, stride, new Int8Array(pixels), 18, .7, .9, targetStage === 'SCALE');
+                if (!['BINARY', 'SCALE', 'RUNS'].includes(targetStage)) { throw new Error('Unsupported target stage'); }
+                api.start(width, height, stride, new Int8Array(pixels), 18, .7, .9, targetStage === 'SCALE', targetStage === 'RUNS');
                 const job = { ...identity(message), width, height, targetStage };
                 active = job;
                 schedule(() => tick(job));
@@ -63,12 +63,15 @@
             if (api.advance(8)) {
                 const binary = api.binaryImage();
                 const scale = job.targetStage === 'SCALE' ? Array.from(api.scale()) : null;
+                const horizontalRuns = job.targetStage === 'RUNS' ? api.runTable(true).buffer : null;
+                const verticalRuns = job.targetStage === 'RUNS' ? api.runTable(false).buffer : null;
                 api.dispose();
                 active = null;
                 send({ type: 'done', ...identity(job), width: job.width, height: job.height,
-                    binary: binary.buffer, scale }, [binary.buffer]);
+                    binary: binary.buffer, scale, horizontalRuns, verticalRuns },
+                    [binary.buffer, horizontalRuns, verticalRuns].filter(Boolean));
             } else {
-                send({ type: 'progress', ...identity(job), stage: api.stage(), completed: api.completedColumns(), total: job.width });
+                send({ type: 'progress', ...identity(job), stage: api.stage(), completed: api.completedColumns(), total: api.totalUnits() });
                 schedule(() => tick(job));
             }
         } catch (error) { api.dispose(); active = null; fail(job, error); }
@@ -77,7 +80,7 @@
     try {
         const wasmPath = typeof __dirname === 'string' ? require('node:path').join(__dirname, 'wasm-gc/engine.wasm') : './wasm-gc/engine.wasm';
         api = (await TeaVM.wasmGC.load(wasmPath)).exports;
-        send({ type: 'ready', protocolVersion: 1, stages: ['BINARY', 'SCALE'] });
+        send({ type: 'ready', protocolVersion: 1, stages: ['BINARY', 'SCALE', 'RUNS'] });
         for (const message of waiting.splice(0)) { dispatch(message); }
     } catch (error) {
         send({ type: 'initializationFailed', error: { code: 'WASM_LOAD_FAILED', message: String(error?.message ?? error) } });

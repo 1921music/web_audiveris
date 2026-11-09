@@ -87,10 +87,25 @@ function verifyScale(sample, result) {
             verifyBinary(sample, result);
             const scaleResult = await run(first.worker, sample);
             verifyScale(sample, scaleResult);
+            let runCounts = null;
+            const horizontalReference = path.join(fixtures, sample.id + '.horizontal.runs');
+            if (fs.existsSync(horizontalReference)) {
+                const runs = await run(first.worker, sample, 1, false, 'RUNS');
+                verifyBinary(sample, runs);
+                runCounts = {};
+                for (const orientation of ['horizontal', 'vertical']) {
+                    const actual = Buffer.from(runs[orientation + 'Runs']);
+                    const expected = fs.readFileSync(path.join(fixtures, sample.id + '.' + orientation + '.runs'));
+                    assert.equal(actual.length, expected.length, `${sample.id}: ${orientation} run data length differs`);
+                    assert.equal(actual.equals(expected), true, `${sample.id}: ${orientation} runs differ from upstream`);
+                    const laneCount = actual.readInt32LE(0);
+                    runCounts[orientation] = actual.readInt32LE(4 * (laneCount + 1));
+                }
+            }
             results.push({ name: sample.name, width: sample.width, height: sample.height,
                 upstreamJvmMs: sample.upstreamJvmMs, portableJvmMs: sample.portableJvmMs,
                 wasmWorkerMs: result.workerMs, scalePipelineMs: scaleResult.workerMs,
-                scale: scaleResult.scale ?? null, scaleError: scaleResult.error ?? null });
+                scale: scaleResult.scale ?? null, scaleError: scaleResult.error ?? null, runCounts });
             console.log(`${sample.name}: exact binary match; Wasm worker ${result.workerMs.toFixed(1)} ms`);
         }
         const cancelled = await run(first.worker, manifest[0], 2, true);
