@@ -1,0 +1,18 @@
+{
+  "node": "v24.22.2",
+  "matchedValues": 4096,
+  "collections": [
+    4,
+    1,
+    5,
+    2,
+    3,
+    4,
+    0,
+    5
+  ],
+  "matchedStringValues": 30,
+  "matchedPathValues": 24,
+  "maxError": 0,
+  "wasmBytes": 70725
+}
