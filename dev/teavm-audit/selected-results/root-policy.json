@@ -1,0 +1,17 @@
+{
+  "profile": "headless-candidates-v2",
+  "rootClassDecisions": ["keep", "mixed"],
+  "dependencyOnlyClassDecisions": ["boundary", "review"],
+  "excludeUiMethods": true,
+  "rules": [
+    {"id": "tool-main", "class": ".*", "name": "main", "reason": "Standalone CLI/debug entry points are outside the engine"},
+    {"id": "debug-charts", "class": ".*", "name": "(?:displayChart.*|plot|addPlot|dump.*|printWatch)", "reason": "Optional plots, dumps and timing presentation"},
+    {"id": "manual-symbol-edit", "class": "org\\.audiveris\\.omr\\.sig\\.inter\\..*", "name": "(?:deriveFrom|preAdd|preEdit|preRemove|getColor|setColor)", "reason": "Drag/drop derivation, interactive edit tasks and display colors; recognition/linking methods remain eligible"},
+    {"id": "sample-export", "class": "org\\.audiveris\\.omr\\.classifier\\.GlyphDescriptor", "name": "export", "reason": "Training-feature CSV export, not MusicXML export"},
+    {"id": "classifier-training", "class": "org\\.audiveris\\.omr\\.classifier\\.(?:AbstractClassifier|BasicClassifier|Classifier)(?:\\$.*)?", "name": "(?:train|stop|reset|addListener|removeListener|createModel|getRawDataSet|getTrainFolder|store.*|(?:get|set)(?:EpochsTotal|MaxEpochs|Lambda|LearningRate|Momentum))", "reason": "Training, model creation and persistence; inference/model reads stay eligible"},
+    {"id": "network-training", "class": "org\\.audiveris\\.omr\\.math\\.NeuralNetwork(?:\\$.*)?", "name": "(?:train|stop|marshal|createMatrix|reluDif|sigmoidDif|w2|(?:get|set)(?:EpochsTotal|Lambda|LearningRate|Momentum))", "reason": "Neural-network training and model writes; forward/run/unmarshal stay eligible"},
+    {"id": "book-host", "class": "org\\.audiveris\\.omr\\.sheet\\.Book", "name": "(?:store.*|loadBook|openBookFile|print|sample|annotate|close|checkRadixChange|hideInvalidStubs|beforeMarshal|afterMarshal|getJaxbContext|swapAllSheets|hasSpecificRepository|getSampleRepository|getSpecificSampleRepository|getStubsToUpgrade|getStubsWithOldVersion|getStubsWithTableFiles)", "reason": "Desktop book persistence, sample collection, printing and lifecycle helpers"},
+    {"id": "sheet-host", "class": "org\\.audiveris\\.omr\\.sheet\\.Sheet", "name": "(?:store|unmarshal|getJaxbContext|afterReload|sample|annotate|print|addItemRenderer|createBinaryView|createGrayView|createGlyphsController|display.*|getErrorsEditor|getGlyphsController|getInterController|getLocationService|getSheetDelta|setSheetDelta|getSheetEditor)", "reason": "OMR persistence, debug comparison, GUI controllers and desktop views"},
+    {"id": "stub-host", "class": "org\\.audiveris\\.omr\\.sheet\\.SheetStub", "name": "(?:storeSheet|swapSheet|loadGrayImage|grabBinaryTable|display|close|getAssembly|beforeMarshal|afterMarshal)", "reason": "Disk swapping/image decode, OMR persistence and GUI assembly"}
+  ]
+}
