@@ -3,6 +3,7 @@ set -euo pipefail
 
 # Every build/test command and all descendants share this ceiling, even across launches.
 group=/sys/fs/cgroup/wasm_audiveris_dev
+script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 as_root=false
 if [[ ${1:-} == --as-root ]]; then
     [[ $EUID == 0 && ${WSL_DISTRO_NAME:-} == wasm_audiveris_dev ]] || exit 1
@@ -48,13 +49,21 @@ exec 8>&-
 
 printf 'Resource limits: CPUs %s (max 3), memory 3 GiB total, swap 0\n' "$cpus"
 cd "$cwd"
-if $as_root; then exec taskset -c "$cpus" "$@"; fi
+if $as_root; then
+    limited_command=(taskset -c "$cpus" "$@")
+else
 user_home=$(getent passwd "$SUDO_UID" | cut -d: -f6)
-exec taskset -c "$cpus" runuser -u "$SUDO_USER" -- env \
+limited_command=(taskset -c "$cpus" runuser -u "$SUDO_USER" -- env \
     HOME="$user_home" USER="$SUDO_USER" LOGNAME="$SUDO_USER" \
     WSL_DISTRO_NAME=wasm_audiveris_dev \
     PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     OMP_NUM_THREADS=3 OPENBLAS_NUM_THREADS=3 MKL_NUM_THREADS=3 UV_THREADPOOL_SIZE=1 \
     JAVA_TOOL_OPTIONS='-XX:ActiveProcessorCount=3 -XX:ParallelGCThreads=2 -XX:ConcGCThreads=1 -XX:CICompilerCount=2' \
     NODE_OPTIONS='--max-old-space-size=384' \
-    bash -c 'source /opt/wasm-audiveris/env.sh; exec "$@"' limited-command "$@"
+    bash -c 'source /opt/wasm-audiveris/env.sh; exec "$@"' limited-command "$@")
+fi
+# Bound host-side tool buffers too; large debug logs must not exhaust Windows memory.
+set +e
+"${limited_command[@]}" 2>&1 | python3 "$script_dir/limit-output.py"
+result=${PIPESTATUS[0]}
+exit "$result"
