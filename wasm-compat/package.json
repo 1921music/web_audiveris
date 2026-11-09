@@ -1,0 +1,6 @@
+{
+  "name": "audiveris-wasm-compat-tests",
+  "private": true,
+  "version": "0.0.0",
+  "devDependencies": {"playwright": "1.65.0"}
+}

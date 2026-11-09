@@ -190,6 +190,7 @@ public final class TeaVMAudit {
             if (dependency != null && dependency.isUsed()) { used++; }
         }
         String summary = "scope=" + scope + "\nmode=" + mode + "\nclasses=" + rootClasses.size() + "\nmethodRoots=" + roots.size()
+                + "\ncompatibilityEnabled=" + Boolean.getBoolean("audiveris.compat.enabled")
                 + "\nusedRoots=" + used + "\nproblems=" + vm.getProblemProvider().getProblems().size()
                 + "\nanalyzedRootBodies=" + roots.stream().filter(r -> r.body() && analyzedMethods.contains(r.reference())).count()
                 + "\nrootBodies=" + roots.stream().filter(Root::body).count()

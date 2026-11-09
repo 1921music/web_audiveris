@@ -1,7 +1,9 @@
 # TeaVM compilation audit
 
-Investigation harness for the original Audiveris application. It adds no engine port, platform stubs,
-class substitutions, or application-source transformations. TeaVM is fixed at 0.16.0, target Wasm GC.
+Investigation harness for the original Audiveris application. The default audit uses no substitutions.
+Optional API compatibility implementations live separately in `wasm-compat` and are enabled only
+with `-Pcompat=true`. No application-source transformations are performed. TeaVM is fixed at 0.16.0,
+target Wasm GC.
 
 ## Run
 
@@ -20,7 +22,7 @@ daemon. The source of truth remains on Windows and is mirrored into WSL before b
 `-PauditScope=ui` or `-PauditScope=engine` restricts the method roots. The default is `all`.
 `-PauditMode=precise` enables TeaVM's precise dependency analyzer; the default `fast` analyzer
 uses coarser global type information to reduce the memory cost of this deliberately broad audit.
-Neither mode rewrites the application or replaces missing APIs.
+Neither analysis mode rewrites the application. API replacements are controlled separately by `compat`.
 
 ## Selected engine candidates and exclusion paths
 
@@ -109,6 +111,18 @@ from application-compilation success. A successful Gradle task does not imply a 
 
 This audit finds static compilation obstacles. It cannot prove resource availability, OCR adapter
 behavior, rasterization/font equivalence, asynchronous behavior, or recognition-result equivalence.
+
+## Optional API compatibility
+
+`-Pcompat=true` places `wasm-compat` before the standard TeaVM class library on the compiler classpath
+and enables its compiler-side policies. Results use the separate `fast-selected-compat` directory.
+The original-class inventory and root selection always run without those policies, so the same
+original-method roots can be compared. Compatibility audits also run the JVM oracle and Node/Wasm
+probe before compiling the application roots. `compareWasmCompatibilityAudit` checks that the
+original root manifests match exactly and reports resolved/new diagnostics.
+
+See [wasm-compat/README](../../wasm-compat/README.md) for supported APIs, behavior tests and the remaining
+platform boundaries. Existing all-method and selected audit snapshots are kept as baselines.
 
 ## Class inclusion decisions
 

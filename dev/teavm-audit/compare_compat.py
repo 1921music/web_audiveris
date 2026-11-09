@@ -1,0 +1,49 @@
+"""Compare identical original-method roots, without treating root pruning as an API fix."""
+import argparse
+import csv
+import json
+from pathlib import Path
+
+
+def rows(path):
+    with path.open(encoding='utf-8', newline='') as stream:
+        return list(csv.DictReader(stream, delimiter='\t'))
+
+
+def compare(baseline, patched):
+    before_roots = {row['method']: (row['class'], row['hasBody'], row['native'], row['category'])
+                    for row in rows(baseline / 'roots.tsv')}
+    after_roots = {row['method']: (row['class'], row['hasBody'], row['native'], row['category'])
+                   for row in rows(patched / 'roots.tsv')}
+    if before_roots != after_roots:
+        raise AssertionError('Original method roots changed; diagnostic differences are not comparable')
+    before = json.loads((baseline / 'classified-summary.json').read_text(encoding='utf-8'))
+    after = json.loads((patched / 'classified-summary.json').read_text(encoding='utf-8'))
+    before_apis = {api['message']: api for api in before['apis']}
+    after_apis = {api['message']: api for api in after['apis']}
+    removed = sorted(before_apis.keys() - after_apis.keys())
+    added = sorted(after_apis.keys() - before_apis.keys())
+    prefixes = ['Field java.awt.Color.', 'Method java.awt.Color.', 'Method java.awt.Point.', 'Method java.awt.Dimension.',
+                'Method java.util.Collections.unmodifiableSortedSet(', 'Method java.util.Collections.emptySortedSet(',
+                'Method java.io.File.toPath(', 'Method java.lang.String.lines(', 'Method java.lang.String.getBytes(II[BI)',
+                'Method java.lang.String.<init>([BI)', 'Method java.lang.String.<init>([BIII)']
+    remaining_targets = [message for message in after_apis if any(message.startswith(prefix) for prefix in prefixes)]
+    result = {'identicalOriginalRoots': True, 'rootCount': len(before_roots),
+              'baselineDiagnostics': before['diagnostics'], 'patchedDiagnostics': after['diagnostics'],
+              'diagnosticReduction': before['diagnostics'] - after['diagnostics'],
+              'baselineUniqueMessages': before['uniqueMessages'], 'patchedUniqueMessages': after['uniqueMessages'],
+              'removedMessages': removed, 'newMessages': added, 'remainingTargetedApiMessages': remaining_targets,
+              'baselineByFamily': before['byFamily'], 'patchedByFamily': after['byFamily'],
+              'baselineByDirectOwner': before['byDirectOwner'], 'patchedByDirectOwner': after['byDirectOwner']}
+    (patched / 'compatibility-comparison.json').write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+    if remaining_targets:
+        raise AssertionError('Targeted API gaps remain: ' + repr(remaining_targets))
+    print(json.dumps({key: value for key, value in result.items() if key not in ('removedMessages', 'newMessages')}, ensure_ascii=False))
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('baseline', type=Path)
+    parser.add_argument('patched', type=Path)
+    args = parser.parse_args()
+    compare(args.baseline, args.patched)
