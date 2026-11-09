@@ -26,6 +26,26 @@ def export(source, results, artifacts, tool_commit):
                              ('diagnostics-classified.tsv', 'diagnostics.tsv'), ('apis.tsv', 'apis.tsv'),
                              ('kept-to-excluded.tsv', 'kept-to-excluded.tsv'), ('summary.properties', 'coverage.properties')]:
         shutil.copyfile(source / original, results / target)
+    if (source / 'root-plan.tsv').exists():
+        inventory = source.parent / 'inventory'
+        for original, target in [('source-references.tsv', 'source-references.tsv.gz')]:
+            with (inventory / original).open('rb') as input_stream, gzip.open(artifacts / target, 'wb', compresslevel=6) as output:
+                shutil.copyfileobj(input_stream, output)
+        shutil.copyfile(inventory / 'roots.tsv', artifacts / 'inventory-roots.tsv')
+        for name in ['root-plan.tsv', 'selected-roots.tsv', 'root-selection.json', 'root-policy.json',
+                     'exclusion-summary.json', 'exclusion-boundaries.tsv', 'entry-boundaries.tsv',
+                     'original-reference-paths.tsv', 'excluded-class-paths.tsv', 'excluded-method-paths.tsv',
+                     'reached-methods.tsv', 'reached-classes.txt']:
+            shutil.copyfile(source / name, artifacts / name)
+        for name in ['root-selection.json', 'root-policy.json', 'exclusion-summary.json',
+                     'entry-boundaries.tsv', 'original-reference-paths.tsv', 'excluded-class-paths.tsv']:
+            shutil.copyfile(source / name, results / name)
+        with (source / 'root-plan.tsv').open(encoding='utf-8', newline='') as stream:
+            plan = list(csv.DictReader(stream, delimiter='\t'))
+        with (results / 'method-exclusions.tsv').open('w', encoding='utf-8', newline='') as stream:
+            writer = csv.DictWriter(stream, fieldnames=list(plan[0]), delimiter='\t', lineterminator='\n')
+            writer.writeheader()
+            writer.writerows(row for row in plan if row['action'] == 'excluded' and row['classDecision'] != 'exclude')
     classification_summary = {key: value for key, value in decisions.items() if key != 'classification'}
     (results / 'class-summary.json').write_text(json.dumps(classification_summary, indent=2) + '\n', encoding='utf-8')
     group = Path('/sys/fs/cgroup/wasm_audiveris_dev')

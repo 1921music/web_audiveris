@@ -70,6 +70,7 @@ EXCLUDE_TOP = {
     PREFIX + 'classifier.Tribe', PREFIX + 'classifier.TribeList',
     PREFIX + 'sheet.PlayList', PREFIX + 'sheet.AliasPatterns',
     PREFIX + 'sheet.SheetDiff', PREFIX + 'run.RunsViewer',
+    PREFIX + 'check.CheckBoard', PREFIX + 'check.CheckPanel', PREFIX + 'glyph.SymbolSample',
     PREFIX + 'step.TestStep', PREFIX + 'step.RunClass',
     PREFIX + 'util.WindowsRegistry', PREFIX + 'util.SheetCounter', PREFIX + 'util.ChartPlotter',
     PREFIX + 'util.PathHistory', PREFIX + 'util.SheetPathHistory', PREFIX + 'util.AbstractNameHistory',
@@ -101,12 +102,14 @@ PURE_UTIL = {
 
 
 def is_component(name, inventory, seen=None):
-    if name == 'java.awt.Component' or name.startswith('javax.swing.'):
+    if name == 'java.awt.Component' or name.startswith('javax.swing.') or ('.ui.' in name and '.ui.symbol.' not in name):
         return True
     seen = set() if seen is None else seen
     if not name or name in seen:
         return False
     seen.add(name)
+    if '$' in name and is_component(name.rsplit('$', 1)[0], inventory, seen):
+        return True
     item = inventory.get(name)
     if not item:
         return name in ('java.awt.Canvas', 'java.awt.Panel', 'java.awt.Frame', 'java.awt.Window', 'java.awt.Dialog')

@@ -22,6 +22,55 @@ daemon. The source of truth remains on Windows and is mirrored into WSL before b
 uses coarser global type information to reduce the memory cost of this deliberately broad audit.
 Neither mode rewrites the application or replaces missing APIs.
 
+## Selected engine candidates and exclusion paths
+
+```powershell
+.\dev\wsl\Manage-WasmDev.ps1 Build -GradleArgs @(
+    'traceTeaVMExclusions', '-I', 'dev/teavm-audit/audit.init.gradle',
+    '-PauditScope=selected', '--console=plain'
+)
+```
+
+This first inventories every original method without running dependency analysis, classifies all
+original classes, and applies `root-policy.json`. `root-plan.tsv` records a reason for every method:
+`root`, `excluded`, or `dependency-only`. Only non-UI candidates in `keep`/`mixed` classes are forced.
+Boundary classes (including recognition fonts), and metadata under review, are left for selected
+callers to reach. Method rules cover training, debug tools, OMR persistence and manual-edit entry
+points in otherwise retained classes. Lambda helpers of rejected methods follow the same rule.
+
+All original application class files remain on the compiler classpath. No javac source exclusions,
+TeaVM class filters, dead implementation stubs, or substitutions are used. Excluded methods may
+be reached transitively; this investigation must expose those paths rather than suppress them.
+The profile is a broad candidate-method inventory, not the final minimal engine API.
+
+`inventory/source-references.tsv` contains original application-body call, construction,
+initialization, field access and field-type references with source locations. This is separate from
+the TeaVM call graph, whose virtual dispatch in fast mode is a conservative approximation.
+
+Selected-run outputs under `build/teavm-audit/fast-selected` include:
+
+- `root-plan.tsv`, `selected-roots.tsv`, `root-selection.json`: every decision, counts and input hashes.
+- `reached-methods.tsv`, `reached-classes.txt`: methods marked used versus linked type metadata.
+- `excluded-class-paths.tsv`: one representative shortest root path per excluded linked class, or an
+  explicit type-only marker when no method is used. This is not a runtime execution trace.
+- `excluded-method-paths.tsv`: root paths to unwanted UI/training/storage methods that re-enter.
+- `entry-boundaries.tsv`: used original methods in retained/mixed/boundary classes that reference an
+  unwanted class or method. Multiple records can refer to the same source line.
+- `original-reference-paths.tsv`: paths made only of original application-declared references to
+  those entry points, without substituting inferred virtual targets for source evidence.
+- `exclusion-boundaries.tsv`: all such original-body references, including inside excluded code.
+- `exclusion-summary.json`: re-entry counts, baseline diagnostic comparison, guard result and limits.
+
+The Java harness rejects missing/stale plans, unknown actions, and forced UI/excluded-class roots.
+`testTeaVMSelection` tests the policy and graph/guard behavior before selecting roots. Optional
+`-PfailOnExcluded=true` fails the task if excluded classes/methods remain reachable. It is currently
+expected to fail: the requested investigation identifies the boundaries but does not replace them.
+Reports are written before this strict guard fails. Default mode reports the same findings without
+treating the expected remaining dependencies as a failure of the investigation itself.
+
+See [SELECTION.md](SELECTION.md) for the measured result. The initial all-method snapshot under
+`results/` is preserved; selected-run results are stored separately under `selected-results/`.
+
 ## Coverage and classification
 
 The harness enumerates compiled application classes, including nested/anonymous classes, then calls

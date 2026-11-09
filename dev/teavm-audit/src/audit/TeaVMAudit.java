@@ -41,6 +41,11 @@ public final class TeaVMAudit {
         Path input = Path.of(args[0]), output = Path.of(args[1]);
         String scope = args[2];
         String mode = args.length > 3 ? args[3] : "precise";
+        if (!Set.of("all", "ui", "engine", "inventory", "selected").contains(scope)) {
+            throw new IllegalArgumentException("Unknown scope: " + scope);
+        }
+        Map<String, String> plan = scope.equals("selected") ? readPlan(Path.of(args[4])) : Map.of();
+        Set<String> seenPlan = new java.util.HashSet<>();
         Files.createDirectories(output);
         long start = System.nanoTime();
         TeaVMBuilder builder = new TeaVMBuilder(new WasmGCTarget()).setStrict(true);
@@ -72,7 +77,7 @@ public final class TeaVMAudit {
                     .sorted().toList();
         }
         for (String name : classNames) {
-            if (scope.equals("all")) { rootClasses.add(name); }
+            if (scope.equals("all") || scope.equals("inventory")) { rootClasses.add(name); }
             ClassReader cls = vm.getDependencyClassSource().get(name);
             if (cls == null) { throw new IllegalStateException("Application class not found: " + name); }
             for (MethodReader method : cls.getMethods()) {
@@ -84,15 +89,24 @@ public final class TeaVMAudit {
                         || signature.contains("Ljava.awt.Graphics") || signature.contains("Ljava.awt.event.")) {
                     category = "ui";
                 }
-                if (!scope.equals("all") && !category.equals(scope)) { continue; }
+                if (scope.equals("selected")) {
+                    String reference = method.getReference().toString();
+                    if (!plan.containsKey(reference)) { throw new IllegalStateException("Method missing from root plan: " + reference); }
+                    seenPlan.add(reference);
+                    if (!plan.get(reference).equals("root")) { continue; }
+                } else if (!scope.equals("all") && !scope.equals("inventory") && !category.equals(scope)) { continue; }
                 rootCategories.put(method.getReference(), category);
                 roots.add(new Root(category, method.getReference(), method.getProgram() != null,
                         method.hasModifier(ElementModifier.NATIVE)));
                 rootClasses.add(name);
             }
         }
+        if (scope.equals("selected") && seenPlan.size() != plan.size()) {
+            throw new IllegalStateException("Root plan contains stale methods; rebuild the inventory");
+        }
         System.out.println("TeaVM 0.16.0 Wasm GC audit: " + rootClasses.size() + " classes, " + roots.size() + " method roots (" + scope + ")");
         writeRoots(output.resolve("roots.tsv"), null);
+        if (scope.equals("inventory")) { writeSourceReferences(vm, output); return; }
         vm.add(new AbstractDependencyListener() {
             @Override public void started(DependencyAgent agent) {
                 for (String name : rootClasses) { agent.linkClass(name).initClass(null); }
@@ -162,6 +176,14 @@ public final class TeaVMAudit {
                 }
             }
         }
+        try (var writer = Files.newBufferedWriter(output.resolve("reached-methods.tsv"), StandardCharsets.UTF_8)) {
+            writer.write("class\tmethod\tused\tanalyzed\n");
+            for (var method : vm.getDependencyInfo().getReachableMethods()) {
+                var dependency = vm.getDependencyInfo().getMethod(method);
+                writer.write(tsv(method.getClassName(), method, dependency != null && dependency.isUsed(), analyzedMethods.contains(method)));
+            }
+        }
+        Files.write(output.resolve("reached-classes.txt"), new TreeSet<>(vm.getDependencyInfo().getReachableClasses()), StandardCharsets.UTF_8);
         int used = 0;
         for (Root root : roots) {
             var dependency = vm.getDependencyInfo().getMethod(root.reference());
@@ -179,6 +201,58 @@ public final class TeaVMAudit {
         if (used != roots.size()) { throw new IllegalStateException("Not all root methods were included; see roots.tsv"); }
         if (failure == null && roots.stream().anyMatch(r -> r.body() && !analyzedMethods.contains(r.reference()))) {
             throw new IllegalStateException("Not all root method bodies were analyzed; see roots.tsv");
+        }
+        if (failure != null) { throw new IllegalStateException("Compiler analysis did not complete", failure); }
+    }
+
+    private static Map<String, String> readPlan(Path path) throws Exception {
+        Map<String, String> plan = new java.util.HashMap<>();
+        var lines = Files.readAllLines(path, StandardCharsets.UTF_8);
+        var header = List.of(lines.get(0).split("\t", -1));
+        int method = header.indexOf("method"), action = header.indexOf("action"), decision = header.indexOf("classDecision"), category = header.indexOf("category");
+        if (method < 0 || action < 0 || decision < 0 || category < 0) { throw new IllegalArgumentException("Invalid root plan header"); }
+        for (String line : lines.subList(1, lines.size())) {
+            String[] fields = line.split("\t", -1);
+            if (!Set.of("root", "excluded", "dependency-only").contains(fields[action])) {
+                throw new IllegalArgumentException("Invalid root plan action");
+            }
+            if (fields[action].equals("root") && (!Set.of("keep", "mixed").contains(fields[decision]) || fields[category].equals("ui"))) {
+                throw new IllegalArgumentException("Forbidden class/UI method was requested as a root");
+            }
+            if (plan.put(fields[method], fields[action]) != null) { throw new IllegalArgumentException("Duplicate planned method"); }
+        }
+        return plan;
+    }
+
+    private static void writeSourceReferences(TeaVM vm, Path output) throws Exception {
+        try (var writer = Files.newBufferedWriter(output.resolve("source-references.tsv"), StandardCharsets.UTF_8)) {
+            writer.write("caller\ttargetClass\ttargetMember\tkind\tlocation\n");
+            for (Root root : roots) {
+                var method = vm.getDependencyClassSource().get(root.reference().getClassName()).getMethod(root.reference().getDescriptor());
+                if (method.getProgram() == null) { continue; }
+                var reader = new org.teavm.model.instructions.AbstractInstructionReader() {
+                    org.teavm.model.TextLocation location;
+                    void emit(String cls, Object member, String kind) {
+                        try { writer.write(tsv(root.reference(), cls, member, kind, location)); }
+                        catch (java.io.IOException e) { throw new java.io.UncheckedIOException(e); }
+                    }
+                    void fieldType(ValueType type, Object field) {
+                        if (type instanceof ValueType.Object object) { emit(object.getClassName(), field, "field-type"); }
+                        else if (type instanceof ValueType.Array array) { fieldType(array.getItemType(), field); }
+                    }
+                    @Override public void location(org.teavm.model.TextLocation value) { location = value; }
+                    @Override public void create(org.teavm.model.VariableReader receiver, String type) { emit(type, "", "construct"); }
+                    @Override public void initClass(String cls) { emit(cls, cls + ".<clinit>()V", "initialize"); }
+                    @Override public void getField(org.teavm.model.VariableReader receiver, org.teavm.model.VariableReader instance,
+                            org.teavm.model.FieldReference field, ValueType type) { emit(field.getClassName(), field, "field-read"); fieldType(type, field); }
+                    @Override public void putField(org.teavm.model.VariableReader instance, org.teavm.model.FieldReference field,
+                            org.teavm.model.VariableReader value, ValueType type) { emit(field.getClassName(), field, "field-write"); fieldType(type, field); }
+                    @Override public void invoke(org.teavm.model.VariableReader receiver, org.teavm.model.VariableReader instance,
+                            MethodReference target, java.util.List<? extends org.teavm.model.VariableReader> arguments,
+                            org.teavm.model.instructions.InvocationType type) { emit(target.getClassName(), target, "invoke-" + type); }
+                };
+                for (var block : method.getProgram().getBasicBlocks()) { reader.location(null); block.readAllInstructions(reader); }
+            }
         }
     }
 

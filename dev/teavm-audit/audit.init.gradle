@@ -10,7 +10,13 @@ gradle.projectsEvaluated {
     }
     def harness = new File(rootProject.projectDir, 'dev/teavm-audit')
     def classes = rootProject.layout.buildDirectory.dir('teavm-audit/classes')
-    def output = new File(rootProject.projectDir, 'build/teavm-audit/' + (rootProject.findProperty('auditMode') ?: 'fast') + '-' + (rootProject.findProperty('auditScope') ?: 'all'))
+    def scope = rootProject.findProperty('auditScope') ?: 'all'
+    def mode = rootProject.findProperty('auditMode') ?: 'fast'
+    if (!(scope in ['all', 'ui', 'engine', 'inventory', 'selected']) || !(mode in ['fast', 'precise'])) {
+        throw new GradleException('Unknown auditScope or auditMode')
+    }
+    def output = new File(rootProject.projectDir, "build/teavm-audit/${mode}-${scope}")
+    def inventory = new File(rootProject.projectDir, 'build/teavm-audit/inventory')
     def compile = rootProject.tasks.register('compileTeaVMAudit', JavaCompile) {
         dependsOn app.tasks.named('classes')
         source new File(harness, 'src')
@@ -22,26 +28,64 @@ gradle.projectsEvaluated {
         targetCompatibility = '17'
         options.encoding = 'UTF-8'
     }
+    def runtime = rootProject.files(classes) + auditDependencies + app.sourceSets.main.runtimeClasspath
+    def applicationClasses = app.tasks.named('compileJava').get().destinationDirectory.get().asFile.absolutePath
+    rootProject.tasks.register('inventoryTeaVMAudit', JavaExec) {
+        dependsOn compile
+        classpath = runtime
+        mainClass = 'audit.TeaVMAudit'
+        maxHeapSize = '2g'
+        args applicationClasses, inventory.absolutePath, 'inventory', 'fast'
+        systemProperty 'logback.configurationFile', new File(harness, 'logback.xml').absolutePath
+    }
+    rootProject.tasks.register('classifyTeaVMInventory', Exec) {
+        dependsOn 'inventoryTeaVMAudit'
+        commandLine 'python3', new File(harness, 'classify_classes.py').absolutePath,
+                applicationClasses, new File(app.projectDir, 'src/main/java').absolutePath, inventory.absolutePath
+    }
+    rootProject.tasks.register('testTeaVMSelection', Exec) {
+        workingDir harness
+        commandLine 'python3', '-m', 'unittest', '-v', 'test_selection.py'
+        environment 'PYTHONDONTWRITEBYTECODE', '1'
+    }
+    rootProject.tasks.register('prepareTeaVMSelection', Exec) {
+        dependsOn 'classifyTeaVMInventory', 'testTeaVMSelection'
+        commandLine 'python3', new File(harness, 'select_roots.py').absolutePath,
+                inventory.absolutePath, new File(harness, 'root-policy.json').absolutePath, output.absolutePath
+    }
     rootProject.tasks.register('auditTeaVM', JavaExec) {
         dependsOn compile
-        classpath = rootProject.files(classes) + auditDependencies + app.sourceSets.main.runtimeClasspath
+        if (scope == 'selected') { dependsOn 'prepareTeaVMSelection' }
+        classpath = runtime
         mainClass = 'audit.TeaVMAudit'
         maxHeapSize = '5g'
         jvmArgs '-XX:MaxMetaspaceSize=512m', '-XX:ActiveProcessorCount=3'
-        args app.tasks.named('compileJava').get().destinationDirectory.get().asFile.absolutePath,
-             output.absolutePath,
-             rootProject.findProperty('auditScope') ?: 'all', rootProject.findProperty('auditMode') ?: 'fast'
+        args applicationClasses, output.absolutePath, scope, mode
+        if (scope == 'selected') { args new File(output, 'root-plan.tsv').absolutePath }
         systemProperty 'org.slf4j.simpleLogger.defaultLogLevel', 'warn'
         systemProperty 'logback.configurationFile', new File(harness, 'logback.xml').absolutePath
     }
-    rootProject.tasks.register('classifyTeaVMClasses', Exec) {
-        dependsOn 'auditTeaVM'
-        commandLine 'python3', new File(harness, 'classify_classes.py').absolutePath,
-                app.tasks.named('compileJava').get().destinationDirectory.get().asFile.absolutePath,
-                new File(app.projectDir, 'src/main/java').absolutePath, output.absolutePath
+    if (scope == 'selected') {
+        rootProject.tasks.register('classifyTeaVMClasses') { dependsOn 'auditTeaVM' }
+    } else {
+        rootProject.tasks.register('classifyTeaVMClasses', Exec) {
+            dependsOn 'auditTeaVM'
+            commandLine 'python3', new File(harness, 'classify_classes.py').absolutePath,
+                    applicationClasses, new File(app.projectDir, 'src/main/java').absolutePath, output.absolutePath
+        }
     }
     rootProject.tasks.register('summarizeTeaVMAudit', Exec) {
         dependsOn 'classifyTeaVMClasses'
         commandLine 'python3', new File(harness, 'summarize.py').absolutePath, output.absolutePath
+    }
+    rootProject.tasks.register('traceTeaVMExclusions', Exec) {
+        dependsOn 'summarizeTeaVMAudit'
+        doFirst {
+            if (scope != 'selected') { throw new GradleException('Use -PauditScope=selected to trace exclusion paths') }
+        }
+        commandLine 'python3', new File(harness, 'trace_exclusions.py').absolutePath,
+                output.absolutePath, inventory.absolutePath,
+                new File(harness, 'results/diagnostic-summary.json').absolutePath
+        if ((rootProject.findProperty('failOnExcluded') ?: 'false').toBoolean()) { args '--fail-on-excluded' }
     }
 }

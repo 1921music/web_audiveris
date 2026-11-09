@@ -53,6 +53,9 @@ def summarize(folder):
                     pending.add(callee)
     diagnostics = list(rows(folder / 'diagnostics.tsv'))
     root_categories = {root['method']: root['category'] for root in roots}
+    if (folder / 'root-plan.tsv').exists():
+        # A non-root original method remains application code when reached transitively.
+        root_categories.update({row['method']: row['category'] for row in rows(folder / 'root-plan.tsv')})
     decision_file = folder / 'class-decisions.json'
     decisions = {item['class']: item['decision'] for item in json.loads(decision_file.read_text(encoding='utf-8'))['classification']} if decision_file.exists() else {}
     origin_names = {0: 'unattributed', 1: 'ui-only', 2: 'engine-side', 3: 'shared'}
