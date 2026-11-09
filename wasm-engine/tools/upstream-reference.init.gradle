@@ -1,0 +1,27 @@
+// Run the full upstream JVM pipeline on the exact same decoded grayscale inputs.
+gradle.projectsEvaluated {
+    def app = rootProject.findProject(':app')
+    if (app == null) { return }
+    def fixtureDir = new File(rootProject.projectDir, 'wasm-engine/build/sample-reference')
+    def manifestFile = new File(fixtureDir, 'manifest.json')
+    rootProject.tasks.register('upstreamReference', JavaExec) {
+        dependsOn app.tasks.named('classes')
+        classpath = app.sourceSets.main.runtimeClasspath
+        mainClass = 'Audiveris'
+        workingDir = app.projectDir
+        maxHeapSize = '4g'
+        jvmArgs app.application.applicationDefaultJvmArgs
+        systemProperty 'java.awt.headless', 'true'
+        doFirst {
+            def samples = new groovy.json.JsonSlurper().parse(manifestFile)
+            def inputs = samples.findAll { it.portableScale != null }.collect {
+                new File(fixtureDir, "${it.id}.input.png").absolutePath
+            }
+            if (inputs.isEmpty()) { throw new GradleException('No successful scale fixtures; run verifySamples first') }
+            args '-batch', '-save', '-step', rootProject.findProperty('referenceStep') ?: 'SCALE',
+                '-output', new File(rootProject.projectDir, 'wasm-engine/build/upstream-reference').absolutePath,
+                '--'
+            args inputs
+        }
+    }
+}

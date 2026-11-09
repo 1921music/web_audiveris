@@ -1,0 +1,71 @@
+plugins {
+    id 'java'
+    id 'org.teavm' version '0.16.0'
+}
+
+repositories { mavenCentral() }
+dependencies {
+    implementation teavm.libs.jso
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'net.imagej:ij:1.54p'
+    testImplementation 'net.jcip:jcip-annotations:1.0'
+    testImplementation 'org.slf4j:slf4j-simple:2.0.17'
+    testImplementation 'javax.xml.bind:jaxb-api:2.3.1'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = 17
+    options.encoding = 'UTF-8'
+}
+
+// Compile the unchanged upstream binarization algorithms only into the JVM tests.
+// Keep configuration stubs in their own source root; exclude upstream configuration.
+sourceSets.test.java.setSrcDirs(['src/test/java', 'build/reference-java'])
+tasks.register('prepareReference', Copy) {
+    from('../app/src/main/java') {
+        include 'org/audiveris/omr/image/PixelSource.java'
+        include 'org/audiveris/omr/image/PixelFilter.java'
+        include 'org/audiveris/omr/image/SourceWrapper.java'
+        include 'org/audiveris/omr/image/AdaptiveFilter.java'
+        include 'org/audiveris/omr/image/VerticalFilter.java'
+        include 'org/audiveris/omr/image/GlobalFilter.java'
+        include 'org/audiveris/omr/math/Population.java'
+    }
+    into layout.buildDirectory.dir('reference-java')
+}
+tasks.compileTestJava.dependsOn 'prepareReference'
+// TeaVM also tracks source directories for diagnostics, including generated test sources.
+tasks.named('generateWasmGC') { dependsOn 'prepareReference' }
+
+teavm.wasmGC {
+    mainClass = 'org.audiveris.wasm.WasmApi'
+    targetFileName = 'engine.wasm'
+}
+
+tasks.register('dist', Sync) {
+    dependsOn 'buildWasmGC'
+    from('src/worker')
+    from(layout.buildDirectory.dir('generated/teavm'))
+    into layout.buildDirectory.dir('dist')
+}
+
+tasks.register('verifySamples', JavaExec) {
+    dependsOn 'testClasses'
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'org.audiveris.wasm.SampleReference'
+    if (project.hasProperty('samples')) { args project.property('samples') }
+    args layout.buildDirectory.dir('sample-reference').get().asFile.absolutePath
+}
+
+tasks.register('verifyWorker', Exec) {
+    dependsOn 'verifySamples', 'dist'
+    commandLine 'node', '--max-old-space-size=512', 'tools/verify-worker.cjs'
+}
+
+tasks.register('compareUpstream', JavaExec) {
+    dependsOn 'testClasses'
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'org.audiveris.wasm.UpstreamComparison'
+    args layout.buildDirectory.dir('sample-reference').get().asFile.absolutePath,
+        layout.buildDirectory.dir('upstream-reference').get().asFile.absolutePath
+}
