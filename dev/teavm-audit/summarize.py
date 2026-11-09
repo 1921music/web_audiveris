@@ -75,7 +75,7 @@ def summarize(folder):
         api = apis.setdefault(key, {'family': key[0], 'message': key[1], 'count': 0, 'origins': set(), 'examples': []})
         api['count'] += 1
         api['origins'].add(origin)
-        example = diagnostic['caller'] + ' @ ' + diagnostic['location']
+        example = (diagnostic['caller'] + ' @ ' + diagnostic['location']).strip() if diagnostic['caller'] else '(no call location)'
         if example not in api['examples'] and len(api['examples']) < 5:
             api['examples'].append(example)
     keys = list(diagnostics[0]) if diagnostics else ['origin', 'family']
