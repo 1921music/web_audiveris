@@ -1,0 +1,19 @@
+{
+  "scope": "GRAY8 input to recognition and MusicXML, external OCR, no desktop UI/training/.omr persistence",
+  "classes": 2194,
+  "topLevelClasses": 939,
+  "byDecision": {
+    "exclude": 774,
+    "boundary": 183,
+    "review": 2,
+    "keep": 1136,
+    "mixed": 99
+  },
+  "topLevelByDecision": {
+    "exclude": 285,
+    "boundary": 79,
+    "review": 2,
+    "keep": 504,
+    "mixed": 69
+  }
+}

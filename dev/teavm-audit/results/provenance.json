@@ -1,0 +1,32 @@
+{
+  "applicationBaseline": "04697c74fae431ef8436a9429386957a5cb25993",
+  "toolCommit": "e5c5f0bd909917f5d46e6ad4dfacaadad4e27abb",
+  "teaVM": "0.16.0",
+  "target": "wasm-gc",
+  "mode": "fast",
+  "cpuMax": "300000 100000",
+  "allowedCpus": "0-2",
+  "memoryMaxBytes": 8589934592,
+  "memoryHighBytes": 7516192768,
+  "memorySwapMaxBytes": 0,
+  "memoryEventsLocal": {
+    "low": "0",
+    "high": "1258",
+    "max": "0",
+    "oom": "0",
+    "oom_kill": "0",
+    "oom_group_kill": "0"
+  },
+  "artifactSha256": {
+    "apis.tsv": "713acb12111dbede43dcfeb86ad064d6605882278837c18802516205218b2bd8",
+    "calls.tsv.gz": "66ad7177d0948f2aec60f25b5511ef795bcc9a28f89ed73c963f9fd9b6eda41d",
+    "class-decisions.json": "961f423888e2b40174a2aede05d0cce1805f8c720f05a7e33b0dd40b8b8ed5c3",
+    "class-decisions.tsv": "3b273a34b88838cd1c4f354a9fbbb617304c51451398aad328196a5b8fecddf3",
+    "classified-summary.json": "fb94a8d93b52f0d374c0b36ea1f5a35a81ce9e24d13663ab79dd884d4fb2029b",
+    "diagnostics-classified.tsv": "e480bf09f6a8e343dcbc151a770b16e80ffc5a1a12c1572d736d04e0b51bf9ed",
+    "diagnostics.tsv": "23b92054c9b68af5f3837ba84def8890b18323fe77bfc5bba70a31daf9a987d0",
+    "kept-to-excluded.tsv": "52f0561381c9333000165fb0941b7916ef4753e3dd0842773a7fcbf6be33fd37",
+    "roots.tsv": "91cf26f18c47ea80bb0f19884a4d966ed39a0b738f3feb6d1654135f22dc842f",
+    "summary.properties": "ada0d78c3b65bce90a5eed32174ae5c08b0ef0f1a61fcfc79c3098bdcfb77603"
+  }
+}
