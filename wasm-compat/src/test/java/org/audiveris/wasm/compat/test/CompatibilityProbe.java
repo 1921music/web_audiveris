@@ -113,6 +113,10 @@ public final class CompatibilityProbe {
         values.append(empty.estimateSize()).append('|').append(empty.characteristics()).append('|').append(empty.trySplit()).append('\n');
         values.append(outcome(() -> empty.tryAdvance(null))).append('\n');
         values.append(java.util.ServiceLoader.load(EmptyService.class).findFirst().isPresent()).append('\n');
+        for (String item : new String[] {null, "", "music", "\u697d\u8b5c"}) {
+            values.append(java.util.stream.Stream.ofNullable(item).isParallel()).append('|')
+                    .append(java.util.stream.Stream.ofNullable(item).collect(java.util.stream.Collectors.toList())).append('\n');
+        }
         for (long millis : new long[] {-1001, -1, 0, 1234}) {
             values.append(java.util.Date.from(java.time.Instant.ofEpochMilli(millis)).getTime()).append('\n');
         }

@@ -81,6 +81,11 @@ final class StandardApiTest {
         check(empty.trySplit() == null && empty.estimateSize() == 0);
         check(outcome(() -> empty.tryAdvance(null)).equals("java.lang.NullPointerException"));
         check(!StandardApis.findFirst(ServiceLoader.load(CompatibilityProbe.EmptyService.class)).isPresent());
+        for (String value : new String[] {null, "", "music", "\u697d\u8b5c"}) {
+            check(StandardApis.nullableStream(value).isParallel() == java.util.stream.Stream.ofNullable(value).isParallel());
+            check(StandardApis.nullableStream(value).collect(java.util.stream.Collectors.toList())
+                    .equals(java.util.stream.Stream.ofNullable(value).collect(java.util.stream.Collectors.toList())));
+        }
         check(!StandardApis.isVirtual(Thread.currentThread()));
         StandardApis.onSpinWait();
         java.io.PrintStream original = System.err;

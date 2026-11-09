@@ -65,6 +65,9 @@ def main():
         for backend in ['jdk', 'kxml2']:
             directory = build / f'wasm-compat/xml-bench-{backend}'
             shutil.copytree(directory, artifacts / directory.name, dirs_exist_ok=True)
+    browser_benchmark = results / 'xml-browser-benchmark.json'
+    if browser_benchmark.exists():
+        shutil.copyfile(browser_benchmark, artifacts / browser_benchmark.name)
     provenance = json.loads((results / 'provenance.json').read_text())
     provenance['compatibilityEnabled'] = True
     provenance['probeSha256'] = {p.name: hashlib.sha256(p.read_bytes()).hexdigest()

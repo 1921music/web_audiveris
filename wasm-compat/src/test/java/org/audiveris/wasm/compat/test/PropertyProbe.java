@@ -34,7 +34,15 @@ public final class PropertyProbe {
             "<properties><entry key=\"spaces\">  a\r\nb  </entry></properties>",
             "<properties><entry>missing key</entry></properties>",
             "<wrong/>", "<properties><entry key=\"x\">&unknown;</entry></properties>",
-            "<properties><entry key=\"x\">unclosed</properties>", "<properties><bad/></properties>"
+            "<properties><entry key=\"x\">unclosed</properties>", "<properties><bad/></properties>",
+            "<properties version=\"2.0\"/>", "<properties version=\"1.1\"/>", "<properties version=\"0.0\"/>",
+            "<properties extra=\"ignored\"><entry key=\"x\" extra=\"ignored\">v</entry></properties>",
+            "<properties><entry key=\"outer\">a<entry key=\"inner\">b</entry>c</entry></properties>",
+            "<properties><entry key=\"x\">before<comment>inside</comment>after</entry></properties>",
+            "<properties><comment>one</comment><comment>two</comment></properties>",
+            "<properties><entry key=\"x\">v</entry><comment>late</comment></properties>",
+            "<properties>text outside entries<entry key=\"x\">v</entry></properties>",
+            "<properties/><properties/>"
         }) { result.append(xmlResult(HEADER + body, StandardCharsets.UTF_8, loader)).append('\n'); }
         result.append(xmlResult("<properties/>", StandardCharsets.UTF_8, loader)).append('\n');
         result.append(xmlResult(HEADER.replace("http://java.sun.com/dtd/properties.dtd", "http://example.invalid/other.dtd") + "<properties/>", StandardCharsets.UTF_8, loader)).append('\n');

@@ -13,7 +13,7 @@ const root = path.resolve(process.argv[2]);
             response.end(`importScripts('/compat.wasm-runtime.js');
                 TeaVM.wasmGC.load('/compat.wasm').then(loaded => {
                     const api = loaded.exports;
-                    postMessage({utilities: api.utilities(), properties: api.properties(), resources: api.resources(), modules: api.modules(), loggers: api.loggers(),
+                    postMessage({standard: api.standard(), utilities: api.utilities(), properties: api.properties(), resources: api.resources(), modules: api.modules(), loggers: api.loggers(),
                         fence: api.fenceProbe(), fenceRootReleased: api.audiveris_probe_fence_root === null,
                         domParserUnavailable: typeof DOMParser === 'undefined'});
                 }).catch(error => postMessage({error: String(error.stack || error)}));`);
@@ -64,7 +64,7 @@ const root = path.resolve(process.argv[2]);
         }));
         assert.equal(workerResult.error, undefined, 'Worker execution');
         assert.equal(workerResult.domParserUnavailable, true);
-        for (const kind of ['utilities', 'properties', 'resources', 'modules', 'loggers']) {
+        for (const kind of ['standard', 'utilities', 'properties', 'resources', 'modules', 'loggers']) {
             assert.equal(workerResult[kind], fs.readFileSync(path.join(root, kind + '.txt'), 'utf8'), 'Worker ' + kind);
         }
         assert.equal(workerResult.fence, result.fence); assert.equal(workerResult.fenceRootReleased, true);

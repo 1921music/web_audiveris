@@ -129,6 +129,10 @@ public final class StandardApis {
         return iterator.hasNext() ? Optional.of(iterator.next()) : Optional.empty();
     }
 
+    public static <E> java.util.stream.Stream<E> nullableStream(E value) {
+        return value == null ? java.util.stream.Stream.empty() : java.util.stream.Stream.of(value);
+    }
+
     public static <E> Spliterator<E> emptySpliterator() {
         return new Spliterator<E>() {
             @Override public boolean tryAdvance(Consumer<? super E> action) { Objects.requireNonNull(action); return false; }

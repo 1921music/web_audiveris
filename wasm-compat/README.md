@@ -62,6 +62,7 @@ It does not yet make the complete recognition engine executable in a browser.
   reflection metadata. Package manifest attributes are unknown (`null`), not copied from input JARs.
 - `System.Logger.log(Level,String,Object[])` delegates to the existing logger implementation.
   Comparable-array comparison preserves Java's null ordering and lexicographic behavior.
+  `Stream.ofNullable` delegates to the existing empty/single-element stream implementations.
 - Thread context classloaders are stored per logical thread and inherited at construction,
   including an explicitly null parent context. Named classloaders retain their name and parent.
   The platform-loader query returns the existing system loader in this single class space;
@@ -143,31 +144,31 @@ are under `build/wasm-compat/probe`; audit outputs are under
 ## Verified result
 
 The original root manifests match exactly: **9,001 methods**, including **8,588 method bodies**.
-Diagnostics fall from **1,276 to 545** (731 fewer); unique messages fall from **336 to 221**.
-The stages are **1,276 → 789 → 702 → 609 → 545**. There are no remaining missing-API messages for the
+Diagnostics fall from **1,276 to 544** (732 fewer); unique messages fall from **336 to 220**.
+The stages are **1,276 → 789 → 702 → 609 → 545 → 544**. There are no remaining missing-API messages for the
 targeted APIs. The broad fast analysis also exposes additional unsupported dependency paths;
 new messages and their callers are recorded in `results/new-diagnostics.tsv`. These are
 dependency-analysis results, not a successful full-engine
 Wasm build or proof that every selected method executes correctly.
 
-- JVM oracle: **653,755 checks**, comparing the replacements with the standard JDK, including
+- JVM oracle: **653,763 checks**, comparing the replacements with the standard JDK, including
   randomized and edge-case inputs.
 - A probe compiled from code that imports the original standard Java API names executes under
   Wasm GC in Node and Chromium **158.0.8127.18**. Its 4,096 numeric values match the JVM exactly,
-  along with sorted-set, string and path result arrays; 75 standard-API cases, 640 byte-array cases,
+  along with sorted-set, string and path result arrays; 79 standard-API cases, 640 byte-array cases,
   322 numeric-parser cases, UUID/collection/reflection cases, XML/resource payloads and captured
   stack output also match. Chromium Web Worker checks exercise XML, resources, crypto-backed UUIDs
   and the GC fence without DOMParser. Module/resource-bundle, logger and context-classloader
   fixtures also match in Node, Chromium and its Worker. The JVM fixture uses Jackson's
   original multi-release JAR; Wasm uses the selected unchanged base entries.
-- The expanded probe Wasm is **759,071 bytes**, including XML/resources and Jackson's large-number parsers.
+- The expanded probe Wasm is **768,016 bytes**, including XML/resources and Jackson's large-number parsers.
   This is a compatibility test program, not an engine
   size estimate. No engine throughput claim is made from these tests.
 - `app` and `buildSrc` remain unchanged from upstream baseline
   `04697c74fae431ef8436a9429386957a5cb25993`. The capped runs recorded no OOM or hard memory-limit hits.
 
 Reviewable snapshots are in [results](results); bulky audit graphs and runnable probe artifacts
-are kept outside Git in `wsl-artifacts/wasm-compat/stage4`. The original stage's artifacts remain
+are kept outside Git in `wsl-artifacts/wasm-compat/stage5`. The original stage's artifacts remain
 in `wsl-artifacts/wasm-compat/audit` and `probe`; its comparison is retained in
 `results/stage1-comparison.json`. Each `results/stageN-comparison.json` compares that stage directly
 with its predecessor. `dev/teavm-audit/export_compat.py --stage N` packages reports and provenance.
@@ -188,15 +189,23 @@ The first local Node 24/Wasm GC measurement uses separate processes and a small 
 | Synthetic 2,000 entries (117,912 bytes), median parse | 3.854 ms | 4.570 ms |
 
 Output checksums match. kxml2 saves about 17.5% of the component Wasm size; these timings do not
-establish a universal speed advantage. TODO: repeat in Chromium/Worker with representative input
-distributions, measure incremental engine size and parser allocation separately from process RSS,
+establish a universal speed advantage. A follow-up in Chromium 158's dedicated Worker used the
+same archived stage-3 modules (hashes in `results/xml-browser-benchmark.json`), a fresh browser per
+backend and seven warm samples. Median times were **0.122 / 0.153 ms** for the real resource and
+**2.700 / 4.260 ms** for the large synthetic document (JDK / kxml2). Checksums matched, but kxml2
+was slower in this local Worker series. The current default prioritizes its smaller component;
+it is not a speed optimization. These small local series do not establish engine-wide performance.
+TODO: repeat with representative recognition inputs, measure incremental engine size and parser allocation separately from process RSS,
 and reconsider if needed. `results/xml-benchmark.json` records first-load/cold/warm timings and
 sampling details. Build with `buildXmlBenchmark -PxmlBackend=jdk` and `-PxmlBackend=kxml2`, then run
 `node wasm-compat/tools/bench-xml.cjs build/wasm-compat/xml-bench-jdk build/wasm-compat/xml-bench-kxml2`
 through the capped launcher. Build-time conversion of fixed resources and a browser DOM/SAX
 adapter remain options; DOMParser itself is Window-only, so a Worker path needs a separate plan.
+For the Worker comparison, use `node wasm-compat/tools/bench-xml-browser.cjs <jdk-directory>
+<kxml2-directory>` through the same launcher. The reported component sizes above refer to the
+archived stage-3 modules, not a fresh build of later compatibility layers.
 
-The remaining 545 diagnostics include reflection/classloading, thread APIs, file/XML operations,
+The remaining 544 diagnostics include reflection/classloading, thread APIs, file/XML operations,
 OCR/native dependencies and transitive UI code. The three diagnostics located directly in selected
 engine sources concern `Class.getProtectionDomain`, `Thread.getThreadGroup` and a `Thread`
 constructor taking a group.

@@ -44,6 +44,8 @@ final class StandardApiPatches {
                 add(cls, "asIterator", "asIterator", false, object("java.util.Iterator")); break;
             case "java.util.ServiceLoader":
                 add(cls, "findFirst", "findFirst", false, object("java.util.Optional")); break;
+            case "java.util.stream.Stream":
+                add(cls, "ofNullable", "nullableStream", true, object("java.lang.Object"), object("java.util.stream.Stream")); break;
             case "java.util.Spliterators":
                 add(cls, "emptySpliterator", "emptySpliterator", true, object("java.util.Spliterator")); break;
             case "java.util.Collections":
