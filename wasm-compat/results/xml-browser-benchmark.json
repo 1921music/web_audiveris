@@ -1,0 +1,103 @@
+{
+  "scope": "XML component only; local Chromium dedicated Worker; fresh browsers, sequential backends; no engine throughput or allocation claim",
+  "reports": [
+    {
+      "backend": "jdk",
+      "browser": "158.0.8127.18",
+      "wasmBytes": 160377,
+      "wasmGzipBytes": 56093,
+      "wasmSha256": "b6b43071d887dfcddf02da83d32bf5e9c39f3312a38b588a89989612bca0ac51",
+      "loadMs": 24.800000071525574,
+      "domParserAvailable": false,
+      "cases": [
+        {
+          "name": "ISO639-3.xml",
+          "bytes": 5162,
+          "checksum": 60895945,
+          "firstParseMs": 18.09999990463257,
+          "medianParseMs": 0.12200000047683716,
+          "minParseMs": 0.11899999976158142,
+          "maxParseMs": 0.2710000002384186,
+          "samplesMs": [
+            0.2710000002384186,
+            0.13599999904632568,
+            0.12200000047683716,
+            0.12,
+            0.12399999976158142,
+            0.11899999976158142,
+            0.12099999904632569
+          ],
+          "iterationsPerSample": 100
+        },
+        {
+          "name": "synthetic-2000-entries",
+          "bytes": 117912,
+          "checksum": -1693010787,
+          "firstParseMs": 4.200000047683716,
+          "medianParseMs": 2.7,
+          "minParseMs": 2.5200000047683715,
+          "maxParseMs": 3.560000002384186,
+          "samplesMs": [
+            2.7799999952316283,
+            2.6199999928474424,
+            2.6799999952316282,
+            3.510000002384186,
+            3.560000002384186,
+            2.7,
+            2.5200000047683715
+          ],
+          "iterationsPerSample": 10
+        }
+      ]
+    },
+    {
+      "backend": "kxml2",
+      "browser": "158.0.8127.18",
+      "wasmBytes": 132349,
+      "wasmGzipBytes": 48829,
+      "wasmSha256": "8e5ae6a273b046a84c87880365b38fbc510d0c3dcc0e1c9902cbd72fa7c8c270",
+      "loadMs": 20.300000071525574,
+      "domParserAvailable": false,
+      "cases": [
+        {
+          "name": "ISO639-3.xml",
+          "bytes": 5162,
+          "checksum": 60895945,
+          "firstParseMs": 18.600000023841858,
+          "medianParseMs": 0.15299999952316284,
+          "minParseMs": 0.13900000095367432,
+          "maxParseMs": 0.355,
+          "samplesMs": [
+            0.355,
+            0.14899999976158143,
+            0.17299999952316283,
+            0.22300000071525575,
+            0.14400000095367432,
+            0.13900000095367432,
+            0.15299999952316284
+          ],
+          "iterationsPerSample": 100
+        },
+        {
+          "name": "synthetic-2000-entries",
+          "bytes": 117912,
+          "checksum": -1693010787,
+          "firstParseMs": 5.099999904632568,
+          "medianParseMs": 4.259999990463257,
+          "minParseMs": 3.239999997615814,
+          "maxParseMs": 5.3,
+          "samplesMs": [
+            4.089999997615815,
+            4.929999995231628,
+            4.45,
+            5.3,
+            4.259999990463257,
+            3.239999997615814,
+            3.3
+          ],
+          "iterationsPerSample": 10
+        }
+      ]
+    }
+  ]
+}

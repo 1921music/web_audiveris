@@ -2,10 +2,10 @@
   "identicalOriginalRoots": true,
   "rootCount": 9001,
   "baselineDiagnostics": 1276,
-  "patchedDiagnostics": 545,
-  "diagnosticReduction": 731,
+  "patchedDiagnostics": 544,
+  "diagnosticReduction": 732,
   "baselineUniqueMessages": 336,
-  "patchedUniqueMessages": 221,
+  "patchedUniqueMessages": 220,
   "removedMessages": [
     "Field java.awt.Color.BLUE was not found",
     "Field java.awt.Color.CYAN was not found",
@@ -142,10 +142,9 @@
     "Method java.lang.VirtualThread.inheritScopedValueBindings(Ljdk/internal/vm/ThreadContainer;)V was not found",
     "Method java.lang.VirtualThread.setThreadContainer(Ljdk/internal/vm/ThreadContainer;)V was not found",
     "Method java.lang.VirtualThread.threadContainer()Ljdk/internal/vm/ThreadContainer; was not found",
-    "Method java.lang.reflect.Method.getParameters()[Ljava/lang/reflect/Parameter; was not found",
-    "Method java.util.stream.Stream.ofNullable(Ljava/lang/Object;)Ljava/util/stream/Stream; was not found"
+    "Method java.lang.reflect.Method.getParameters()[Ljava/lang/reflect/Parameter; was not found"
   ],
-  "newDiagnosticCount": 15,
+  "newDiagnosticCount": 14,
   "remainingTargetedApiMessages": [],
   "baselineByFamily": {
     "Files and streams": 54,
@@ -162,7 +161,7 @@
   },
   "patchedByFamily": {
     "Reflection and class loading": 209,
-    "Other Java runtime": 183,
+    "Other Java runtime": 182,
     "Threads and synchronization": 71,
     "Files and streams": 36,
     "Other libraries or compiler diagnostics": 20,
@@ -175,7 +174,7 @@
     "unattributed": 2
   },
   "patchedByDirectOwner": {
-    "dependency": 539,
+    "dependency": 538,
     "engine": 3,
     "unattributed": 2,
     "ui": 1

@@ -1,2 +1,1 @@
 severity	category	caller	location	message	parameters	classDecision	origin	family
-ERROR	dependency	javax.script.ScriptEngineManager.getEngineBy(Ljava/lang/String;Ljava/util/Map;Ljava/util/function/Function;)Ljavax/script/ScriptEngine;	javax/script/ScriptEngineManager.java:218	Method java.util.stream.Stream.ofNullable(Ljava/lang/Object;)Ljava/util/stream/Stream; was not found	[java.util.stream.Stream.ofNullable(Ljava/lang/Object;)Ljava/util/stream/Stream;]	external	engine-side	Other Java runtime

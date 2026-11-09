@@ -10,38 +10,38 @@
       "engine": 9001
     }
   },
-  "diagnostics": 545,
-  "uniqueMessages": 221,
+  "diagnostics": 544,
+  "uniqueMessages": 220,
   "bySeverity": {
-    "ERROR": 545
+    "ERROR": 544
   },
   "byOrigin": {
-    "engine-side": 543,
+    "engine-side": 542,
     "unattributed": 2
   },
   "byFamily": {
     "Reflection and class loading": 209,
-    "Other Java runtime": 183,
+    "Other Java runtime": 182,
     "Threads and synchronization": 71,
     "Files and streams": 36,
     "Other libraries or compiler diagnostics": 20,
     "XML and JAXB": 26
   },
   "byDirectOwner": {
-    "dependency": 539,
+    "dependency": 538,
     "engine": 3,
     "unattributed": 2,
     "ui": 1
   },
   "byClassDecision": {
-    "external": 539,
+    "external": 538,
     "boundary": 3,
     "unattributed": 2,
     "exclude": 1
   },
   "callGraph": {
-    "callers": 80066,
-    "edges": 1836507
+    "callers": 80080,
+    "edges": 1836858
   },
   "apis": [
     {
@@ -2643,17 +2643,6 @@
       ],
       "examples": [
         "java.util.concurrent.ForkJoinPool.registerWorker(Ljava/util/concurrent/ForkJoinPool$WorkQueue;)V @ java/util/concurrent/ForkJoinPool.java:1784"
-      ]
-    },
-    {
-      "family": "Other Java runtime",
-      "message": "Method java.util.stream.Stream.ofNullable(Ljava/lang/Object;)Ljava/util/stream/Stream; was not found",
-      "count": 1,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "javax.script.ScriptEngineManager.getEngineBy(Ljava/lang/String;Ljava/util/Map;Ljava/util/function/Function;)Ljavax/script/ScriptEngine; @ javax/script/ScriptEngineManager.java:218"
       ]
     },
     {

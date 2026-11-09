@@ -1,0 +1,43 @@
+{
+  "identicalOriginalRoots": true,
+  "rootCount": 9001,
+  "baselineDiagnostics": 545,
+  "patchedDiagnostics": 544,
+  "diagnosticReduction": 1,
+  "baselineUniqueMessages": 221,
+  "patchedUniqueMessages": 220,
+  "removedMessages": [
+    "Method java.util.stream.Stream.ofNullable(Ljava/lang/Object;)Ljava/util/stream/Stream; was not found"
+  ],
+  "newMessages": [],
+  "newDiagnosticCount": 0,
+  "remainingTargetedApiMessages": [],
+  "baselineByFamily": {
+    "Reflection and class loading": 209,
+    "Other Java runtime": 183,
+    "Threads and synchronization": 71,
+    "Files and streams": 36,
+    "Other libraries or compiler diagnostics": 20,
+    "XML and JAXB": 26
+  },
+  "patchedByFamily": {
+    "Reflection and class loading": 209,
+    "Other Java runtime": 182,
+    "Threads and synchronization": 71,
+    "Files and streams": 36,
+    "Other libraries or compiler diagnostics": 20,
+    "XML and JAXB": 26
+  },
+  "baselineByDirectOwner": {
+    "dependency": 539,
+    "engine": 3,
+    "unattributed": 2,
+    "ui": 1
+  },
+  "patchedByDirectOwner": {
+    "dependency": 538,
+    "engine": 3,
+    "unattributed": 2,
+    "ui": 1
+  }
+}
