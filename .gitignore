@@ -71,6 +71,10 @@ Thumb.db
 /build/
 /.gradle/
 
+# Local WSL disks/downloads and explicitly exported build artifacts
+/WSL_image/
+/wsl-artifacts/
+
 # Eclipse added files
 .classpath
 .project

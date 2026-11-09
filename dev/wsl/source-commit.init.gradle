@@ -1,0 +1,14 @@
+// Build the disposable mirror without copying or exposing the Windows .git directory.
+def revision = System.getenv('AUDIVERIS_SOURCE_COMMIT')
+if (revision == null || !(revision ==~ /[0-9a-f]{40,64}(-dirty)?/)) {
+    throw new GradleException('AUDIVERIS_SOURCE_COMMIT is missing or invalid')
+}
+
+gradle.projectsEvaluated {
+    def app = rootProject.findProject(':app')
+    if (app != null) {
+        app.tasks.named('getCommit', Exec).configure {
+            commandLine 'printf', '%s', revision
+        }
+    }
+}

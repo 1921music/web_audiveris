@@ -1,0 +1,5 @@
+# Scripts are invoked directly by Linux bash, including from the Windows checkout.
+/gradlew text eol=lf
+dev/wsl/*.sh text eol=lf
+dev/wsl/*.gradle text eol=lf
+dev/wsl/*.ps1 text eol=crlf
