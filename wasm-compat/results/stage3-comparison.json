@@ -1,0 +1,64 @@
+{
+  "identicalOriginalRoots": true,
+  "rootCount": 9001,
+  "baselineDiagnostics": 702,
+  "patchedDiagnostics": 609,
+  "diagnosticReduction": 93,
+  "baselineUniqueMessages": 254,
+  "patchedUniqueMessages": 240,
+  "removedMessages": [
+    "Method java.lang.Class.getResource(Ljava/lang/String;)Ljava/net/URL; was not found",
+    "Method java.lang.ClassLoader.getResource(Ljava/lang/String;)Ljava/net/URL; was not found",
+    "Method java.lang.ClassLoader.getResources(Ljava/lang/String;)Ljava/util/Enumeration; was not found",
+    "Method java.lang.ClassLoader.getSystemResource(Ljava/lang/String;)Ljava/net/URL; was not found",
+    "Method java.lang.ClassLoader.getSystemResources(Ljava/lang/String;)Ljava/util/Enumeration; was not found",
+    "Method java.lang.ClassLoader.loadClass(Ljava/lang/String;)Ljava/lang/Class; was not found",
+    "Method java.lang.ref.Reference.reachabilityFence(Ljava/lang/Object;)V was not found",
+    "Method java.lang.reflect.Method.isDefault()Z was not found",
+    "Method java.net.URLClassLoader.getResource(Ljava/lang/String;)Ljava/net/URL; was not found",
+    "Method java.util.Collections.emptySortedMap()Ljava/util/SortedMap; was not found",
+    "Method java.util.Properties.loadFromXML(Ljava/io/InputStream;)V was not found",
+    "Method java.util.Properties.store(Ljava/io/Writer;Ljava/lang/String;)V was not found",
+    "Method java.util.UUID.<init>(JJ)V was not found",
+    "Method java.util.UUID.getLeastSignificantBits()J was not found",
+    "Method java.util.UUID.getMostSignificantBits()J was not found"
+  ],
+  "newMessages": [
+    "Method java.lang.reflect.Method.getParameters()[Ljava/lang/reflect/Parameter; was not found"
+  ],
+  "newDiagnosticCount": 1,
+  "remainingTargetedApiMessages": [],
+  "baselineByFamily": {
+    "Other Java runtime": 253,
+    "Reflection and class loading": 292,
+    "Threads and synchronization": 72,
+    "Files and streams": 36,
+    "Other libraries or compiler diagnostics": 20,
+    "OCR and native bindings": 1,
+    "Desktop UI": 1,
+    "Network": 1,
+    "XML and JAXB": 26
+  },
+  "patchedByFamily": {
+    "Reflection and class loading": 241,
+    "Other Java runtime": 210,
+    "Threads and synchronization": 74,
+    "Files and streams": 36,
+    "Other libraries or compiler diagnostics": 20,
+    "OCR and native bindings": 1,
+    "Desktop UI": 1,
+    "XML and JAXB": 26
+  },
+  "baselineByDirectOwner": {
+    "engine": 5,
+    "dependency": 693,
+    "unattributed": 2,
+    "ui": 2
+  },
+  "patchedByDirectOwner": {
+    "dependency": 603,
+    "engine": 3,
+    "unattributed": 2,
+    "ui": 1
+  }
+}

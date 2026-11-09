@@ -7,5 +7,10 @@
   "matchedByteCases": 640,
   "matchedNumberCases": 322,
   "dumpStack": true,
-  "collections": true
+  "collections": true,
+  "utilities": true,
+  "properties": true,
+  "resources": true,
+  "gcFence": true,
+  "webWorker": true
 }

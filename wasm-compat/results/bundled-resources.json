@@ -1,0 +1,22 @@
+{
+  "org/audiveris/wasm/compat/test/resource.txt": {
+    "source": "wasm-compat/src/test/resources/resource.txt",
+    "bytes": 30,
+    "sha256": "1fa97e0318e2d68c0ad1b57628d162e64ce62cf75a232227b55c4a0cbb64cc86"
+  },
+  "res/ISO639-3.xml": {
+    "source": "app/res/ISO639-3.xml",
+    "bytes": 5162,
+    "sha256": "d5c5f6d5d8be3755f5828a2f97eb1b5e95086c1263832a6483d308d477a4a61a"
+  },
+  "res/alias-patterns.xml": {
+    "source": "app/res/alias-patterns.xml",
+    "bytes": 471,
+    "sha256": "50168da367fbec922716ec948132a94265bee60e7a03e4206267e6721fbc7e9d"
+  },
+  "res/drum-set.xml": {
+    "source": "app/res/drum-set.xml",
+    "bytes": 7933,
+    "sha256": "6ea4ef15fbf560a5fa80028d6ae5196428abc949b49324158c864ba8f4708ff5"
+  }
+}

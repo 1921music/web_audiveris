@@ -1,0 +1,69 @@
+{
+  "scope": "XML component only; local Node Wasm GC, separate processes, sequential runs; no engine throughput claim",
+  "reports": [
+    {
+      "backend": "jdk",
+      "node": "v24.22.2",
+      "wasmBytes": 160377,
+      "wasmGzipBytes": 56093,
+      "loadMs": 44.549802,
+      "peakProcessRssKiB": 121564,
+      "cases": [
+        {
+          "name": "ISO639-3.xml",
+          "bytes": 5162,
+          "checksum": 60895945,
+          "firstParseMs": 15.8977,
+          "medianParseMs": 0.1537096599999998,
+          "minParseMs": 0.1371664899999999,
+          "maxParseMs": 0.24513402999999998,
+          "samples": 7,
+          "iterationsPerSample": 100
+        },
+        {
+          "name": "synthetic-2000-entries",
+          "bytes": 117912,
+          "checksum": -1693010787,
+          "firstParseMs": 5.956458999999995,
+          "medianParseMs": 3.853591499999999,
+          "minParseMs": 2.813897499999996,
+          "maxParseMs": 8.092132200000004,
+          "samples": 7,
+          "iterationsPerSample": 10
+        }
+      ]
+    },
+    {
+      "backend": "kxml2",
+      "node": "v24.22.2",
+      "wasmBytes": 132349,
+      "wasmGzipBytes": 48829,
+      "loadMs": 48.687741,
+      "peakProcessRssKiB": 167068,
+      "cases": [
+        {
+          "name": "ISO639-3.xml",
+          "bytes": 5162,
+          "checksum": 60895945,
+          "firstParseMs": 15.431602000000012,
+          "medianParseMs": 0.14130032,
+          "minParseMs": 0.13587121999999993,
+          "maxParseMs": 0.22205128000000002,
+          "samples": 7,
+          "iterationsPerSample": 100
+        },
+        {
+          "name": "synthetic-2000-entries",
+          "bytes": 117912,
+          "checksum": -1693010787,
+          "firstParseMs": 5.371639000000016,
+          "medianParseMs": 4.570200699999998,
+          "minParseMs": 3.3610753000000044,
+          "maxParseMs": 8.565563400000002,
+          "samples": 7,
+          "iterationsPerSample": 10
+        }
+      ]
+    }
+  ]
+}

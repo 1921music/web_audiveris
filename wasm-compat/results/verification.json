@@ -18,5 +18,12 @@
   "matchedNumberCases": 322,
   "maxError": 0,
   "dumpStack": true,
-  "wasmBytes": 535024
+  "utilities": true,
+  "properties": true,
+  "resources": true,
+  "gcFence": {
+    "rootGlobalEmitted": true,
+    "storeAndClearEmitted": true
+  },
+  "wasmBytes": 740088
 }

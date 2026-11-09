@@ -2,10 +2,10 @@
   "identicalOriginalRoots": true,
   "rootCount": 9001,
   "baselineDiagnostics": 1276,
-  "patchedDiagnostics": 702,
-  "diagnosticReduction": 574,
+  "patchedDiagnostics": 609,
+  "diagnosticReduction": 667,
   "baselineUniqueMessages": 336,
-  "patchedUniqueMessages": 254,
+  "patchedUniqueMessages": 240,
   "removedMessages": [
     "Field java.awt.Color.BLUE was not found",
     "Field java.awt.Color.CYAN was not found",
@@ -65,6 +65,12 @@
     "Method java.lang.Class.descriptorString()Ljava/lang/String; was not found",
     "Method java.lang.Class.forPrimitiveName(Ljava/lang/String;)Ljava/lang/Class; was not found",
     "Method java.lang.Class.getPackageName()Ljava/lang/String; was not found",
+    "Method java.lang.Class.getResource(Ljava/lang/String;)Ljava/net/URL; was not found",
+    "Method java.lang.ClassLoader.getResource(Ljava/lang/String;)Ljava/net/URL; was not found",
+    "Method java.lang.ClassLoader.getResources(Ljava/lang/String;)Ljava/util/Enumeration; was not found",
+    "Method java.lang.ClassLoader.getSystemResource(Ljava/lang/String;)Ljava/net/URL; was not found",
+    "Method java.lang.ClassLoader.getSystemResources(Ljava/lang/String;)Ljava/util/Enumeration; was not found",
+    "Method java.lang.ClassLoader.loadClass(Ljava/lang/String;)Ljava/lang/Class; was not found",
     "Method java.lang.Integer.parseUnsignedInt(Ljava/lang/String;)I was not found",
     "Method java.lang.Math.fma(DDD)D was not found",
     "Method java.lang.Math.unsignedMultiplyHigh(JJ)J was not found",
@@ -85,16 +91,25 @@
     "Method java.lang.invoke.VarHandle.set([BII)V was not found",
     "Method java.lang.invoke.VarHandle.set([BIJ)V was not found",
     "Method java.lang.invoke.VarHandle.set([BIS)V was not found",
+    "Method java.lang.ref.Reference.reachabilityFence(Ljava/lang/Object;)V was not found",
+    "Method java.lang.reflect.Method.isDefault()Z was not found",
+    "Method java.net.URLClassLoader.getResource(Ljava/lang/String;)Ljava/net/URL; was not found",
     "Method java.net.URLConnection.getContentLengthLong()J was not found",
     "Method java.nio.charset.Charset.isSupported(Ljava/lang/String;)Z was not found",
     "Method java.util.Arrays.compare([B[B)I was not found",
+    "Method java.util.Collections.emptySortedMap()Ljava/util/SortedMap; was not found",
     "Method java.util.Collections.emptySortedSet()Ljava/util/SortedSet; was not found",
     "Method java.util.Collections.singletonSpliterator(Ljava/lang/Object;)Ljava/util/Spliterator; was not found",
     "Method java.util.Collections.unmodifiableSortedSet(Ljava/util/SortedSet;)Ljava/util/SortedSet; was not found",
     "Method java.util.Date.from(Ljava/time/Instant;)Ljava/util/Date; was not found",
     "Method java.util.Enumeration.asIterator()Ljava/util/Iterator; was not found",
+    "Method java.util.Properties.loadFromXML(Ljava/io/InputStream;)V was not found",
+    "Method java.util.Properties.store(Ljava/io/Writer;Ljava/lang/String;)V was not found",
     "Method java.util.ServiceLoader.findFirst()Ljava/util/Optional; was not found",
     "Method java.util.Spliterators.emptySpliterator()Ljava/util/Spliterator; was not found",
+    "Method java.util.UUID.<init>(JJ)V was not found",
+    "Method java.util.UUID.getLeastSignificantBits()J was not found",
+    "Method java.util.UUID.getMostSignificantBits()J was not found",
     "Method java.util.concurrent.atomic.AtomicLong.compareAndExchange(JJ)J was not found",
     "Method javax.swing.plaf.ColorUIResource.brighter()Ljava/awt/Color; was not found"
   ],
@@ -106,9 +121,10 @@
     "Method java.lang.Thread.virtualThreadGroup()Ljava/lang/ThreadGroup; was not found",
     "Method java.lang.VirtualThread.inheritScopedValueBindings(Ljdk/internal/vm/ThreadContainer;)V was not found",
     "Method java.lang.VirtualThread.setThreadContainer(Ljdk/internal/vm/ThreadContainer;)V was not found",
-    "Method java.lang.VirtualThread.threadContainer()Ljdk/internal/vm/ThreadContainer; was not found"
+    "Method java.lang.VirtualThread.threadContainer()Ljdk/internal/vm/ThreadContainer; was not found",
+    "Method java.lang.reflect.Method.getParameters()[Ljava/lang/reflect/Parameter; was not found"
   ],
-  "newDiagnosticCount": 13,
+  "newDiagnosticCount": 14,
   "remainingTargetedApiMessages": [],
   "baselineByFamily": {
     "Files and streams": 54,
@@ -124,14 +140,13 @@
     "XML and JAXB": 26
   },
   "patchedByFamily": {
-    "Other Java runtime": 253,
-    "Reflection and class loading": 292,
-    "Threads and synchronization": 72,
+    "Reflection and class loading": 241,
+    "Other Java runtime": 210,
+    "Threads and synchronization": 74,
     "Files and streams": 36,
     "Other libraries or compiler diagnostics": 20,
     "OCR and native bindings": 1,
     "Desktop UI": 1,
-    "Network": 1,
     "XML and JAXB": 26
   },
   "baselineByDirectOwner": {
@@ -141,9 +156,9 @@
     "unattributed": 2
   },
   "patchedByDirectOwner": {
-    "engine": 5,
-    "dependency": 693,
+    "dependency": 603,
+    "engine": 3,
     "unattributed": 2,
-    "ui": 2
+    "ui": 1
   }
 }

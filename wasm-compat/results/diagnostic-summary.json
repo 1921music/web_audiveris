@@ -10,59 +10,42 @@
       "engine": 9001
     }
   },
-  "diagnostics": 702,
-  "uniqueMessages": 254,
+  "diagnostics": 609,
+  "uniqueMessages": 240,
   "bySeverity": {
-    "ERROR": 702
+    "ERROR": 609
   },
   "byOrigin": {
-    "engine-side": 700,
+    "engine-side": 607,
     "unattributed": 2
   },
   "byFamily": {
-    "Other Java runtime": 253,
-    "Reflection and class loading": 292,
-    "Threads and synchronization": 72,
+    "Reflection and class loading": 241,
+    "Other Java runtime": 210,
+    "Threads and synchronization": 74,
     "Files and streams": 36,
     "Other libraries or compiler diagnostics": 20,
     "OCR and native bindings": 1,
     "Desktop UI": 1,
-    "Network": 1,
     "XML and JAXB": 26
   },
   "byDirectOwner": {
-    "engine": 5,
-    "dependency": 693,
+    "dependency": 603,
+    "engine": 3,
     "unattributed": 2,
-    "ui": 2
+    "ui": 1
   },
   "byClassDecision": {
-    "keep": 1,
-    "boundary": 4,
-    "external": 693,
+    "external": 603,
+    "boundary": 3,
     "unattributed": 2,
-    "exclude": 2
+    "exclude": 1
   },
   "callGraph": {
-    "callers": 82100,
-    "edges": 1987787
+    "callers": 82232,
+    "edges": 1998075
   },
   "apis": [
-    {
-      "family": "Other Java runtime",
-      "message": "Method java.lang.ref.Reference.reachabilityFence(Ljava/lang/Object;)V was not found",
-      "count": 33,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "jdk.internal.net.http.HttpClientFacade.send(Ljava/net/http/HttpRequest;Ljava/net/http/HttpResponse$BodyHandler;)Ljava/net/http/HttpResponse; @ jdk/internal/net/http/HttpClientFacade.java:135",
-        "java.lang.ScopedValue$Carrier.runWith(Ljava/lang/ScopedValue$Snapshot;Ljava/lang/Runnable;)V @ java/lang/ScopedValue.java:484",
-        "jdk.internal.misc.ScopedMemoryAccess.copyMemoryInternal(Ljdk/internal/foreign/MemorySessionImpl;Ljdk/internal/foreign/MemorySessionImpl;Ljava/lang/Object;JLjava/lang/Object;JJ)V @ jdk/internal/misc/ScopedMemoryAccess.java:150",
-        "jdk.internal.misc.ScopedMemoryAccess.copySwapMemoryInternal(Ljdk/internal/foreign/MemorySessionImpl;Ljdk/internal/foreign/MemorySessionImpl;Ljava/lang/Object;JLjava/lang/Object;JJJ)V @ jdk/internal/misc/ScopedMemoryAccess.java:181",
-        "java.nio.DirectByteBuffer.getInt()I @ java/nio/DirectByteBuffer.java:767"
-      ]
-    },
     {
       "family": "Reflection and class loading",
       "message": "Method java.lang.invoke.MethodHandles.lookup()Ljava/lang/invoke/MethodHandles$Lookup; was not found",
@@ -91,21 +74,6 @@
         "org.glassfish.jaxb.runtime.v2.runtime.output.FastInfosetStreamWriterOutput.attribute(ILjava/lang/String;Ljava/lang/String;)V @ org/glassfish/jaxb/runtime/v2/runtime/output/FastInfosetStreamWriterOutput.java:433",
         "org.glassfish.jaxb.runtime.v2.runtime.output.FastInfosetStreamWriterOutput.attribute(ILjava/lang/String;Ljava/lang/String;)V @ org/glassfish/jaxb/runtime/v2/runtime/output/FastInfosetStreamWriterOutput.java:439",
         "org.glassfish.jaxb.runtime.v2.runtime.output.FastInfosetStreamWriterOutput.attribute(ILjava/lang/String;Ljava/lang/String;)V @ org/glassfish/jaxb/runtime/v2/runtime/output/FastInfosetStreamWriterOutput.java:437"
-      ]
-    },
-    {
-      "family": "Reflection and class loading",
-      "message": "Method java.lang.ClassLoader.loadClass(Ljava/lang/String;)Ljava/lang/Class; was not found",
-      "count": 24,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "javax.xml.bind.ServiceLoaderUtil.nullSafeLoadClass(Ljava/lang/String;Ljava/lang/ClassLoader;)Ljava/lang/Class; @ javax/xml/bind/ServiceLoaderUtil.java:122",
-        "org.slf4j.LoggerFactory.loadExplicitlySpecified(Ljava/lang/ClassLoader;)Lorg/slf4j/spi/SLF4JServiceProvider; @ org/slf4j/LoggerFactory.java:241",
-        "jakarta.xml.bind.ServiceLoaderUtil.nullSafeLoadClass(Ljava/lang/String;Ljava/lang/ClassLoader;)Ljava/lang/Class; @ jakarta/xml/bind/ServiceLoaderUtil.java:113",
-        "javax.swing.JEditorPane.createEditorKitForContentType(Ljava/lang/String;)Ljavax/swing/text/EditorKit; @ javax/swing/JEditorPane.java:1239",
-        "ch.qos.logback.core.ConsoleAppender.wrapWithJansi(Ljava/io/OutputStream;)Ljava/io/OutputStream; @ ch/qos/logback/core/ConsoleAppender.java:101"
       ]
     },
     {
@@ -161,11 +129,11 @@
         "engine-side"
       ],
       "examples": [
+        "java.nio.DirectByteBuffer.address()J @ java/nio/DirectByteBuffer.java:323",
         "java.nio.DirectByteBuffer.asCharBuffer()Ljava/nio/CharBuffer; @ java/nio/DirectByteBuffer.java:622",
         "java.nio.DirectByteBuffer.asCharBuffer()Ljava/nio/CharBuffer; @ java/nio/DirectByteBuffer.java:630",
         "java.nio.DirectByteBuffer.asCharBuffer()Ljava/nio/CharBuffer; @ java/nio/DirectByteBuffer.java:624",
-        "java.nio.DirectByteBuffer.asIntBuffer()Ljava/nio/IntBuffer; @ java/nio/DirectByteBuffer.java:818",
-        "java.nio.DirectByteBuffer.asIntBuffer()Ljava/nio/IntBuffer; @ java/nio/DirectByteBuffer.java:826"
+        "java.nio.DirectByteBuffer.asIntBuffer()Ljava/nio/IntBuffer; @ java/nio/DirectByteBuffer.java:818"
       ]
     },
     {
@@ -181,21 +149,6 @@
         "java.nio.DirectByteBufferR.asCharBuffer()Ljava/nio/CharBuffer; @ java/nio/DirectByteBufferR.java:624",
         "java.nio.DirectByteBufferR.asIntBuffer()Ljava/nio/IntBuffer; @ java/nio/DirectByteBufferR.java:818",
         "java.nio.DirectByteBufferR.asIntBuffer()Ljava/nio/IntBuffer; @ java/nio/DirectByteBufferR.java:826"
-      ]
-    },
-    {
-      "family": "Reflection and class loading",
-      "message": "Method java.lang.ClassLoader.getResource(Ljava/lang/String;)Ljava/net/URL; was not found",
-      "count": 13,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "org.audiveris.omr.WellKnowns.<clinit>()V @ org/audiveris/omr/WellKnowns.java:141",
-        "javax.xml.bind.ContextFinder.handleClassCastException(Ljava/lang/Class;Ljava/lang/Class;)Ljavax/xml/bind/JAXBException; @ javax/xml/bind/ContextFinder.java:160",
-        "javax.xml.bind.ContextFinder.which(Ljava/lang/Class;Ljava/lang/ClassLoader;)Ljava/net/URL; @ javax/xml/bind/ContextFinder.java:541",
-        "jakarta.xml.bind.ContextFinder.handleClassCastException(Ljava/lang/Class;Ljava/lang/Class;)Ljakarta/xml/bind/JAXBException; @ jakarta/xml/bind/ContextFinder.java:125",
-        "jakarta.xml.bind.ContextFinder.which(Ljava/lang/Class;Ljava/lang/ClassLoader;)Ljava/net/URL; @ jakarta/xml/bind/ContextFinder.java:430"
       ]
     },
     {
@@ -380,36 +333,6 @@
     },
     {
       "family": "Reflection and class loading",
-      "message": "Method java.lang.Class.getResource(Ljava/lang/String;)Ljava/net/URL; was not found",
-      "count": 5,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "javax.xml.bind.ContextFinder.getResourceUrl(Ljava/lang/Class;Ljava/lang/String;)Ljava/net/URL; @ javax/xml/bind/ContextFinder.java:517",
-        "org.audiveris.omr.sig.ui.ShapeBoard.buildTrashCan()Ljavax/swing/JComponent; @ org/audiveris/omr/sig/ui/ShapeBoard.java:478",
-        "org.bytedeco.javacpp.Loader.findResources(Ljava/lang/Class;Ljava/lang/String;I)[Ljava/net/URL; @ org/bytedeco/javacpp/Loader.java:901",
-        "com.jgoodies.looks.common.ShadowPopupBorder.<clinit>()V @ com/jgoodies/looks/common/ShadowPopupBorder.java:68",
-        "sun.print.ServiceDialog.getImageResource(Ljava/lang/String;)Ljava/net/URL; @ sun/print/ServiceDialog.java:530"
-      ]
-    },
-    {
-      "family": "Reflection and class loading",
-      "message": "Method java.lang.ClassLoader.getResources(Ljava/lang/String;)Ljava/util/Enumeration; was not found",
-      "count": 5,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "org.slf4j.LoggerFactory.findPossibleStaticLoggerBinderPathSet()Ljava/util/Set; @ org/slf4j/LoggerFactory.java:284",
-        "org.bytedeco.javacpp.Loader.findResources(Ljava/lang/Class;Ljava/lang/String;I)[Ljava/net/URL; @ org/bytedeco/javacpp/Loader.java:921",
-        "org.bytedeco.javacpp.Loader.findResources(Ljava/lang/Class;Ljava/lang/String;I)[Ljava/net/URL; @ org/bytedeco/javacpp/Loader.java:933",
-        "org.apache.commons.logging.LogFactory.lambda$getResources$17(Ljava/lang/ClassLoader;Ljava/lang/String;)Ljava/util/Enumeration; @ org/apache/commons/logging/LogFactory.java:988",
-        "jakarta.activation.SecuritySupport$3.run()[Ljava/net/URL; @ jakarta/activation/SecuritySupport.java:58"
-      ]
-    },
-    {
-      "family": "Reflection and class loading",
       "message": "Method java.lang.ClassLoader.registerAsParallelCapable()Z was not found",
       "count": 5,
       "origins": [
@@ -476,11 +399,11 @@
         "engine-side"
       ],
       "examples": [
+        "java.nio.DirectByteBuffer.address()J @ java/nio/DirectByteBuffer.java:316",
         "java.nio.DirectByteBuffer.get()B @ java/nio/DirectByteBuffer.java:332",
         "java.nio.DirectByteBuffer.get(I)B @ java/nio/DirectByteBuffer.java:340",
         "java.nio.DirectByteBuffer.put(B)Ljava/nio/ByteBuffer; @ java/nio/DirectByteBuffer.java:360",
-        "java.nio.DirectByteBuffer.compact()Ljava/nio/MappedByteBuffer; @ java/nio/DirectByteBuffer.java:391",
-        "java.nio.DirectByteBuffer.address()J @ java/nio/DirectByteBuffer.java:316"
+        "java.nio.DirectByteBuffer.compact()Ljava/nio/MappedByteBuffer; @ java/nio/DirectByteBuffer.java:391"
       ]
     },
     {
@@ -552,6 +475,19 @@
         "com.sun.jna.Native.loadNativeDispatchLibrary()V @ com/sun/jna/Native.java:988",
         "com.sun.jna.Native.loadNativeDispatchLibraryFromClasspath()V @ com/sun/jna/Native.java:1041",
         "org.bytedeco.javacpp.Loader.loadLibrary(Ljava/lang/Class;[Ljava/net/URL;Ljava/lang/String;[Ljava/lang/String;)Ljava/lang/String; @ org/bytedeco/javacpp/Loader.java:1779"
+      ]
+    },
+    {
+      "family": "Threads and synchronization",
+      "message": "Method java.lang.Thread.setScopedValueBindings(Ljava/lang/Object;)V was not found",
+      "count": 4,
+      "origins": [
+        "engine-side"
+      ],
+      "examples": [
+        "java.lang.ScopedValue.scopedValueBindings()Ljava/lang/ScopedValue$Snapshot; @ java/lang/ScopedValue.java:686",
+        "java.lang.ScopedValue$Carrier.runWith(Ljava/lang/ScopedValue$Snapshot;Ljava/lang/Runnable;)V @ java/lang/ScopedValue.java:480",
+        "java.lang.ScopedValue$Carrier.runWith(Ljava/lang/ScopedValue$Snapshot;Ljava/lang/Runnable;)V @ java/lang/ScopedValue.java:485"
       ]
     },
     {
@@ -802,19 +738,6 @@
       ]
     },
     {
-      "family": "Reflection and class loading",
-      "message": "Method java.lang.ClassLoader.getSystemResources(Ljava/lang/String;)Ljava/util/Enumeration; was not found",
-      "count": 3,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "org.slf4j.LoggerFactory.findPossibleStaticLoggerBinderPathSet()Ljava/util/Set; @ org/slf4j/LoggerFactory.java:282",
-        "org.apache.commons.logging.LogFactory.lambda$getResources$17(Ljava/lang/ClassLoader;Ljava/lang/String;)Ljava/util/Enumeration; @ org/apache/commons/logging/LogFactory.java:990",
-        "jakarta.activation.SecuritySupport$4.run()[Ljava/net/URL; @ jakarta/activation/SecuritySupport.java:81"
-      ]
-    },
-    {
       "family": "Other Java runtime",
       "message": "Method java.lang.Runtime.maxMemory()J was not found",
       "count": 3,
@@ -916,32 +839,6 @@
         "java.nio.DirectByteBuffer.putShort(S)Ljava/nio/ByteBuffer; @ java/nio/DirectByteBuffer.java:697",
         "java.nio.DirectByteBuffer.putInt(I)Ljava/nio/ByteBuffer; @ java/nio/DirectByteBuffer.java:795",
         "java.nio.DirectByteBuffer.putLong(J)Ljava/nio/ByteBuffer; @ java/nio/DirectByteBuffer.java:893"
-      ]
-    },
-    {
-      "family": "Other Java runtime",
-      "message": "Method java.util.UUID.<init>(JJ)V was not found",
-      "count": 3,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "com.fasterxml.jackson.databind.deser.std.UUIDDeserializer.getEmptyValue(Lcom/fasterxml/jackson/databind/DeserializationContext;)Ljava/lang/Object; @ com/fasterxml/jackson/databind/deser/std/UUIDDeserializer.java:30",
-        "com.fasterxml.jackson.databind.deser.std.UUIDDeserializer._deserialize(Ljava/lang/String;Lcom/fasterxml/jackson/databind/DeserializationContext;)Ljava/util/UUID; @ com/fasterxml/jackson/databind/deser/std/UUIDDeserializer.java:76",
-        "com.fasterxml.jackson.databind.deser.std.UUIDDeserializer._fromBytes([BLcom/fasterxml/jackson/databind/DeserializationContext;)Ljava/util/UUID; @ com/fasterxml/jackson/databind/deser/std/UUIDDeserializer.java:138"
-      ]
-    },
-    {
-      "family": "Other Java runtime",
-      "message": "Method java.util.UUID.getMostSignificantBits()J was not found",
-      "count": 3,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "com.fasterxml.jackson.databind.ser.std.UUIDSerializer.serialize(Ljava/util/UUID;Lcom/fasterxml/jackson/core/JsonGenerator;Lcom/fasterxml/jackson/databind/SerializerProvider;)V @ com/fasterxml/jackson/databind/ser/std/UUIDSerializer.java:94",
-        "com.fasterxml.jackson.databind.ser.std.UUIDSerializer._asBytes(Ljava/util/UUID;)[B @ com/fasterxml/jackson/databind/ser/std/UUIDSerializer.java:151",
-        "com.fasterxml.jackson.databind.ser.std.UUIDSerializer.isEmpty(Lcom/fasterxml/jackson/databind/SerializerProvider;Ljava/util/UUID;)Z @ com/fasterxml/jackson/databind/ser/std/UUIDSerializer.java:54"
       ]
     },
     {
@@ -1076,18 +973,6 @@
       "examples": [
         "java.util.concurrent.ForkJoinWorkerThread.<init>(Ljava/lang/ThreadGroup;Ljava/util/concurrent/ForkJoinPool;ZZ)V @ java/util/concurrent/ForkJoinWorkerThread.java:84",
         "ij.plugin.JavaScriptEvaluator.run()V @ ij/plugin/JavaScriptEvaluator.java:47"
-      ]
-    },
-    {
-      "family": "Threads and synchronization",
-      "message": "Method java.lang.Thread.setScopedValueBindings(Ljava/lang/Object;)V was not found",
-      "count": 2,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "java.lang.ScopedValue.scopedValueBindings()Ljava/lang/ScopedValue$Snapshot; @ java/lang/ScopedValue.java:686",
-        "java.lang.ScopedValue$Carrier.runWith(Ljava/lang/ScopedValue$Snapshot;Ljava/lang/Runnable;)V @ java/lang/ScopedValue.java:480"
       ]
     },
     {
@@ -1790,17 +1675,6 @@
       ],
       "examples": [
         "jdk.internal.misc.VM.latestUserDefinedLoader()Ljava/lang/ClassLoader; @ jdk/internal/misc/VM.java:354"
-      ]
-    },
-    {
-      "family": "Reflection and class loading",
-      "message": "Method java.lang.ClassLoader.getSystemResource(Ljava/lang/String;)Ljava/net/URL; was not found",
-      "count": 1,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "org.apache.commons.logging.impl.LogFactoryImpl.createLogFromClass(Ljava/lang/String;Ljava/lang/String;Z)Lorg/apache/commons/logging/Log; @ org/apache/commons/logging/impl/LogFactoryImpl.java:354"
       ]
     },
     {
@@ -2751,24 +2625,13 @@
     },
     {
       "family": "Reflection and class loading",
-      "message": "Method java.lang.reflect.Method.isDefault()Z was not found",
+      "message": "Method java.lang.reflect.Method.getParameters()[Ljava/lang/reflect/Parameter; was not found",
       "count": 1,
       "origins": [
         "engine-side"
       ],
       "examples": [
-        "com.sun.beans.introspect.PropertyInfo.initialize()Z @ com/sun/beans/introspect/PropertyInfo.java:81"
-      ]
-    },
-    {
-      "family": "Network",
-      "message": "Method java.net.URLClassLoader.getResource(Ljava/lang/String;)Ljava/net/URL; was not found",
-      "count": 1,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "java.net.URLClassLoader.getResourceAsStream(Ljava/lang/String;)Ljava/io/InputStream; @ java/net/URLClassLoader.java:244"
+        "ch.qos.logback.core.ConsoleAppender.lambda$wrapWithJansi$1(Ljava/lang/reflect/Method;)Z @ ch/qos/logback/core/ConsoleAppender.java:108"
       ]
     },
     {
@@ -2861,17 +2724,6 @@
     },
     {
       "family": "Other Java runtime",
-      "message": "Method java.util.Collections.emptySortedMap()Ljava/util/SortedMap; was not found",
-      "count": 1,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "sun.awt.datatransfer.DataTransferer.getFormatsForTransferable(Ljava/awt/datatransfer/Transferable;Ljava/awt/datatransfer/FlavorTable;)Ljava/util/SortedMap; @ sun/awt/datatransfer/DataTransferer.java:304"
-      ]
-    },
-    {
-      "family": "Other Java runtime",
       "message": "Method java.util.Locale.forLanguageTag(Ljava/lang/String;)Ljava/util/Locale; was not found",
       "count": 1,
       "origins": [
@@ -2923,39 +2775,6 @@
       ],
       "examples": [
         "java.util.Locale$Builder.build()Ljava/util/Locale; @ java/util/Locale.java:3052"
-      ]
-    },
-    {
-      "family": "Other Java runtime",
-      "message": "Method java.util.Properties.loadFromXML(Ljava/io/InputStream;)V was not found",
-      "count": 1,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "org.audiveris.omr.text.Language$DefinedLanguages.<init>()V @ org/audiveris/omr/text/Language.java:241"
-      ]
-    },
-    {
-      "family": "Other Java runtime",
-      "message": "Method java.util.Properties.store(Ljava/io/Writer;Ljava/lang/String;)V was not found",
-      "count": 1,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "sun.awt.screencast.TokenStorage.store(Ljava/nio/file/Path;Ljava/lang/String;)V @ sun/awt/screencast/TokenStorage.java:464"
-      ]
-    },
-    {
-      "family": "Other Java runtime",
-      "message": "Method java.util.UUID.getLeastSignificantBits()J was not found",
-      "count": 1,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "com.fasterxml.jackson.databind.ser.std.UUIDSerializer.isEmpty(Lcom/fasterxml/jackson/databind/SerializerProvider;Ljava/util/UUID;)Z @ com/fasterxml/jackson/databind/ser/std/UUIDSerializer.java:53"
       ]
     },
     {

@@ -1,0 +1,7 @@
+{
+  "artifact":"net.sf.kxml:kxml2:2.3.0",
+  "patch":"append supplementary code points as UTF-16 surrogate pairs",
+  "originalClassSha256":"12dfc040f1749d75d5f3f859f95b6ed3f5df79e578beffb9a3591531c452c7b4",
+  "patchedClassSha256":"7321dcaaf8a9e85c507cefac00a43ece6b599d0632b39b1812d9ec4ef790cb6c",
+  "originalJarSha256":"f264dd9f79a1fde10ce5ecc53221eff24be4c9331c830b7d52f2f08a7b633de2"
+}
