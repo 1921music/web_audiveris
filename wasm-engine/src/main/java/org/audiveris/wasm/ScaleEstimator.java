@@ -90,19 +90,43 @@ public final class ScaleEstimator {
             if (black.getValue(blacks.get(i).main) < minCount) { blacks.subList(i, blacks.size()).clear(); break; }
         }
         Range line;
+        Integer significantBeam = null;
         if (blacks.size() > 1) {
             blacks.sort(Comparator.comparingInt(range -> range.main));
             Range first = blacks.get(0), second = blacks.get(1);
             line = second.main <= (int) Math.rint(primary.main * .5)
                     ? new Range(first.min, second.main, second.max) : first;
+            if (second.main > (int) Math.rint(primary.main * .5)) { significantBeam = second.main; }
         } else { line = blacks.get(0); }
         if (primary.main < 11 || primary.main > 100) {
             throw new IllegalStateException("Unreliable interline resolution: " + primary.main);
         }
         Range large = secondary != null && secondary.main > primary.main ? secondary : primary;
         Range small = secondary == null ? null : (secondary.main < primary.main ? secondary : primary);
+        int[] beams = measureBeams(line, large.main, secondary != null, significantBeam);
         return new int[] { line.min, line.main, line.max, large.min, large.main, large.max,
-                small == null ? 0 : small.min, small == null ? 0 : small.main, small == null ? 0 : small.max };
+                small == null ? 0 : small.min, small == null ? 0 : small.main, small == null ? 0 : small.max,
+                beams[0], beams[1], beams[2] };
+    }
+
+    /** Upstream ScaleBuilder.computeBeamKeys: measurements take precedence over guesses. */
+    private int[] measureBeams(Range line, int interline, boolean twoInterlines, Integer significant) {
+        if (significant != null) { return new int[] { significant, 0, 0 }; }
+        int min = Math.max(line.max, (int) Math.rint(.45 * interline));
+        int max = Math.min(interline - line.min / 2, (int) Math.rint(.95 * interline));
+        int guess = min + (int) Math.rint(.25 * (max - min));
+        int quorum = (int) Math.rint(black.getArea() * .01);
+        List<Integer> peaks = black.getLocalMaxima(min, max);
+        Integer measured = null, second = null;
+        if (!peaks.isEmpty()) {
+            int peak = peaks.get(0);
+            if ((double) black.getValue(peak) / quorum >= 1 || Math.abs(peak - guess) <= 2) { measured = peak; }
+            if (twoInterlines && peaks.size() > 1 && (double) black.getValue(peaks.get(1)) / quorum >= 1) {
+                second = peaks.get(1);
+            }
+        }
+        if (second != null && measured != null) { return new int[] { Math.max(measured, second), Math.min(measured, second), 0 }; }
+        return measured == null ? new int[] { guess, 0, 1 } : new int[] { measured, 0, 0 };
     }
 
     public int completedColumns() { return nextColumn; }

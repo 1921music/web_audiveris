@@ -21,7 +21,17 @@ public class ScaleEstimatorTest {
             while (!estimator.advance(budget)) { }
             assertEquals(2, estimator.result()[1]);
             assertEquals(16, estimator.result()[4]);
+            assertEquals(9, estimator.result()[9]);
+            assertEquals(1, estimator.result()[11]);
         }
+        // Add a known eight-pixel beam, below the significance cutoff for staff-line peaks.
+        for (int y = 150; y < 158; y++) {
+            for (int x = 40; x < 240; x++) { pixels[y * width + x] = 0; }
+        }
+        ScaleEstimator measured = new ScaleEstimator(width, height, pixels);
+        while (!measured.advance(32)) { }
+        assertEquals(8, measured.result()[9]);
+        assertEquals(0, measured.result()[11]);
     }
 
     @Test public void rejectsBlankPageInsteadOfInventingScale() {
