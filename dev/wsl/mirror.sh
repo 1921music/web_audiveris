@@ -39,5 +39,5 @@ if [[ "$mode" == build ]]; then
     # The mirror has no .git. Override only the existing commit-query task.
     bash ./gradlew --init-script "$mirror/dev/wsl/source-commit.init.gradle" "$@" \
         --no-daemon --max-workers=1 --no-parallel \
-        '-Dorg.gradle.jvmargs=-Xmx768m -XX:MaxMetaspaceSize=256m -XX:ActiveProcessorCount=3'
+        '-Dorg.gradle.jvmargs=-Xmx768m -XX:MaxMetaspaceSize=256m -XX:ActiveProcessorCount=8'
 fi

@@ -72,7 +72,7 @@ JDK 25 so they can call recent API names directly; compatibility implementations
 ## Reproduction
 
 Run from the Windows repository using the existing WSL launcher. It synchronizes sources to the
-Linux mirror and enforces the shared limit of three logical CPUs and 8 GiB RAM, with no swap.
+Linux mirror and enforces the shared limit of eight logical CPUs and 8 GiB RAM, with no swap.
 
 ```powershell
 # Baseline: original selected roots, no compatibility layer.

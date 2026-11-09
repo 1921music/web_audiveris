@@ -7,8 +7,8 @@ import sys
 
 group = Path('/sys/fs/cgroup/wasm_audiveris_dev')
 assert os.geteuid() == 0, 'sudo is needed only to create the small OOM probe cgroup'
-assert 1 <= len(os.sched_getaffinity(0)) <= 3
-assert (group / 'cpu.max').read_text().strip() == '300000 100000'
+assert 1 <= len(os.sched_getaffinity(0)) <= 8
+assert (group / 'cpu.max').read_text().strip() == '800000 100000'
 assert int((group / 'memory.max').read_text()) == 8 * 1024**3
 assert int((group / 'memory.high').read_text()) == 7 * 1024**3
 assert (group / 'memory.swap.max').read_text().strip() == '0'
