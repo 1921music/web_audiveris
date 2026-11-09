@@ -112,6 +112,10 @@ function verifyScale(sample, result) {
                     const expected = fs.readFileSync(path.join(fixtures, sample.id + '.' + orientation + '.sections'));
                     assert.equal(actual.length, expected.length, `${sample.id}: ${orientation} section data length differs`);
                     assert.equal(actual.equals(expected), true, `${sample.id}: ${orientation} sections differ from upstream`);
+                    const geometry = Buffer.from(sections[orientation + 'Geometry']);
+                    const expectedGeometry = fs.readFileSync(path.join(fixtures, sample.id + '.' + orientation + '.geometry'));
+                    assert.equal(geometry.length, expectedGeometry.length, `${sample.id}: ${orientation} geometry length differs`);
+                    assert.equal(geometry.equals(expectedGeometry), true, `${sample.id}: ${orientation} geometry differs from upstream`);
                     sectionCounts[orientation] = actual.readInt32LE(0);
                 }
             }

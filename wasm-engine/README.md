@@ -37,6 +37,8 @@ RUNSはスケール推定を実行せず、二値化後に横・縦のラン列�
 
 SECTIONSはそのラン列からセクションを構築し、`horizontalSections`と`verticalSections`を追加する。こちらのInt32配列は、先頭がセクション数、続いてセクション数+1個のデータ開始オフセット、最後に各セクションの`firstPos, runCount, (start,length)...`を並べる。長さ比率の判定では上流と同じ整数平均を使用する。
 
+`horizontalGeometry`と`verticalGeometry`には、各セクションの境界・整数重心・画素数なども返す。先頭はセクション数、以降は各セクションの`x,y,width,height,centroidX,centroidY,weight,runCount,maxRun,meanRun`。AWTのポリゴンを作らずにランから計算し、上流の半画素・整数丸めの規約を維持する。
+
 キャンセル要求は`type: 'cancel'`と同じ`jobId, pageId, generation`を送る。計算の区切りでキャンセルでき、以後は同じWorkerを再利用できる。実装済み工程に外部非同期処理はまだないため、OCRの要求・応答はTEXTS工程の移植時に接続する。
 
 ## WSLでのビルドと検証

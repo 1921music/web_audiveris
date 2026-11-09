@@ -68,11 +68,15 @@
                 const verticalRuns = ['RUNS', 'SECTIONS'].includes(job.targetStage) ? api.runTable(false).buffer : null;
                 const horizontalSections = job.targetStage === 'SECTIONS' ? api.sections(true).buffer : null;
                 const verticalSections = job.targetStage === 'SECTIONS' ? api.sections(false).buffer : null;
+                const horizontalGeometry = job.targetStage === 'SECTIONS' ? api.sectionGeometry(true).buffer : null;
+                const verticalGeometry = job.targetStage === 'SECTIONS' ? api.sectionGeometry(false).buffer : null;
                 api.dispose();
                 active = null;
                 send({ type: 'done', ...identity(job), width: job.width, height: job.height,
-                    binary: binary.buffer, scale, horizontalRuns, verticalRuns, horizontalSections, verticalSections },
-                    [binary.buffer, horizontalRuns, verticalRuns, horizontalSections, verticalSections].filter(Boolean));
+                    binary: binary.buffer, scale, horizontalRuns, verticalRuns, horizontalSections, verticalSections,
+                    horizontalGeometry, verticalGeometry },
+                    [binary.buffer, horizontalRuns, verticalRuns, horizontalSections, verticalSections,
+                        horizontalGeometry, verticalGeometry].filter(Boolean));
             } else {
                 send({ type: 'progress', ...identity(job), stage: api.stage(), completed: api.completedColumns(), total: api.totalUnits() });
                 schedule(() => tick(job));

@@ -63,6 +63,16 @@ public final class UpstreamRunReference {
                     }
                     Files.write(fixtures.resolve(id + (orientation == Orientation.HORIZONTAL ? ".horizontal.sections" : ".vertical.sections")), sectionOutput.array());
                     System.out.println(id + " " + orientation + ": " + sections.size() + " sections");
+                    ByteBuffer geometry = ByteBuffer.allocate(4 * (1 + 10 * sections.size())).order(ByteOrder.LITTLE_ENDIAN);
+                    geometry.putInt(sections.size());
+                    for (Section section : sections) {
+                        var bounds = section.getBounds();
+                        var centroid = section.getCentroid();
+                        geometry.putInt(bounds.x).putInt(bounds.y).putInt(bounds.width).putInt(bounds.height)
+                                .putInt(centroid.x).putInt(centroid.y).putInt(section.getWeight()).putInt(section.getRunCount())
+                                .putInt(section.getMaxRunLength()).putInt(section.getMeanRunLength());
+                    }
+                    Files.write(fixtures.resolve(id + (orientation == Orientation.HORIZONTAL ? ".horizontal.geometry" : ".vertical.geometry")), geometry.array());
                 }
             }
         } finally { OmrExecutors.shutdown(); }

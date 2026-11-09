@@ -65,7 +65,7 @@ const manifest = JSON.parse(fs.readFileSync(path.join(fixtures, 'manifest.json')
                     const elapsedMs = performance.now() - before;
                     const structures = await execute(sample, 'SECTIONS', 2);
                     const hashes = {};
-                    for (const key of ['horizontalRuns', 'verticalRuns', 'horizontalSections', 'verticalSections']) {
+                    for (const key of ['horizontalRuns', 'verticalRuns', 'horizontalSections', 'verticalSections', 'horizontalGeometry', 'verticalGeometry']) {
                         hashes[key] = await hash(structures[key]);
                     }
                     output.push({ id: sample.id, elapsedMs, sha256: await hash(result.binary), structures: hashes });
@@ -80,7 +80,7 @@ const manifest = JSON.parse(fs.readFileSync(path.join(fixtures, 'manifest.json')
             const expected = createHash('sha256').update(fs.readFileSync(path.join(fixtures, result.id + '.binary'))).digest('hex');
             assert.equal(result.sha256, expected, result.id + ': browser differs from upstream JVM');
             for (const orientation of ['horizontal', 'vertical']) {
-                for (const kind of ['runs', 'sections']) {
+                for (const kind of ['runs', 'sections', 'geometry']) {
                     const file = path.join(fixtures, result.id + '.' + orientation + '.' + kind);
                     const expectedHash = createHash('sha256').update(fs.readFileSync(file)).digest('hex');
                     const key = orientation + kind[0].toUpperCase() + kind.slice(1);

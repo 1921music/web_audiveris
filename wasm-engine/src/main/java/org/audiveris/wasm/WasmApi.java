@@ -72,6 +72,14 @@ public final class WasmApi {
         return intOutput(sections.packed());
     }
 
+    @JSExport
+    public static JSObject sectionGeometry(boolean horizontal) {
+        Page page = requireActive();
+        CompactSections sections = horizontal ? page.horizontalSections : page.verticalSections;
+        if (sections == null) { throw new IllegalStateException("Sections have not been requested or reached"); }
+        return intOutput(SectionGeometry.compute(sections.packed(), horizontal));
+    }
+
     private static JSObject intOutput(int[] data) {
         ByteBuffer buffer = transferBuffer(Math.multiplyExact(data.length, Integer.BYTES));
         buffer.order(ByteOrder.LITTLE_ENDIAN).asIntBuffer().put(data);
