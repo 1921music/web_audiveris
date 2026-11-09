@@ -1,0 +1,56 @@
+{
+  "identicalOriginalRoots": true,
+  "rootCount": 9001,
+  "baselineDiagnostics": 544,
+  "patchedDiagnostics": 525,
+  "diagnosticReduction": 19,
+  "baselineUniqueMessages": 220,
+  "patchedUniqueMessages": 217,
+  "removedMessages": [
+    "Method java.lang.Runtime.exec(Ljava/lang/String;)Ljava/lang/Process; was not found",
+    "Method java.lang.reflect.Method.getParameters()[Ljava/lang/reflect/Parameter; was not found",
+    "Method java.util.Locale.forLanguageTag(Ljava/lang/String;)Ljava/util/Locale; was not found"
+  ],
+  "newMessages": [],
+  "newDiagnosticCount": 0,
+  "remainingTargetedApiMessages": [],
+  "baselineByFamily": {
+    "Reflection and class loading": 209,
+    "Other Java runtime": 182,
+    "Threads and synchronization": 71,
+    "Files and streams": 36,
+    "Other libraries or compiler diagnostics": 20,
+    "XML and JAXB": 26
+  },
+  "patchedByFamily": {
+    "Reflection and class loading": 207,
+    "Other Java runtime": 168,
+    "Threads and synchronization": 69,
+    "Files and streams": 35,
+    "Other libraries or compiler diagnostics": 20,
+    "XML and JAXB": 26
+  },
+  "baselineByDirectOwner": {
+    "dependency": 538,
+    "engine": 3,
+    "unattributed": 2,
+    "ui": 1
+  },
+  "patchedByDirectOwner": {
+    "dependency": 523,
+    "unattributed": 2
+  },
+  "platformSubstitutionsEnabled": true,
+  "modifiedMethods": 153,
+  "removedDirectCallsFromModifiedMethods": 1955,
+  "addedDirectCallsFromModifiedMethods": 58,
+  "excludedClassesLinked": {
+    "before": 538,
+    "after": 441
+  },
+  "excludedUsedMethods": {
+    "before": 2521,
+    "after": 1863
+  },
+  "strictExclusionPass": false
+}
