@@ -112,11 +112,19 @@ try {
     Check ($buildCall -contains '/mnt/g/Windows source with spaces/dev/wsl/mirror.sh') 'runner path remains a single argument'
     Check ($buildCall -contains '-Pexample=argument with spaces') 'Gradle arguments preserve spaces'
     Check ($buildCall -contains 'build') 'dispatch build mode'
+    Check ($buildCall -contains '/mnt/g/Windows source with spaces/dev/wsl/run-limited.sh') 'sync/build use the resource limiter'
+
+    Expect-Failure { Run-Action Run } 'Run requires an explicit command'
+    $CommandArgs = @('printf', 'argument with spaces')
+    Run-Action Run
+    $runCall = $script:wslCalls[$script:wslCalls.Count - 1]
+    Check ($runCall -contains 'printf' -and $runCall -contains 'argument with spaces') 'bounded Run preserves command arguments'
 
     $script:wslCalls.Clear()
     Run-Action Install
     $bootstrapCall = @($script:wslCalls | Where-Object { $_ -contains 'bash' })[0]
     Check ($bootstrapCall -contains 'root') 'bootstrap runs as root'
+    Check ($bootstrapCall -contains '--as-root') 'bootstrap also uses resource limits'
     Check ($bootstrapCall -contains 'dev' -and $bootstrapCall -contains 'none') 'default user and optional SDK are explicit'
     $lastCall = $script:wslCalls[$script:wslCalls.Count - 1]
     Check ($lastCall[0] -eq '--terminate' -and $lastCall[1] -eq $DistroName) 'restart only the dedicated distro after bootstrap'

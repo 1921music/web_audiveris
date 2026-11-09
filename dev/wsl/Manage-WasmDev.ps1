@@ -12,7 +12,7 @@ Creates/removes the dedicated WSL2 environment, or synchronizes and builds its m
 [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Medium')]
 param(
     [Parameter(Position = 0)]
-    [ValidateSet('Install', 'Remove', 'Status', 'Sync', 'Build')]
+    [ValidateSet('Install', 'Remove', 'Status', 'Sync', 'Build', 'Run')]
     [string] $Action = 'Status',
 
     [ValidatePattern('^[a-z][a-z0-9_-]{0,30}$')]
@@ -23,7 +23,9 @@ param(
     [ValidatePattern('^\d+\.\d+\.\d+$')]
     [string] $EmsdkVersion,
 
-    [string[]] $GradleArgs = @(':app:classes')
+    [string[]] $GradleArgs = @(':app:classes'),
+
+    [string[]] $CommandArgs = @()
 )
 
 Set-StrictMode -Version Latest
@@ -116,9 +118,10 @@ function Invoke-Mirror {
     param([string] $Mode)
     $sourcePath = Get-LinuxPath $RepoRoot
     $runner = "$sourcePath/dev/wsl/mirror.sh"
+    $limiter = "$sourcePath/dev/wsl/run-limited.sh"
     $revision = Get-SourceRevision
     Invoke-Wsl -WslArgs (@('-d', $DistroName, '-u', $LinuxUser, '--exec',
-        'bash', $runner, $Mode, $sourcePath, $revision) + $GradleArgs)
+        'bash', $limiter, 'bash', $runner, $Mode, $sourcePath, $revision) + $GradleArgs)
 }
 
 function Invoke-Main {
@@ -196,8 +199,9 @@ function Invoke-Main {
             }
             if (-not (Test-Path -LiteralPath $VhdPath)) { throw "Expected VHDX is missing: $VhdPath" }
             $bootstrap = Get-LinuxPath (Join-Path $PSScriptRoot 'bootstrap.sh')
+            $limiter = Get-LinuxPath (Join-Path $PSScriptRoot 'run-limited.sh')
             $sdk = if ($EmsdkVersion) { $EmsdkVersion } else { 'none' }
-            Invoke-Wsl -WslArgs @('-d', $DistroName, '-u', 'root', '--exec', 'bash', $bootstrap, $LinuxUser, $sdk)
+            Invoke-Wsl -WslArgs @('-d', $DistroName, '-u', 'root', '--exec', 'bash', $limiter, '--as-root', 'bash', $bootstrap, $LinuxUser, $sdk)
             Invoke-Wsl -WslArgs @('--terminate', $DistroName)
             Write-Host "Ready: wsl -d $DistroName"
             Write-Host "VHDX: $VhdPath"
@@ -207,6 +211,15 @@ function Invoke-Main {
             Assert-RegistrationPath $existing
             if ($PSCmdlet.ShouldProcess($DistroName, "$Action the Linux build mirror from Windows sources")) {
                 Invoke-Mirror $Action.ToLowerInvariant()
+            }
+        }
+        'Run' {
+            if (-not $existing) { throw 'Run Install first.' }
+            Assert-RegistrationPath $existing
+            if ($CommandArgs.Count -eq 0) { throw 'Run requires -CommandArgs.' }
+            if ($PSCmdlet.ShouldProcess($DistroName, 'Run a command with CPU and memory limits')) {
+                $limiter = Get-LinuxPath (Join-Path $PSScriptRoot 'run-limited.sh')
+                Invoke-Wsl -WslArgs (@('-d', $DistroName, '-u', $LinuxUser, '--exec', 'bash', $limiter) + $CommandArgs)
             }
         }
     }
