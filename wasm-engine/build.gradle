@@ -18,6 +18,12 @@ tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
 
+tasks.withType(Test).configureEach {
+    maxHeapSize = '384m'
+    maxParallelForks = 1
+}
+tasks.withType(JavaExec).configureEach { maxHeapSize = '512m' }
+
 // Compile the unchanged upstream binarization algorithms only into the JVM tests.
 // Keep configuration stubs in their own source root; exclude upstream configuration.
 sourceSets.test.java.setSrcDirs(['src/test/java', 'build/reference-java'])

@@ -64,8 +64,8 @@ JVMテストでは、上流の画像フィルタのソースを変更せず別�
 Chromiumの実ブラウザ検証は、WSL内の`~/work/web_audiveris/wasm-engine`で実行する。
 
 ```bash
-npm ci
-npx playwright install --with-deps chromium
+bash ../dev/wsl/run-limited.sh npm ci
+bash ../dev/wsl/run-limited.sh npx playwright install --with-deps chromium
 npm run verify:browser
 ```
 

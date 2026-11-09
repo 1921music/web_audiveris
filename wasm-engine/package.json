@@ -2,8 +2,8 @@
   "name": "audiveris-wasm-engine-dev",
   "private": true,
   "scripts": {
-    "verify:worker": "node tools/verify-worker.cjs",
-    "verify:browser": "node tools/verify-browser.cjs"
+    "verify:worker": "bash ../dev/wsl/run-limited.sh node tools/verify-worker.cjs",
+    "verify:browser": "bash ../dev/wsl/run-limited.sh node tools/verify-browser.cjs"
   },
   "devDependencies": {
     "playwright": "1.65.0"

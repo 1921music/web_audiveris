@@ -37,5 +37,7 @@ if [[ "$mode" == build ]]; then
     # Existing Windows checkouts can still contain CRLF despite .gitattributes.
     sed -i 's/\r$//' ./gradlew
     # The mirror has no .git. Override only the existing commit-query task.
-    bash ./gradlew --init-script "$mirror/dev/wsl/source-commit.init.gradle" "$@"
+    bash ./gradlew --init-script "$mirror/dev/wsl/source-commit.init.gradle" "$@" \
+        --no-daemon --max-workers=1 --no-parallel \
+        '-Dorg.gradle.jvmargs=-Xmx768m -XX:MaxMetaspaceSize=256m -XX:ActiveProcessorCount=3'
 fi

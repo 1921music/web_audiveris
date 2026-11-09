@@ -9,7 +9,7 @@ gradle.projectsEvaluated {
         classpath = app.sourceSets.main.runtimeClasspath
         mainClass = 'Audiveris'
         workingDir = app.projectDir
-        maxHeapSize = '4g'
+        maxHeapSize = '768m'
         jvmArgs app.application.applicationDefaultJvmArgs
         systemProperty 'java.awt.headless', 'true'
         doFirst {
