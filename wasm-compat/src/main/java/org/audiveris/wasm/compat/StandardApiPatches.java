@@ -15,17 +15,31 @@ final class StandardApiPatches {
             case "java.lang.Float":
                 delegate(cls, "parseFloat", "parseFloat", FloatingPointParser.class.getName(), true, true, string, ValueType.FLOAT); break;
             case "java.util.Arrays":
-                add(cls, "compare", "compareBytes", true, ValueType.arrayOf(ValueType.BYTE), ValueType.arrayOf(ValueType.BYTE), ValueType.INTEGER); break;
+                add(cls, "compare", "compareBytes", true, ValueType.arrayOf(ValueType.BYTE), ValueType.arrayOf(ValueType.BYTE), ValueType.INTEGER);
+                add(cls, "compare", "compareComparables", true, ValueType.arrayOf(object("java.lang.Comparable")), ValueType.arrayOf(object("java.lang.Comparable")), ValueType.INTEGER); break;
             case "java.lang.Integer":
                 add(cls, "parseUnsignedInt", "parseUnsignedInt", true, string, ValueType.INTEGER); break;
             case "java.nio.charset.Charset":
                 add(cls, "isSupported", "charsetSupported", true, string, ValueType.BOOLEAN); break;
             case "java.lang.Class":
+                add(cls, "forName", "moduleClass", true, object("java.lang.Module"), string, type);
+                delegate(cls, "getModule", "forClass", "java.lang.Module", false, false, object("java.lang.Module"));
                 add(cls, "getPackageName", "packageName", false, string);
                 add(cls, "descriptorString", "descriptorString", false, string);
                 add(cls, "componentType", "componentType", false, type);
                 add(cls, "arrayType", "arrayType", false, type);
                 add(cls, "forPrimitiveName", "forPrimitiveName", true, string, type); break;
+            case "java.lang.ClassLoader":
+                delegate(cls, "getUnnamedModule", "forLoader", "java.lang.Module", false, false, object("java.lang.Module")); break;
+            case "java.lang.System$Logger":
+                add(cls, "log", "systemLog", false, object("java.lang.System$Logger$Level"), string,
+                        ValueType.arrayOf(object("java.lang.Object")), ValueType.VOID); break;
+            case "java.lang.Package":
+                add(cls, "getImplementationVersion", "unknownPackageMetadata", false, string);
+                add(cls, "getImplementationVendor", "unknownPackageMetadata", false, string);
+                add(cls, "getSpecificationTitle", "unknownPackageMetadata", false, string); break;
+            case "java.util.ResourceBundle":
+                add(cls, "getBundle", "moduleBundle", true, string, object("java.util.Locale"), object("java.lang.Module"), object("java.util.ResourceBundle")); break;
             case "java.util.Enumeration":
                 add(cls, "asIterator", "asIterator", false, object("java.util.Iterator")); break;
             case "java.util.ServiceLoader":

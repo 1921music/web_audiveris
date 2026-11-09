@@ -23,7 +23,10 @@ public final class CompilerPatches implements TeaVMPlugin {
             StandardApiPatches.apply(cls);
             PropertyApiPatches.apply(cls);
             ResourceApiPatches.apply(cls);
+            ResourceBundlePatches.apply(cls);
             ReflectionApiPatches.apply(cls);
+            ThreadApiPatches.apply(cls);
+            ClassLoaderPatches.apply(cls);
             if (cls.getName().equals("java.nio.file.impl.DefaultPath")
                     || cls.getName().equals("org.teavm.classlib.java.nio.file.impl.TDefaultPath")) {
                 for (MethodHolder method : cls.getMethods()) {

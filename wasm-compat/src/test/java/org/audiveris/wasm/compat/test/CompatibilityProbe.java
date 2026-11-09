@@ -25,6 +25,8 @@ public final class CompatibilityProbe {
     @JSExport public static String utilities() { return UtilityProbe.values(); }
     @JSExport public static String properties() { return PropertyProbe.values(); }
     @JSExport public static String resources() { return ResourceProbe.values(); }
+    @JSExport public static String modules() { return ModuleProbe.values(); }
+    @JSExport public static String loggers() { return LoggerProbe.values(); }
     @JSExport public static void dumpStack() { Thread.dumpStack(); }
     @JSExport public static String numbers() {
         StringBuilder result = new StringBuilder();

@@ -2,5 +2,7 @@
   "res/ISO639-3.xml": "app/res/ISO639-3.xml",
   "res/drum-set.xml": "app/res/drum-set.xml",
   "res/alias-patterns.xml": "app/res/alias-patterns.xml",
-  "org/audiveris/wasm/compat/test/resource.txt": "wasm-compat/src/test/resources/resource.txt"
+  "org/audiveris/wasm/compat/test/resource.txt": "wasm-compat/src/test/resources/resource.txt",
+  "org/audiveris/wasm/compat/test/ModuleMessages.properties": "wasm-compat/src/test/resources/ModuleMessages.properties",
+  "org/audiveris/wasm/compat/test/ModuleMessages_fr.properties": "wasm-compat/src/test/resources/ModuleMessages_fr.properties"
 }

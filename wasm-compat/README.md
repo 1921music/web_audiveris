@@ -56,6 +56,21 @@ It does not yet make the complete recognition engine executable in a browser.
   module-local GC root, then clears it; it is not an empty Java method. Tests inspect the emitted
   store/null/store sequence and verify the root is clear after calls. Recheck this invariant before
   adding a separate Wasm post-optimizer. Each worker/module instance has its own root.
+- Module APIs represent TeaVM's flat class space as unnamed modules, cached by classloader.
+  They supply class/module resource lookup and the unnamed-module read/open/export contract;
+  they do not implement JPMS named-module isolation. Class lookup still requires TeaVM's explicit
+  reflection metadata. Package manifest attributes are unknown (`null`), not copied from input JARs.
+- `System.Logger.log(Level,String,Object[])` delegates to the existing logger implementation.
+  Comparable-array comparison preserves Java's null ordering and lexicographic behavior.
+- Thread context classloaders are stored per logical thread and inherited at construction,
+  including an explicitly null parent context. Named classloaders retain their name and parent.
+  The platform-loader query returns the existing system loader in this single class space;
+  parallel-loader registration reports `false`. These APIs add no dynamic class definition or
+  shared-memory threading. Independent worker instances remain independent.
+- Bundled `.properties` files are registered with TeaVM's build-time ResourceBundle provider
+  mechanism. A compiler-model repair sets each newly created bundle's locale; parent fallback
+  retains the locale of the actual provider. The probe compares root/French resources and fallback
+  with the JDK. This does not add arbitrary runtime bundle discovery.
 
 The compiler-side service providers are placed before the standard class library on the compiler
 classpath. Both providers require `audiveris.compat.enabled=true`; the original inventory and
@@ -128,30 +143,31 @@ are under `build/wasm-compat/probe`; audit outputs are under
 ## Verified result
 
 The original root manifests match exactly: **9,001 methods**, including **8,588 method bodies**.
-Diagnostics fall from **1,276 to 609** (667 fewer); unique messages fall from **336 to 240**.
-The stages are **1,276 → 789 → 702 → 609**. There are no remaining missing-API messages for the
+Diagnostics fall from **1,276 to 545** (731 fewer); unique messages fall from **336 to 221**.
+The stages are **1,276 → 789 → 702 → 609 → 545**. There are no remaining missing-API messages for the
 targeted APIs. The broad fast analysis also exposes additional unsupported dependency paths;
 new messages and their callers are recorded in `results/new-diagnostics.tsv`. These are
 dependency-analysis results, not a successful full-engine
 Wasm build or proof that every selected method executes correctly.
 
-- JVM oracle: **652,726 checks**, comparing the replacements with the standard JDK, including
+- JVM oracle: **653,755 checks**, comparing the replacements with the standard JDK, including
   randomized and edge-case inputs.
 - A probe compiled from code that imports the original standard Java API names executes under
   Wasm GC in Node and Chromium **158.0.8127.18**. Its 4,096 numeric values match the JVM exactly,
   along with sorted-set, string and path result arrays; 75 standard-API cases, 640 byte-array cases,
   322 numeric-parser cases, UUID/collection/reflection cases, XML/resource payloads and captured
   stack output also match. Chromium Web Worker checks exercise XML, resources, crypto-backed UUIDs
-  and the GC fence without DOMParser. The JVM fixture uses Jackson's
+  and the GC fence without DOMParser. Module/resource-bundle, logger and context-classloader
+  fixtures also match in Node, Chromium and its Worker. The JVM fixture uses Jackson's
   original multi-release JAR; Wasm uses the selected unchanged base entries.
-- The expanded probe Wasm is **740,088 bytes**, including XML/resources and Jackson's large-number parsers.
+- The expanded probe Wasm is **759,071 bytes**, including XML/resources and Jackson's large-number parsers.
   This is a compatibility test program, not an engine
   size estimate. No engine throughput claim is made from these tests.
 - `app` and `buildSrc` remain unchanged from upstream baseline
   `04697c74fae431ef8436a9429386957a5cb25993`. The capped runs recorded no OOM or hard memory-limit hits.
 
 Reviewable snapshots are in [results](results); bulky audit graphs and runnable probe artifacts
-are kept outside Git in `wsl-artifacts/wasm-compat/stage3`. The original stage's artifacts remain
+are kept outside Git in `wsl-artifacts/wasm-compat/stage4`. The original stage's artifacts remain
 in `wsl-artifacts/wasm-compat/audit` and `probe`; its comparison is retained in
 `results/stage1-comparison.json`. Each `results/stageN-comparison.json` compares that stage directly
 with its predecessor. `dev/teavm-audit/export_compat.py --stage N` packages reports and provenance.
@@ -180,7 +196,7 @@ sampling details. Build with `buildXmlBenchmark -PxmlBackend=jdk` and `-PxmlBack
 through the capped launcher. Build-time conversion of fixed resources and a browser DOM/SAX
 adapter remain options; DOMParser itself is Window-only, so a Worker path needs a separate plan.
 
-The remaining 609 diagnostics include reflection/classloading, thread APIs, file/XML operations,
+The remaining 545 diagnostics include reflection/classloading, thread APIs, file/XML operations,
 OCR/native dependencies and transitive UI code. The three diagnostics located directly in selected
 engine sources concern `Class.getProtectionDomain`, `Thread.getThreadGroup` and a `Thread`
 constructor taking a group.

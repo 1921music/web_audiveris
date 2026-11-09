@@ -43,7 +43,19 @@ def compare(baseline, patched):
                 'Method java.util.Properties.loadFromXML(', 'Method java.util.Properties.store(Ljava/io/Writer;',
                 'Method java.lang.ClassLoader.loadClass(Ljava/lang/String;)',
                 'Method java.lang.ClassLoader.getResource', 'Method java.lang.ClassLoader.getSystemResource',
-                'Method java.lang.Class.getResource']
+                'Method java.lang.Class.getResource', 'Method java.lang.Class.getModule(',
+                'Method java.lang.Class.forName(Ljava/lang/Module;',
+                'Method java.lang.ClassLoader.getUnnamedModule(',
+                'Method java.lang.ClassLoader.getPlatformClassLoader(',
+                'Method java.lang.ClassLoader.registerAsParallelCapable(',
+                'Method java.lang.ClassLoader.isRegisteredAsParallelCapable(',
+                'Method java.lang.ClassLoader.getName(', 'Method java.lang.ClassLoader.<init>(Ljava/lang/String;',
+                'Method java.lang.Thread.setContextClassLoader(',
+                'Method java.lang.Package.getImplementationVersion(', 'Method java.lang.Package.getImplementationVendor(',
+                'Method java.lang.Package.getSpecificationTitle(',
+                'Method java.util.ResourceBundle.getBundle(Ljava/lang/String;Ljava/util/Locale;Ljava/lang/Module;',
+                'Method java.util.Arrays.compare([Ljava/lang/Comparable;',
+                'Method java.lang.System$Logger.log(Ljava/lang/System$Logger$Level;Ljava/lang/String;[Ljava/lang/Object;']
     remaining_targets = [message for message in after_apis if any(message.startswith(prefix) for prefix in prefixes)]
     result = {'identicalOriginalRoots': True, 'rootCount': len(before_roots),
               'baselineDiagnostics': before['diagnostics'], 'patchedDiagnostics': after['diagnostics'],

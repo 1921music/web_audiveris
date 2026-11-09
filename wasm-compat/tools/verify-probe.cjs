@@ -27,7 +27,7 @@ function compareText(kind, actual) {
     assert.ok(traces.join('\n').includes('java.lang.Exception: Stack trace'), 'Thread.dumpStack output');
     const standard = api.standard();
     compareText('utilities', api.utilities());
-    for (const kind of ['properties', 'resources']) { compareText(kind, api[kind]()); }
+    for (const kind of ['properties', 'resources', 'modules', 'loggers']) { compareText(kind, api[kind]()); }
     assert.equal(standard, fs.readFileSync(path.join(root, 'standard.txt'), 'utf8'), 'Standard API behavior');
     const byteCases = api.bytes(), numbers = api.numbers();
     assert.equal(byteCases, fs.readFileSync(path.join(root, 'bytes.txt'), 'utf8'), 'Byte-array behavior');
@@ -51,7 +51,7 @@ function compareText(kind, actual) {
     const report = { node: process.version, matchedValues: actual.length, collections, matchedStringValues: strings.length,
         matchedPathValues: paths.length, matchedStandardCases: standard.trimEnd().split('\n').length,
         matchedByteCases: byteCases.trimEnd().split('\n').length, matchedNumberCases: numbers.trimEnd().split('\n').length, maxError,
-        dumpStack: true, utilities: true, properties: true, resources: true, gcFence,
+        dumpStack: true, utilities: true, properties: true, resources: true, modules: true, loggers: true, gcFence,
         wasmBytes: fs.statSync(path.join(root, 'compat.wasm')).size };
     fs.writeFileSync(path.join(root, 'verification.json'), JSON.stringify(report, null, 2) + '\n');
     console.log(JSON.stringify(report));

@@ -7,6 +7,39 @@ import java.util.function.Consumer;
 /** Small API additions expressed only in APIs already implemented by TeaVM. */
 public final class StandardApis {
     private StandardApis() { }
+    /** TeaVM's Package records have no JAR-manifest metadata; the standard API permits null. */
+    public static String unknownPackageMetadata(Package value) { Objects.requireNonNull(value); return null; }
+    public static void systemLog(System.Logger logger, System.Logger.Level level, String format, Object[] parameters) {
+        Objects.requireNonNull(level);
+        logger.log(level, (ResourceBundle) null, format, parameters);
+    }
+    public static ResourceBundle moduleBundle(String baseName, Locale locale, java.lang.Module module) {
+        Objects.requireNonNull(baseName); Objects.requireNonNull(locale); Objects.requireNonNull(module);
+        ClassLoader loader = module.getClassLoader();
+        return ResourceBundle.getBundle(baseName, locale, loader == null ? ClassLoader.getSystemClassLoader() : loader);
+    }
+    public static Class<?> moduleClass(java.lang.Module module, String name) {
+        Objects.requireNonNull(module); Objects.requireNonNull(name);
+        if (name.startsWith("[")) { return null; }
+        try {
+            Class<?> result = Class.forName(name, false, module.getClassLoader());
+            return result.getModule() == module ? result : null;
+        } catch (ClassNotFoundException missing) { return null; }
+    }
+    @SuppressWarnings({"rawtypes", "unchecked"}) public static int compareComparables(Comparable[] first, Comparable[] second) {
+        if (first == second) { return 0; }
+        if (first == null) { return -1; }
+        if (second == null) { return 1; }
+        for (int i = 0; i < Math.min(first.length, second.length); i++) {
+            Comparable a = first[i], b = second[i];
+            if (a == b) { continue; }
+            if (a == null) { return -1; }
+            if (b == null) { return 1; }
+            int compared = a.compareTo(b);
+            if (compared != 0) { return compared; }
+        }
+        return first.length - second.length;
+    }
 
     public static int compareBytes(byte[] first, byte[] second) {
         if (first == second) { return 0; }

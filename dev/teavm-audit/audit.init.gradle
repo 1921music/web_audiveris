@@ -90,7 +90,7 @@ gradle.projectsEvaluated {
         include 'com/fasterxml/jackson/core/internal/shaded/fdp/v2_20_0/FastIntegerMath.class'
         into compatBaseClasses
     }
-    def compatRuntime = rootProject.files(compatClasses, compatBaseClasses, patchedKxml) + compatDependencies + runtime
+    def compatRuntime = rootProject.files(compatClasses, compatBaseClasses, patchedKxml, new File(bundledResources, 'classpath')) + compatDependencies + runtime
     rootProject.tasks.register('compileWasmCompatibilityTests', JavaCompile) {
         dependsOn 'copyWasmCompatibilityResources'
         source new File(compat, 'src/test/java')

@@ -28,4 +28,9 @@ lines += ['  }', '}']
 source = output / 'src/org/audiveris/wasm/compat/resources/BuiltinResources.java'
 source.parent.mkdir(parents=True, exist_ok=True)
 source.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+bundles = [name[:-len('.properties')].replace('/', '.') for name in sorted(manifest) if name.endswith('.properties')]
+if bundles:
+    providers = output / 'classpath/META-INF/services/java.util.ResourceBundle'
+    providers.parent.mkdir(parents=True, exist_ok=True)
+    providers.write_text('\n'.join(bundles) + '\n', encoding='utf-8')
 (output / 'resources.json').write_text(json.dumps(metadata, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
