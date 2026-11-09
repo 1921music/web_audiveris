@@ -34,6 +34,7 @@ gradle.projectsEvaluated {
     def runtime = rootProject.files(classes) + auditDependencies + app.sourceSets.main.runtimeClasspath
     def compat = new File(rootProject.projectDir, 'wasm-compat')
     def compatClasses = new File(rootProject.projectDir, 'build/wasm-compat/classes')
+    def compatBaseClasses = new File(rootProject.projectDir, 'build/wasm-compat/upstream-base')
     def compatTests = new File(rootProject.projectDir, 'build/wasm-compat/test-classes')
     def probeOutput = new File(rootProject.projectDir, 'build/wasm-compat/probe')
     rootProject.tasks.register('compileWasmCompatibility', JavaCompile) {
@@ -49,27 +50,41 @@ gradle.projectsEvaluated {
         from new File(compat, 'src/main/resources')
         into compatClasses
     }
-    def compatRuntime = rootProject.files(compatClasses) + runtime
+    // The library ships equivalent Java 8 implementations: choose those instead of MR-JAR
+    // implementations requiring VarHandles, FMA or newer high-multiply intrinsics.
+    rootProject.tasks.register('selectWasmLibraryImplementations', Sync) {
+        from {
+            def jar = app.sourceSets.main.runtimeClasspath.files.find { it.name == 'jackson-core-2.20.0.jar' }
+            if (jar == null) { throw new GradleException('Expected pinned jackson-core 2.20.0') }
+            zipTree(jar)
+        }
+        include 'com/fasterxml/jackson/core/internal/shaded/fdp/v2_20_0/BigSignificand.class'
+        include 'com/fasterxml/jackson/core/internal/shaded/fdp/v2_20_0/FastDoubleSwar.class'
+        include 'com/fasterxml/jackson/core/internal/shaded/fdp/v2_20_0/FastIntegerMath.class'
+        into compatBaseClasses
+    }
+    def compatRuntime = rootProject.files(compatClasses, compatBaseClasses) + runtime
     rootProject.tasks.register('compileWasmCompatibilityTests', JavaCompile) {
         dependsOn 'copyWasmCompatibilityResources'
         source new File(compat, 'src/test/java')
-        classpath = rootProject.files(compatClasses) + auditDependencies
+        classpath = rootProject.files(compatClasses) + auditDependencies + app.sourceSets.main.runtimeClasspath
         destinationDirectory = compatTests
         javaCompiler = app.tasks.named('compileJava').flatMap { it.javaCompiler }
-        sourceCompatibility = '17'; targetCompatibility = '17'; options.release = 17
+        sourceCompatibility = '25'; targetCompatibility = '25'; options.release = 25
         options.encoding = 'UTF-8'
     }
     rootProject.tasks.register('testWasmCompatibilityJvm', JavaExec) {
         dependsOn compile, 'compileWasmCompatibilityTests'
-        classpath = rootProject.files(compatTests) + compatRuntime
+        classpath = rootProject.files(compatTests, compatClasses) + runtime
         mainClass = 'org.audiveris.wasm.compat.test.OracleTest'
         maxHeapSize = '384m'
+        jvmArgs '--add-exports=java.base/jdk.internal.util=ALL-UNNAMED'
         systemProperty 'java.awt.headless', 'true'
         args new File(probeOutput, 'oracle.json').absolutePath
         doFirst { probeOutput.mkdirs() }
     }
     rootProject.tasks.register('buildCompatibilityProbe', JavaExec) {
-        dependsOn compile, 'testWasmCompatibilityJvm'
+        dependsOn compile, 'testWasmCompatibilityJvm', 'selectWasmLibraryImplementations'
         classpath = rootProject.files(compatTests) + compatRuntime
         mainClass = 'audit.CompileCompatibilityProbe'
         maxHeapSize = '1g'
@@ -111,7 +126,7 @@ gradle.projectsEvaluated {
     rootProject.tasks.register('auditTeaVM', JavaExec) {
         dependsOn compile
         if (scope == 'selected') { dependsOn 'prepareTeaVMSelection' }
-        if (useCompat) { dependsOn 'copyWasmCompatibilityResources', 'verifyWasmCompatibility' }
+        if (useCompat) { dependsOn 'copyWasmCompatibilityResources', 'verifyWasmCompatibility', 'selectWasmLibraryImplementations' }
         classpath = useCompat ? compatRuntime : runtime
         mainClass = 'audit.TeaVMAudit'
         maxHeapSize = '5g'

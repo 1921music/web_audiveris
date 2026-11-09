@@ -22,8 +22,12 @@ const root = path.resolve(process.argv[2]);
         await page.addScriptTag({ url: '/compat.wasm-runtime.js' });
         const result = await page.evaluate(async () => {
             const api = (await TeaVM.wasmGC.load('/compat.wasm')).exports;
+            const traces = [], previousError = console.error;
+            try { console.error = (...args) => traces.push(args.join(' ')); api.dumpStack(); }
+            finally { console.error = previousError; }
             return { values: Array.from(api.values()), collections: Array.from(api.collections()),
-                strings: Array.from(api.strings()), pathDiagnostic: api.pathDiagnostic(), paths: Array.from(api.paths()) };
+                strings: Array.from(api.strings()), pathDiagnostic: api.pathDiagnostic(), paths: Array.from(api.paths()),
+                standard: api.standard(), bytes: api.bytes(), numbers: api.numbers(), trace: traces.join('\n') };
         });
         const expected = JSON.parse(fs.readFileSync(path.join(root, 'oracle.json'), 'utf8'));
         assert.equal(result.values.length, expected.length);
@@ -32,8 +36,14 @@ const root = path.resolve(process.argv[2]);
             assert.deepEqual(result[kind], JSON.parse(fs.readFileSync(path.join(root, kind + '.json'), 'utf8')));
         }
         assert.equal(result.pathDiagnostic, 'ok');
+        assert.ok(result.trace.includes('java.lang.Exception: Stack trace'), 'Thread.dumpStack output');
+        assert.equal(result.standard, fs.readFileSync(path.join(root, 'standard.txt'), 'utf8'), 'Standard API behavior');
+        for (const kind of ['bytes', 'numbers']) { assert.equal(result[kind], fs.readFileSync(path.join(root, kind + '.txt'), 'utf8'), kind); }
         const report = { browser: browser.version(), matchedValues: result.values.length,
-            matchedStringValues: result.strings.length, matchedPathValues: result.paths.length, collections: true };
+            matchedStringValues: result.strings.length, matchedPathValues: result.paths.length,
+            matchedStandardCases: result.standard.trimEnd().split('\n').length,
+            matchedByteCases: result.bytes.trimEnd().split('\n').length,
+            matchedNumberCases: result.numbers.trimEnd().split('\n').length, dumpStack: true, collections: true };
         fs.writeFileSync(path.join(root, 'browser-verification.json'), JSON.stringify(report, null, 2) + '\n');
         console.log(JSON.stringify(report));
     } finally {

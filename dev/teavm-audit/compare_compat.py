@@ -26,19 +26,32 @@ def compare(baseline, patched):
     prefixes = ['Field java.awt.Color.', 'Method java.awt.Color.', 'Method java.awt.Point.', 'Method java.awt.Dimension.',
                 'Method java.util.Collections.unmodifiableSortedSet(', 'Method java.util.Collections.emptySortedSet(',
                 'Method java.io.File.toPath(', 'Method java.lang.String.lines(', 'Method java.lang.String.getBytes(II[BI)',
-                'Method java.lang.String.<init>([BI)', 'Method java.lang.String.<init>([BIII)']
+                'Method java.lang.String.<init>([BI)', 'Method java.lang.String.<init>([BIII)',
+                'Method java.util.Arrays.compare([B[B)', 'Method java.lang.Integer.parseUnsignedInt(Ljava/lang/String;)',
+                'Method java.nio.charset.Charset.isSupported(', 'Method java.lang.Class.getPackageName(',
+                'Method java.lang.Class.descriptorString(', 'Method java.lang.Class.componentType(',
+                'Method java.lang.Class.arrayType(', 'Method java.lang.Class.forPrimitiveName(',
+                'Method java.util.Enumeration.asIterator(', 'Method java.util.ServiceLoader.findFirst(',
+                'Method java.util.Spliterators.emptySpliterator(', 'Method java.util.Collections.singletonSpliterator(',
+                'Method java.util.Date.from(', 'Method java.net.URLConnection.getContentLengthLong(',
+                'Method java.util.concurrent.atomic.AtomicLong.compareAndExchange(',
+                'Method java.lang.Thread.threadId(', 'Method java.lang.Thread.isVirtual(', 'Method java.lang.Thread.onSpinWait(',
+                'Method java.lang.Thread.dumpStack(']
     remaining_targets = [message for message in after_apis if any(message.startswith(prefix) for prefix in prefixes)]
     result = {'identicalOriginalRoots': True, 'rootCount': len(before_roots),
               'baselineDiagnostics': before['diagnostics'], 'patchedDiagnostics': after['diagnostics'],
               'diagnosticReduction': before['diagnostics'] - after['diagnostics'],
               'baselineUniqueMessages': before['uniqueMessages'], 'patchedUniqueMessages': after['uniqueMessages'],
-              'removedMessages': removed, 'newMessages': added, 'remainingTargetedApiMessages': remaining_targets,
+              'removedMessages': removed, 'newMessages': added,
+              'newDiagnosticCount': sum(after_apis[message]['count'] for message in added),
+              'remainingTargetedApiMessages': remaining_targets,
               'baselineByFamily': before['byFamily'], 'patchedByFamily': after['byFamily'],
               'baselineByDirectOwner': before['byDirectOwner'], 'patchedByDirectOwner': after['byDirectOwner']}
     (patched / 'compatibility-comparison.json').write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     if remaining_targets:
         raise AssertionError('Targeted API gaps remain: ' + repr(remaining_targets))
     print(json.dumps({key: value for key, value in result.items() if key not in ('removedMessages', 'newMessages')}, ensure_ascii=False))
+    return result
 
 
 if __name__ == '__main__':

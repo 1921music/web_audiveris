@@ -19,6 +19,7 @@ public final class CompilerPatches implements TeaVMPlugin {
     @Override public void install(TeaVMHost host) {
         if (!Boolean.getBoolean("audiveris.compat.enabled")) { return; }
         host.add((cls, context) -> {
+            StandardApiPatches.apply(cls);
             if (cls.getName().equals("java.nio.file.impl.DefaultPath")
                     || cls.getName().equals("org.teavm.classlib.java.nio.file.impl.TDefaultPath")) {
                 for (MethodHolder method : cls.getMethods()) {

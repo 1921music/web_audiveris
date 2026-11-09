@@ -8,6 +8,15 @@ const root = path.resolve(process.argv[2]);
         importModuleDynamically: vm.constants.USE_MAIN_CONTEXT_DEFAULT_LOADER
     });
     const api = (await TeaVM.wasmGC.load(path.join(root, 'compat.wasm'))).exports;
+    const traces = [], previousError = console.error;
+    try { console.error = (...args) => traces.push(args.join(' ')); api.dumpStack(); }
+    finally { console.error = previousError; }
+    assert.ok(traces.join('\n').includes('java.lang.Exception: Stack trace'), 'Thread.dumpStack output');
+    const standard = api.standard();
+    assert.equal(standard, fs.readFileSync(path.join(root, 'standard.txt'), 'utf8'), 'Standard API behavior');
+    const byteCases = api.bytes(), numbers = api.numbers();
+    assert.equal(byteCases, fs.readFileSync(path.join(root, 'bytes.txt'), 'utf8'), 'Byte-array behavior');
+    assert.equal(numbers, fs.readFileSync(path.join(root, 'numbers.txt'), 'utf8'), 'Jackson numeric parser');
     const actual = Array.from(api.values());
     const expected = JSON.parse(fs.readFileSync(path.join(root, 'oracle.json'), 'utf8'));
     assert.equal(actual.length, expected.length);
@@ -25,8 +34,9 @@ const root = path.resolve(process.argv[2]);
         maxError = Math.max(maxError, error);
     }
     const report = { node: process.version, matchedValues: actual.length, collections, matchedStringValues: strings.length,
-        matchedPathValues: paths.length, maxError,
-        wasmBytes: fs.statSync(path.join(root, 'compat.wasm')).size };
+        matchedPathValues: paths.length, matchedStandardCases: standard.trimEnd().split('\n').length,
+        matchedByteCases: byteCases.trimEnd().split('\n').length, matchedNumberCases: numbers.trimEnd().split('\n').length, maxError,
+        dumpStack: true, wasmBytes: fs.statSync(path.join(root, 'compat.wasm')).size };
     fs.writeFileSync(path.join(root, 'verification.json'), JSON.stringify(report, null, 2) + '\n');
     console.log(JSON.stringify(report));
 })().catch(error => { console.error(error); process.exitCode = 1; });

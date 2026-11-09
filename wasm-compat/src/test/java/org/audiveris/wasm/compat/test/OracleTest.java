@@ -33,6 +33,9 @@ public final class OracleTest {
         equal(Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]), java.awt.Color.HSBtoRGB(oracle[0], oracle[1], oracle[2]), "HSB roundtrip");
     }
     public static void main(String[] args) throws Exception {
+        checks += StandardApiTest.run();
+        checks += ByteArrayTest.run();
+        checks += FloatingPointTest.run();
         compareSortedSets();
         compareStrings();
         comparePaths();
@@ -92,6 +95,9 @@ public final class OracleTest {
         Files.writeString(Path.of(args[0]).resolveSibling("collections.json"), java.util.Arrays.toString(CompatibilityProbe.collections()));
         Files.writeString(Path.of(args[0]).resolveSibling("strings.json"), java.util.Arrays.toString(CompatibilityProbe.strings()));
         Files.writeString(Path.of(args[0]).resolveSibling("paths.json"), java.util.Arrays.toString(CompatibilityProbe.paths()));
+        Files.writeString(Path.of(args[0]).resolveSibling("standard.txt"), CompatibilityProbe.standard());
+        Files.writeString(Path.of(args[0]).resolveSibling("bytes.txt"), CompatibilityProbe.bytes());
+        Files.writeString(Path.of(args[0]).resolveSibling("numbers.txt"), CompatibilityProbe.numbers());
         Files.writeString(Path.of(args[0]).resolveSibling("jvm-verification.json"), "{\"checks\":" + checks + ",\"probeValues\":" + fixture.length + ",\"passed\":true}\n");
         System.out.println("JVM oracle passed " + checks + " checks; exported " + fixture.length + " Wasm reference values");
     }
