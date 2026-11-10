@@ -1,0 +1,33 @@
+{
+  "sourceCommit": "75607db054ec8ed4d84756e40e1dfcdc1228423a",
+  "sourceSha256": {
+    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/TextFontMetricsOracle.java": "a4265f14baadfe607d5274ba3a613969591573f8178e6d1dd48196d5c440d099",
+    "wasm-compat/tools/compare-text-fonts.cjs": "3c9069b5e95162f6cb4dbea236111ca5cbd475c82228c71297e185a720739397",
+    "app/src/main/java/org/audiveris/omr/ui/symbol/OmrFont.java": "8ef4446abfa874485ff8f64d19dcdb4abd976ad9e3d1c47f749d71b7fee34203",
+    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/OcrTransportOracle.java": "b6499e3f0c7be1c99884544a290eb3b3e0b2f2706c5d5fd8966bd17eb45b1464",
+    "dev/teavm-audit/audit.init.gradle": "bd7b611dbb2d0251db304881dd4abeee2a91589906b333efba07195b3e54ed63"
+  },
+  "rawArtifacts": "wsl-artifacts/wasm-components/text-font-metrics",
+  "cpuMax": "800000 100000",
+  "memoryMaxBytes": 8589934592,
+  "memorySwapMaxBytes": 0,
+  "artifactSha256": {
+    "comparison.json": "493de73aea9762349b595c43e0be00dc6c85c238586472314ef1bf92697d1c25",
+    "fonts/LiberationMono-Bold.ttf": "626655e94dd82f3f42549daf995c921b0915fa8ab1f4b839559e8892ea41d240",
+    "fonts/LiberationMono-BoldItalic.ttf": "15eb161953e3ecc7fc05a3fec8a59e0f4e0a54a4e375736adf8e98d65981f813",
+    "fonts/LiberationMono-Italic.ttf": "a71b2c25c89da05cf0e7c4dbba8d473fdead0b181ae56165217747d2c1f39215",
+    "fonts/LiberationMono-Regular.ttf": "395fa5ab8d40c8eba390ced528744ea75a7f69aabf3e68b6f925ca0e39a27370",
+    "fonts/LiberationSans-Bold.ttf": "3973aa5054fb467dd5627245d3dc82e37bf16fe075756156a570455871351582",
+    "fonts/LiberationSans-BoldItalic.ttf": "c80fa7f2ffa0e01d4d8dcd6a6d1e43eda665222d1b4db597dde1174c456006cf",
+    "fonts/LiberationSans-Italic.ttf": "830c5fa600505fb4c1a271b4271c53c44bae43f492b2a240d0e98a3a7a380121",
+    "fonts/LiberationSans-Regular.ttf": "4659bc0c58c5028dd488ec928d41d9265db43d9b669fc14ca8b0832daca7b144",
+    "fonts/LiberationSerif-Bold.ttf": "9e66c25e20868756bf12eb24a520a4552727c9cd108f577f7ae33e3c0110e39c",
+    "fonts/LiberationSerif-BoldItalic.ttf": "379010e87421a883f7bbfa7936d23dfe0257a54ce850819b74556e9f2c615a8a",
+    "fonts/LiberationSerif-Italic.ttf": "eaeaf7f2b12544ecde64290c1fa7ec403ff70fd58b313637b265400b20249242",
+    "fonts/LiberationSerif-Regular.ttf": "705903ae1382f0150f115d6f10a30f5b2f3d6ade649c474afe6366c39174fb65",
+    "fonts/copyright": "f32df582a2aab128c07b2f7e36e7b928dc5f6bd82657b905c04f91459f9e5cf9",
+    "jvm-reference.json": "ab484d0b4bc0715478d0ab1f1a76e59770cf9ed190c8453c50161fc2451b33b8",
+    "worker-results.json": "da0d09b832f9bacf36406553729be3143374a19d74cb136b18bccfd8f94590fd"
+  },
+  "limitation": "Physical-font diagnostic only; no engine font replacement, fallback shaping or glyph raster equivalence"
+}
