@@ -28,6 +28,7 @@ public final class CompilerPatches implements TeaVMPlugin {
             ReflectionApiPatches.apply(cls);
             ThreadApiPatches.apply(cls);
             ClassLoaderPatches.apply(cls);
+            if (Boolean.getBoolean("audiveris.compat.strokePaths")) { StrokePathPatches.apply(cls); }
             if (Boolean.getBoolean("audiveris.compat.headless")) { HeadlessPatches.apply(cls, context); }
             if (cls.getName().equals("java.nio.file.impl.DefaultPath")
                     || cls.getName().equals("org.teavm.classlib.java.nio.file.impl.TDefaultPath")) {

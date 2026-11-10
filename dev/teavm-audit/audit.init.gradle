@@ -49,7 +49,10 @@ gradle.projectsEvaluated {
         destinationDirectory = jdkRasterClasses
         javaCompiler = app.tasks.named('compileJava').flatMap { it.javaCompiler }
         sourceCompatibility = '25'; targetCompatibility = '25'
-        options.compilerArgs += ['--add-exports=java.desktop/sun.java2d.loops=ALL-UNNAMED']
+        options.compilerArgs += ['--add-exports=java.desktop/sun.java2d.loops=ALL-UNNAMED',
+                '--add-exports=java.desktop/sun.java2d.marlin=ALL-UNNAMED',
+                '--add-exports=java.desktop/sun.awt.geom=ALL-UNNAMED']
+        options.compilerArgs += ['--add-exports=java.desktop/sun.java2d.pipe=ALL-UNNAMED']
         options.encoding = 'UTF-8'
     }
     def compatBaseClasses = new File(rootProject.projectDir, 'build/wasm-compat/upstream-base')
@@ -904,6 +907,32 @@ gradle.projectsEvaluated {
         dependsOn 'buildGrayPathProbe'
         commandLine 'node', '--max-old-space-size=256', new File(compat, 'tools/verify-gray-path.cjs').absolutePath,
                 grayPathOutput.absolutePath
+    }
+    def strokePathOutput = new File(rootProject.projectDir, 'build/wasm-compat/stroke-path-probe')
+    rootProject.tasks.register('testStrokePathJvm', JavaExec) {
+        dependsOn 'compileWasmCompatibilityTests'
+        classpath = rootProject.files(compatTests, compatClasses, jdkRasterClasses)
+        mainClass = 'org.audiveris.wasm.compat.test.StrokePathOracle'
+        jvmArgs '--add-exports=java.desktop/sun.java2d.marlin=ALL-UNNAMED',
+                '--add-exports=java.desktop/sun.awt.geom=ALL-UNNAMED',
+                '--add-exports=java.desktop/sun.java2d.loops=ALL-UNNAMED'
+        maxHeapSize = '256m'
+        systemProperty 'java.awt.headless', 'true'
+        args new File(strokePathOutput, 'jvm-reference.txt').absolutePath
+    }
+    rootProject.tasks.register('buildStrokePathProbe', JavaExec) {
+        dependsOn compile, 'testStrokePathJvm', 'patchKxmlCompatibility', 'selectWasmLibraryImplementations'
+        classpath = rootProject.files(compatTests) + compatRuntime
+        mainClass = 'audit.CompileCompatibilityProbe'
+        maxHeapSize = '1g'
+        systemProperty 'audiveris.compat.enabled', 'true'
+        args strokePathOutput.absolutePath, 'org.audiveris.wasm.compat.test.StrokePathProbe', 'stroke-path'
+        systemProperty 'audiveris.compat.strokePaths', 'true'
+    }
+    rootProject.tasks.register('verifyStrokePathProbe', Exec) {
+        dependsOn 'buildStrokePathProbe'
+        commandLine 'node', '--max-old-space-size=256', new File(compat, 'tools/verify-stroke-path.cjs').absolutePath,
+                strokePathOutput.absolutePath
     }
     rootProject.tasks.register('buildHeadsProbe', JavaExec) {
         dependsOn compile, 'compileWasmCompatibilityTests', 'patchKxmlCompatibility', 'selectWasmLibraryImplementations'

@@ -1247,6 +1247,40 @@ incremental Wasm size and allocations on actual pages before deciding whether an
 is worthwhile. Reports are in `gray-path-results`; runnable artifacts are kept under
 `wsl-artifacts/wasm-components/gray-path`.
 
+## Pure Java stroke geometry component
+
+`StrokePaths` invokes the JDK Marlin stroker directly, including line widths, caps, joins, miters,
+dashes and non-antialiased coordinate normalization. The opt-in `audiveris.compat.strokePaths`
+compiler profile keeps the original geometry algorithms. It changes the context provider's queue
+to a Worker-local `ArrayDeque`, removes three unused native-raster allocations, routes diagnostics
+to console output and explicitly rejects native raster/statistics entry points and non-null native
+`Region` clipping. Source, class and JDK runtime hashes are recorded in `jdk-reference.json`.
+The profile is not enabled for the existing recognition probes or broad audit.
+
+The new strict component initially had **21 dependency diagnostics**, then one native Region
+initializer, and now has zero. Runtime comparison also exposed numerical compatibility problems:
+TeaVM 0.16 implements `cbrt` using `pow(x, 1/3)`, and its `ulp(double)` masks exponent/sign bits
+differently from the JDK. The stroke profile selects the unchanged JDK FdLibm `Cbrt`/`Acos`
+implementations and a small bit-based ULP helper. These changes remain scoped to stroke code.
+TODO: check other engine callers before considering a wider numerical compatibility change.
+
+There are **4,096 cases each** for cbrt, acos and ulp, including signed zero, subnormals, infinities
+and NaN. Cbrt matches `StrictMath` exactly and stays within one ULP of the captured JVM `Math`
+results; acos and ulp match their JVM references exactly. Repairing ULP restores identical path
+segmentation and winding in all **256 widened / 256 normalized** fixtures. Normalized coordinates
+match bit for bit. Widened double coordinates differ by at most **3.9689e-8 pixels**, below the
+explicit **1e-7-pixel** bound. A further **512 outline fills / 890,368 pixels** match the native
+Java2D path-fill output exactly. Node compares every output byte; two independent Chromium Workers
+compare SHA-256, with **2,056,144 coordinate comparisons** across the runtime instances.
+
+The standalone geometry/outline-fill probe is **280,957 bytes**. Native raster calls are verified
+to fail explicitly. This does not implement wide-stroke span filling, glyph/symbol painting or
+full TEXTS cleanup. Run `verifyStrokePathProbe` with the audit init script through the capped
+launcher. Summaries are in `stroke-path-results`; dense references and runnable files are in
+`wsl-artifacts/wasm-components/stroke-path`. CPU/memory limits remain shared across all development
+processes at **8 CPU / 8 GiB / no swap**. TODO: measure actual cleanup throughput and incremental
+engine size before choosing a final renderer backend.
+
 ## Remaining work
 
 ### TODO: reconsider the XML properties parser
