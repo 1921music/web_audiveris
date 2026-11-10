@@ -39,8 +39,8 @@
   },
   "platformSubstitutionsEnabled": true,
   "modifiedMethods": 519,
-  "removedDirectCallsFromModifiedMethods": 383,
-  "addedDirectCallsFromModifiedMethods": 5,
+  "removedDirectCallsFromModifiedMethods": 0,
+  "addedDirectCallsFromModifiedMethods": 0,
   "excludedClassesLinked": {
     "before": 75,
     "after": 75

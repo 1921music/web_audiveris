@@ -1,0 +1,81 @@
+{
+  "originalAndPortableJvmExact": true,
+  "originalSha256": "181afedcbadedbebd9464607a87d9aae84f6535dcde7f9a85949c7c153e08be0",
+  "portableSha256": "17fe14625a5b3267f900e5aab01ff430d8068e5510a2aecb9603bdb7ece2b726",
+  "headPixels": [
+    {
+      "id": "00",
+      "bytes": 8694880,
+      "sha256": "a9e0429b9039c331c42d5081d055b5e704bb2e94103addc613e4df915caecd7c"
+    },
+    {
+      "id": "01",
+      "bytes": 8694880,
+      "sha256": "1556b191cc508a1b47652a4f3d2c1acac61a59575112a39e24e4b7825a88ea49"
+    },
+    {
+      "id": "02",
+      "bytes": 8694880,
+      "sha256": "a8f217dde66761992384e97ad3d57aca4b1a1abcfb587f636a7214a7fec322cd"
+    },
+    {
+      "id": "03",
+      "bytes": 8694880,
+      "sha256": "8277173b0fce2fa6e4eab442064584a3996bb6065ae4d1b89d60806d3a5beaa7"
+    },
+    {
+      "id": "04",
+      "bytes": 8694880,
+      "sha256": "342a45d6158e8e215ab911506184f7e216d0bbb2a8a39f52f8c1a32fa8b589fd"
+    },
+    {
+      "id": "staff",
+      "bytes": 307200,
+      "sha256": "a682fa570213181c0f6fd50f7da5ef6f263c855222c8f7441f19227d925383a3"
+    }
+  ],
+  "relationsCompared": true,
+  "postHeadsRelationsCompared": true,
+  "headGlyphRunsCompared": true,
+  "postStemsRelationsCompared": true,
+  "stemGlyphRunsCompared": true,
+  "stemConnectionGeometryCompared": true,
+  "allContextualVertexGradesCompared": true,
+  "reducedGraphAndGlyphRunsCompared": true,
+  "glyphIndexCleanupChecked": true,
+  "headSpotsLiveWeakCacheChecked": true,
+  "errorLogsRejected": true,
+  "distanceTables": [
+    {
+      "id": "00",
+      "bytes": 17389760,
+      "sha256": "abd7c6ff573c0f36c230425ff40217be0b2aa6b37713fca2073bb1433c289b36"
+    },
+    {
+      "id": "01",
+      "bytes": 17389760,
+      "sha256": "8b6d6d1583cfc4399bf1a3259133de20e96d09734f967a94dbd19b444e4def66"
+    },
+    {
+      "id": "02",
+      "bytes": 17389760,
+      "sha256": "fbb3f63be8fa03cd0a09caabba9599e16ef77d053cf25a26e36e5fed27477668"
+    },
+    {
+      "id": "03",
+      "bytes": 17389760,
+      "sha256": "39f084092659c482d31993c3c46612a3b4cafb40bf929b30d956807b2039ca09"
+    },
+    {
+      "id": "04",
+      "bytes": 17389760,
+      "sha256": "674af9e7894bd372450ee5ca9bae732c5c8cbb80412733d25487b5395457fc99"
+    },
+    {
+      "id": "staff",
+      "bytes": 614400,
+      "sha256": "8e35b8f3e046914fb492a22d04c5ae9860ab07bde5574c581e6d564315c16d8e"
+    }
+  ],
+  "originalAndRawJvmDistanceTablesExact": true
+}

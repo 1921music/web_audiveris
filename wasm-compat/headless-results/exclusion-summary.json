@@ -11,15 +11,15 @@
   "excludedTypeOnlyClasses": 20,
   "excludedUsedMethods": 310,
   "excludedUsedMethodsByRule": {
+    "book-host": 12,
     "class-excluded": 242,
+    "debug-charts": 21,
     "stub-host": 6,
     "ui-method": 22,
-    "debug-charts": 21,
+    "manual-symbol-edit": 1,
     "sheet-host": 2,
-    "network-training": 3,
-    "book-host": 12,
     "classifier-training": 1,
-    "manual-symbol-edit": 1
+    "network-training": 3
   },
   "usedExcludedMethodsWithoutRecordedPath": 3,
   "originalReferenceCrossings": 2282,

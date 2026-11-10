@@ -1,0 +1,9 @@
+{
+  "compiled": true,
+  "diagnostics": 0,
+  "runtimeVerified": false,
+  "wasmBytes": 2736465,
+  "wasmSha256": "e6eb3d37c2a91b2d4d7c6300b7d517e2f7c1d8264b13b0caf2b1d5ba6b3d8e5b",
+  "rawArtifacts": "wsl-artifacts/wasm-headless/stage23/cue-beams-baseline-probe",
+  "limitation": "Compilation only; active CUE_BEAMS recognition has not been verified"
+}
