@@ -1,11 +1,11 @@
 {
   "identicalOriginalRoots": false,
   "originalRootSubsetPreserved": true,
-  "rootCount": 9035,
-  "baselineRootCount": 9033,
+  "rootCount": 9037,
+  "baselineRootCount": 9035,
   "addedRoots": [
-    "org.audiveris.omr.math.NeuralNetwork.<init>([Ljava/lang/String;[Ljava/lang/String;[[D[[DDDDI)V",
-    "org.audiveris.omr.math.NeuralNetwork.copyWeights([[DII)[[D"
+    "org.audiveris.omr.image.RunTableRaster.<init>()V",
+    "org.audiveris.omr.image.RunTableRaster.erase(Lij/process/ByteProcessor;Lorg/audiveris/omr/run/RunTable;II)V"
   ],
   "baselineDiagnostics": 494,
   "patchedDiagnostics": 494,
@@ -41,15 +41,15 @@
     "unattributed": 2
   },
   "platformSubstitutionsEnabled": true,
-  "modifiedMethods": 498,
-  "removedDirectCallsFromModifiedMethods": 97,
-  "addedDirectCallsFromModifiedMethods": 1,
+  "modifiedMethods": 510,
+  "removedDirectCallsFromModifiedMethods": 73,
+  "addedDirectCallsFromModifiedMethods": 16,
   "excludedClassesLinked": {
     "before": 75,
     "after": 75
   },
   "excludedUsedMethods": {
-    "before": 311,
+    "before": 309,
     "after": 309
   },
   "usedMethodsInsideExcludedClasses": {

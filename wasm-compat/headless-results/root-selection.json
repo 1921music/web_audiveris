@@ -1,18 +1,18 @@
 {
   "profile": "headless-candidates-v2",
-  "totalMethods": 14429,
-  "selectedMethods": 9035,
-  "selectedClasses": 1165,
-  "selectedBodies": 8614,
+  "totalMethods": 14444,
+  "selectedMethods": 9037,
+  "selectedClasses": 1166,
+  "selectedBodies": 8616,
   "byAction": {
     "excluded": 4425,
-    "dependency-only": 969,
-    "root": 9035
+    "dependency-only": 982,
+    "root": 9037
   },
   "byRule": {
     "class-excluded": 4115,
-    "class-boundary": 969,
-    "engine-candidate": 9035,
+    "class-boundary": 982,
+    "engine-candidate": 9037,
     "debug-charts": 64,
     "classifier-training": 34,
     "sample-export": 1,
@@ -25,8 +25,8 @@
     "manual-symbol-edit": 55
   },
   "policySha256": "3d9cacf0e194a46ab2d01dd0dca19c8ff5f21a7deae0eb89d44c86bcf1197dfc",
-  "classDecisionsSha256": "cafb4566c2d8722abfa10916a8383ea4cde5aa12635aafd4150937adc393b785",
-  "inventorySha256": "ab478c430d2dd1b3cc43b11ed2015039b4e2f51e8b6cc53b5d20d40cecf363e9",
+  "classDecisionsSha256": "01bda3466140c2c7a09d8220f0386878d367fd0521d074d76fbf3bd10514eade",
+  "inventorySha256": "507241b130daf22051ee5278603c0d133dfeb5749fc4e8aa989c3ada40a6e11a",
   "excludedClassesForcedAsRoots": 0,
   "excludedMethodsForcedAsRoots": 0
 }

@@ -1,0 +1,64 @@
+{
+  "identicalOriginalRoots": false,
+  "originalRootSubsetPreserved": true,
+  "rootCount": 9037,
+  "baselineRootCount": 9035,
+  "addedRoots": [
+    "org.audiveris.omr.image.RunTableRaster.<init>()V",
+    "org.audiveris.omr.image.RunTableRaster.erase(Lij/process/ByteProcessor;Lorg/audiveris/omr/run/RunTable;II)V"
+  ],
+  "baselineDiagnostics": 494,
+  "patchedDiagnostics": 494,
+  "diagnosticReduction": 0,
+  "baselineUniqueMessages": 203,
+  "patchedUniqueMessages": 203,
+  "removedMessages": [],
+  "newMessages": [],
+  "newDiagnosticCount": 0,
+  "remainingTargetedApiMessages": [],
+  "baselineByFamily": {
+    "Other Java runtime": 167,
+    "Threads and synchronization": 65,
+    "Files and streams": 35,
+    "Reflection and class loading": 181,
+    "Other libraries or compiler diagnostics": 20,
+    "XML and JAXB": 26
+  },
+  "patchedByFamily": {
+    "Other Java runtime": 167,
+    "Threads and synchronization": 65,
+    "Files and streams": 35,
+    "Reflection and class loading": 181,
+    "Other libraries or compiler diagnostics": 20,
+    "XML and JAXB": 26
+  },
+  "baselineByDirectOwner": {
+    "dependency": 492,
+    "unattributed": 2
+  },
+  "patchedByDirectOwner": {
+    "dependency": 492,
+    "unattributed": 2
+  },
+  "platformSubstitutionsEnabled": true,
+  "modifiedMethods": 510,
+  "removedDirectCallsFromModifiedMethods": 73,
+  "addedDirectCallsFromModifiedMethods": 16,
+  "excludedClassesLinked": {
+    "before": 75,
+    "after": 75
+  },
+  "excludedUsedMethods": {
+    "before": 309,
+    "after": 309
+  },
+  "usedMethodsInsideExcludedClasses": {
+    "before": 242,
+    "after": 242
+  },
+  "remainingClassBreakdown": {
+    "withUsedMethods": 55,
+    "typeOnly": 20
+  },
+  "strictExclusionPass": false
+}

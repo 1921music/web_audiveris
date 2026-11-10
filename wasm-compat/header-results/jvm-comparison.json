@@ -1,0 +1,6 @@
+{
+  "nativeAndInjectedJvmExact": true,
+  "originalResultSha256": "92f424faa49d5c585ab800f5df2242aafef9d8517ab1635d97a7378a8d9b7bfc",
+  "injectedResultSha256": "ed1fa3105eb83bb33b79eed152f8d9c91960af9f9d232ac1f5fd7acfb2127c42",
+  "prefixSnapshotCasesPerInstance": 528
+}

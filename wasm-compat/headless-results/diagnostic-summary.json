@@ -1,13 +1,13 @@
 {
   "roots": {
-    "classes": 1165,
-    "methods": 9035,
-    "methodsWithBody": 8614,
+    "classes": 1166,
+    "methods": 9037,
+    "methodsWithBody": 8616,
     "nativeMethods": 0,
-    "usedMethods": 9035,
-    "analyzedBodies": 8614,
+    "usedMethods": 9037,
+    "analyzedBodies": 8616,
     "byCategory": {
-      "engine": 9035
+      "engine": 9037
     }
   },
   "diagnostics": 494,
@@ -36,8 +36,8 @@
     "unattributed": 2
   },
   "callGraph": {
-    "callers": 73281,
-    "edges": 1565133
+    "callers": 73290,
+    "edges": 1565152
   },
   "apis": [
     {
