@@ -402,17 +402,17 @@ are under `build/wasm-compat/probe`; audit outputs are under
 
 ## Verified result
 
-The current audit covers **9,037 methods**, including **8,616 method bodies**. Every original
+The current audit covers **9,040 methods**, including **8,619 method bodies**. Every original
 **9,001-method / 8,588-body** root is preserved; 18 scale-context/adapter methods and the memory-book
 factory, nine initial pixel-model methods, one bracket-geometry seam, three staff-free raster methods,
-two model-construction methods and two shared run-raster methods are added explicitly.
+two model-construction methods, two shared run-raster methods and three raw-distance preparation methods are added explicitly.
 With generic compatibility and the opt-in Worker/presentation substitutions enabled, diagnostics
 fall from **1,276 to 494** (782 fewer); unique messages fall from **336 to 203**.
 The stages are **1,276 → 789 → 702 → 609 → 545 → 544 → 525 → 524 → 495 → 494**. The 544/220 result is the
 generic compatibility layer alone; 525/217 is the initial Worker boundary, 524/216 is the
-stage-6 boundary, 495/204 is the stage-7–9 result, and **494/203** is the current stage-17 result (unchanged from stage 10).
+stage-6 boundary, 495/204 is the stage-7–9 result, and **494/203** is the current stage-18 result (unchanged from stage 10).
 Remaining exclusion candidates are **75 classes / 242 used input methods inside those classes**,
-or **308 methods** when method-only exclusion rules are also included.
+or **310 methods** when method-only exclusion rules are also included.
 There are no remaining missing-API messages for the generic layer's targeted APIs. The broad fast
 analysis also exposes additional unsupported dependency paths; generic-layer new messages and their
 callers are recorded in `results/new-diagnostics.tsv`, and current headless results in
@@ -901,6 +901,44 @@ Archive with `export_headless.py --stage 17 --ledger --allow-added-roots`; small
 archive. HEADS and subsequent recognition, general font/template backends, OCR and complete
 MusicXML remain outstanding.
 
+## Raw distance preparation (stage 18)
+
+`DistancesBuilder.buildDistances` now extracts only its initial raster acquisition into a
+protected `erasedBuffer` boundary. The default JVM implementation still exports an ImageJ image,
+paints it with the original `ImagePainter`, and wraps the result in a `ByteProcessor`. The
+headless compiler selects `erasedRawBuffer`, which clones the binary pixels and uses integer
+run rectangles and clipped single-pixel erasure. Both paths call the same original `paintLines`.
+The Chamfer transform and the second pass that neutralizes table cells remain unchanged.
+
+Unlike the earlier stem buffer, this code constructs a new processor from the painted image:
+the erasure affects the recognition distances even though ImageJ exports a detached image.
+The original binary input remains unchanged. The original `ImagePainter` and `TablePainter`
+remain available, and source guards retain all original method roots and compare their bodies.
+
+The reference loads the original `DistancesBuilder` from the pinned upstream commit. A separate
+portable JVM run compares the current native and raw paths cell by cell, then the verifier checks
+the entire serialized short table against upstream. Node compares every table byte; independent
+Chromium Workers compare SHA-256 hashes. The ledger/header/beam/seed comparisons and head-spot
+pixel checks are also retained. This verifies HEADS preparation only; template resources and
+actual note-head recognition remain outstanding.
+
+The original and raw JVM paths agree on **43,781,600 cells**. Node and the two Workers compare
+**350,252,800 distance-table bytes** and **175,126,400 head-spot pixel bytes**. All **93,620 numeric
+comparisons** pass, with maximum difference **7.2165e-16**. The strict component compiles without
+diagnostics; its Wasm is **2,306,285 bytes**, with the same external classifier and font profiles.
+The full audit retains all original roots and now selects **9,040 methods / 8,619 bodies**.
+It still reports **494 diagnostics / 203 unique messages** and **75 classes / 242 class-excluded
+used methods**. Across all method-exclusion rules the count is **310**: the two added
+`RawPainter.paintGlyph` / `paintPixel` methods match the existing `paint*` UI-name heuristic,
+but are retained and executed as recognition raster operations. They are not missing UI cuts.
+
+Reproduce with `verifyDistanceProbe -I dev/teavm-audit/audit.init.gradle` through the capped launcher.
+Archive using `export_headless.py --stage 18 --distance --allow-added-roots`.
+`buildHeadsBaselineProbe` separately invokes the unchanged HEADS substeps and currently fails
+strict compilation with **94 diagnostics**. Representative paths reach native font/AWT/image
+code through template generation, and JAXB through `DrumSet` loading. This is a diagnostic
+baseline, not a successful HEADS build; its full paths are retained in the raw archive.
+
 ## Remaining work
 
 ### TODO: reconsider the XML properties parser
@@ -939,5 +977,5 @@ sources; this does not establish that OCR/native or other platform boundaries ar
 The generic-only audit still has 544 diagnostics, including three directly in selected engine
 sources; the opt-in Worker substitutions address those three paths. Remaining work requires
 resource, execution and platform adapters that preserve recognition behavior. The current reentry
-report includes **75 classes / 242 class-excluded used input methods** (**308 methods across all exclusion
-rules**); choosing roots alone does not cut transitive dependencies.
+report includes **75 classes / 242 class-excluded used input methods** (**310 methods across all exclusion
+rules**); the additional two are raw distance-painting methods retained for recognition. Choosing roots alone does not cut transitive dependencies.

@@ -19,6 +19,12 @@ final class HeadlessPatches {
         Map<MethodDescriptor, Program> original = new HashMap<>();
         for (MethodHolder method : cls.getMethods()) { original.put(method.getDescriptor(), method.getProgram()); }
         switch (cls.getName()) {
+            case "org.audiveris.omr.sheet.note.DistancesBuilder":
+                if (cls.getMethod(new MethodDescriptor("erasedBuffer", obj("ij.process.ByteProcessor"), obj("ij.process.ByteProcessor"))) == null) {
+                    throw new IllegalStateException("Review distance raster boundary");
+                }
+                StandardApiPatches.delegate(cls, "erasedBuffer", "erasedBuffer", "org.audiveris.omr.sheet.note.WorkerDistancesBridge", false, true,
+                        obj("ij.process.ByteProcessor"), obj("ij.process.ByteProcessor")); break;
             case "org.audiveris.omr.sheet.ledger.LedgersBuilder": ledgerFailure(cls); break;
             case "org.audiveris.omr.sheet.beam.SpotsBuilder": spotImages(cls); break;
             case "org.audiveris.omr.sheet.stem.StemScaler": stemBuffer(cls, context); break;

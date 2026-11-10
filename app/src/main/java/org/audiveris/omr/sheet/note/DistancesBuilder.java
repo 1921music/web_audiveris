@@ -104,13 +104,8 @@ public class DistancesBuilder
     {
         // Compute the distance-to-foreground transform image
         final ByteProcessor rawBuf = sheet.getPicture().getSource(Picture.SourceKey.BINARY);
-        final BufferedImage image = rawBuf.getBufferedImage();
-
-        // "Erase" staff lines, ledgers, stems with background value in image
-        paintLines(new ImagePainter(image)); // This modifies (shared) buffer
-
         // Table of distances to relevant foreground.
-        final ByteProcessor buffer = new ByteProcessor(image);
+        final ByteProcessor buffer = erasedBuffer(rawBuf);
         final DistanceTable table = new ChamferDistance.Short().computeToFore(buffer);
 
         // "Erase" staff lines, ledgers, stems with neutralized value in table
@@ -133,6 +128,23 @@ public class DistancesBuilder
         }
 
         return table;
+    }
+
+    /** Desktop raster boundary; the input processor remains unchanged. */
+    protected ByteProcessor erasedBuffer (ByteProcessor input)
+    {
+        final BufferedImage image = input.getBufferedImage();
+        paintLines(new ImagePainter(image));
+        return new ByteProcessor(image);
+    }
+
+    /** Equivalent integer run/pixel painting for a raw binary image backend. */
+    protected ByteProcessor erasedRawBuffer (ByteProcessor input)
+    {
+        final ByteProcessor buffer = new ByteProcessor(
+                input.getWidth(), input.getHeight(), ((byte[]) input.getPixels()).clone(), null);
+        paintLines(new RawPainter(buffer));
+        return buffer;
     }
 
     //------------//
@@ -208,6 +220,29 @@ public class DistancesBuilder
         private final Constant.Boolean displayTemplates = new Constant.Boolean(
                 false,
                 "Should we display the templates tab?");
+    }
+
+    private static class RawPainter implements Painter
+    {
+        private final ByteProcessor buffer;
+
+        RawPainter (ByteProcessor buffer) { this.buffer = buffer; }
+
+        @Override
+        public void paintGlyph (Glyph glyph)
+        {
+            final var origin = glyph.getTopLeft();
+            org.audiveris.omr.image.RunTableRaster.erase(
+                    buffer, glyph.getRunTable(), origin.x, origin.y);
+        }
+
+        @Override
+        public void paintPixel (int x, int y)
+        {
+            if (x >= 0 && y >= 0 && x < buffer.getWidth() && y < buffer.getHeight()) {
+                buffer.set(x, y, 255);
+            }
+        }
     }
 
     //--------------//
