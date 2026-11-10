@@ -1,0 +1,55 @@
+{
+  "beforeSha256": "e6eb3d37c2a91b2d4d7c6300b7d517e2f7c1d8264b13b0caf2b1d5ba6b3d8e5b",
+  "afterSha256": "61fe31075ff1e65966a62898ae83a0fdfc01047035d4513ff9b3c93512045635",
+  "beforeBytes": 2736465,
+  "afterBytes": 2736459,
+  "beforeBuild": "fb22bfb7f1ceb77820720f197e9ba8f258764699-dirty",
+  "afterBuild": "97af4f021b3c455e5b12bdf945c73a55fc6e7882",
+  "onlyBuildRevisionChanged": true,
+  "identicalExecutableSections": [
+    {
+      "kind": 1,
+      "sha256": "1fb06717ea84048a4a209e766216d3ff7e0a786cc30d9ebb4f22c5e0262b621b"
+    },
+    {
+      "kind": 2,
+      "sha256": "daca94cc5fb4655bc30406040baf1b6d2b50ad917b35278ccd8539c549fb5329"
+    },
+    {
+      "kind": 3,
+      "sha256": "30660b55615a50141b97bbd234954b9d14a4d4b2c482602d15b863c665b710de"
+    },
+    {
+      "kind": 13,
+      "sha256": "e275274cba9d46eeb0c4bb85695a4d807af15e10bb9bb2757ebe8e5aff635236"
+    },
+    {
+      "kind": 6,
+      "sha256": "da8858cf2abe2c1f921e140847bbb5c021156d4176f3a9c3e58964ffbd2833c6"
+    },
+    {
+      "kind": 7,
+      "sha256": "c0f0da1f73eed94b7b780ef3fedeb6b7cf6cd85fdb207f112b931d4add0676a6"
+    },
+    {
+      "kind": 8,
+      "sha256": "c9ef1b2fd96ca11ae162b564dd87d4f2869d066646c98cd65e00aedc1deb62b2"
+    },
+    {
+      "kind": 9,
+      "sha256": "8885e97f3f7e37188225c5404ac000d9d49b3273b7b95b825176f0f3a521b6db"
+    },
+    {
+      "kind": 10,
+      "sha256": "17ca9a0030fb72b1966762fbd65b120f5593b939ccd31f16862114c7c4f5d9bd"
+    },
+    {
+      "kind": 0,
+      "sha256": "3abcf980ef70e632335992975361e313ddb6c537f2f0bb008ef097b8adeaf6dd"
+    }
+  ],
+  "adjustedMetadata": [
+    "teavm.memoryRequirements"
+  ],
+  "limitation": "Binary comparison only; no new end-to-end recognition run is claimed"
+}

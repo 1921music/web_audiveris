@@ -1280,6 +1280,11 @@ launcher. Summaries are in `stroke-path-results`; dense references and runnable 
 `wsl-artifacts/wasm-components/stroke-path`. CPU/memory limits remain shared across all development
 processes at **8 CPU / 8 GiB / no swap**. TODO: measure actual cleanup throughput and incremental
 engine size before choosing a final renderer backend.
+The OCR exchange and path-fill regression tests also pass with identical Wasm hashes. Rebuilding
+the CUE_BEAMS component changes only its embedded build revision (including removal of `-dirty`)
+and the corresponding data-size metadata: every executable section is identical to the stage-24
+verified module. `stroke-path-results/cue-regression.json` records that bounded binary comparison;
+it does not claim an additional end-to-end sample run.
 
 ## Remaining work
 
