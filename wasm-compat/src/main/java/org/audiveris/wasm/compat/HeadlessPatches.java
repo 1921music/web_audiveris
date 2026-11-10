@@ -19,6 +19,15 @@ final class HeadlessPatches {
         Map<MethodDescriptor, Program> original = new HashMap<>();
         for (MethodHolder method : cls.getMethods()) { original.put(method.getDescriptor(), method.getProgram()); }
         switch (cls.getName()) {
+            case "org.audiveris.omr.score.DrumSet":
+                if (cls.getMethod(new MethodDescriptor("readEntries", obj("java.io.InputStream"), obj("org.audiveris.omr.score.DrumSet$DrumSetEntries")))==null
+                        || cls.getMethod(new MethodDescriptor("openConfiguration", obj("java.net.URI"), obj("java.io.InputStream")))==null) {
+                    throw new IllegalStateException("Review drum configuration boundaries");
+                }
+                StandardApiPatches.delegate(cls,"readEntries","readEntries",WorkerDrumXml.class.getName(),true,true,
+                        obj("java.io.InputStream"),obj("org.audiveris.omr.score.DrumSet$DrumSetEntries"));
+                StandardApiPatches.delegate(cls,"openConfiguration","openConfiguration",WorkerDrumXml.class.getName(),true,true,
+                        obj("java.net.URI"),obj("java.io.InputStream")); break;
             case "org.audiveris.omr.sheet.note.DistancesBuilder":
                 if (cls.getMethod(new MethodDescriptor("erasedBuffer", obj("ij.process.ByteProcessor"), obj("ij.process.ByteProcessor"))) == null) {
                     throw new IllegalStateException("Review distance raster boundary");

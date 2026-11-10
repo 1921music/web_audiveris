@@ -402,15 +402,15 @@ are under `build/wasm-compat/probe`; audit outputs are under
 
 ## Verified result
 
-The current audit covers **9,040 methods**, including **8,619 method bodies**. Every original
+The current audit covers **9,042 methods**, including **8,621 method bodies**. Every original
 **9,001-method / 8,588-body** root is preserved; 18 scale-context/adapter methods and the memory-book
 factory, nine initial pixel-model methods, one bracket-geometry seam, three staff-free raster methods,
-two model-construction methods, two shared run-raster methods and three raw-distance preparation methods are added explicitly.
+two model-construction methods, two shared run-raster methods and three raw-distance preparation methods and two drum configuration boundaries are added explicitly.
 With generic compatibility and the opt-in Worker/presentation substitutions enabled, diagnostics
 fall from **1,276 to 494** (782 fewer); unique messages fall from **336 to 203**.
 The stages are **1,276 → 789 → 702 → 609 → 545 → 544 → 525 → 524 → 495 → 494**. The 544/220 result is the
 generic compatibility layer alone; 525/217 is the initial Worker boundary, 524/216 is the
-stage-6 boundary, 495/204 is the stage-7–9 result, and **494/203** is the current stage-18 result (unchanged from stage 10).
+stage-6 boundary, 495/204 is the stage-7–9 result, and **494/203** is the current stage-19 result (unchanged from stage 10).
 Remaining exclusion candidates are **75 classes / 242 used input methods inside those classes**,
 or **310 methods** when method-only exclusion rules are also included.
 There are no remaining missing-API messages for the generic layer's targeted APIs. The broad fast
@@ -938,6 +938,43 @@ Archive using `export_headless.py --stage 18 --distance --allow-added-roots`.
 strict compilation with **94 diagnostics**. Representative paths reach native font/AWT/image
 code through template generation, and JAXB through `DrumSet` loading. This is a diagnostic
 baseline, not a successful HEADS build; its full paths are retained in the raw archive.
+
+## Drum configuration (stage 19)
+
+`DrumSet` separates XML decoding and URI opening into two small methods. Its JVM defaults still
+use JAXB and the original resource/user-file order. Worker compilation replaces only these two
+methods: kxml2 constructs the existing XML data objects, then the original `loadConfiguration`
+performs all additions, replacements and removals. The DTOs and three existing attribute adapters
+are accessible to the backend, avoiding reflective construction. Export guards compare the
+original merge body, transport loop, attribute adapters and mapping methods against the pinned
+upstream source; the bundled `drum-set.xml` is unchanged.
+
+The optional user overlay is copied into each Wasm instance before use and frozen when loading
+starts. The standard definition uses the existing resource URL backend. With no overlay the
+user-file read reports absence, retaining the original optional-file behavior. A later job with
+different drum configuration uses a fresh instance. No shared mutable mapping is introduced
+between Workers.
+
+**230 XML cases** match pinned JAXB 2.3.1 and the current JVM implementation, including unknown
+elements/attributes, namespaced input, nullable/invalid enum values and XML integer edge cases.
+The original XML integer conversion accepts embedded whitespace/signs and wraps overflow;
+the small decoder retains those behaviors rather than substituting `Integer.parseInt`.
+Node and two Chromium Workers perform **920 matching decodings** and compare complete default
+and overridden maps, including replacement, duplicate entries and removal tombstones. Malformed
+documents are rejected; overlay ownership, freezing, transfer and instance isolation are checked.
+Both the source default for drum-set dumping and an explicit override are exercised.
+The strict drum component has no diagnostics and is **511,232 bytes**; this is not a complete
+engine-size estimate.
+
+The full audit retains every original root and selects **9,042 methods / 8,621 bodies**.
+Its counts remain **494 diagnostics / 203 unique messages**, and **75 classes / 242 class-excluded
+used methods / 310 methods across all exclusion rules**. The focused HEADS diagnostics fall
+from **94 to 92**; JAXB owner diagnostics disappear from that component. Native font/template/image
+dependencies remain, and complete HEADS recognition is still unverified.
+
+Reproduce using `verifyDrumProbe` and `buildHeadsBaselineProbe` through the capped launcher.
+The latter intentionally fails until the remaining HEADS boundaries are implemented. Archive with
+`export_headless.py --stage 19 --drum --allow-added-roots`; small reports live in `drum-results`.
 
 ## Remaining work
 

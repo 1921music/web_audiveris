@@ -170,8 +170,7 @@ public class DrumSet
             final URI uri = uris[i];
 
             try {
-                final URL url = uri.toURL();
-                try (InputStream input = url.openStream()) {
+                try (InputStream input = openConfiguration(uri)) {
                     logger.info("Loading drum set entries from {}", uri);
                     loadConfiguration(input);
                 }
@@ -203,12 +202,7 @@ public class DrumSet
     private void loadConfiguration (InputStream in)
         throws JAXBException
     {
-        if (jaxbContext == null) {
-            jaxbContext = JAXBContext.newInstance(DrumSetEntries.class);
-        }
-
-        final Unmarshaller um = jaxbContext.createUnmarshaller();
-        final DrumSetEntries entries = (DrumSetEntries) um.unmarshal(in);
+        final DrumSetEntries entries = readEntries(in);
 
         for (StaffEntries staffEntries : entries.staffList) {
             final Integer lineCount = staffEntries.lineCount;
@@ -279,6 +273,22 @@ public class DrumSet
                 }
             }
         }
+    }
+
+    /** Configuration transport boundary, retaining the desktop file/resource behavior. */
+    private static InputStream openConfiguration (URI uri) throws IOException
+    {
+        return uri.toURL().openStream();
+    }
+
+    /** XML decoding boundary; merging and removal semantics remain in loadConfiguration. */
+    private static DrumSetEntries readEntries (InputStream in) throws JAXBException
+    {
+        if (jaxbContext == null) {
+            jaxbContext = JAXBContext.newInstance(DrumSetEntries.class);
+        }
+        final Unmarshaller um = jaxbContext.createUnmarshaller();
+        return (DrumSetEntries) um.unmarshal(in);
     }
 
     //~ Static Methods -----------------------------------------------------------------------------
@@ -376,10 +386,10 @@ public class DrumSet
      */
     @XmlAccessorType(XmlAccessType.NONE)
     @XmlRootElement(name = "drum-set")
-    private static class DrumSetEntries
+    public static class DrumSetEntries
     {
         @XmlElement(name = "staff")
-        private final List<StaffEntries> staffList = new ArrayList<>();
+        public final List<StaffEntries> staffList = new ArrayList<>();
     }
 
     //--------------//
@@ -387,7 +397,7 @@ public class DrumSet
     //--------------//
     @XmlAccessorType(XmlAccessType.NONE)
     @XmlRootElement(name = "entry")
-    private static class DrumSetEntry
+    public static class DrumSetEntry
     {
         /**
          * Pitch position.
@@ -520,7 +530,7 @@ public class DrumSet
     /**
      * Class needed to handle the case of a non recognized head motif name.
      */
-    private static class MotifAdapter
+    public static class MotifAdapter
             extends XmlAdapter<String, HeadMotif>
     {
         @Override
@@ -602,7 +612,7 @@ public class DrumSet
     /**
      * Class needed to handle the case of a null pitch-position attribute.
      */
-    private static class PitchAdapter
+    public static class PitchAdapter
             extends XmlAdapter<String, Integer>
     {
         @Override
@@ -626,7 +636,7 @@ public class DrumSet
     //--------------//
     @XmlAccessorType(XmlAccessType.NONE)
     @XmlRootElement(name = "staff")
-    private static class StaffEntries
+    public static class StaffEntries
     {
         @XmlAttribute(name = "line-count")
         public Integer lineCount;
@@ -641,7 +651,7 @@ public class DrumSet
     /**
      * Class needed to handle the case of a non recognized sound name.
      */
-    private static class SoundAdapter
+    public static class SoundAdapter
             extends XmlAdapter<String, DrumSound>
     {
         @Override
