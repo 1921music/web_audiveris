@@ -9,7 +9,7 @@ import org.audiveris.omr.sheet.*;
 
 /** Original GridBuilder algorithms with the pinned upstream scale class first on the JVM classpath. */
 public final class GridOracle {
-    private static boolean headers;
+    private static boolean headers, stems;
     public static void main(String[] args) throws Exception {
         Path scaleOrigin = Path.of(ScaleBuilder.class.getProtectionDomain().getCodeSource().getLocation().toURI()).toRealPath();
         if (!scaleOrigin.equals(Path.of(args[2]).toRealPath())) { throw new AssertionError("Wrong scale reference classpath"); }
@@ -21,13 +21,21 @@ public final class GridOracle {
         JsonNode manifest = mapper.readTree(samples.resolve("manifest.json").toFile());
         List<Map<String, Object>> results = new ArrayList<>();
         RecordingSymbolGeometry geometry = null;
-        headers = args.length > 4 && args[4].equals("headers");
+        stems = args.length > 4 && args[4].equals("stems");
+        headers = stems || (args.length > 4 && args[4].equals("headers"));
         boolean complete = headers || (args.length > 4 && args[4].equals("complete"));
-        if (headers && args.length > 5) {
+        if (headers && args.length > 5 && !args[5].equals("current")) {
             for (Class<?> type : List.of(org.audiveris.omr.sig.inter.AbstractInter.class, org.audiveris.omr.sig.inter.TimeWholeInter.class,
                     org.audiveris.omr.sig.inter.TimeCustomInter.class, org.audiveris.omr.sheet.clef.ClefBuilder.class, org.audiveris.omr.sheet.key.KeyRoi.class)) {
                 Path origin = Path.of(type.getProtectionDomain().getCodeSource().getLocation().toURI()).toRealPath();
                 if (!origin.equals(Path.of(args[5]).toRealPath())) { throw new AssertionError("Wrong original header class: " + type); }
+            }
+        }
+        if (stems && args.length > 6) {
+            for (Class<?> type : List.of(org.audiveris.omr.sheet.stem.StemScaler.class,
+                    org.audiveris.omr.sheet.stem.StemChecker.class, org.audiveris.omr.sheet.stem.VerticalsBuilder.class)) {
+                Path origin = Path.of(type.getProtectionDomain().getCodeSource().getLocation().toURI()).toRealPath();
+                if (!origin.equals(Path.of(args[6]).toRealPath())) { throw new AssertionError("Wrong original stem class: " + type); }
             }
         }
         if (headers) {
@@ -35,7 +43,7 @@ public final class GridOracle {
             org.audiveris.omr.ui.symbol.SymbolGeometry.setProvider(geometry);
             geometry.recordPitchOffsets();
         }
-        Path rasters = output.resolveSibling("no-staff"); if (complete) { Files.createDirectories(rasters); }
+        Path rasters = output.resolveSibling(stems ? "stem-buffers" : "no-staff"); if (complete) { Files.createDirectories(rasters); }
         try {
             JsonNode fixture = compare(samples, "staff", 1024, 300, GridProbe.staffPixels(), mapper, complete, rasters);
             if ((headers ? fixture.path("grid") : fixture).path("staves").size() != 2) { throw new AssertionError("Expected two fixture staves: " + fixture); }
@@ -69,12 +77,12 @@ public final class GridOracle {
     private static JsonNode compare(Path folder, String id, int width, int height, byte[] binary, ObjectMapper mapper, boolean complete, Path rasters) throws Exception {
         RunTable table = new RunTableFactory(Orientation.VERTICAL).createTable(new ByteProcessor(width, height, binary.clone(), null));
         Book book = new Book(folder.resolve("staff-" + id + ".png")); SheetStub stub = new SheetStub(book, 1); book.addStub(stub);
-        JsonNode expected = mapper.readTree(headers ? HeaderProbe.analyze(new Sheet(stub, table)) : GridProbe.analyze(new Sheet(stub, table), complete));
+        JsonNode expected = mapper.readTree(stems ? StemProbe.analyze(new Sheet(stub, table)) : headers ? HeaderProbe.analyze(new Sheet(stub, table)) : GridProbe.analyze(new Sheet(stub, table), complete));
         byte[] expectedPixels = complete && !expected.path("rejected").asBoolean() ? GridProbe.cleanedPixels().clone() : null;
-        JsonNode actual = mapper.readTree(headers ? HeaderProbe.analyze(PixelSheetProbe.create(width, height, binary, id)) : GridProbe.analyze(PixelSheetProbe.create(width, height, binary, id), complete));
+        JsonNode actual = mapper.readTree(stems ? StemProbe.analyze(PixelSheetProbe.create(width, height, binary, id)) : headers ? HeaderProbe.analyze(PixelSheetProbe.create(width, height, binary, id)) : GridProbe.analyze(PixelSheetProbe.create(width, height, binary, id), complete));
         if (expectedPixels != null) {
             if (!Arrays.equals(expectedPixels, GridProbe.cleanedPixels())) { throw new AssertionError("Staff-free pixels differ: " + id); }
-            if (!GridProbe.verifyCleanCache()) { throw new AssertionError("Cache lifecycle"); }
+            if (!stems && !GridProbe.verifyCleanCache()) { throw new AssertionError("Cache lifecycle"); }
             Files.write(rasters.resolve(id + ".binary"), expectedPixels);
         }
         if (!expected.equals(actual)) { throw new AssertionError("Raw picture changes grid geometry: " + id + "\n" + expected + "\n" + actual); }

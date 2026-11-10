@@ -19,6 +19,7 @@ final class HeadlessPatches {
         Map<MethodDescriptor, Program> original = new HashMap<>();
         for (MethodHolder method : cls.getMethods()) { original.put(method.getDescriptor(), method.getProgram()); }
         switch (cls.getName()) {
+            case "org.audiveris.omr.sheet.stem.StemScaler": stemBuffer(cls, context); break;
             case "org.audiveris.omr.math.HiLoPeakFinder": prefixCopies(cls, 1); break;
             case "org.audiveris.omr.sheet.clef.ClefBuilder": grayCopies(cls, 1); prefixCopies(cls, 1); break;
             case "org.audiveris.omr.sheet.key.KeyExtractor": prefixCopies(cls, 1); break;
@@ -220,6 +221,64 @@ final class HeadlessPatches {
             exit.setValueToReturn(result);
         }
         block.add(exit); method.setProgram(program);
+    }
+    private static void stemBuffer(ClassHolder cls, ClassHolderTransformerContext context) {
+        ValueType sheetType = obj("org.audiveris.omr.sheet.Sheet"), pixels = obj("ij.process.ByteProcessor");
+        ValueType flagType = obj("org.audiveris.omr.constant.Constant$Boolean");
+        FieldHolder sheet = cls.getField("sheet"), constants = cls.getField("constants");
+        MethodHolder method = cls.getMethod(new MethodDescriptor("getBuffer", pixels));
+        ClassReader options = context.getHierarchy().getClassSource().get(cls.getName() + "$Constants");
+        FieldReader save = options == null ? null : options.getField("saveStemImage");
+        if (sheet == null || !sheet.getType().equals(sheetType) || constants == null || method == null
+                || method.getProgram() == null || save == null || !save.getType().equals(flagType)) {
+            throw new IllegalStateException("Review StemScaler detached debug image boundary");
+        }
+        int copies = 0, graphics = 0, sources = 0, returns = 0;
+        Variable returnedBuffer = null, sourceKey = null;
+        Map<Variable, Variable> aliases = new IdentityHashMap<>();
+        for (BasicBlock block : method.getProgram().getBasicBlocks()) { for (Instruction instruction : block) {
+            if (instruction instanceof AssignInstruction) {
+                var copy = (AssignInstruction) instruction; aliases.put(copy.getReceiver(), copy.getAssignee());
+            }
+            if (instruction instanceof GetFieldInstruction) {
+                var get = (GetFieldInstruction) instruction;
+                if (get.getField().equals(new FieldReference("org.audiveris.omr.sheet.Picture$SourceKey", "NO_STAFF"))) { sourceKey = get.getReceiver(); }
+            }
+            if (instruction instanceof InvokeInstruction) {
+                var invoke = (InvokeInstruction) instruction; MethodReference target = invoke.getMethod();
+                if (target.equals(new MethodReference("ij.process.ByteProcessor", "getBufferedImage", obj("java.awt.image.BufferedImage")))) { copies++; }
+                if (target.equals(new MethodReference("java.awt.image.BufferedImage", "createGraphics", obj("java.awt.Graphics2D")))) { graphics++; }
+                if (target.equals(new MethodReference("org.audiveris.omr.sheet.Picture", "getSource", obj("org.audiveris.omr.sheet.Picture$SourceKey"), pixels))) {
+                    if (invoke.getArguments().get(0) != sourceKey) { throw new IllegalStateException("Review StemScaler source key"); }
+                    returnedBuffer = invoke.getReceiver(); sources++;
+                }
+            }
+        } }
+        for (BasicBlock block : method.getProgram().getBasicBlocks()) { for (Instruction instruction : block) {
+            if (instruction instanceof ExitInstruction) {
+                Variable value = ((ExitInstruction) instruction).getValueToReturn(); Set<Variable> seen = new HashSet<>();
+                while (aliases.containsKey(value) && seen.add(value)) { value = aliases.get(value); }
+                if (value != returnedBuffer) { throw new IllegalStateException("Review StemScaler returned buffer: " + value + " / " + returnedBuffer); }
+                returns++;
+            }
+        } }
+        if (copies != 1 || graphics != 1 || sources != 1 || returns != 1) { throw new IllegalStateException("Review StemScaler image-copy behavior"); }
+        Program program = new Program(); Variable self = program.createVariable(), owner = program.createVariable();
+        Variable values = program.createVariable(), flag = program.createVariable(), enabled = program.createVariable(), result = program.createVariable();
+        BasicBlock block = program.createBasicBlock();
+        GetFieldInstruction ownerGet = new GetFieldInstruction(); ownerGet.setField(sheet.getReference()); ownerGet.setFieldType(sheetType);
+        ownerGet.setInstance(self); ownerGet.setReceiver(owner); block.add(ownerGet);
+        GetFieldInstruction valuesGet = new GetFieldInstruction(); valuesGet.setField(constants.getReference()); valuesGet.setFieldType(constants.getType());
+        valuesGet.setReceiver(values); block.add(valuesGet);
+        GetFieldInstruction flagGet = new GetFieldInstruction(); flagGet.setField(new FieldReference(options.getName(), "saveStemImage"));
+        flagGet.setFieldType(flagType); flagGet.setInstance(values); flagGet.setReceiver(flag); block.add(flagGet);
+        InvokeInstruction check = new InvokeInstruction(); check.setType(InvocationType.VIRTUAL);
+        check.setMethod(new MethodReference("org.audiveris.omr.constant.Constant$Boolean", "isSet", ValueType.BOOLEAN));
+        check.setInstance(flag); check.setReceiver(enabled); block.add(check);
+        InvokeInstruction call = new InvokeInstruction(); call.setType(InvocationType.SPECIAL);
+        call.setMethod(new MethodReference(HeadlessStemBuffer.class.getName(), "buffer", sheetType, ValueType.BOOLEAN, pixels));
+        call.setArguments(owner, enabled); call.setReceiver(result); block.add(call);
+        ExitInstruction exit = new ExitInstruction(); exit.setValueToReturn(result); block.add(exit); method.setProgram(program);
     }
     private static void prefixCopies(ClassHolder cls, int expected) {
         int replaced = 0;

@@ -410,9 +410,9 @@ With generic compatibility and the opt-in Worker/presentation substitutions enab
 fall from **1,276 to 494** (782 fewer); unique messages fall from **336 to 203**.
 The stages are **1,276 → 789 → 702 → 609 → 545 → 544 → 525 → 524 → 495 → 494**. The 544/220 result is the
 generic compatibility layer alone; 525/217 is the initial Worker boundary, 524/216 is the
-stage-6 boundary, 495/204 is the stage-7–9 result, and **494/203** is the current stage-14 result (unchanged from stage 10).
+stage-6 boundary, 495/204 is the stage-7–9 result, and **494/203** is the current stage-15 result (unchanged from stage 10).
 Remaining exclusion candidates are **75 classes / 242 used input methods inside those classes**,
-or **309 methods** when method-only exclusion rules are also included.
+or **308 methods** when method-only exclusion rules are also included.
 There are no remaining missing-API messages for the generic layer's targeted APIs. The broad fast
 analysis also exposes additional unsupported dependency paths; generic-layer new messages and their
 callers are recorded in `results/new-diagnostics.tsv`, and current headless results in
@@ -763,6 +763,56 @@ Of those 75 classes, 55 have used methods and 20 are linked only as types. These
 full-root counts are unchanged from stage 13; the HEADERS component itself has no compiler diagnostics.
 STEM_SEEDS and later recognition, general browser font measurement/rasterization, OCR and complete
 MusicXML output remain outstanding.
+
+## Stem scaling and vertical seeds (stage 15)
+
+The original `StemScaler.retrieveStemWidth`, `StemChecker` and `VerticalsBuilder` now execute
+after HEADERS. Their source files are unchanged. The JVM reference compiles those three classes
+from `04697c74`, verifies their class origins, and retains the earlier scale/header/bracket/neural
+references. The portable JVM font-query seams produce the same results as that reference.
+
+The first strict stem probe exposed 92 diagnostics through Java2D. Investigation found that
+the pinned ImageJ 1.54p `ByteProcessor.getBufferedImage()` exports a **detached copy**. Upstream
+`StemScaler.getBuffer` paints that copy, then returns the original NO_STAFF processor without
+reading the painted pixels back. This differs from `new ByteProcessor(bufferedImage)`, which
+shares that image's raster. Both directions of each relationship are tested against ImageJ.
+All **43,781,600 recognition pixels** across five real pages and the synthetic fixture remain
+unchanged after the original JVM stem preparation.
+
+Only `StemScaler.getBuffer` is substituted to preserve that current behavior. It returns the
+NO_STAFF processor and avoids unused debug drawing. The compiler checks the expected source,
+image-copy/graphics calls and returned-buffer identity, including local variable copies.
+`saveStemImage` is read from the original `Constant.Boolean` at runtime; requesting it fails
+explicitly until a host debug raster backend exists. It is not silently disabled or hard-coded.
+An independent Wasm instance verifies the configured true case. Other PageCleaner callers and
+rendering algorithms are retained.
+
+TODO: revisit this version-specific boundary if upstream begins copying the painted image back.
+That change would require a real raster backend and a new JVM baseline. Optional JVM graphics
+recording (`testStemTraceJvm`) confirms that observation preserves both outputs and pixels.
+`compare-stem-canvas.cjs` and `testStemCenterJvm` are research tools that apply otherwise detached
+drawing to recognition pixels; their reported differences are **not Canvas precision measurements**
+and neither is the engine's rendering backend.
+
+The strict stem component now has **zero diagnostics**. Across Node and two Chromium Workers,
+the eight images are checked as binary and adaptive-filtered GRAY8 input. Five pages yield
+**1,136 seeds** (190 / 200 / 219 / 285 / 242), with stem main/max thickness **4 / 4** on each page.
+Three low-resolution inputs retain the original rejection. Header decisions, stem scales, seed
+positions/sizes/weights and run-table fingerprints match the pinned JVM: **57,840 numeric
+comparisons**, maximum difference **7.2165e-16**. In addition, **175,126,400 pixel bytes** match
+exactly, including Worker SHA-256 checks. The existing 20 host font measurements suffice.
+The probe is **2,067,995 bytes**; the model remains external. These component sizes do not estimate
+the eventual complete engine, and the tests do not establish throughput.
+The full-root audit remains **9,037 roots / 8,616 bodies**, **494 diagnostics / 203 unique**.
+Remaining candidates are **75 classes / 242 class-excluded used methods / 308 methods across
+all exclusion rules**. The last count falls by one detached debug-image path; class counts remain unchanged.
+
+Reproduce with `verifyStemProbe -I dev/teavm-audit/audit.init.gradle` through the capped launcher.
+Use `-PpixelSamples=/mnt/g/work/20261029/1921music/score_samples` for fresh input preparation.
+Archive using `export_headless.py --stage 15 --stem --allow-added-roots`. Small summaries and
+reference hashes are in `stem-results`; full outputs, images and optional raster research live
+in the ignored stage-15 archive. BEAMS and subsequent recognition, browser font/raster backends,
+OCR and complete MusicXML output remain outstanding.
 
 ## Remaining work
 

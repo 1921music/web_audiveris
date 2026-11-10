@@ -15,6 +15,11 @@ public final class GrayCopyOracle {
         if (image.getRaster().getSample(1, 1, 0) != 123) { throw new AssertionError("Original ImageJ image alias"); }
         image.getRaster().setSample(1, 1, 0, 77);
         if (shared.get(1, 1) != 77) { throw new AssertionError("Original ImageJ processor alias"); }
+        var detached = shared.getBufferedImage();
+        shared.set(1, 1, 19);
+        if (detached.getRaster().getSample(1, 1, 0) != 77) { throw new AssertionError("ImageJ export must copy pixels"); }
+        detached.getRaster().setSample(1, 1, 0, 31);
+        if (shared.get(1, 1) != 19) { throw new AssertionError("ImageJ export shares pixels unexpectedly"); }
         Random random = new Random(61937); long pixels = 0;
         for (int i = 0; i < 512; i++) {
             int width = 5 + random.nextInt(45), height = 5 + random.nextInt(37);
@@ -30,7 +35,11 @@ public final class GrayCopyOracle {
             pixels += initial.length;
         }
         Path output = Path.of(args[0]); Files.createDirectories(output.getParent());
-        Files.writeString(output, "{\"cases\":512,\"pixels\":" + pixels + ",\"nonbinaryBytes\":true,\"extremeOffsets\":true}\n");
+        Path imageJ = Path.of(ByteProcessor.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+        String imageJHash = HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(imageJ)));
+        Files.writeString(output, "{\"cases\":512,\"pixels\":" + pixels + ",\"nonbinaryBytes\":true,\"extremeOffsets\":true,"
+            + "\"prefixCases\":528,\"getBufferedImageDetached\":true,\"bufferedImageConstructorShares\":true,"
+            + "\"imageJJarSha256\":\"" + imageJHash + "\"}\n");
         System.out.println("Raw gray COPY matches original ImageJ: 512 cases / " + pixels + " pixels");
     }
 }
