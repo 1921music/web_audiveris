@@ -1,0 +1,45 @@
+{
+  "neural": {
+    "commit": "04697c74fae431ef8436a9429386957a5cb25993",
+    "path": "app/src/main/java/org/audiveris/omr/math/NeuralNetwork.java",
+    "sha256": "ca88f55cace56a9324fe77cafdcb8ec1e355e972587207d911866310decd7fe9",
+    "classSha256": {
+      "org/audiveris/omr/math/NeuralNetwork$StringArray.class": "934e9f62dbd415d0b1f89cac56452c8c874f4f75956418982cdec7be65fe9659",
+      "org/audiveris/omr/math/NeuralNetwork.class": "0d00320175e4213814b72cf50faeed4ecd3a0c7738a4c2108579c76e4c5ba190"
+    }
+  },
+  "unchangedNeuralMethodSha256": {
+    "private void forward (": "6e4d7e7570167872007e3c11082639a009ccbfd25ec4f7c1af9fdf42b9e316ab",
+    "public double[] run (": "aef38ca83a3feb14bc477ff59aa59682e17edf9e09b3a546f566681f2ec2344e",
+    "private double sigmoid (": "ac530dd03811649c590d00cc30302dc15a8d1d8021aaa1351c3f542fd77248c0"
+  },
+  "unchangedAlgorithmSourceSha256": {
+    "app/src/main/java/org/audiveris/omr/classifier/BasicClassifier.java": "5bfebfe2dfd8b370b6a11b2af2189ba22ea0f27fa6a2bb8a8b59ac21e3915f4c",
+    "app/src/main/java/org/audiveris/omr/classifier/AbstractClassifier.java": "75d5155b9fe2d820e29fd25e647714a8c96e788af2c61a3f5a8819822881c52e",
+    "app/src/main/java/org/audiveris/omr/classifier/MixGlyphDescriptor.java": "c56dc63ea849b16e5ca383981eb51c84d8dc8b677451efde7c2596ed49c3d2b8",
+    "app/src/main/java/org/audiveris/omr/math/PoorManAlgebra.java": "7541a4ece60ff6d98fda29994b4d47bba25e3013558b3f6c61f61422a0da015a",
+    "app/src/main/java/org/audiveris/omr/glyph/Glyph.java": "b1ca2d3f618f4aa822528cc70e03a967ffb836d666c7c9ad6a1aed4808caca15",
+    "app/src/main/java/org/audiveris/omr/glyph/GlyphFactory.java": "00af72a5f9c3def2dd4fb1f2ceed5cf5ea57390bc268afe8f28d862ee516e642",
+    "app/src/main/java/org/audiveris/omr/moments/ARTMoments.java": "45c566510afa8e5a86899e9cc7f19f0409706663b1244c6c33ac8b7b77db5bde",
+    "app/src/main/java/org/audiveris/omr/moments/AbstractExtractor.java": "ede5fb84b63971c6f7cc609ba569e439fec5223976f1d30642089bb3b66edda8",
+    "app/src/main/java/org/audiveris/omr/moments/BasicARTExtractor.java": "6132fe76b837f21c760f8291bba1f6c392d5db5bec4de636d052813faaa7a65f",
+    "app/src/main/java/org/audiveris/omr/moments/BasicARTMoments.java": "a1734fc932fefdfc54f188afe58fbde4290aaf4cf9d76b498b049e1d9bd91f14",
+    "app/src/main/java/org/audiveris/omr/moments/BasicLUT.java": "d7ad98ca64c1bf203b3d5914cc3bc8e34cdc9e49e875140a17fef0c4c6b43e66",
+    "app/src/main/java/org/audiveris/omr/moments/BasicLegendreExtractor.java": "3223a4192f36c6c2f183d9781654c1da5dd9293507692396b3d2479e74461ef2",
+    "app/src/main/java/org/audiveris/omr/moments/BasicLegendreMoments.java": "be939802ef18b18cb85cfa5d3965430c6e966feeb1e10c884d442b7d8087ac88",
+    "app/src/main/java/org/audiveris/omr/moments/GeometricMoments.java": "819210dd4af23de39f515aa1a47aad4982c9decbbe7339bb622a7ea17bf7fc8d",
+    "app/src/main/java/org/audiveris/omr/moments/LUT.java": "fc8156a34b98761eef0f84c54e3c86666472b0963d2d1fb633abab93854f9c69",
+    "app/src/main/java/org/audiveris/omr/moments/LegendreMoments.java": "9dac0cc06fa3a97b521c92ae24c3bfaa4582375124094f5cd16edcd6fe13ace0",
+    "app/src/main/java/org/audiveris/omr/moments/MomentsExtractor.java": "666ba7b9b1c0049fbdb8fa8cfd306cde782d6f282dfb4e44e6161412b8d3dee1",
+    "app/src/main/java/org/audiveris/omr/moments/OrthogonalMoments.java": "08cffce919d3ebce60fbf6c728618d53c2e2955130d7a991010d509e4fe7fc21",
+    "app/src/main/java/org/audiveris/omr/moments/QuantizedARTMoments.java": "1c6a14ea4b122947331200c0abf9dcb50702d6078ca47b96aab4b8ff22f66210",
+    "app/src/main/java/org/audiveris/omr/moments/package-info.java": "1c844e55609ef7f2f6d6026ec54dd8c3802e9d6c9e56ad16fa34508569caa622"
+  },
+  "scope": "Pinned original NeuralNetwork and unchanged classifier/features/moments algorithms; shared current model runtime",
+  "model": {
+    "path": "app/res/basic-classifier.zip",
+    "sha256": "327194c47116a8ebf5771d04cea08a4e563ec93d2955e1efd990a54a9245f29e",
+    "bytes": 396100,
+    "matchesOriginalBaseline": true
+  }
+}

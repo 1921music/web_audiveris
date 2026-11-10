@@ -24,6 +24,7 @@ org.audiveris.omr.sheet.Sheet.reset(Lorg/audiveris/omr/step/OmrStep;)V	headless-
 org.audiveris.omr.sheet.Sheet.setBinary(Lorg/audiveris/omr/run/RunTable;)V	headless-gui-guard	7	6	32	29
 org.audiveris.omr.sheet.Sheet.setImage(Ljava/awt/image/BufferedImage;Z)V	headless-gui-guard	14	12	77	70
 org.audiveris.omr.classifier.AbstractClassifier$Constants.getUnitName()Ljava/lang/String;	platform-method	0	1	0	2
+org.audiveris.omr.classifier.BasicClassifier.load([Ljava/lang/String;)Lorg/audiveris/omr/classifier/AbstractClassifier$Network;	platform-method	25	1	205	2
 org.audiveris.omr.classifier.BasicClassifier$Constants.getUnitName()Ljava/lang/String;	platform-method	0	1	0	2
 ij.process.ImageProcessor.<init>()V	imagej-pixel-constructor-without-desktop-font	2	2	35	35
 ij.process.ImageProcessor.setupFontMetrics()V	imagej-pixel-constructor-without-desktop-font	10	10	58	61

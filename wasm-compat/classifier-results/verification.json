@@ -1,0 +1,46 @@
+{
+  "node": "v24.22.2",
+  "chromium": "158.0.8127.18",
+  "nodeInstances": 2,
+  "workers": 2,
+  "pages": 6,
+  "glyphs": 164,
+  "comparedNumbers": 225272,
+  "portableJvmComparisons": 62392,
+  "wasmComparisons": 162880,
+  "maxDifference": 3.747002708109903e-15,
+  "gradeTolerance": 2e-13,
+  "featureRelativeTolerance": 1e-12,
+  "modelBytes": 396100,
+  "modelSha256": "327194c47116a8ebf5771d04cea08a4e563ec93d2955e1efd990a54a9245f29e",
+  "modelExternalToWasm": true,
+  "modelMetadata": "110:149:149:160:0.1:0.9:1.0E-4",
+  "portableWeightsExactJvm": true,
+  "portableNormsExactJvm": true,
+  "topClassesMatch": true,
+  "invalidModelRejected": true,
+  "invalidStdAndDimensionsRejected": true,
+  "modelArrayCopies": true,
+  "failedInstallPreservesModel": true,
+  "modelFrozen": true,
+  "independentInstances": true,
+  "hostTransfer": true,
+  "wasmBytes": 814106,
+  "nodeTimings": [
+    {
+      "instantiateMs": 27.40432499999997,
+      "configureMs": 127.12459900000005,
+      "validationMs": 100.66891699999996,
+      "kernelMs": 23.751463000000058,
+      "pagesMs": 1401.288505
+    },
+    {
+      "instantiateMs": 29.041960000000017,
+      "configureMs": 137.14694900000018,
+      "validationMs": 103.59467699999959,
+      "kernelMs": 22.13584000000037,
+      "pagesMs": 0.09806600000001708
+    }
+  ],
+  "limitation": "Classifier component; full HEADERS and later recognition steps are unverified"
+}

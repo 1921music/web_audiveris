@@ -1,0 +1,50 @@
+[
+  {
+    "sha256": "0b20da235099764bc7fb23622c12772462e9c81bb63c2b892498cea172da39a3",
+    "glyphLimit": 32,
+    "height": 300,
+    "width": 1024,
+    "id": "staff",
+    "interline": 12
+  },
+  {
+    "sha256": "06a870240c81b342e6bb6f89afdeba4e3353d85c282dce7e903e995d3ae75772",
+    "glyphLimit": 32,
+    "height": 3506,
+    "width": 2480,
+    "id": "00",
+    "interline": 21
+  },
+  {
+    "sha256": "3bf828c7421ca07779773f12bc2525597f1e41bf2125fc9a41e08c308bb89e6c",
+    "glyphLimit": 32,
+    "height": 3506,
+    "width": 2480,
+    "id": "01",
+    "interline": 21
+  },
+  {
+    "sha256": "4d906a12674d329750a7d417f680ece689bfdb269ea01336b989994e63c25c55",
+    "glyphLimit": 32,
+    "height": 3506,
+    "width": 2480,
+    "id": "02",
+    "interline": 21
+  },
+  {
+    "sha256": "618656a2bd4402faa94faff0be7bd01302464e19468cefd2254602d14e231b0d",
+    "glyphLimit": 32,
+    "height": 3506,
+    "width": 2480,
+    "id": "03",
+    "interline": 21
+  },
+  {
+    "sha256": "5cee0d5c4bda2a19a91aad4f4e3a4dc649d410184c38b07f8dce499d5200dd8b",
+    "glyphLimit": 32,
+    "height": 3506,
+    "width": 2480,
+    "id": "04",
+    "interline": 21
+  }
+]
