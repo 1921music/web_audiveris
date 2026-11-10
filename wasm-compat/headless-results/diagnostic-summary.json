@@ -1,13 +1,13 @@
 {
   "roots": {
     "classes": 1170,
-    "methods": 9053,
-    "methodsWithBody": 8630,
+    "methods": 9054,
+    "methodsWithBody": 8631,
     "nativeMethods": 0,
-    "usedMethods": 9053,
-    "analyzedBodies": 8630,
+    "usedMethods": 9054,
+    "analyzedBodies": 8631,
     "byCategory": {
-      "engine": 9053
+      "engine": 9054
     }
   },
   "diagnostics": 494,
@@ -36,8 +36,8 @@
     "unattributed": 2
   },
   "callGraph": {
-    "callers": 73331,
-    "edges": 1565400
+    "callers": 73332,
+    "edges": 1565408
   },
   "apis": [
     {
@@ -108,11 +108,11 @@
         "engine-side"
       ],
       "examples": [
+        "java.nio.DirectByteBuffer.address()J @ java/nio/DirectByteBuffer.java:323",
         "java.nio.DirectByteBuffer.asCharBuffer()Ljava/nio/CharBuffer; @ java/nio/DirectByteBuffer.java:622",
         "java.nio.DirectByteBuffer.asCharBuffer()Ljava/nio/CharBuffer; @ java/nio/DirectByteBuffer.java:630",
         "java.nio.DirectByteBuffer.asCharBuffer()Ljava/nio/CharBuffer; @ java/nio/DirectByteBuffer.java:624",
-        "java.nio.DirectByteBuffer.asIntBuffer()Ljava/nio/IntBuffer; @ java/nio/DirectByteBuffer.java:818",
-        "java.nio.DirectByteBuffer.asIntBuffer()Ljava/nio/IntBuffer; @ java/nio/DirectByteBuffer.java:826"
+        "java.nio.DirectByteBuffer.asIntBuffer()Ljava/nio/IntBuffer; @ java/nio/DirectByteBuffer.java:818"
       ]
     },
     {
@@ -303,11 +303,11 @@
         "engine-side"
       ],
       "examples": [
+        "java.nio.DirectByteBuffer.address()J @ java/nio/DirectByteBuffer.java:316",
         "java.nio.DirectByteBuffer.get()B @ java/nio/DirectByteBuffer.java:332",
         "java.nio.DirectByteBuffer.get(I)B @ java/nio/DirectByteBuffer.java:340",
         "java.nio.DirectByteBuffer.put(B)Ljava/nio/ByteBuffer; @ java/nio/DirectByteBuffer.java:360",
-        "java.nio.DirectByteBuffer.compact()Ljava/nio/MappedByteBuffer; @ java/nio/DirectByteBuffer.java:391",
-        "java.nio.DirectByteBuffer.address()J @ java/nio/DirectByteBuffer.java:316"
+        "java.nio.DirectByteBuffer.compact()Ljava/nio/MappedByteBuffer; @ java/nio/DirectByteBuffer.java:391"
       ]
     },
     {

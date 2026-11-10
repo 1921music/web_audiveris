@@ -1,20 +1,10 @@
 {
   "identicalOriginalRoots": false,
   "originalRootSubsetPreserved": true,
-  "rootCount": 9053,
-  "baselineRootCount": 9042,
+  "rootCount": 9054,
+  "baselineRootCount": 9053,
   "addedRoots": [
-    "org.audiveris.omr.image.TemplateFactory$DefaultSource.<clinit>()V",
-    "org.audiveris.omr.image.TemplateFactory$DefaultSource.<init>()V",
-    "org.audiveris.omr.image.TemplateFactory$NativeSource.<init>()V",
-    "org.audiveris.omr.image.TemplateFactory$NativeSource.build(Lorg/audiveris/omr/glyph/Shape;Lorg/audiveris/omr/ui/symbol/MusicFamily;I)Lorg/audiveris/omr/image/Template;",
-    "org.audiveris.omr.image.TemplateFactory$NativeSource.keyPoints(Lorg/audiveris/omr/glyph/Shape;Lorg/audiveris/omr/ui/symbol/MusicFamily;I)Ljava/util/List;",
-    "org.audiveris.omr.image.TemplateFactory$Source.build(Lorg/audiveris/omr/glyph/Shape;Lorg/audiveris/omr/ui/symbol/MusicFamily;I)Lorg/audiveris/omr/image/Template;",
-    "org.audiveris.omr.image.TemplateFactory$Source.keyPoints(Lorg/audiveris/omr/glyph/Shape;Lorg/audiveris/omr/ui/symbol/MusicFamily;I)Ljava/util/List;",
-    "org.audiveris.omr.image.TemplateFactory.resourceProfile()[D",
-    "org.audiveris.omr.image.TemplateFactory.setSource(Lorg/audiveris/omr/image/TemplateFactory$Source;)V",
-    "org.audiveris.omr.image.TemplateFactory.source()Lorg/audiveris/omr/image/TemplateFactory$Source;",
-    "org.audiveris.omr.image.TemplateFactory.templateImagesRequested()Z"
+    "org.audiveris.omr.sheet.PixelPicture.discardImage(Lorg/audiveris/omr/sheet/Picture$ImageKey;)V"
   ],
   "baselineDiagnostics": 494,
   "patchedDiagnostics": 494,
@@ -51,8 +41,8 @@
   },
   "platformSubstitutionsEnabled": true,
   "modifiedMethods": 518,
-  "removedDirectCallsFromModifiedMethods": 1,
-  "addedDirectCallsFromModifiedMethods": 4,
+  "removedDirectCallsFromModifiedMethods": 0,
+  "addedDirectCallsFromModifiedMethods": 0,
   "excludedClassesLinked": {
     "before": 75,
     "after": 75

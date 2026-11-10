@@ -1,6 +1,1 @@
 change	caller	callee
-removed	org.audiveris.omr.image.Template.getForegroundPixels(Ljava/awt/Rectangle;Lij/process/ByteProcessor;Z)Ljava/util/List;	ij.process.ByteProcessor.dilate()V
-added	org.audiveris.omr.image.Template.getForegroundPixels(Ljava/awt/Rectangle;Lij/process/ByteProcessor;Z)Ljava/util/List;	org.audiveris.wasm.compat.platform.TemplateDilation.dilate(Lij/process/ByteProcessor;)V
-added	org.audiveris.omr.image.TemplateFactory.source()Lorg/audiveris/omr/image/TemplateFactory$Source;	org.audiveris.omr.image.TemplateFactory.<clinit>()V
-added	org.audiveris.omr.image.TemplateFactory.source()Lorg/audiveris/omr/image/TemplateFactory$Source;	org.audiveris.wasm.compat.platform.WorkerTemplates.<clinit>()V
-added	org.audiveris.omr.image.TemplateFactory.source()Lorg/audiveris/omr/image/TemplateFactory$Source;	org.audiveris.wasm.compat.platform.WorkerTemplates.source()Lorg/audiveris/omr/image/TemplateFactory$Source;

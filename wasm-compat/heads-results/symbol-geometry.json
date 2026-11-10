@@ -1,0 +1,161 @@
+[ {
+  "values" : [ -0.421875, -22.015625, 57.875, 75.359375 ],
+  "shape" : "F_CLEF",
+  "kind" : 0,
+  "num" : 0,
+  "den" : 0,
+  "family" : "Bravura",
+  "interline" : 21
+}, {
+  "values" : [ 0.0, -92.234375, 56.359375, 147.5 ],
+  "shape" : "G_CLEF",
+  "kind" : 0,
+  "num" : 0,
+  "den" : 0,
+  "family" : "Bravura",
+  "interline" : 21
+}, {
+  "values" : [ 1.6875, -21.078125, 36.109375, 42.078125 ],
+  "shape" : "TIME_FOUR",
+  "kind" : 0,
+  "num" : 0,
+  "den" : 0,
+  "family" : "Bravura",
+  "interline" : 21
+}, {
+  "values" : [ 1.6875, -20.921875, 33.671875, 41.921875 ],
+  "shape" : "TIME_SEVEN",
+  "kind" : 0,
+  "num" : 0,
+  "den" : 0,
+  "family" : "Bravura",
+  "interline" : 21
+}, {
+  "values" : [ 1.6875, -21.078125, 33.09375, 42.0 ],
+  "shape" : "TIME_SIX",
+  "kind" : 0,
+  "num" : 0,
+  "den" : 0,
+  "family" : "Bravura",
+  "interline" : 21
+}, {
+  "values" : [ 1.6875, -20.921875, 32.0, 42.0 ],
+  "shape" : "TIME_THREE",
+  "kind" : 0,
+  "num" : 0,
+  "den" : 0,
+  "family" : "Bravura",
+  "interline" : 21
+}, {
+  "values" : [ 1.6875, -21.34375, 34.09375, 42.9375 ],
+  "shape" : "TIME_TWO",
+  "kind" : 0,
+  "num" : 0,
+  "den" : 0,
+  "family" : "Bravura",
+  "interline" : 21
+}, {
+  "values" : [ -0.038840011073927594, -0.13394309933117415, 0.0, 0.0 ],
+  "shape" : "F_CLEF",
+  "kind" : 1,
+  "num" : 0,
+  "den" : 0,
+  "family" : "Bravura",
+  "interline" : 21
+}, {
+  "values" : [ 0.0020572508284535385, 0.018883063668162947, 0.0, 0.0 ],
+  "shape" : "G_CLEF",
+  "kind" : 1,
+  "num" : 0,
+  "den" : 0,
+  "family" : "Bravura",
+  "interline" : 21
+}, {
+  "values" : [ 36.0, 86.0, 0.0, 0.0 ],
+  "shape" : "TIME_FOUR_FOUR",
+  "kind" : 2,
+  "num" : 4,
+  "den" : 4,
+  "family" : "Bravura",
+  "interline" : 21
+}, {
+  "values" : [ 36.0, 86.0, 0.0, 0.0 ],
+  "shape" : "TIME_THREE_FOUR",
+  "kind" : 2,
+  "num" : 3,
+  "den" : 4,
+  "family" : "Bravura",
+  "interline" : 21
+}, {
+  "values" : [ 1.0559375, 0.0, 0.0, 0.0 ],
+  "shape" : "FLAT",
+  "kind" : 3,
+  "num" : 0,
+  "den" : 0,
+  "family" : "Bravura",
+  "interline" : 50
+}, {
+  "values" : [ -1.491875, 0.0, 0.0, 0.0 ],
+  "shape" : "F_CLEF",
+  "kind" : 3,
+  "num" : 0,
+  "den" : 0,
+  "family" : "Bravura",
+  "interline" : 50
+}, {
+  "values" : [ -0.56, 0.0, 0.0, 0.0 ],
+  "shape" : "F_CLEF_8VA",
+  "kind" : 3,
+  "num" : 0,
+  "den" : 0,
+  "family" : "Bravura",
+  "interline" : 50
+}, {
+  "values" : [ -1.9278125, 0.0, 0.0, 0.0 ],
+  "shape" : "F_CLEF_8VB",
+  "kind" : 3,
+  "num" : 0,
+  "den" : 0,
+  "family" : "Bravura",
+  "interline" : 50
+}, {
+  "values" : [ -0.9759375, 0.0, 0.0, 0.0 ],
+  "shape" : "F_CLEF_SMALL",
+  "kind" : 3,
+  "num" : 0,
+  "den" : 0,
+  "family" : "Bravura",
+  "interline" : 50
+}, {
+  "values" : [ 1.76, 0.0, 0.0, 0.0 ],
+  "shape" : "G_CLEF",
+  "kind" : 3,
+  "num" : 0,
+  "den" : 0,
+  "family" : "Bravura",
+  "interline" : 50
+}, {
+  "values" : [ 2.648125, 0.0, 0.0, 0.0 ],
+  "shape" : "G_CLEF_8VA",
+  "kind" : 3,
+  "num" : 0,
+  "den" : 0,
+  "family" : "Bravura",
+  "interline" : 50
+}, {
+  "values" : [ 0.88, 0.0, 0.0, 0.0 ],
+  "shape" : "G_CLEF_8VB",
+  "kind" : 3,
+  "num" : 0,
+  "den" : 0,
+  "family" : "Bravura",
+  "interline" : 50
+}, {
+  "values" : [ 1.008125, 0.0, 0.0, 0.0 ],
+  "shape" : "G_CLEF_SMALL",
+  "kind" : 3,
+  "num" : 0,
+  "den" : 0,
+  "family" : "Bravura",
+  "interline" : 50
+} ]
