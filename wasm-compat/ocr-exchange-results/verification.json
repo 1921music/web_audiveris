@@ -1,0 +1,16 @@
+{
+  "node": "v24.22.2",
+  "chromium": "158.0.8127.18",
+  "nodeInstances": 2,
+  "workers": 2,
+  "contract": "OCR exchange contracts: 732",
+  "workerIsolation": true,
+  "asynchronousRoundTrip": true,
+  "staleAndDuplicateRepliesRejected": true,
+  "cancellationTerminal": true,
+  "emptyAndFailureDistinct": true,
+  "pixelSnapshotsOwned": true,
+  "wasmBytes": 39509,
+  "wasmSha256": "3b534a360ae298024d84dcbab224e11f169882b592d976c34dbb937cf08c49c5",
+  "limitation": "OCR transport/lifecycle component only; TEXTS raster cleanup, backend OCR and result ingestion are not yet integrated"
+}

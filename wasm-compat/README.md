@@ -1206,11 +1206,14 @@ This component is not yet connected to `TextsStep`: the page raster cleaner, fon
 host backend adapter and conversion into original `TextLine` objects remain separate work.
 `verifyOcrExchangeProbe` checks its lifecycle in JVM, Node and independent Chromium Workers,
 including actual event-loop gaps between requesting, cancelling and responding.
-**Verification pending:** the initial build was interrupted by WSL file-I/O stalls. After
-`wsl --shutdown`, a fresh instance failed with `Wsl/Service/CreateInstance/ERROR_TIMEOUT`;
-restarting `WslService` requires administrator privileges unavailable to this process.
-Only the JavaScript verifier syntax and whitespace checks have passed for this new component.
-The preceding stage-24 cue-beam runtime evidence is complete and unaffected.
+After the user restarted the WSL service, all **732 lifecycle/ownership checks** pass in the JVM,
+two Node module instances and two independent Chromium Workers. The Worker checks include separate
+message/event-loop turns, cancellation and late replies after replacing an execution generation.
+The standalone component is **39,509 bytes**; this is not an OCR backend or engine size estimate.
+Reports and source revision are in `ocr-exchange-results`, with runnable artifacts in
+`wsl-artifacts/wasm-components/ocr-exchange`. The shared **8 CPU / 8 GiB / no swap** limits remain
+in force, with no cgroup OOM or hard-limit events. TEXTS integration and recognition quality remain
+unverified by this lifecycle test.
 
 Backend details must be checked rather than inferred from the library name. Tesseract.js requires
 explicit [`blocks` output](https://github.com/naptha/tesseract.js/blob/master/docs/api.md) for its
