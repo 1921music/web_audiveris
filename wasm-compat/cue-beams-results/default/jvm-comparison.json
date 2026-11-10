@@ -1,0 +1,9 @@
+{
+  "originalAndPortableJvmExact": true,
+  "originalSha256": "c731e3352cbdc8319e0d804a47795f400f7f7e81f86ea0102263a57e30879427",
+  "portableSha256": "18743bf5ae5cffbf25275ce7978f2cde1c8655a5036afb832eabee4cbf7d3203",
+  "cueMode": "default",
+  "activePositiveSampleChecked": false,
+  "originalAndPortableRastersExact": true,
+  "workerResultsComparedPerImage": true
+}

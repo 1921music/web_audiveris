@@ -1,0 +1,14 @@
+{
+  "commit": "04697c74fae431ef8436a9429386957a5cb25993",
+  "sourceSha256": {
+    "app/src/main/java/org/audiveris/omr/sheet/beam/CueBeamsStep.java": "3e6e91ed47fb43243275e903d748fd61f6e0fc9a6ea7a0a96375ee952995d2d9"
+  },
+  "classSha256": {
+    "org/audiveris/omr/sheet/beam/CueBeamsStep$Constants.class": "b1f43a5f28b7d529c2745af933db6e9a7ba59035d686fe2f9c79570a4ddd51ca",
+    "org/audiveris/omr/sheet/beam/CueBeamsStep$Context.class": "bea03686aec038623e0248abc630563b3dc525597d269b050446ad56a6ed1866",
+    "org/audiveris/omr/sheet/beam/CueBeamsStep.class": "dc090244688b173377e8377795a7df3f2faa73cf2329924075c8e135dd6eda6d"
+  },
+  "unchangedSourceSha256": {
+    "app/src/main/java/org/audiveris/omr/sheet/beam/CueBeamsStep.java": "3e6e91ed47fb43243275e903d748fd61f6e0fc9a6ea7a0a96375ee952995d2d9"
+  }
+}

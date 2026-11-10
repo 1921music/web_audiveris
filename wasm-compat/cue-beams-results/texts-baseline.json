@@ -1,0 +1,7 @@
+{
+  "compiled": false,
+  "diagnostics": 111,
+  "runtimeVerified": false,
+  "rawArtifacts": "wsl-artifacts/wasm-headless/stage24/texts-baseline-probe",
+  "limitation": "Original TEXTS entry dependency discovery only; raster cleanup, font metrics and asynchronous OCR remain to be implemented"
+}
