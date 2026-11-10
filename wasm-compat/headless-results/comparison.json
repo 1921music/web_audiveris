@@ -1,12 +1,9 @@
 {
-  "identicalOriginalRoots": false,
+  "identicalOriginalRoots": true,
   "originalRootSubsetPreserved": true,
   "rootCount": 9037,
-  "baselineRootCount": 9035,
-  "addedRoots": [
-    "org.audiveris.omr.image.RunTableRaster.<init>()V",
-    "org.audiveris.omr.image.RunTableRaster.erase(Lij/process/ByteProcessor;Lorg/audiveris/omr/run/RunTable;II)V"
-  ],
+  "baselineRootCount": 9037,
+  "addedRoots": [],
   "baselineDiagnostics": 494,
   "patchedDiagnostics": 494,
   "diagnosticReduction": 0,
@@ -41,16 +38,16 @@
     "unattributed": 2
   },
   "platformSubstitutionsEnabled": true,
-  "modifiedMethods": 510,
-  "removedDirectCallsFromModifiedMethods": 73,
-  "addedDirectCallsFromModifiedMethods": 16,
+  "modifiedMethods": 511,
+  "removedDirectCallsFromModifiedMethods": 250,
+  "addedDirectCallsFromModifiedMethods": 1,
   "excludedClassesLinked": {
     "before": 75,
     "after": 75
   },
   "excludedUsedMethods": {
     "before": 309,
-    "after": 309
+    "after": 308
   },
   "usedMethodsInsideExcludedClasses": {
     "before": 242,

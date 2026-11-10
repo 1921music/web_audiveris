@@ -1,0 +1,45 @@
+{
+  "imageJ": "1.54p",
+  "imageJJarSha256": "2e1a09961dfb41cee66ddc821b2577a41a072566ce45a49bae69267099741e20",
+  "pages": [
+    {
+      "id": "00",
+      "bytes": 8694880,
+      "sha256": "06a870240c81b342e6bb6f89afdeba4e3353d85c282dce7e903e995d3ae75772",
+      "unchanged": true
+    },
+    {
+      "id": "01",
+      "bytes": 8694880,
+      "sha256": "3bf828c7421ca07779773f12bc2525597f1e41bf2125fc9a41e08c308bb89e6c",
+      "unchanged": true
+    },
+    {
+      "id": "02",
+      "bytes": 8694880,
+      "sha256": "4d906a12674d329750a7d417f680ece689bfdb269ea01336b989994e63c25c55",
+      "unchanged": true
+    },
+    {
+      "id": "03",
+      "bytes": 8694880,
+      "sha256": "618656a2bd4402faa94faff0be7bd01302464e19468cefd2254602d14e231b0d",
+      "unchanged": true
+    },
+    {
+      "id": "04",
+      "bytes": 8694880,
+      "sha256": "5cee0d5c4bda2a19a91aad4f4e3a4dc649d410184c38b07f8dce499d5200dd8b",
+      "unchanged": true
+    },
+    {
+      "id": "staff",
+      "bytes": 307200,
+      "sha256": "0b20da235099764bc7fb23622c12772462e9c81bb63c2b892498cea172da39a3",
+      "unchanged": true
+    }
+  ],
+  "comparedBytes": 43781600,
+  "scope": "Native StemScaler returns the unchanged NO_STAFF processor; getBufferedImage exports a detached copy",
+  "debugImageOption": "Original Constant.Boolean read at runtime; true fails explicitly until a host debug raster backend exists"
+}

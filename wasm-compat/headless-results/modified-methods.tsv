@@ -295,6 +295,7 @@ org.audiveris.omr.sheet.stem.StemChecker.addCheckBoard()V	platform-method	2	1	19
 org.audiveris.omr.sheet.stem.VerticalsBuilder.buildVerticals()V	headless-gui-guard	4	3	37	12
 org.audiveris.omr.sheet.stem.StemBuilder$Constants.getUnitName()Ljava/lang/String;	platform-method	0	1	0	2
 org.audiveris.omr.sheet.stem.StemChecker$Constants.getUnitName()Ljava/lang/String;	platform-method	0	1	0	2
+org.audiveris.omr.sheet.stem.StemScaler.getBuffer()Lij/process/ByteProcessor;	platform-method	7	1	108	6
 org.audiveris.omr.sheet.stem.StemScaler$HistoKeeper.writePlot(Lorg/audiveris/omr/sheet/Scale$StemScale;)V	platform-method	2	1	51	2
 org.audiveris.omr.sheet.stem.StemScaler$Constants.getUnitName()Ljava/lang/String;	platform-method	0	1	0	2
 org.audiveris.omr.sheet.stem.StemSeedsStep.displayUI(Lorg/audiveris/omr/step/OmrStep;Lorg/audiveris/omr/sheet/Sheet;)V	platform-method	4	1	12	2

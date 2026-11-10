@@ -37,7 +37,7 @@
   },
   "callGraph": {
     "callers": 73290,
-    "edges": 1565152
+    "edges": 1564909
   },
   "apis": [
     {
