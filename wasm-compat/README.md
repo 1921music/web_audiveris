@@ -1223,6 +1223,30 @@ exposes line/word units, so that API alone does not satisfy the required charact
 A backend lacking it must report unsupported capability; word boxes must not be split into invented
 character positions. Missing baseline/font fallback quality is still unverified.
 
+## Pure Java path-fill component
+
+`GrayPathRaster` calls the unchanged JDK `sun.java2d.loops.ProcessPath` scan converter, compiled
+into Wasm, with an owned packed-byte destination and clipped white scanlines. There is no runtime
+reflection or JVM/native call. Its small bridge lives under `src/jdk/java` and is compiled separately
+with the required module export; the rest of the compatibility layer keeps its Java 17 target.
+The native test records the JDK runtime, source hash and class hash in `jdk-reference.json`.
+
+All **512 paths / 890,368 pixels** match Java2D's non-antialiased, thin-stroke `Path2D.Float` fill
+operation exactly on the JVM. Cases include curves, holes, both winding rules, open/closed
+subpaths and clipping. Two Wasm instances in Node compare the complete output bytes, and two
+independent Chromium Workers compare SHA-256 and per-path hashes. The standalone probe is
+**130,038 bytes**; no engine size or throughput conclusion is inferred from that test size.
+Run `verifyGrayPathProbe` through the capped launcher with the audit init script.
+
+This is deliberately a path-fill operation, not a complete Java2D replacement. Initial differential
+tests exposed different rectangle fast-path rounding. Native Java2D also switches to a different
+span-filling implementation when the current stroke is wide, even for `fill`. Those cases, stroke
+outlines, symbol erasure and full TEXTS cleanup remain unverified and must be handled explicitly.
+The component is not yet substituted into the recognition pipeline. TODO: measure cleanup time,
+incremental Wasm size and allocations on actual pages before deciding whether another raster backend
+is worthwhile. Reports are in `gray-path-results`; runnable artifacts are kept under
+`wsl-artifacts/wasm-components/gray-path`.
+
 ## Remaining work
 
 ### TODO: reconsider the XML properties parser
