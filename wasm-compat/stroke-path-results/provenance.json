@@ -1,0 +1,35 @@
+{
+  "sourceCommit": "501774b6d6ffbbe1cd2b783dea3f4e72c638697a",
+  "sourceSha256": {
+    "wasm-compat/src/main/java/org/audiveris/wasm/compat/CompilerPatches.java": "7fae1a820a0c631a5ed9df7589b0ddb83675508d3f028047ae9d724cea0692a2",
+    "wasm-compat/src/main/java/org/audiveris/wasm/compat/StrokePathPatches.java": "6802777147f04c5bd8d6b9dd69957aeee1cee6dfd65f1e183e6f3e8eb2918c89",
+    "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/StrokeRuntime.java": "ff8025226f902a5ebfd9120a8f434f350ffdeaf9e72a3a30f66198e3900f8f61",
+    "wasm-compat/src/jdk/java/org/audiveris/wasm/compat/platform/StrokePaths.java": "ecd6da0b0ac2651fb147592815fda432368bb69f86d364f1b32b7147ba11e713",
+    "wasm-compat/src/jdk/java/org/audiveris/wasm/compat/platform/GrayPathRaster.java": "5028e9476eb6548297e4a0843bdad09e78008e4f4fc447c9609ed5c64a21b98a",
+    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/StrokePathProbe.java": "6bc1d0faa591fbd486976b634e82a16c8c3f31d10692f505471236950e4b9d97",
+    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/StrokePathOracle.java": "5ab61ddb6caaa3ca57d114e4226e5c77db300b19e4c68081aafe4eb78c53df51",
+    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/GrayPathProbe.java": "32116c93e3c0e106360731e50a8976cb54c5359240fdc86ff66305892a49e243",
+    "wasm-compat/tools/verify-stroke-path.cjs": "0da3cb3e0c4a2f7f78132cce63c2ff5967915439ec413f763c64cfc4258fec7b",
+    "dev/teavm-audit/audit.init.gradle": "0a12ee5eb28300dea989cb8b3b0a5fd24a3cb8f5ba2b89912215c97ee2e2d694"
+  },
+  "rawArtifacts": "wsl-artifacts/wasm-components/stroke-path",
+  "cpuMax": "800000 100000",
+  "allowedCpus": "0-7",
+  "memoryMaxBytes": 8589934592,
+  "memorySwapMaxBytes": 0,
+  "memoryEventsLocal": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0",
+  "artifactSha256": {
+    "stroke-path.wasm": "9f8d3d030eaa890528c3428c7f428a63ded6cc474b1f53b524a1fdcbc4dd2002",
+    "stroke-path.wasm-runtime.js": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "verification.json": "f5308a259465bf0a08ae2ef44700dc99c144bf7e4f98345d544c28041f5077e5",
+    "diagnostics.tsv": "fedeabd8a34aba0fa7d1aa2d80ccb94c378549c76c57c6942205c67c8f568b5d",
+    "jvm-reference.txt": "21004210ea122954bd5dbf80f9fbc17d9710a4244325970f2d2ede51d07d3303",
+    "jdk-reference.json": "7a377e5de602606bb360417472e435eccf0328bdc60ffe54231a4cf48ef81c59",
+    "jvm-pixels.binary": "8ecdc79a78cc69b11694f21eef241941d506adb69bb1431fbb23ee8ad8a9f680",
+    "cbrt-reference.txt": "8c43af02f7a5da468de658f97f3c587993cba0b775024e5a517e24a75b377126",
+    "strict-cbrt-reference.txt": "435f039784497c15c18195f70c11eefb50cf20dcc8d93fcdffbdb494d58fdba6",
+    "acos-reference.txt": "55f5b2da36c936fd81b5ace86bb51a2bf9e0b87ba006f8f410602ac8200fd544",
+    "ulp-reference.txt": "da8f7ac6d5a194574f3fddef74f3e69e6713bdf51c8766d78ba9211cede2c14d"
+  },
+  "limitation": "Stroke geometry plus thin-stroke Path2D fill of its outlines; native Region clipping, wide-stroke span generation and TEXTS cleanup are not implemented"
+}
