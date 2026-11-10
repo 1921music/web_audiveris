@@ -9,6 +9,7 @@ import org.audiveris.omr.sheet.*;
 
 /** Original GridBuilder algorithms with the pinned upstream scale class first on the JVM classpath. */
 public final class GridOracle {
+    private static boolean headers;
     public static void main(String[] args) throws Exception {
         Path scaleOrigin = Path.of(ScaleBuilder.class.getProtectionDomain().getCodeSource().getLocation().toURI()).toRealPath();
         if (!scaleOrigin.equals(Path.of(args[2]).toRealPath())) { throw new AssertionError("Wrong scale reference classpath"); }
@@ -19,23 +20,38 @@ public final class GridOracle {
         Path samples = Path.of(args[0]), output = Path.of(args[1]); ObjectMapper mapper = new ObjectMapper();
         JsonNode manifest = mapper.readTree(samples.resolve("manifest.json").toFile());
         List<Map<String, Object>> results = new ArrayList<>();
-        boolean complete = args.length > 4 && args[4].equals("complete");
+        RecordingSymbolGeometry geometry = null;
+        headers = args.length > 4 && args[4].equals("headers");
+        boolean complete = headers || (args.length > 4 && args[4].equals("complete"));
+        if (headers && args.length > 5) {
+            for (Class<?> type : List.of(org.audiveris.omr.sig.inter.AbstractInter.class, org.audiveris.omr.sig.inter.TimeWholeInter.class,
+                    org.audiveris.omr.sig.inter.TimeCustomInter.class, org.audiveris.omr.sheet.clef.ClefBuilder.class, org.audiveris.omr.sheet.key.KeyRoi.class)) {
+                Path origin = Path.of(type.getProtectionDomain().getCodeSource().getLocation().toURI()).toRealPath();
+                if (!origin.equals(Path.of(args[5]).toRealPath())) { throw new AssertionError("Wrong original header class: " + type); }
+            }
+        }
+        if (headers) {
+            geometry = new RecordingSymbolGeometry(org.audiveris.omr.ui.symbol.SymbolGeometry.provider());
+            org.audiveris.omr.ui.symbol.SymbolGeometry.setProvider(geometry);
+            geometry.recordPitchOffsets();
+        }
         Path rasters = output.resolveSibling("no-staff"); if (complete) { Files.createDirectories(rasters); }
         try {
             JsonNode fixture = compare(samples, "staff", 1024, 300, GridProbe.staffPixels(), mapper, complete, rasters);
-            if (fixture.path("staves").size() != 2) { throw new AssertionError("Expected two fixture staves: " + fixture); }
+            if ((headers ? fixture.path("grid") : fixture).path("staves").size() != 2) { throw new AssertionError("Expected two fixture staves: " + fixture); }
             for (JsonNode page : manifest.get("pages")) {
                 String id = page.get("id").asText();
                 JsonNode result = compare(samples, id, page.get("width").asInt(), page.get("height").asInt(),
                         Files.readAllBytes(samples.resolve(id + ".binary")), mapper, complete, rasters);
                 results.add(Map.of("id", id, "result", result));
-                System.out.println("Grid oracle " + id + " staves=" + result.path("staves").size() + " rejected=" + result.path("rejected").asBoolean());
+                JsonNode logResult = headers && result.has("grid") ? result.get("grid") : result;
+                System.out.println("Grid oracle " + id + " staves=" + logResult.path("staves").size() + " rejected=" + result.path("rejected").asBoolean());
             }
             Files.createDirectories(output.getParent());
             mapper.writerWithDefaultPrettyPrinter().writeValue(output.toFile(), Map.of("fixture", fixture, "pages", results));
-            Set<Integer> interlines = new TreeSet<>(); interlines.add(fixture.get("interline").asInt());
+            Set<Integer> interlines = new TreeSet<>(); interlines.add((headers ? fixture.get("grid") : fixture).get("interline").asInt());
             for (var row : results) {
-                JsonNode result = (JsonNode) row.get("result"); if (result.has("interline")) { interlines.add(result.get("interline").asInt()); }
+                JsonNode result = (JsonNode) row.get("result"); if (headers && result.has("grid")) { result = result.get("grid"); } if (result.has("interline")) { interlines.add(result.get("interline").asInt()); }
             }
             List<Map<String, Object>> measurements = new ArrayList<>();
             for (var family : org.audiveris.omr.ui.symbol.MusicFamily.values()) { for (int interline : interlines) {
@@ -47,14 +63,15 @@ public final class GridOracle {
                     "brackets", mapper.readTree(GridProbe.brackets(family.name(), interline))));
             } }
             mapper.writerWithDefaultPrettyPrinter().writeValue(output.resolveSibling("font-measurements.json").toFile(), measurements);
+            if (geometry != null) { mapper.writerWithDefaultPrettyPrinter().writeValue(output.resolveSibling("symbol-geometry.json").toFile(), geometry.records()); }
         } finally { org.audiveris.omr.util.OmrExecutors.shutdown(); }
     }
     private static JsonNode compare(Path folder, String id, int width, int height, byte[] binary, ObjectMapper mapper, boolean complete, Path rasters) throws Exception {
         RunTable table = new RunTableFactory(Orientation.VERTICAL).createTable(new ByteProcessor(width, height, binary.clone(), null));
         Book book = new Book(folder.resolve("staff-" + id + ".png")); SheetStub stub = new SheetStub(book, 1); book.addStub(stub);
-        JsonNode expected = mapper.readTree(GridProbe.analyze(new Sheet(stub, table), complete));
+        JsonNode expected = mapper.readTree(headers ? HeaderProbe.analyze(new Sheet(stub, table)) : GridProbe.analyze(new Sheet(stub, table), complete));
         byte[] expectedPixels = complete && !expected.path("rejected").asBoolean() ? GridProbe.cleanedPixels().clone() : null;
-        JsonNode actual = mapper.readTree(GridProbe.analyze(PixelSheetProbe.create(width, height, binary, id), complete));
+        JsonNode actual = mapper.readTree(headers ? HeaderProbe.analyze(PixelSheetProbe.create(width, height, binary, id)) : GridProbe.analyze(PixelSheetProbe.create(width, height, binary, id), complete));
         if (expectedPixels != null) {
             if (!Arrays.equals(expectedPixels, GridProbe.cleanedPixels())) { throw new AssertionError("Staff-free pixels differ: " + id); }
             if (!GridProbe.verifyCleanCache()) { throw new AssertionError("Cache lifecycle"); }

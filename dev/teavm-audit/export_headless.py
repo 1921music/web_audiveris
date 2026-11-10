@@ -9,6 +9,7 @@ import subprocess
 from pathlib import Path
 from compare_compat import compare, rows
 from export_results import export
+from export_header import export_header
 
 
 def write(path, value):
@@ -73,6 +74,7 @@ def main():
     parser.add_argument('--grid', action='store_true')
     parser.add_argument('--clean-grid', action='store_true')
     parser.add_argument('--classifier', action='store_true')
+    parser.add_argument('--header', action='store_true')
     parser.add_argument('--allow-added-roots', action='store_true')
     args = parser.parse_args()
     root, build = args.repository, args.build
@@ -439,6 +441,8 @@ def main():
             write(target / 'reference-sources.json', reference); write(target / 'inputs.json', inputs)
             write(target / 'provenance.json', classifier_provenance)
         provenance['classifierVerification'] = json.loads((classifier_build / 'verification.json').read_text())
+    if args.header:
+        export_header(root, build, artifacts, raw_path, provenance)
     for target in [results, artifacts]:
         write(target / 'provenance.json', provenance)
     print(json.dumps({key: comparison[key] for key in ['rootCount', 'baselineDiagnostics', 'patchedDiagnostics', 'modifiedMethods',

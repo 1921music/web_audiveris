@@ -445,11 +445,8 @@ public class ClefBuilder
 
             if (inter.getGlyph() != null) {
                 final Shape shape = inter.getShape();
-                final int size = MusicFont.getPointSize(sheet.getInterline());
                 final MusicFamily family = sheet.getStub().getMusicFamily();
-                final FontSymbol fs = shape.getFontSymbolByInterline(family, size);
-
-                Point symbolCentroid = fs.symbol.getCentroid(clefBox);
+                Point symbolCentroid = org.audiveris.omr.ui.symbol.SymbolGeometry.centroid(family, shape, sheet.getInterline(), clefBox);
                 Point glyphCentroid = inter.getGlyph().getCentroid();
                 int dx = glyphCentroid.x - symbolCentroid.x;
                 int dy = glyphCentroid.y - symbolCentroid.y;

@@ -115,10 +115,8 @@ public class TimeWholeInter
         final Point center = getCenter(); // Use area center
         final TimeRational nd = getTimeRational();
         final MusicFamily family = staff != null ? staff.getSystem().getSheet().getStub()
-                .getMusicFamily() : MusicFont.getDefaultMusicFamily();
-        MusicFont musicFont = MusicFont.getBaseFont(family, interline);
-        NumDenSymbol symbol = new NumDenSymbol(shape, family, nd.num, nd.den);
-        Dimension dim = symbol.getDimension(musicFont);
+                .getMusicFamily() : org.audiveris.omr.ui.symbol.FontFamilyDefaults.defaultMusicParam.getValue();
+        Dimension dim = org.audiveris.omr.ui.symbol.SymbolGeometry.provider().timeDimension(family, shape, interline, nd.num, nd.den);
 
         return new Rectangle(
                 center.x - (dim.width / 2),

@@ -19,6 +19,15 @@ final class HeadlessPatches {
         Map<MethodDescriptor, Program> original = new HashMap<>();
         for (MethodHolder method : cls.getMethods()) { original.put(method.getDescriptor(), method.getProgram()); }
         switch (cls.getName()) {
+            case "org.audiveris.omr.math.HiLoPeakFinder": prefixCopies(cls, 1); break;
+            case "org.audiveris.omr.sheet.clef.ClefBuilder": grayCopies(cls, 1); prefixCopies(cls, 1); break;
+            case "org.audiveris.omr.sheet.key.KeyExtractor": prefixCopies(cls, 1); break;
+            case "org.audiveris.omr.sheet.key.KeyBuilder$ShapeBuilder": prefixCopies(cls, 5); break;
+            case "org.audiveris.omr.sheet.key.KeyRoi": grayCopies(cls, 2); break;
+            case "org.audiveris.omr.sheet.time.HeaderTimeBuilder": grayCopies(cls, 1); break;
+            case "org.audiveris.omr.sig.inter.AbstractPitchedInter": pitchOffsets(cls); break;
+            case "org.audiveris.omr.ui.symbol.SymbolGeometry":
+                symbolGeometryDefault(cls); break;
             case "org.audiveris.omr.classifier.BasicClassifier":
                 if (cls.getMethod(new MethodDescriptor("load", ValueType.arrayOf(STRING), obj("org.audiveris.omr.classifier.AbstractClassifier$Network"))) == null) {
                     throw new IllegalStateException("Review BasicClassifier model-loading boundary");
@@ -211,6 +220,95 @@ final class HeadlessPatches {
             exit.setValueToReturn(result);
         }
         block.add(exit); method.setProgram(program);
+    }
+    private static void prefixCopies(ClassHolder cls, int expected) {
+        int replaced = 0;
+        for (MethodHolder method : cls.getMethods()) {
+            Program program = method.getProgram(); if (program == null) { continue; }
+            Map<Variable, Integer> constants = new HashMap<>();
+            Map<Variable, InvokeInstruction> views = new HashMap<>();
+            int before = instructions(program), changed = 0;
+            for (BasicBlock block : program.getBasicBlocks()) { for (Instruction instruction : block) {
+                if (instruction instanceof IntegerConstantInstruction) {
+                    var value = (IntegerConstantInstruction) instruction; constants.put(value.getReceiver(), value.getConstant());
+                } else if (instruction instanceof InvokeInstruction) {
+                    var call = (InvokeInstruction) instruction;
+                    if (call.getMethod().getName().equals("subList") && call.getArguments().size() == 2
+                            && call.getMethod().getClassName().startsWith("java.util.")) { views.put(call.getReceiver(), call); }
+                }
+            } }
+            for (BasicBlock block : program.getBasicBlocks()) { for (Instruction instruction : block) {
+                if (!(instruction instanceof InvokeInstruction)) { continue; }
+                var call = (InvokeInstruction) instruction;
+                if (!call.getMethod().getName().equals("retainAll") || call.getArguments().size() != 1) { continue; }
+                var view = views.get(call.getArguments().get(0));
+                if (view == null || !Integer.valueOf(0).equals(constants.get(view.getArguments().get(0)))) { continue; }
+                Variable values = view.getInstance(), from = view.getArguments().get(0), to = view.getArguments().get(1);
+                view.setInstance(null); view.setType(InvocationType.SPECIAL);
+                view.setMethod(new MethodReference(HeaderListCopies.class.getName(), "prefix", obj("java.util.List"),
+                        ValueType.INTEGER, ValueType.INTEGER, obj("java.util.List")));
+                view.setArguments(values, from, to); replaced++; changed++;
+            } }
+            if (changed > 0) { report(method, "header-retain-prefix-snapshot", program.basicBlockCount(), before); }
+        }
+        if (replaced != expected) { throw new IllegalStateException("Review header prefix sites: " + cls.getName() + " / " + replaced); }
+    }
+    private static void grayCopies(ClassHolder cls, int expected) {
+        int replaced = 0;
+        for (MethodHolder method : cls.getMethods()) {
+            Program program = method.getProgram(); if (program == null) { continue; }
+            Map<Variable, Integer> constants = new HashMap<>(); int before = instructions(program), changed = 0;
+            for (BasicBlock block : program.getBasicBlocks()) { for (Instruction instruction : block) {
+                if (instruction instanceof IntegerConstantInstruction) {
+                    IntegerConstantInstruction value = (IntegerConstantInstruction) instruction; constants.put(value.getReceiver(), value.getConstant());
+                }
+            } }
+            for (BasicBlock block : program.getBasicBlocks()) { for (Instruction instruction : block) {
+                if (!(instruction instanceof InvokeInstruction)) { continue; }
+                InvokeInstruction call = (InvokeInstruction) instruction;
+                if (!call.getMethod().getClassName().equals("ij.process.ByteProcessor") || !call.getMethod().getName().equals("copyBits")) { continue; }
+                if (call.getArguments().size() != 4 || !Integer.valueOf(ij.process.Blitter.COPY).equals(constants.get(call.getArguments().get(3)))) {
+                    throw new IllegalStateException("Review raw header copy mode");
+                }
+                Variable target = call.getInstance(); var arguments = new java.util.ArrayList<Variable>(); arguments.add(target); arguments.addAll(call.getArguments());
+                call.setInstance(null); call.setType(InvocationType.SPECIAL);
+                call.setMethod(new MethodReference(HeadlessGrayCopy.class.getName(), "copyBits", obj("ij.process.ByteProcessor"), obj("ij.process.ImageProcessor"),
+                        ValueType.INTEGER, ValueType.INTEGER, ValueType.INTEGER, ValueType.VOID));
+                call.setArguments(arguments.toArray(new Variable[0])); replaced++; changed++;
+            } }
+            if (changed > 0) { report(method, "raw-gray-header-copy", program.basicBlockCount(), before); }
+        }
+        if (replaced != expected) { throw new IllegalStateException("Review header raw-copy sites: " + cls.getName() + " / " + replaced); }
+    }
+    private static void pitchOffsets(ClassHolder cls) {
+        MethodHolder method = cls.getMethod(new MethodDescriptor("populatePitchOffsets", ValueType.VOID));
+        FieldHolder field = cls.getField("pitchOffsets"); ValueType map = obj("java.util.Map");
+        if (method == null || field == null || !field.getType().equals(map)) { throw new IllegalStateException("Review pitched-inter font measurements"); }
+        Program program = new Program(); program.createVariable(); Variable values = program.createVariable(); BasicBlock block = program.createBasicBlock();
+        GetFieldInstruction get = new GetFieldInstruction(); get.setField(new FieldReference(cls.getName(), "pitchOffsets"));
+        get.setFieldType(map); get.setReceiver(values); block.add(get);
+        InvokeInstruction call = new InvokeInstruction(); call.setType(InvocationType.SPECIAL);
+        call.setMethod(new MethodReference(HeadlessSymbolGeometry.class.getName(), "fillPitchOffsets", map, ValueType.VOID));
+        call.setArguments(values); block.add(call); block.add(new ExitInstruction()); method.setProgram(program);
+    }
+    private static void symbolGeometryDefault(ClassHolder cls) {
+        MethodHolder method = cls.getMethod(new MethodDescriptor("provider", obj("org.audiveris.omr.ui.symbol.SymbolGeometry$Provider")));
+        if (method == null || method.getProgram() == null) { throw new IllegalStateException("Review SymbolGeometry provider boundary"); }
+        Program program = method.getProgram(); int before = instructions(program), replaced = 0;
+        for (BasicBlock block : program.getBasicBlocks()) {
+            java.util.List<Instruction> original = new java.util.ArrayList<>(); for (Instruction instruction : block) { original.add(instruction); }
+            for (Instruction instruction : original) {
+                if (!(instruction instanceof GetFieldInstruction)) { continue; }
+                GetFieldInstruction get = (GetFieldInstruction) instruction;
+                if (!get.getField().equals(new FieldReference("org.audiveris.omr.ui.symbol.SymbolGeometry$DefaultHolder", "INSTANCE"))) { continue; }
+                if (get.getInstance() != null) { throw new IllegalStateException("Expected static default provider"); }
+                InvokeInstruction call = new InvokeInstruction(); call.setType(InvocationType.SPECIAL);
+                call.setMethod(new MethodReference(HeadlessSymbolGeometry.class.getName(), "provider", obj("org.audiveris.omr.ui.symbol.SymbolGeometry$Provider")));
+                call.setReceiver(get.getReceiver()); call.setLocation(get.getLocation()); get.replace(call); replaced++;
+            }
+        }
+        if (replaced != 1) { throw new IllegalStateException("Review SymbolGeometry default initialization: " + replaced); }
+        report(method, "symbol-geometry-default-provider", program.basicBlockCount(), before);
     }
     private static void delegate(ClassHolder cls, String method, String helper, Class<?> owner, ValueType... signature) {
         MethodDescriptor descriptor = new MethodDescriptor(method, signature);

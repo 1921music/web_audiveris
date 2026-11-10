@@ -913,9 +913,7 @@ public abstract class AbstractInter
         final Point center = getCenter(); // Use area center
         final Sheet sheet = staff.getSystem().getSheet();
         final MusicFamily family = sheet.getStub().getMusicFamily();
-        final FontSymbol fs = getShape().getFontSymbolByInterline(family, interline);
-        final TextLayout layout = fs.getLayout();
-        final Rectangle2D box = layout.getBounds();
+        final Rectangle2D box = org.audiveris.omr.ui.symbol.SymbolGeometry.provider().bounds(family, getShape(), interline);
 
         return new Rectangle(
                 center.x - (int) Math.rint(box.getWidth() / 2),

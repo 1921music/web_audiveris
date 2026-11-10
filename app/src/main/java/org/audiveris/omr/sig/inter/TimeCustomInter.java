@@ -148,10 +148,8 @@ public class TimeCustomInter
         // Multi symbol (num / den)
         final Point center = getCenter(); // Use area center
         final MusicFamily family = staff != null ? staff.getSystem().getSheet().getStub()
-                .getMusicFamily() : MusicFont.getDefaultMusicFamily();
-        MusicFont musicFont = MusicFont.getBaseFont(family, interline);
-        NumDenSymbol symbol = new NumDenSymbol(shape, family, num, den);
-        Dimension dim = symbol.getDimension(musicFont);
+                .getMusicFamily() : org.audiveris.omr.ui.symbol.FontFamilyDefaults.defaultMusicParam.getValue();
+        Dimension dim = org.audiveris.omr.ui.symbol.SymbolGeometry.provider().timeDimension(family, shape, interline, num, den);
 
         return new Rectangle(
                 center.x - (dim.width / 2),

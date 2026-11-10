@@ -36,11 +36,8 @@ import org.slf4j.LoggerFactory;
 import ij.process.Blitter;
 import ij.process.ByteProcessor;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -278,11 +275,7 @@ public class KeyRoi
                                          boolean cropNeighbors)
     {
         final Rectangle sRect = slice.getRect();
-        final BufferedImage sImage = new BufferedImage(
-                sRect.width,
-                sRect.height,
-                BufferedImage.TYPE_BYTE_GRAY);
-        final ByteProcessor sBuffer = new ByteProcessor(sImage);
+        final ByteProcessor sBuffer = new ByteProcessor(sRect.width, sRect.height);
         ByteUtil.fill(sBuffer, BACKGROUND);
         sBuffer.copyBits(source, -sRect.x, -sRect.y, Blitter.COPY);
 
@@ -291,7 +284,6 @@ public class KeyRoi
             final int idx = indexOf(slice);
             final Integer prevIdx = (idx > 0) ? (idx - 1) : null;
             final Integer nextIdx = (idx < (size() - 1)) ? (idx + 1) : null;
-            Graphics2D g = null;
 
             for (Integer i : new Integer[]
             { prevIdx, nextIdx }) {
@@ -302,23 +294,14 @@ public class KeyRoi
                         final Glyph glyph = sl.getAlter().getGlyph();
 
                         if (glyph.getBounds().intersects(sRect)) {
-                            if (g == null) {
-                                g = sImage.createGraphics();
-                                g.setColor(Color.white);
-                            }
-
                             final Point offset = new Point(
                                     glyph.getLeft() - sRect.x,
                                     glyph.getTop() - sRect.y);
                             logger.debug("Erasing glyph#{} from {}", glyph.getId(), slice);
-                            glyph.getRunTable().render(g, offset);
+                            org.audiveris.omr.image.RunTableRaster.erase(sBuffer, glyph.getRunTable(), offset.x, offset.y);
                         }
                     }
                 }
-            }
-
-            if (g != null) {
-                g.dispose();
             }
         }
 

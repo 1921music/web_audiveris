@@ -14,6 +14,7 @@ public final class CompileCompatibilityProbe {
         String name = args.length > 2 ? args[2] : "compat";
         tool.setTargetFileName(name + ".wasm");
         tool.setStrict(true);
+        if (Boolean.getBoolean("audiveris.compat.debug")) { tool.setDebugInformationGenerated(true); }
         tool.generate();
         java.nio.file.Files.createDirectories(new File(args[0]).toPath());
         var diagnostics = new StringBuilder("severity\tmethod\tmessage\n");

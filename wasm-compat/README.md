@@ -402,14 +402,15 @@ are under `build/wasm-compat/probe`; audit outputs are under
 
 ## Verified result
 
-The current audit covers **9,035 methods**, including **8,614 method bodies**. Every original
+The current audit covers **9,037 methods**, including **8,616 method bodies**. Every original
 **9,001-method / 8,588-body** root is preserved; 18 scale-context/adapter methods and the memory-book
-factory, nine initial pixel-model methods, one bracket-geometry seam and three staff-free raster methods and two model-construction methods are added explicitly.
+factory, nine initial pixel-model methods, one bracket-geometry seam, three staff-free raster methods,
+two model-construction methods and two shared run-raster methods are added explicitly.
 With generic compatibility and the opt-in Worker/presentation substitutions enabled, diagnostics
 fall from **1,276 to 494** (782 fewer); unique messages fall from **336 to 203**.
 The stages are **1,276 → 789 → 702 → 609 → 545 → 544 → 525 → 524 → 495 → 494**. The 544/220 result is the
 generic compatibility layer alone; 525/217 is the initial Worker boundary, 524/216 is the
-stage-6 boundary, 495/204 is the stage-7–9 result, and **494/203** is the current stage-13 result (unchanged from stage 10).
+stage-6 boundary, 495/204 is the stage-7–9 result, and **494/203** is the current stage-14 result (unchanged from stage 10).
 Remaining exclusion candidates are **75 classes / 242 used input methods inside those classes**,
 or **309 methods** when method-only exclusion rules are also included.
 There are no remaining missing-API messages for the generic layer's targeted APIs. The broad fast
@@ -712,6 +713,56 @@ model/invalid-model assets and raw input images live under `wsl-artifacts/wasm-h
 The audit preserves all previous roots: **9,035 roots / 8,614 bodies**, **494 diagnostics / 203 unique**,
 **75 classes / 242 class-excluded used methods / 309 methods across all exclusion rules**. The
 last count drops by two classifier-training paths after explicit host model acquisition.
+
+## Header recognition (stage 14)
+
+`HeaderBuilder.processHeader` now executes after the original grid/staff-cleaning/score calls.
+Clef, key and time recognition, classifier evaluation, candidate selection and header freezing
+remain in the original engine. Recognition font queries use `SymbolGeometry.Provider`: the JVM
+default still measures the original music fonts, while Wasm receives explicit host measurements.
+Bounds, normalized centroid offsets and time dimensions are keyed by family, shape, interline
+and numerator/denominator. Pitch offsets retain the upstream Bravura 200-point reference.
+The test supplies 20 measurements (3,241 bytes) obtained from the JVM fonts. These are fixture
+resources, not universal font constants or a complete browser font backend. Entries are immutable
+and append-only; missing measurements fail explicitly, and an installed custom provider is honored.
+The host must install additional measurements between page calls as needed.
+
+Five font/raster callers gain source seams (`AbstractInter`, `ClefBuilder`, `TimeWholeInter`,
+`TimeCustomInter`, `KeyRoi`). The independent JVM reference compiles those five original classes
+from `04697c74`, checks their class origins, and uses the previously pinned scale/bracket/neural
+references. Its results match the current JVM exactly. `KeyRoi` erases neighboring glyph runs
+directly into its gray buffer using the same clipped raster helper as `PixelPicture`; ImageJ's
+original buffered-image sharing and the Java2D clipping reference are checked separately.
+
+Four fresh-buffer header COPY calls use a scoped raw-GRAY8 adapter, avoiding ImageJ's unrelated
+float/display-LUT branches. Original ImageJ agrees for 512 cases / 334,446 pixels, including
+nonbinary bytes and extreme offsets. Eight inline `retainAll(subList(0, n))` sites in the header
+call chain snapshot the argument through a compiler substitution. This avoids TeaVM's iterator
+invalidation while preserving prefix-membership semantics, including duplicate tail values.
+The original recognition source is unchanged at these sites; 528 cases compare against the JDK
+and run in each Wasm instance. Prefix limits still come from the engine's existing parameters.
+
+All eight supplied images are checked as both binary input and adaptive-filtered GRAY8 input in
+Node and two Chromium Workers. Five pages yield **48 clefs / 48 key signatures / 2 time signatures**;
+three retain the original low-resolution rejection. Grid geometry, scores, header positions,
+selected inter types/shapes, grades, bounds, fifths and time ratios agree with the pinned reference:
+**25,928 numeric comparisons**, maximum difference **7.2165e-16** (grade tolerance 2e-13).
+Separate instances and transferable image/model buffers are exercised without a DOM.
+The probe is **1,996,919 bytes**, including test fixtures; the classifier ZIP remains an external
+396,100-byte resource. This is not a final-engine size or throughput estimate.
+
+Reproduce using `verifyHeaderProbe -I dev/teavm-audit/audit.init.gradle` through the capped launcher;
+add `-PpixelSamples=/mnt/g/work/20261029/1921music/score_samples` to prepare fresh fixtures.
+`-PprobeDebug=true` optionally emits TeaVM debug information; `audit.DecodeWasmStack` resolves
+numeric stack addresses from that `.teadbg` file. Archive with
+`export_headless.py --stage 14 --header --allow-added-roots`. Small reports and font profiles are
+in `header-results`; full outputs, pinned classes, images and the model live in the ignored raw archive.
+The full audit preserves all previous roots: **9,037 roots / 8,616 bodies**, **494 diagnostics / 203 unique**,
+**75 classes / 242 class-excluded used methods / 309 methods across all exclusion rules**.
+Of those 75 classes, 55 have used methods and 20 are linked only as types. These conservative
+full-root counts are unchanged from stage 13; the HEADERS component itself has no compiler diagnostics.
+STEM_SEEDS and later recognition, general browser font measurement/rasterization, OCR and complete
+MusicXML output remain outstanding.
 
 ## Remaining work
 
