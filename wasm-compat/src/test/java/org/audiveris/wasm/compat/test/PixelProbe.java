@@ -8,12 +8,47 @@ import org.audiveris.omr.run.*;
 import org.audiveris.wasm.compat.platform.HeadlessConfiguration;
 import org.audiveris.wasm.compat.platform.GrayPreprocessor;
 import org.teavm.jso.typedarrays.Int8Array;
+import org.audiveris.omr.sheet.Scale;
+import org.audiveris.omr.sheet.ScaleBuilder;
+import org.audiveris.omr.step.StepException;
+import org.audiveris.wasm.compat.platform.RunScaleSource;
 import org.teavm.jso.JSExport;
 import org.audiveris.wasm.compat.platform.GrayInput;
 
 /** First real pixel-processing probe: no file decoder, image wrapper or desktop window. */
 public final class PixelProbe {
     public static void main(String[] args) { }
+    @JSExport public static String scalePage(int width, int height, Int8Array pixels, String id) {
+        try { return scaleResult(width, height, pixels.copyToJavaArray(), id, 0, 0); }
+        catch (RuntimeException | Error error) { System.err.println("Scale page " + id + " " + width + "x" + height); error.printStackTrace(); throw error; }
+    }
+    @JSExport public static String scaleGrayPage(int width, int height, Int8Array pixels, String id, double mean, double deviation) {
+        ByteProcessor binary = GrayPreprocessor.adaptive(GrayInput.takeOwnership(width, height, pixels.copyToJavaArray()), mean, deviation);
+        return scaleFromProcessor(binary, id, 0, 0, null);
+    }
+    @JSExport public static String scaleFixtures() {
+        String ordinary = scaleResult(160, 150, ScaleFixtures.staff(), "fixture", 0, 0);
+        String specified = scaleResult(160, 150, ScaleFixtures.staff(), "fixture", 18, 8);
+        String blank = scaleResult(160, 150, ScaleFixtures.blank(), "fixture", 0, 0);
+        Scale existing = new Scale(new Scale.InterlineScale(23, 24, 25), new Scale.LineScale(2, 3, 4), new Scale.BeamScale(11, false), null, null);
+        String supplied = scaleFromProcessor(GrayInput.takeOwnership(160, 150, ScaleFixtures.blank()).takeProcessor(), "fixture", 0, 0, existing);
+        return ordinary + "|" + specified + "|" + blank + "|" + supplied;
+    }
+    private static String scaleResult(int width, int height, byte[] pixels, String id, int interline, int beam) {
+        ByteProcessor binary = GrayInput.takeOwnership(width, height, pixels).takeProcessor();
+        return scaleFromProcessor(binary, id, interline, beam, null);
+    }
+    private static String scaleFromProcessor(ByteProcessor binary, String id, int interline, int beam, Scale existing) {
+        RunTable table = new RunTableFactory(Orientation.VERTICAL).createTable(binary);
+        RunScaleSource source = new RunScaleSource(table, id, interline, beam, existing);
+        try {
+            Scale scale = new ScaleBuilder(source).retrieveScale();
+            if (existing != null && scale != existing) { throw new AssertionError("Existing scale replaced"); }
+            return "ok:" + scale + ";invalid=" + source.isInvalid();
+        } catch (StepException rejected) {
+            return "rejected:" + rejected.getMessage() + ";invalid=" + source.isInvalid();
+        }
+    }
     @JSExport public static Int8Array adaptivePage(int width, int height, Int8Array pixels, double mean, double deviation) {
         byte[] owned = pixels.copyToJavaArray();
         ByteProcessor binary = GrayPreprocessor.adaptive(GrayInput.takeOwnership(width, height, owned), mean, deviation);

@@ -114,8 +114,8 @@ JDK 25 so they can call recent API names directly; compatibility implementations
 ### Worker platform boundaries
 
 `-Pheadless=true -Pcompat=true` enables application/platform substitutions in addition to the
-generic API compatibility layer. The default audit remains unchanged. This mode rewrites TeaVM's
-class model. Root selection and dependency JARs remain unchanged. Stages 1–3 used unchanged
+generic API compatibility layer. The default audit keeps headless substitutions disabled. This mode rewrites TeaVM's
+class model. The root-selection policy and dependency JARs remain unchanged. Stages 1–3 used unchanged
 application sources; stage 4 also makes the small source changes described below. `buildSrc`
 is unchanged.
 
@@ -204,10 +204,13 @@ recognition or font settings with compiler literals.
 .\dev\wsl\Manage-WasmDev.ps1 Build -GradleArgs @(
   'verifyWasmCompatibilityBrowser', 'traceTeaVMExclusions', 'compareWasmCompatibilityAudit',
   '-I', 'dev/teavm-audit/audit.init.gradle', '-PauditScope=selected',
-  '-Pcompat=true', '-Pheadless=true', '--console=plain')
+  '-Pcompat=true', '-Pheadless=true', '-PallowAddedRoots=true', '--console=plain')
 ```
 
-The same **9,001 roots / 8,588 bodies** are analyzed. Generic compatibility has 544 diagnostics;
+Stages 1–5 analyze **9,001 roots / 8,588 bodies**. Stage 6 preserves every one of those roots and
+adds the 18 methods of the scale-source API/adapter, giving **9,019 roots / 8,598 bodies**.
+`-PallowAddedRoots=true` explicitly permits/report additions; it never permits removal, changed
+body/native coverage or reclassification of existing roots. Generic compatibility has 544 diagnostics;
 the initial Worker boundary stage has 525 and the current presentation-boundary stage has **524**
 (216 unique messages). No diagnostics are located directly in selected engine sources.
 
@@ -228,8 +231,8 @@ UI branches even after substitution; inspect modified methods and distinguish in
 Presentation-only entry points (display windows, check boards, trackers, UI-task impact overloads,
 manual link/task construction and plot windows) explicitly reject desktop execution. The recognition
 overload `RhythmsStep.impact(Collection)`, ledger geometry, grid recognition, MusicXML building and
-image-difference processing remain rooted. The three configuration source files above are the only
-application changes from the baseline; `buildSrc` remains unchanged.
+image-difference processing remain rooted. The three configuration source files above and
+`ScaleBuilder.java` are the only application changes from the baseline; `buildSrc` remains unchanged.
 
 `OctaveShiftInter.setGlyph` keeps its original setter and geometry instructions, obtaining the sheet
 from `HeadlessSheetContext.requireSheet()` instead of the selected desktop tab. The host must bind
@@ -276,6 +279,8 @@ the new namespace hook is dependency-only and compiler-generated overrides are n
 Stage 5 adds the pixel-processing boundary below. The broad audit totals remain **76 / 242 / 313**
 and **524 diagnostics / 216 unique messages**; independently compiled numerical probes verify real
 execution paths rather than treating the broad fast graph as proof of runtime compatibility.
+Stage 6 separates scale input from `Sheet`, expands coverage to **9,019 roots / 8,598 bodies**,
+and retains the same exclusion/diagnostic totals. The original 9,001-root subset is preserved.
 Use `dev/teavm-audit/export_headless.py` with the Windows checkout, Linux build directory and tool SHA
 to export the comparison against the archived stage-5 generic audit. Add `--stage 2` to compare
 against headless stage 1; `--stage 4` compares against headless stage 3. CPU usage remains capped at eight logical CPUs and memory at 8 GiB,
@@ -309,7 +314,8 @@ ImageIO and the original `Picture.adjustImageFormat` / gray-source conversion co
 hashes and dimensions fix the comparison input; decoding does not run inside Wasm. TIFF preparation
 uses the first image in each file. The probe is **154,071 bytes**, including the tested pixel and
 run-table operations. The earlier global-only probe was 67,111 bytes; neither is an engine size estimate.
-This does not yet validate scale/staff detection, OCR or MusicXML output.
+Stage 5 did not yet validate scale estimation. Stage 6 additionally verifies it as described below;
+staff detection, OCR and MusicXML output remain unverified.
 
 ```powershell
 .\dev\wsl\Manage-WasmDev.ps1 Build -GradleArgs @(
@@ -322,6 +328,37 @@ Add `-PpixelSamples=/mnt/g/work/20261029/1921music/score_samples` to the command
 the supplied samples. Omit it for the small synthetic suite. Review snapshots are in
 [pixel-results](pixel-results), with large raw inputs/references outside Git under headless stage 5.
 `export_headless.py --stage 5 --pixels` archives both audit and pixel verification results.
+
+### Scale input and upstream comparison
+
+`ScaleBuilder.Source` supplies vertical binary runs, optional interline/beam specifications,
+an existing scale, page identity/width and invalid-page decisions. The existing `ScaleBuilder(Sheet)`
+constructor delegates through a sheet adapter. `RunScaleSource` provides the same data/decisions
+for a standalone page, without constructing a `Sheet`/`Book` or loading images. The numerical
+histograms and estimation formulas remain in the original builder. One collection operation now
+removes a less-significant tail using `subList(i, size).clear()` rather than `retainAll` with a live
+prefix view; the latter raised `ConcurrentModificationException` in TeaVM on real score data.
+
+`prepareUpstreamScale` extracts **unmodified `ScaleBuilder.java` from
+04697c74fae431ef8436a9429386957a5cb25993**, and `compileUpstreamScale` builds it separately.
+An isolated JVM loads those classes first; the oracle asserts their code-source directory.
+A second JVM runs the refactored sheet adapter and compares results. The shared model/runtime
+is the current checkout; this is an independent scale-algorithm reference, not a complete pristine
+upstream application build. The launcher supplies the Windows Git source through
+`AUDIVERIS_SOURCE_ROOT`; a standalone build can pass `-PupstreamGitRoot=...`.
+
+Node and Chromium Workers match this reference for all eight supplied pages, both from the binary
+input and directly from gray input through adaptive binarization/runs/scale in one Wasm call.
+The five TIFF pages yield interline **21**, line thickness **4** and beam thickness **10**;
+the three PNGs are rejected by upstream's default resolution check (interlines 6, 9 and 6).
+The refactor preserves these decisions and invalid flags. Four synthetic cases also cover regular
+staves, interline/beam overrides, a blank page and preservation of a supplied scale object.
+The combined verification module is **401,767 bytes**; this is not an engine size estimate.
+
+Add `-PpixelScale=true` alongside `-PpixelSamples=...` to `verifyPixelProbe` to reproduce the separate
+JVM comparisons and Wasm checks. The scale strings are verification output, not a production Worker
+message schema. Source/class hashes and oracle results are in [pixel-results](pixel-results).
+Archive stage 6 with `export_headless.py --stage 6 --pixels --allow-added-roots`.
 
 ### Generic compatibility reproduction
 
@@ -358,12 +395,13 @@ are under `build/wasm-compat/probe`; audit outputs are under
 
 ## Verified result
 
-The original root manifests match exactly: **9,001 methods**, including **8,588 method bodies**.
+The current audit covers **9,019 methods**, including **8,598 method bodies**. Every original
+**9,001-method / 8,588-body** root is preserved; 18 scale-context/adapter methods are added explicitly.
 With generic compatibility and the opt-in Worker/presentation substitutions enabled, diagnostics
 fall from **1,276 to 524** (752 fewer); unique messages fall from **336 to 216**.
 The stages are **1,276 → 789 → 702 → 609 → 545 → 544 → 525 → 524**. The 544/220 result is the
 generic compatibility layer alone; 525/217 is the initial Worker boundary and **524/216** is the
-current headless configuration boundary (the diagnostic totals are unchanged from stage 3).
+current headless boundary (diagnostic totals remain unchanged through stage 6, with expanded roots).
 Remaining exclusion candidates are **76 classes / 242 used input methods inside those classes**,
 or **313 methods** when method-only exclusion rules are also included.
 There are no remaining missing-API messages for the generic layer's targeted APIs. The broad fast
@@ -388,7 +426,8 @@ Wasm build or proof that every selected method executes correctly.
   size estimate. No engine throughput claim is made from these tests.
 - The generic stage-5 snapshot used unchanged `app` and `buildSrc` sources from baseline
   `04697c74fae431ef8436a9429386957a5cb25993`. Headless stages 4–5 modify only `Constant.java`,
-  `ConstantSet.java` and `BookManager.java`; their hashes are recorded in headless provenance. The capped runs recorded
+  `ConstantSet.java` and `BookManager.java`; stage 6 also changes `ScaleBuilder.java`.
+  Their hashes are recorded in headless provenance. The capped runs recorded
   no OOM or hard memory-limit hits.
 
 Reviewable snapshots are in [results](results); bulky audit graphs and runnable probe artifacts

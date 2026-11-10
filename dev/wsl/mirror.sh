@@ -33,6 +33,7 @@ echo "Synchronized to $mirror ($revision)"
 
 if [[ "$mode" == build ]]; then
     export AUDIVERIS_SOURCE_COMMIT="$revision"
+    export AUDIVERIS_SOURCE_ROOT="$source_dir"
     cd "$mirror"
     # Existing Windows checkouts can still contain CRLF despite .gitattributes.
     sed -i 's/\r$//' ./gradlew

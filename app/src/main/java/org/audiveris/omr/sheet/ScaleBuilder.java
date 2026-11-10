@@ -45,6 +45,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Class <code>ScaleBuilder</code> computes the global scale of a given sheet by processing
@@ -112,9 +113,9 @@ public class ScaleBuilder
 
     //~ Instance fields ----------------------------------------------------------------------------
 
-    /** Related sheet. */
+    /** Input and decisions, independent of sheet storage and presentation. */
     @Navigable(false)
-    private final Sheet sheet;
+    private final Source source;
 
     /** Whole vertical run table. */
     private RunTable binary;
@@ -152,7 +153,51 @@ public class ScaleBuilder
      */
     public ScaleBuilder (Sheet sheet)
     {
-        this.sheet = sheet;
+        this(new SheetSource(sheet));
+    }
+
+    /** Create a scale computation from binary runs and an explicit processing context. */
+    public ScaleBuilder (Source source)
+    {
+        this.source = Objects.requireNonNull(source, "scale source");
+    }
+
+    /** Data and validation decisions required by the unchanged scale estimator. */
+    public interface Source
+    {
+        RunTable getBinaryTable ();
+        Scale getScale ();
+        Integer getInterlineSpecification ();
+        Integer getBeamSpecification ();
+        String getId ();
+        int getWidth ();
+        void decideOnRemoval (String message) throws StepException;
+        void invalidate ();
+    }
+
+    private static final class SheetSource implements Source
+    {
+        private final Sheet sheet;
+
+        private SheetSource (Sheet sheet)
+        {
+            this.sheet = Objects.requireNonNull(sheet, "sheet");
+        }
+
+        @Override public RunTable getBinaryTable ()
+        {
+            return sheet.getPicture().getVerticalTable(Picture.TableKey.BINARY);
+        }
+        @Override public Scale getScale () { return sheet.getScale(); }
+        @Override public Integer getInterlineSpecification () { return sheet.getStub().getInterlineSpecification(); }
+        @Override public Integer getBeamSpecification () { return sheet.getStub().getBeamSpecification(); }
+        @Override public String getId () { return sheet.getId(); }
+        @Override public int getWidth () { return sheet.getWidth(); }
+        @Override public void decideOnRemoval (String message) throws StepException
+        {
+            sheet.getStub().decideOnRemoval(message, false);
+        }
+        @Override public void invalidate () { sheet.getStub().invalidate(); }
     }
 
     //~ Methods ------------------------------------------------------------------------------------
@@ -182,17 +227,17 @@ public class ScaleBuilder
                             + " either this sheet contains no multi-line staves,\n"
                             + " or the picture resolution is too low (try 300 DPI).\n\n"
                             + " This interline value is NOT RELIABLE!",
-                    sheet.getId(),
+                    source.getId(),
                     interline);
-            sheet.getStub().decideOnRemoval(msg, false);
+            source.decideOnRemoval(msg);
         } else if (interline > constants.maxInterline.getValue()) {
             final String msg = String.format(
                     "%s\n\n With a too high interline value of %d pixels,\n"
                             + " this sheet does not seem to contain multi-line staves.\n\n"
                             + " This interline value is NOT RELIABLE!",
-                    sheet.getId(),
+                    source.getId(),
                     interline);
-            sheet.getStub().decideOnRemoval(msg, false);
+            source.decideOnRemoval(msg);
         }
     }
 
@@ -212,7 +257,7 @@ public class ScaleBuilder
     private void computeBeamKeys (boolean verbose)
     {
         // Specific beam thickness from Book/Sheet parameters?
-        final Integer specifiedBeam = sheet.getStub().getBeamSpecification();
+        final Integer specifiedBeam = source.getBeamSpecification();
         if ((specifiedBeam != null) && (specifiedBeam != 0)) {
             beamKey = specifiedBeam;
 
@@ -336,16 +381,16 @@ public class ScaleBuilder
         throws StepException
     {
         // Specific interline from Book/Sheet specification?
-        final Integer specifiedInterline = sheet.getStub().getInterlineSpecification();
+        final Integer specifiedInterline = source.getInterlineSpecification();
         if ((specifiedInterline != null) && (specifiedInterline != 0)) {
             interlineKey = specifiedInterline;
             logger.info("User-specified interline: {} pixels", interlineKey);
         }
 
-        final Scale scl = sheet.getScale();
+        final Scale scl = source.getScale();
 
         if (dummy || scl == null) {
-            binary = sheet.getPicture().getVerticalTable(Picture.TableKey.BINARY);
+            binary = source.getBinaryTable();
             histoKeeper = new HistoKeeper();
 
             // Populate histograms
@@ -669,12 +714,12 @@ public class ScaleBuilder
             logger.debug("blackRatio: {}", blackRatio);
 
             if (blackRatio < constants.minBlackRatio.getValue()) {
-                sheet.getStub().decideOnRemoval("""
+                source.decideOnRemoval("""
                         %s
 
                         Too few black pixels: %.2f%% of whole image.
                         This sheet is almost blank.
-                        """.formatted(sheet.getId(), 100 * blackRatio), false);
+                        """.formatted(source.getId(), 100 * blackRatio));
             }
         }
 
@@ -742,7 +787,7 @@ public class ScaleBuilder
             }
 
             if (comboPeaks.isEmpty()) {
-                sheet.getStub().invalidate();
+                source.invalidate();
                 throw new StepException("No regularly spaced lines found");
             }
 
@@ -816,7 +861,7 @@ public class ScaleBuilder
                     constants.minGainRatio.getValue());
 
             if (blackPeaks.isEmpty()) {
-                sheet.getStub().invalidate();
+                source.invalidate();
                 throw new StepException("No significant black lines found");
             }
 
@@ -831,7 +876,8 @@ public class ScaleBuilder
                     final Range peak = blackPeaks.get(i);
 
                     if (blackFunction.getValue(peak.main) < minCount) {
-                        blackPeaks.retainAll(blackPeaks.subList(0, i));
+                        // Remove the tail directly; a live subList passed to retainAll is fragile.
+                        blackPeaks.subList(i, blackPeaks.size()).clear();
                     }
                 }
             }
@@ -882,11 +928,11 @@ public class ScaleBuilder
                 comboMax = Math.max(comboMax, comboPeak2.max);
             }
 
-            final Scale scale = sheet.getScale();
+            final Scale scale = source.getScale();
 
             try {
                 // Black values (staff line, significant beam)
-                final String title = sheet.getId() + " " + blackFinder.name;
+                final String title = source.getId() + " " + blackFinder.name;
                 final String xLabel = "Runs lengths - " + ((scale != null) ? scale.toString(
                         Info.BLACK) : "NO_SCALE");
                 final String yLabel = "Runs counts - total:" + blackFunction.getArea()
@@ -901,12 +947,12 @@ public class ScaleBuilder
 
             try {
                 // Combo values (staff interline)
-                final String title = sheet.getId() + " " + comboFinder.name;
+                final String title = source.getId() + " " + comboFinder.name;
                 final String xLabel = "Runs lengths - " + ((scale != null) ? scale.toString(
                         Info.COMBO) : "NO_SCALE");
                 final String yLabel = "Runs counts";
                 final ChartPlotter plotter = new ChartPlotter(title, xLabel, yLabel);
-                comboMax = Math.min((comboMax * 3) / 2, sheet.getWidth() - 1); // Add some margin
+                comboMax = Math.min((comboMax * 3) / 2, source.getWidth() - 1); // Add some margin
                 comboFinder.plot(plotter, true, "Combo", 0, comboMax).display(new Point(80, 80));
             } catch (Throwable ex) {
                 logger.warn("Error in plotting combo", ex);

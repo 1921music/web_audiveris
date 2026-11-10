@@ -8,6 +8,8 @@ const { chromium } = require('playwright');
 const root = path.resolve(process.argv[2]);
 const oracle = JSON.parse(fs.readFileSync(path.join(root, 'jvm-reference.json'), 'utf8'));
 const samples = process.argv.includes('--samples') ? JSON.parse(fs.readFileSync(path.join(root, 'samples/manifest.json'), 'utf8')) : null;
+const scales = process.argv.includes('--scale') ? JSON.parse(fs.readFileSync(path.join(root, 'samples/scale-upstream.json'), 'utf8')) : null;
+const expectedScale = entry => entry.result + ';invalid=' + entry.invalid;
 function bulk(api) {
     const padded = new Int8Array(12); padded.set([0, 1, 127, -128, -127, -2, -1, 40], 2);
     const result = api.adaptivePage(4, 2, padded.subarray(2, 10), 0.7, 0.9);
@@ -18,6 +20,7 @@ function verify(result) {
     assert.equal(result.globalCases, oracle.globalCases);
     assert.equal(result.adaptiveCases, oracle.adaptiveCases); assert.equal(result.runCases, oracle.runCases);
     assert.equal(result.bulk, oracle.bulkOracle);
+    assert.equal(result.scaleFixtures, oracle.scaleFixtures);
     assert.equal(result.ownership, true); assert.equal(result.fontRejected, true);
 }
 (async () => {
@@ -25,10 +28,11 @@ function verify(result) {
         importModuleDynamically: vm.constants.USE_MAIN_CONTEXT_DEFAULT_LOADER
     });
     let sampleApi;
+    const sampleScaleResults = [];
     for (let i = 0; i < 2; i++) {
         const api = (await TeaVM.wasmGC.load(path.join(root, 'pixels.wasm'))).exports;
         api.configure();
-        verify({threshold: api.threshold(), globalCases: api.globalCases(), adaptiveCases: api.adaptiveCases(), runCases: api.runCases(), bulk: bulk(api), ownership: api.ownership(), fontRejected: api.fontRejected()});
+        verify({threshold: api.threshold(), globalCases: api.globalCases(), adaptiveCases: api.adaptiveCases(), runCases: api.runCases(), bulk: bulk(api), scaleFixtures: api.scaleFixtures(), ownership: api.ownership(), fontRejected: api.fontRejected()});
         sampleApi = api;
     }
     if (samples) { for (const page of samples.pages) {
@@ -38,9 +42,21 @@ function verify(result) {
         assert.equal(crypto.createHash('sha256').update(expected).digest('hex'), page.binarySha256);
         const actual = sampleApi.adaptivePage(page.width, page.height, new Int8Array(gray.buffer, gray.byteOffset, gray.byteLength), samples.meanCoefficient, samples.deviationCoefficient);
         assert.ok(Buffer.from(actual.buffer, actual.byteOffset, actual.byteLength).equals(expected), 'Node sample mismatch ' + page.id);
+        if (scales) {
+            const expectedResult = scales.find(entry => entry.id === page.id);
+            console.log('Estimating Node scale ' + page.id);
+            const actualScale = sampleApi.scalePage(page.width, page.height, actual, expectedResult.sheetId);
+            const composed = sampleApi.scaleGrayPage(page.width, page.height, new Int8Array(gray.buffer, gray.byteOffset, gray.byteLength), expectedResult.sheetId, samples.meanCoefficient, samples.deviationCoefficient);
+            assert.equal(actualScale, expectedScale(expectedResult), 'Scale mismatch ' + page.id);
+            assert.equal(composed, actualScale, 'Composed gray/scale mismatch ' + page.id);
+            sampleScaleResults.push({id: page.id, result: actualScale});
+        }
         assert.equal(crypto.createHash('sha256').update(gray).digest('hex'), page.graySha256);
         console.log('Matched Node sample ' + page.id + ' (' + page.pixels + ' pixels)');
     } }
+    if (scales) {
+        assert.equal(sampleApi.scaleFixtures(), ['staff', 'specified', 'blank', 'supplied'].map(id => expectedScale(scales.find(entry => entry.id === id))).join('|'));
+    }
     const server = http.createServer((request, response) => {
         if (request.url === '/') { response.end('<!doctype html><title>Pixel engine tests</title>'); return; }
         if (request.url === '/worker.js') {
@@ -51,6 +67,7 @@ function verify(result) {
                     api.configure();
                     if (event.data === 'samples') {
                         const manifest = await (await fetch('/samples/manifest.json')).json(); const pages = [];
+                        const scaleReferences = ${Boolean(scales)} ? await (await fetch('/samples/scale-upstream.json')).json() : null;
                         for (const page of manifest.pages) {
                             const gray = new Int8Array(await (await fetch('/samples/' + page.id + '.gray')).arrayBuffer());
                             const expected = new Uint8Array(await (await fetch('/samples/' + page.id + '.binary')).arrayBuffer());
@@ -58,7 +75,15 @@ function verify(result) {
                             const actual = new Uint8Array(result.buffer, result.byteOffset, result.byteLength);
                             if (actual.length !== expected.length) throw new Error('Sample length mismatch');
                             for (let i = 0; i < expected.length; i++) if (actual[i] !== expected[i]) throw new Error('Sample mismatch ' + page.id + ' pixel ' + i);
-                            pages.push({id: page.id, pixels: actual.length});
+                            let scaleResult;
+                            if (scaleReferences) {
+                                const entry = scaleReferences.find(value => value.id === page.id);
+                                scaleResult = api.scalePage(page.width, page.height, result, entry.sheetId);
+                                const composed = api.scaleGrayPage(page.width, page.height, gray, entry.sheetId, manifest.meanCoefficient, manifest.deviationCoefficient);
+                                const expectedScale = entry.result + ';invalid=' + entry.invalid;
+                                if (scaleResult !== expectedScale || composed !== expectedScale) throw new Error('Scale mismatch ' + page.id + ': ' + scaleResult);
+                            }
+                            pages.push({id: page.id, pixels: actual.length, scaleResult});
                         }
                         postMessage({pages}); return;
                     }
@@ -66,11 +91,12 @@ function verify(result) {
                     const converted = api.adaptivePage(4, 2, padded.subarray(2, 10), 0.7, 0.9);
                     postMessage({threshold: api.threshold(), globalCases: api.globalCases(), adaptiveCases: api.adaptiveCases(), runCases: api.runCases(),
                         bulk: Array.from(new Uint8Array(converted.buffer, converted.byteOffset, converted.byteLength)).join(','), ownership: api.ownership(),
+                        scaleFixtures: api.scaleFixtures(),
                         fontRejected: api.fontRejected(), dom: typeof document});
                 } catch (error) { postMessage({error: String(error.stack || error)}); } };`); return;
         }
         const name = request.url.slice(1);
-        if (samples && /^samples\/(manifest\.json|[0-9]{2}\.(gray|binary))$/.test(name)) {
+        if (samples && /^samples\/(manifest\.json|scale-upstream\.json|[0-9]{2}\.(gray|binary))$/.test(name)) {
             response.setHeader('Content-Type', name.endsWith('.json') ? 'application/json' : 'application/octet-stream');
             fs.createReadStream(path.join(root, name)).pipe(response); return;
         }
@@ -100,13 +126,15 @@ function verify(result) {
                 worker.postMessage('samples');
             }));
             samplePages = result.pages;
-            assert.deepEqual(samplePages, samples.pages.map(page => ({id: page.id, pixels: page.pixels})));
+            assert.deepEqual(samplePages.map(page => ({id: page.id, pixels: page.pixels})), samples.pages.map(page => ({id: page.id, pixels: page.pixels})));
+            if (scales) { for (const page of samplePages) { assert.equal(page.scaleResult, expectedScale(scales.find(entry => entry.id === page.id))); } }
         }
         const report = {node: process.version, chromium: browser.version(), nodeInstances: 2, workers: 2,
             globalThresholdCases: 30, matchedPixels: oracle.globalCases.replaceAll(';', '').length,
             adaptiveCases: 45, adaptivePixels: oracle.adaptiveCases.replaceAll(';', '').length, runTableCases: 30,
             bulkByteInterop: true, sampleWorkers: samples ? 1 : 0, samplePages,
             samplePixels: samplePages.reduce((sum, page) => sum + page.pixels, 0),
+            scaleFixtureCases: 4, upstreamScaleCompared: Boolean(scales), sampleScaleResults,
             grayInputOwnership: true, invalidDimensionsRejected: true, desktopFontRejected: true,
             wasmBytes: fs.statSync(path.join(root, 'pixels.wasm')).size};
         fs.writeFileSync(path.join(root, 'verification.json'), JSON.stringify(report, null, 2) + '\n'); console.log(JSON.stringify(report));

@@ -207,6 +207,46 @@ gradle.projectsEvaluated {
         dependsOn 'buildPixelProbe'
         commandLine 'node', '--max-old-space-size=256', new File(compat, 'tools/verify-pixels.cjs').absolutePath, pixelProbeOutput.absolutePath
         if (rootProject.findProperty('pixelSamples')) { args '--samples' }
+        if ((rootProject.findProperty('pixelScale') ?: 'false').toBoolean()) { dependsOn 'testCurrentScaleJvm'; args '--scale' }
+    }
+    def upstreamScale = new File(rootProject.projectDir, 'build/wasm-compat/upstream-scale')
+    rootProject.tasks.register('prepareUpstreamScale', Exec) {
+        commandLine 'python3', new File(harness, 'prepare_upstream_scale.py').absolutePath,
+                rootProject.findProperty('upstreamGitRoot') ?: System.getenv('AUDIVERIS_SOURCE_ROOT') ?: rootProject.projectDir.absolutePath, upstreamScale.absolutePath
+    }
+    rootProject.tasks.register('compileUpstreamScale', JavaCompile) {
+        dependsOn 'prepareUpstreamScale', app.tasks.named('classes')
+        source new File(upstreamScale, 'src')
+        classpath = app.sourceSets.main.runtimeClasspath
+        destinationDirectory = new File(upstreamScale, 'classes')
+        javaCompiler = app.tasks.named('compileJava').flatMap { it.javaCompiler }
+        options.release = 17; sourceCompatibility = '17'; targetCompatibility = '17'; options.encoding = 'UTF-8'
+    }
+    rootProject.tasks.register('testUpstreamScaleJvm', JavaExec) {
+        dependsOn 'compileUpstreamScale', 'compileWasmCompatibilityTests', 'testPixelProbeJvm'
+        classpath = rootProject.files(new File(upstreamScale, 'classes'), compatTests, compatClasses) + app.sourceSets.main.runtimeClasspath
+        mainClass = 'org.audiveris.wasm.compat.test.OriginalScaleOracle'
+        workingDir app.projectDir
+        maxHeapSize = '768m'
+        systemProperty 'java.awt.headless', 'true'
+        systemProperty 'logback.configurationFile', new File(harness, 'logback.xml').absolutePath
+        environment 'XDG_CONFIG_HOME', new File(upstreamScale, 'jvm-config').absolutePath
+        environment 'XDG_DATA_HOME', new File(upstreamScale, 'jvm-data').absolutePath
+        environment 'XDG_CACHE_HOME', new File(upstreamScale, 'jvm-cache').absolutePath
+        args new File(pixelProbeOutput, 'samples').absolutePath, new File(upstreamScale, 'classes').absolutePath
+    }
+    rootProject.tasks.register('testCurrentScaleJvm', JavaExec) {
+        dependsOn 'testUpstreamScaleJvm'
+        classpath = rootProject.files(compatTests, compatClasses) + app.sourceSets.main.runtimeClasspath
+        mainClass = 'org.audiveris.wasm.compat.test.OriginalScaleOracle'
+        workingDir app.projectDir
+        maxHeapSize = '768m'
+        systemProperty 'java.awt.headless', 'true'
+        systemProperty 'logback.configurationFile', new File(harness, 'logback.xml').absolutePath
+        environment 'XDG_CONFIG_HOME', new File(upstreamScale, 'current-config').absolutePath
+        environment 'XDG_DATA_HOME', new File(upstreamScale, 'current-data').absolutePath
+        environment 'XDG_CACHE_HOME', new File(upstreamScale, 'current-cache').absolutePath
+        args new File(pixelProbeOutput, 'samples').absolutePath, app.tasks.named('compileJava').get().destinationDirectory.get().asFile.absolutePath, 'scale-current.json'
     }
     rootProject.tasks.register('verifyWasmCompatibilityBrowser', Exec) {
         dependsOn 'verifyWasmCompatibility'
@@ -228,7 +268,7 @@ gradle.projectsEvaluated {
     }
     rootProject.tasks.register('testTeaVMSelection', Exec) {
         workingDir harness
-        commandLine 'python3', '-m', 'unittest', '-v', 'test_selection.py'
+        commandLine 'python3', '-m', 'unittest', '-v', 'test_selection.py', 'test_compare_roots.py'
         environment 'PYTHONDONTWRITEBYTECODE', '1'
     }
     rootProject.tasks.register('prepareTeaVMSelection', Exec) {
@@ -284,5 +324,6 @@ gradle.projectsEvaluated {
         }
         commandLine 'python3', new File(harness, 'compare_compat.py').absolutePath,
                 new File(rootProject.projectDir, "build/teavm-audit/${mode}-selected").absolutePath, output.absolutePath
+        if ((rootProject.findProperty('allowAddedRoots') ?: 'false').toBoolean()) { args '--allow-added-roots' }
     }
 }

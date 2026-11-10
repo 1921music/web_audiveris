@@ -54,6 +54,7 @@ def main():
     parser.add_argument('tool_commit')
     parser.add_argument('--stage', type=int, default=1)
     parser.add_argument('--pixels', action='store_true')
+    parser.add_argument('--allow-added-roots', action='store_true')
     args = parser.parse_args()
     root, build = args.repository, args.build
     if args.stage < 1:
@@ -65,7 +66,7 @@ def main():
     raw_path = f'wsl-artifacts/wasm-headless/stage{args.stage}'
     artifacts = root / raw_path
     results.mkdir(parents=True, exist_ok=True)
-    comparison = compare(before, after)
+    comparison = compare(before, after, args.allow_added_roots)
     if args.stage > 1 and not (results / 'stage1-comparison.json').exists() and (results / 'comparison.json').exists():
         shutil.copyfile(results / 'comparison.json', results / 'stage1-comparison.json')
     export(after, artifacts / 'summary', artifacts / 'audit', args.tool_commit)
@@ -133,8 +134,9 @@ def main():
                        'applicationSourceChanges': {name: hashlib.sha256((root / name).read_bytes().replace(b'\r\n', b'\n')).hexdigest()
                                                     for name in ['app/src/main/java/org/audiveris/omr/constant/Constant.java',
                                                                  'app/src/main/java/org/audiveris/omr/constant/ConstantSet.java',
-                                                                 'app/src/main/java/org/audiveris/omr/sheet/BookManager.java']},
-                       'applicationSourceChangeNotes': 'Stage 4: ConstantSet namespace hook, fail-fast initialization and initialize-before-update for book output settings; recognition roots unchanged',
+                                                                 'app/src/main/java/org/audiveris/omr/sheet/BookManager.java',
+                                                                 'app/src/main/java/org/audiveris/omr/sheet/ScaleBuilder.java']},
+                       'applicationSourceChangeNotes': 'Configuration seams and ScaleBuilder.Source; see README for source changes and explicitly added analysis roots',
                        'rawArtifacts': raw_path,
                        'probeSha256': {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
                                        for p in sorted((artifacts / 'probe').iterdir()) if p.is_file()},
@@ -153,12 +155,21 @@ def main():
         if verification['samplePixels']:
             shutil.copytree(pixel_build / 'samples', pixel_raw / 'samples', dirs_exist_ok=True)
             shutil.copyfile(sample_manifest, pixel_results / 'samples.json')
+        if verification.get('upstreamScaleCompared'):
+            for name in ['scale-upstream.json', 'scale-current.json']:
+                shutil.copyfile(pixel_build / 'samples' / name, pixel_results / name)
+            original = build / 'wasm-compat/upstream-scale'
+            oracle_source = json.loads((original / 'source.json').read_text())
+            oracle_source['classSha256'] = {str(p.relative_to(original / 'classes')): hashlib.sha256(p.read_bytes()).hexdigest()
+                                           for p in sorted((original / 'classes').rglob('*.class'))}
+            write(pixel_results / 'scale-upstream-source.json', oracle_source)
+            write(pixel_raw / 'scale-upstream-source.json', oracle_source)
         pixel_provenance = {key: provenance[key] for key in ['applicationBaseline', 'toolCommit', 'teaVM', 'target',
                             'cpuMax', 'allowedCpus', 'memoryMaxBytes', 'memorySwapMaxBytes', 'memoryEventsLocal',
                             'sourceSha256', 'applicationSourceChanges']}
         pixel_provenance.update({'imageJ': '1.54p', 'rawArtifacts': raw_path + '/pixel-probe',
                                 'artifactSha256': {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in pixel_raw.iterdir() if p.is_file()},
-                                'limitation': 'Grayscale/threshold/adaptive filtering and runs verified; not full sheet recognition or a complete engine size estimate'})
+                                'limitation': 'Pixel operations and optional scale estimation verified; not staff detection, full recognition or a complete engine size estimate'})
         write(pixel_results / 'provenance.json', pixel_provenance)
         write(pixel_raw / 'provenance.json', pixel_provenance)
         provenance['pixelVerification'] = verification

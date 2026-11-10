@@ -10,13 +10,21 @@ def rows(path):
         return list(csv.DictReader(stream, delimiter='\t'))
 
 
-def compare(baseline, patched):
+def validate_roots(before, after, allow_added=False):
+    if before.keys() - after.keys() or any(before[key] != after[key] for key in before.keys() & after.keys()):
+        raise AssertionError('Original method roots removed or reclassified; diagnostic differences are not comparable')
+    added = sorted(after.keys() - before.keys())
+    if added and not allow_added:
+        raise AssertionError('Method roots added; explicitly opt in and report the expanded analysis scope')
+    return added
+
+
+def compare(baseline, patched, allow_added_roots=False):
     before_roots = {row['method']: (row['class'], row['hasBody'], row['native'], row['category'])
                     for row in rows(baseline / 'roots.tsv')}
     after_roots = {row['method']: (row['class'], row['hasBody'], row['native'], row['category'])
                    for row in rows(patched / 'roots.tsv')}
-    if before_roots != after_roots:
-        raise AssertionError('Original method roots changed; diagnostic differences are not comparable')
+    added_roots = validate_roots(before_roots, after_roots, allow_added_roots)
     before = json.loads((baseline / 'classified-summary.json').read_text(encoding='utf-8'))
     after = json.loads((patched / 'classified-summary.json').read_text(encoding='utf-8'))
     before_apis = {api['message']: api for api in before['apis']}
@@ -58,7 +66,8 @@ def compare(baseline, patched):
                 'Method java.util.stream.Stream.ofNullable(',
                 'Method java.lang.System$Logger.log(Ljava/lang/System$Logger$Level;Ljava/lang/String;[Ljava/lang/Object;']
     remaining_targets = [message for message in after_apis if any(message.startswith(prefix) for prefix in prefixes)]
-    result = {'identicalOriginalRoots': True, 'rootCount': len(before_roots),
+    result = {'identicalOriginalRoots': before_roots == after_roots, 'originalRootSubsetPreserved': True,
+              'rootCount': len(after_roots), 'baselineRootCount': len(before_roots), 'addedRoots': added_roots,
               'baselineDiagnostics': before['diagnostics'], 'patchedDiagnostics': after['diagnostics'],
               'diagnosticReduction': before['diagnostics'] - after['diagnostics'],
               'baselineUniqueMessages': before['uniqueMessages'], 'patchedUniqueMessages': after['uniqueMessages'],
@@ -78,5 +87,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('baseline', type=Path)
     parser.add_argument('patched', type=Path)
+    parser.add_argument('--allow-added-roots', action='store_true')
     args = parser.parse_args()
-    compare(args.baseline, args.patched)
+    compare(args.baseline, args.patched, args.allow_added_roots)
