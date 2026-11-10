@@ -1,6 +1,4 @@
 {
-  "meanCoefficient" : 0.7,
-  "grayscale" : "JVM ImageIO + original Picture.adjustImageFormat/buildGraySource convention",
   "pages" : [ {
     "id" : "00",
     "file" : "MerryGoRound_p1.tif",
@@ -82,5 +80,7 @@
     "graySha256" : "35f4d878e9b11bc92a5f600a019077f00c3dfdebdf83ea24e51205ebf6959336",
     "binarySha256" : "8a5b9c728931e2597d081177068046261d575d7b4d6336435e4811022a96f596"
   } ],
-  "deviationCoefficient" : 0.9
+  "deviationCoefficient" : 0.9,
+  "meanCoefficient" : 0.7,
+  "grayscale" : "JVM ImageIO + original Picture.adjustImageFormat/buildGraySource convention"
 }

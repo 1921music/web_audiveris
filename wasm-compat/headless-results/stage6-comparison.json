@@ -1,0 +1,80 @@
+{
+  "identicalOriginalRoots": false,
+  "originalRootSubsetPreserved": true,
+  "rootCount": 9019,
+  "baselineRootCount": 9001,
+  "addedRoots": [
+    "org.audiveris.omr.sheet.ScaleBuilder$SheetSource.<init>(Lorg/audiveris/omr/sheet/Sheet;)V",
+    "org.audiveris.omr.sheet.ScaleBuilder$SheetSource.decideOnRemoval(Ljava/lang/String;)V",
+    "org.audiveris.omr.sheet.ScaleBuilder$SheetSource.getBeamSpecification()Ljava/lang/Integer;",
+    "org.audiveris.omr.sheet.ScaleBuilder$SheetSource.getBinaryTable()Lorg/audiveris/omr/run/RunTable;",
+    "org.audiveris.omr.sheet.ScaleBuilder$SheetSource.getId()Ljava/lang/String;",
+    "org.audiveris.omr.sheet.ScaleBuilder$SheetSource.getInterlineSpecification()Ljava/lang/Integer;",
+    "org.audiveris.omr.sheet.ScaleBuilder$SheetSource.getScale()Lorg/audiveris/omr/sheet/Scale;",
+    "org.audiveris.omr.sheet.ScaleBuilder$SheetSource.getWidth()I",
+    "org.audiveris.omr.sheet.ScaleBuilder$SheetSource.invalidate()V",
+    "org.audiveris.omr.sheet.ScaleBuilder$Source.decideOnRemoval(Ljava/lang/String;)V",
+    "org.audiveris.omr.sheet.ScaleBuilder$Source.getBeamSpecification()Ljava/lang/Integer;",
+    "org.audiveris.omr.sheet.ScaleBuilder$Source.getBinaryTable()Lorg/audiveris/omr/run/RunTable;",
+    "org.audiveris.omr.sheet.ScaleBuilder$Source.getId()Ljava/lang/String;",
+    "org.audiveris.omr.sheet.ScaleBuilder$Source.getInterlineSpecification()Ljava/lang/Integer;",
+    "org.audiveris.omr.sheet.ScaleBuilder$Source.getScale()Lorg/audiveris/omr/sheet/Scale;",
+    "org.audiveris.omr.sheet.ScaleBuilder$Source.getWidth()I",
+    "org.audiveris.omr.sheet.ScaleBuilder$Source.invalidate()V",
+    "org.audiveris.omr.sheet.ScaleBuilder.<init>(Lorg/audiveris/omr/sheet/ScaleBuilder$Source;)V"
+  ],
+  "baselineDiagnostics": 524,
+  "patchedDiagnostics": 524,
+  "diagnosticReduction": 0,
+  "baselineUniqueMessages": 216,
+  "patchedUniqueMessages": 216,
+  "removedMessages": [],
+  "newMessages": [],
+  "newDiagnosticCount": 0,
+  "remainingTargetedApiMessages": [],
+  "baselineByFamily": {
+    "Reflection and class loading": 207,
+    "Other Java runtime": 167,
+    "Threads and synchronization": 69,
+    "Files and streams": 35,
+    "Other libraries or compiler diagnostics": 20,
+    "XML and JAXB": 26
+  },
+  "patchedByFamily": {
+    "Reflection and class loading": 207,
+    "Other Java runtime": 167,
+    "Threads and synchronization": 69,
+    "Files and streams": 35,
+    "Other libraries or compiler diagnostics": 20,
+    "XML and JAXB": 26
+  },
+  "baselineByDirectOwner": {
+    "dependency": 522,
+    "unattributed": 2
+  },
+  "patchedByDirectOwner": {
+    "dependency": 522,
+    "unattributed": 2
+  },
+  "platformSubstitutionsEnabled": true,
+  "modifiedMethods": 485,
+  "removedDirectCallsFromModifiedMethods": 0,
+  "addedDirectCallsFromModifiedMethods": 0,
+  "excludedClassesLinked": {
+    "before": 76,
+    "after": 76
+  },
+  "excludedUsedMethods": {
+    "before": 313,
+    "after": 313
+  },
+  "usedMethodsInsideExcludedClasses": {
+    "before": 242,
+    "after": 242
+  },
+  "remainingClassBreakdown": {
+    "withUsedMethods": 55,
+    "typeOnly": 21
+  },
+  "strictExclusionPass": false
+}

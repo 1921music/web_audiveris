@@ -1,0 +1,10 @@
+{
+  "commit": "04697c74fae431ef8436a9429386957a5cb25993",
+  "path": "app/src/main/java/org/audiveris/omr/sheet/ScaleBuilder.java",
+  "sha256": "48aecb0be015dc828ebd9c263d8324397fc118eee15b3f02418dfcc5a0dce10f",
+  "classSha256": {
+    "org/audiveris/omr/sheet/ScaleBuilder$Constants.class": "d1ab115e4849371f8307b851f8efd2ab8fac993eedbd68cc59315f065b0afa6f",
+    "org/audiveris/omr/sheet/ScaleBuilder$HistoKeeper.class": "9cd545cea49f0aa4f0685a5ecdeabaf5fd6228b6151f0c3b7102eea78bc47777",
+    "org/audiveris/omr/sheet/ScaleBuilder.class": "d3271e7225758b793583f2d65760d7f27ba8e84516800aa587048e3dac03c9be"
+  }
+}

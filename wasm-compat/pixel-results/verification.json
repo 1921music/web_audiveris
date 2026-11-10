@@ -13,40 +13,84 @@
   "samplePages": [
     {
       "id": "00",
-      "pixels": 8694880
+      "pixels": 8694880,
+      "scaleResult": "ok:Scale{ interline(20,21,22) line(4,4,4) beam(10)};invalid=false"
     },
     {
       "id": "01",
-      "pixels": 8694880
+      "pixels": 8694880,
+      "scaleResult": "ok:Scale{ interline(20,21,22) line(4,4,4) beam(10)};invalid=false"
     },
     {
       "id": "02",
-      "pixels": 8694880
+      "pixels": 8694880,
+      "scaleResult": "ok:Scale{ interline(20,21,22) line(4,4,4) beam(10)};invalid=false"
     },
     {
       "id": "03",
-      "pixels": 8694880
+      "pixels": 8694880,
+      "scaleResult": "ok:Scale{ interline(20,21,22) line(4,4,4) beam(10)};invalid=false"
     },
     {
       "id": "04",
-      "pixels": 8694880
+      "pixels": 8694880,
+      "scaleResult": "ok:Scale{ interline(20,21,22) line(4,4,4) beam(10)};invalid=false"
     },
     {
       "id": "05",
-      "pixels": 1572528
+      "pixels": 1572528,
+      "scaleResult": "rejected:Sheet ignored;invalid=true"
     },
     {
       "id": "06",
-      "pixels": 1572864
+      "pixels": 1572864,
+      "scaleResult": "rejected:Sheet ignored;invalid=true"
     },
     {
       "id": "07",
-      "pixels": 1572864
+      "pixels": 1572864,
+      "scaleResult": "rejected:Sheet ignored;invalid=true"
     }
   ],
   "samplePixels": 48192656,
+  "scaleFixtureCases": 4,
+  "upstreamScaleCompared": true,
+  "sampleScaleResults": [
+    {
+      "id": "00",
+      "result": "ok:Scale{ interline(20,21,22) line(4,4,4) beam(10)};invalid=false"
+    },
+    {
+      "id": "01",
+      "result": "ok:Scale{ interline(20,21,22) line(4,4,4) beam(10)};invalid=false"
+    },
+    {
+      "id": "02",
+      "result": "ok:Scale{ interline(20,21,22) line(4,4,4) beam(10)};invalid=false"
+    },
+    {
+      "id": "03",
+      "result": "ok:Scale{ interline(20,21,22) line(4,4,4) beam(10)};invalid=false"
+    },
+    {
+      "id": "04",
+      "result": "ok:Scale{ interline(20,21,22) line(4,4,4) beam(10)};invalid=false"
+    },
+    {
+      "id": "05",
+      "result": "rejected:Sheet ignored;invalid=true"
+    },
+    {
+      "id": "06",
+      "result": "rejected:Sheet ignored;invalid=true"
+    },
+    {
+      "id": "07",
+      "result": "rejected:Sheet ignored;invalid=true"
+    }
+  ],
   "grayInputOwnership": true,
   "invalidDimensionsRejected": true,
   "desktopFontRejected": true,
-  "wasmBytes": 154071
+  "wasmBytes": 401767
 }

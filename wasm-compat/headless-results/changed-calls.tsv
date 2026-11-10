@@ -1,7 +1,1 @@
 change	caller	callee
-removed	ij.process.ImageProcessor.<init>()V	ij.IJ.<clinit>()V
-added	ij.process.ImageProcessor.drawString2(Ljava/lang/String;)V	org.audiveris.wasm.compat.platform.HeadlessImageJ.requireFont(Ljava/awt/Font;)Ljava/awt/Font;
-added	ij.process.ImageProcessor.getFont()Ljava/awt/Font;	org.audiveris.wasm.compat.platform.HeadlessImageJ.requireFont(Ljava/awt/Font;)Ljava/awt/Font;
-added	ij.process.ImageProcessor.getStringBounds(Ljava/lang/String;)Ljava/awt/Rectangle;	org.audiveris.wasm.compat.platform.HeadlessImageJ.requireFont(Ljava/awt/Font;)Ljava/awt/Font;
-added	ij.process.ImageProcessor.setFontSize(I)V	org.audiveris.wasm.compat.platform.HeadlessImageJ.requireFont(Ljava/awt/Font;)Ljava/awt/Font;
-added	ij.process.ImageProcessor.setupFontMetrics()V	org.audiveris.wasm.compat.platform.HeadlessImageJ.requireFont(Ljava/awt/Font;)Ljava/awt/Font;
