@@ -179,6 +179,30 @@ gradle.projectsEvaluated {
         dependsOn 'buildHeadlessProbe'
         commandLine 'node', '--max-old-space-size=256', new File(compat, 'tools/verify-headless.cjs').absolutePath, headlessProbeOutput.absolutePath
     }
+    def pixelProbeOutput = new File(rootProject.projectDir, 'build/wasm-compat/pixel-probe')
+    rootProject.tasks.register('testPixelProbeJvm', JavaExec) {
+        dependsOn 'compileWasmCompatibilityTests'
+        classpath = rootProject.files(compatTests, compatClasses) + app.sourceSets.main.runtimeClasspath
+        mainClass = 'org.audiveris.wasm.compat.test.PixelProbe'
+        maxHeapSize = '256m'
+        systemProperty 'java.awt.headless', 'true'
+        systemProperty 'logback.configurationFile', new File(harness, 'logback.xml').absolutePath
+        args new File(pixelProbeOutput, 'jvm-reference.json').absolutePath
+        doFirst { pixelProbeOutput.mkdirs() }
+    }
+    rootProject.tasks.register('buildPixelProbe', JavaExec) {
+        dependsOn compile, 'testPixelProbeJvm', 'patchKxmlCompatibility', 'selectWasmLibraryImplementations'
+        classpath = rootProject.files(compatTests) + compatRuntime
+        mainClass = 'audit.CompileCompatibilityProbe'
+        maxHeapSize = '1g'
+        systemProperty 'audiveris.compat.enabled', 'true'
+        systemProperty 'audiveris.compat.headless', 'true'
+        args pixelProbeOutput.absolutePath, 'org.audiveris.wasm.compat.test.PixelProbe', 'pixels'
+    }
+    rootProject.tasks.register('verifyPixelProbe', Exec) {
+        dependsOn 'buildPixelProbe'
+        commandLine 'node', '--max-old-space-size=256', new File(compat, 'tools/verify-pixels.cjs').absolutePath, pixelProbeOutput.absolutePath
+    }
     rootProject.tasks.register('verifyWasmCompatibilityBrowser', Exec) {
         dependsOn 'verifyWasmCompatibility'
         commandLine 'node', '--max-old-space-size=256', new File(compat, 'tools/verify-browser.cjs').absolutePath, probeOutput.absolutePath

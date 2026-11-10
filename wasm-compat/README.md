@@ -278,6 +278,31 @@ to export the comparison against the archived stage-5 generic audit. Add `--stag
 against headless stage 1; `--stage 4` compares against headless stage 3. CPU usage remains capped at eight logical CPUs and memory at 8 GiB,
 with no swap. These changes do not yet produce a complete runnable recognition engine.
 
+### Pixel input verification
+
+`GrayInput.copyOf(width, height, pixels)` accepts packed unsigned 8-bit grayscale rows (0 black,
+255 white). It validates dimensions before allocating a copy. `takeProcessor()` transfers that
+owned copy to the original ImageJ `ByteProcessor` once, without another copy; input reuse fails.
+File decoding/PDF rendering and the production JavaScript buffer adapter remain outside this API.
+
+The headless compiler changes only ImageJ 1.54p's `ImageProcessor` default-font initialization:
+pixel construction does not initialize the desktop `IJ.font12`. Reads of an unset processor font
+explicitly reject unsupported text rendering. Pixel math is not replaced. This does not supply
+ImageJ's broader GUI/plugin APIs or a font backend.
+
+`verifyPixelProbe` compares original `GlobalFilter` results with a JVM oracle in two Node modules
+and two Chromium Workers: 30 cases / 20,268 pixels match, including one-pixel-wide/high inputs,
+threshold boundaries, input immutability and consume-once ownership. The first global-only probe
+is 67,111 bytes; this is a small numerical test, not the recognition engine's size.
+
+```powershell
+.\dev\wsl\Manage-WasmDev.ps1 Build -GradleArgs @(
+  'verifyPixelProbe', '-I', 'dev/teavm-audit/audit.init.gradle',
+  '-Pcompat=true', '-Pheadless=true', '--console=plain')
+```
+
+Raw probe output is under `build/wasm-compat/pixel-probe` in the Linux mirror.
+
 ### Generic compatibility reproduction
 
 Run from the Windows repository using the existing WSL launcher. It synchronizes sources to the
