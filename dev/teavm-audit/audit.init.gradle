@@ -821,6 +821,36 @@ gradle.projectsEvaluated {
         args new File(rootProject.projectDir, 'build/wasm-compat/cue-beams-baseline-probe').absolutePath,
                 'org.audiveris.wasm.compat.test.CueBeamsProbe', 'cue-beams'
     }
+    ['Default', 'Enabled'].each { cueMode ->
+        rootProject.tasks.register('verifyCueBeams' + cueMode + 'Probe', Exec) {
+            dependsOn 'buildCueBeamsBaselineProbe', 'testStemSortJvm',
+                    'testCueBeams' + cueMode + 'OriginalJvm', 'testCueBeams' + cueMode + 'PortableJvm'
+            def cueOutput = new File(rootProject.projectDir, "build/wasm-compat/cue-beams-${cueMode.toLowerCase()}-probe")
+            environment 'NODE_PATH', new File(compat, 'node_modules').absolutePath
+            environment 'AUDIVERIS_CUE_BEAMS_MODE', cueMode.toLowerCase()
+            environment 'AUDIVERIS_CUE_BEAMS_MAX_PAGES', (rootProject.findProperty('cueBeamsPages') ?: '0').toString()
+            doFirst {
+                cueOutput.mkdirs()
+                rootProject.copy {
+                    from new File(rootProject.projectDir, 'build/wasm-compat/cue-beams-baseline-probe')
+                    include 'cue-beams.wasm', 'cue-beams.wasm-runtime.js', 'diagnostics.tsv'
+                    into cueOutput
+                }
+            }
+            commandLine 'node', '--max-old-space-size=768', new File(compat, 'tools/verify-cue-beams.cjs').absolutePath,
+                    cueOutput.absolutePath, new File(app.projectDir, 'res/basic-classifier.zip').absolutePath
+        }
+    }
+    rootProject.tasks.register('buildTextsBaselineProbe', JavaExec) {
+        dependsOn compile, 'compileWasmCompatibilityTests', 'patchKxmlCompatibility', 'selectWasmLibraryImplementations'
+        classpath = rootProject.files(compatTests) + compatRuntime
+        mainClass = 'audit.CompileCompatibilityProbe'
+        maxHeapSize = '2g'
+        systemProperty 'audiveris.compat.enabled', 'true'
+        systemProperty 'audiveris.compat.headless', 'true'
+        args new File(rootProject.projectDir, 'build/wasm-compat/texts-baseline-probe').absolutePath,
+                'org.audiveris.wasm.compat.test.TextsProbe', 'texts'
+    }
     rootProject.tasks.register('buildHeadsProbe', JavaExec) {
         dependsOn compile, 'compileWasmCompatibilityTests', 'patchKxmlCompatibility', 'selectWasmLibraryImplementations'
         classpath = rootProject.files(compatTests) + compatRuntime

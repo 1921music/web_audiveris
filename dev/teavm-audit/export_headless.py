@@ -19,6 +19,7 @@ from export_template import export_template
 from export_heads import export_heads
 from export_connected_stems import export_connected_stems
 from export_reduction import export_reduction
+from export_cue_beams import export_cue_beams
 
 
 def write(path, value):
@@ -101,6 +102,7 @@ def main():
     parser.add_argument('--heads', action='store_true')
     parser.add_argument('--connected-stems', action='store_true')
     parser.add_argument('--reduction', action='store_true')
+    parser.add_argument('--cue-beams', action='store_true')
     parser.add_argument('--allow-added-roots', action='store_true')
     args = parser.parse_args()
     root, build = args.repository, args.build
@@ -497,6 +499,9 @@ def main():
         export_connected_stems(root, build, artifacts, raw_path, provenance)
     if args.reduction:
         export_reduction(root, build, artifacts, raw_path, provenance)
+    if args.cue_beams:
+        export_reduction(root, build, artifacts, raw_path, provenance)
+        export_cue_beams(root, build, artifacts, raw_path, provenance)
     for target in [results, artifacts]:
         write(target / 'provenance.json', provenance)
     print(json.dumps({key: comparison[key] for key in ['rootCount', 'baselineDiagnostics', 'patchedDiagnostics', 'modifiedMethods',

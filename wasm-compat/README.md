@@ -410,7 +410,7 @@ With generic compatibility and the opt-in Worker/presentation substitutions enab
 fall from **1,276 to 494** (782 fewer); unique messages fall from **336 to 203**.
 The stages are **1,276 → 789 → 702 → 609 → 545 → 544 → 525 → 524 → 495 → 494**. The 544/220 result is the
 generic compatibility layer alone; 525/217 is the initial Worker boundary, 524/216 is the
-stage-6 boundary, 495/204 is the stage-7–9 result, and **494/203** is the current stage-23 result (unchanged from stage 10).
+stage-6 boundary, 495/204 is the stage-7–9 result, and **494/203** is the current stage-24 result (unchanged from stage 10).
 Remaining exclusion candidates are **75 classes / 242 used input methods inside those classes**,
 or **310 methods** when method-only exclusion rules are also included.
 There are no remaining missing-API messages for the generic layer's targeted APIs. The broad fast
@@ -1159,6 +1159,36 @@ launcher; `-PreductionPages=1` limits the Wasm comparison. Archive full results 
 `export_headless.py --stage 23 --reduction --allow-added-roots`.
 The following CUE_BEAMS entry compiles with zero diagnostics; the active cue-beam path remains
 unverified at this stage, separately from the default switch-off path.
+
+## Cue beams (stage 24)
+
+Both the default processing switches and an explicit `smallHeads=true` configuration now pass
+the complete eight-image comparison, with binary and adaptive GRAY8 inputs, original and portable
+JVM references, Node instances and two independent Chromium Workers. The original `CueBeamsStep`
+and its algorithms remain unchanged. The default setting preserves the original switch-off
+behavior; the enabled setting executes cue recognition on all five accepted pages and detects
+one small-head beam in sample 01. Three low-resolution samples retain the original rejection.
+
+The two configurations perform **2,340,360 / 3,478,604 numeric comparisons**, respectively,
+with maximum difference **1.7764e-15**. Each also compares **175,126,400 head-spot bytes** and
+**350,252,800 distance bytes**, including the preceding recognition stages. Both use the same
+**2,736,465-byte** Wasm component and existing external template/classifier assets.
+The Worker harness compares and records each image through a Playwright binding rather than
+returning all dense graph snapshots in one protocol response. Node old space remains capped at
+768 MiB inside the shared **8 GiB / 8 CPU** limit; no engine worker-sharing assumption is added.
+
+Run `verifyCueBeamsDefaultProbe` and `verifyCueBeamsEnabledProbe` through the capped Gradle launcher
+with `-I dev/teavm-audit/audit.init.gradle`; `-PcueBeamsPages=1` is a smoke subset only.
+Archive complete evidence using `export_headless.py --stage 24 --cue-beams --allow-added-roots`.
+Tracked summaries are in `cue-beams-results`, with dense runnable evidence in
+`wsl-artifacts/wasm-headless/stage24`. The broad audit remains **494 diagnostics / 203 unique
+messages**, with **75 classes / 242 class-excluded used methods / 310 methods across all rules**.
+
+The following original TEXTS entry has **111 strict compilation diagnostics**. This is dependency
+discovery, not runtime verification: raster cleanup, font measurement and JavaCPP/Tesseract loading
+still need platform boundaries. OCR has not been replaced with empty results or disabled to claim
+a successful text-recognition run. The agreed asynchronous OCR request/resume boundary remains
+the target for that work.
 
 ## Remaining work
 
