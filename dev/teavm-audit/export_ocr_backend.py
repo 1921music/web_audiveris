@@ -10,6 +10,11 @@ import sys
 def main():
     root, mirror = map(Path, sys.argv[1:3]); revision = sys.argv[3]
     profile = sys.argv[4]
+    native_comparison = len(sys.argv) == 6 and sys.argv[5] == '--native'
+    if len(sys.argv) > 5 and not native_comparison:
+        raise ValueError('Optional argument: --native')
+    if native_comparison and profile != 'legacy':
+        raise ValueError('Native comparison currently covers the legacy profile')
     if profile not in ['legacy', 'lstm']:
         raise ValueError('Choose legacy or lstm profile')
     folder = profile + '-word-metadata'
@@ -37,6 +42,10 @@ def main():
         'wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/OcrTransport.java',
         'wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/OcrExchange.java',
         'dev/teavm-audit/audit.init.gradle']
+    if native_comparison:
+        sources += ['wasm-compat/src/test/java/org/audiveris/wasm/compat/test/NativeOcrBackendOracle.java',
+                    'wasm-compat/src/test/java/org/audiveris/wasm/compat/test/OcrTransportOracle.java',
+                    'wasm-compat/tools/compare-native-ocr.py', 'app/build.gradle']
     git = ['git', '-c', f'safe.directory={root}', '-C', str(root)]
     source_hashes = {}
     for name in sources:
@@ -50,6 +59,15 @@ def main():
     raw.mkdir(parents=True, exist_ok=True); tracked.mkdir(parents=True, exist_ok=True)
     for name in ['fixture.json', 'input.gray', 'native.png', 'host.png', 'results.json', 'verification.json']:
         shutil.copyfile(source / name, raw / name)
+    if native_comparison:
+        native = mirror / 'build/wasm-compat/tesseract-js-ocr/native-legacy'
+        comparison = read(native / 'comparison.json')
+        if comparison['adapterResultsSha256'] != sha(source / 'results.json') or not all(mode['exact'] for mode in comparison['modes']):
+            raise AssertionError('Stale or unsuccessful native OCR comparison')
+        for destination in [raw, tracked]:
+            target = destination / 'native'; target.mkdir(parents=True, exist_ok=True)
+            for name in ['comparison.json', 'psm-3.json', 'psm-6.json']:
+                shutil.copyfile(native / name, target / name)
     modules = mirror / 'wasm-compat/node_modules'
     for url, expected in report['assets'].items():
         if url in ['/ocr-transport.wasm', '/ocr-transport.wasm-runtime.js']:

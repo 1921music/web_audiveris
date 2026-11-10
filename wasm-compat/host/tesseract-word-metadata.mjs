@@ -7,7 +7,8 @@ export function attachNativeWordMetadata(module){
     const prototype=module.TessBaseAPI?.prototype,iteratorPrototype=module.ResultIterator?.prototype;
     if(typeof prototype?.GetJSONText!=='function'||typeof prototype?.GetIterator!=='function'
             ||typeof iteratorPrototype?.getWordFontAttributes!=='function'||typeof iteratorPrototype?.getBaseline!=='function'
-            ||typeof iteratorPrototype?.getBoundingBox!=='function'||typeof module.destroy!=='function'){
+            ||typeof iteratorPrototype?.getBoundingBox!=='function'||typeof iteratorPrototype?.Confidence!=='function'
+            ||typeof module.destroy!=='function'){
         throw new Error('Tesseract core does not expose the required word metadata API');
     }
     const original=prototype.GetJSONText;
@@ -25,6 +26,8 @@ export function attachNativeWordMetadata(module){
                     throw new Error('Tesseract word metadata is not aligned with JSON words');
                 }
                 const baseline=iterator.getBaseline(RIL_WORD);
+                // GetJSONText rounds confidence to integer percent; retain the native float.
+                word.confidence=iterator.Confidence(RIL_WORD);
                 word.baseline=baseline.has_baseline?{x0:baseline.x0,y0:baseline.y0,x1:baseline.x1,y1:baseline.y1}:null;
                 const font=iterator.getWordFontAttributes();
                 // As in TesseractOrder.getFont, the native font name is not used for font selection.

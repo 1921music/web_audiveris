@@ -934,6 +934,22 @@ gradle.projectsEvaluated {
     rootProject.tasks.register('verifyTesseractJsOcr') {
         dependsOn 'verifyTesseractJsOcrLegacy'
     }
+    rootProject.tasks.register('testNativeOcrBackendJvm', JavaExec) {
+        dependsOn 'prepareOcrBackendFixture'
+        classpath = rootProject.files(compatTests, compatClasses) + app.sourceSets.main.runtimeClasspath
+        mainClass = 'org.audiveris.wasm.compat.test.NativeOcrBackendOracle'
+        maxHeapSize = '256m'
+        systemProperty 'java.awt.headless', 'true'
+        args new File(ocrBackendOutput, 'fixture').absolutePath,
+                new File(compat, 'node_modules/@tesseract.js-data/eng/4.0.0/eng.traineddata.gz').absolutePath,
+                new File(ocrBackendOutput, 'native-legacy').absolutePath
+    }
+    rootProject.tasks.register('verifyNativeOcrBackend', Exec) {
+        dependsOn 'testNativeOcrBackendJvm', 'verifyTesseractJsOcrLegacy'
+        commandLine 'python3', new File(compat, 'tools/compare-native-ocr.py').absolutePath,
+                ocrBackendOutput.absolutePath,
+                new File(compat, 'node_modules/@tesseract.js-data/eng/4.0.0/eng.traineddata.gz').absolutePath
+    }
     rootProject.tasks.register('testGrayPathJvm', JavaExec) {
         dependsOn 'compileWasmCompatibilityTests'
         classpath = rootProject.files(compatTests, compatClasses, jdkRasterClasses)

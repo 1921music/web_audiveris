@@ -8,7 +8,7 @@ public final class OcrTransportOracle {
         java.nio.file.Files.writeString(output, json);
         System.out.println("Native OCR model fixture: Unicode characters, optional metadata and line baseline");
     }
-    private static String json(Object value) throws Exception {
+    static String json(Object value) throws Exception {
         if (value == null) { return "null"; }
         if (value instanceof String text) {
             StringBuilder out = new StringBuilder("\"");

@@ -1272,21 +1272,30 @@ are:
 
 | Profile | OCR core Wasm bytes | English model gzip bytes | First request ms | Reused request ms |
 | --- | ---: | ---: | ---: | ---: |
-| Legacy, OEM 0 | 3,456,075 | 10,923,060 | 759.0–759.5 | 26.3–27.3 |
-| LSTM-only, OEM 1 | 2,862,266 | 2,952,873 | 449.3 | 36.4–37.4 |
+| Legacy, OEM 0 | 3,456,075 | 10,923,060 | 699.8–700.2 | 27.0–27.1 |
+| LSTM-only, OEM 1 | 2,862,266 | 2,952,873 | 447.2–447.7 | 39.0–39.5 |
 
 First-request timing includes initialization, local asset loading, PNG encoding and OCR. These
 single-fixture observations establish local request latency; score-image quality and full-engine
 throughput need separate measurements. Both profiles provide line and word baselines. The optional
 `tesseract-word-metadata.mjs` hook reads the recognized page's public `ResultIterator` API before
 the normal JSON result is returned. Legacy OCR also supplies bold/italic/serif and other font flags
-and point sizes; LSTM's unknown font attributes stay null. Native font names are deliberately
+and point sizes; LSTM's unknown font attributes stay null. The same hook retains native floating
+point word confidence: ordinary JSON rounds this to integer percent. Native font names are deliberately
 unused, matching `TesseractOrder.getFont`. Word bounds and count must match the JSON word order;
 misalignment fails explicitly and releases the iterator. The hook is idempotent and adds no OCR
 Wasm code or model bytes. The Node factory shim and browser loader leave dependency sources
 unchanged; browser tests also put the core assets in a directory separate from the Worker script.
-The stock factory can still be injected without this enrichment. Native upstream OCR parity,
-font measurement and full TEXTS processing have not yet been established.
+The stock factory can still be injected without this enrichment.
+
+`verifyNativeOcrBackend` also runs the application's original JavaCPP/Tesseract dependency
+(native engine **5.5.2**) on the same image and decompressed model, with **OEM 0, DPI 70** and both
+PSM 3 and 6. All raw results now match exactly: four words, 23 character boxes, confidence, line
+and word baselines, and font flags/sizes. Before retaining native confidence, each mode had four
+differences from JSON rounding. The test records every field difference and rejects regressions.
+This comparison covers raw OCR on this fixture; original `TextWord` font fitting, score-page
+cleanup and full TEXTS processing remain unverified. The two OCR engine versions can still differ
+on other inputs.
 
 Install the locked test dependencies with `npm ci --ignore-scripts` in the capped WSL mirror, then
 run `verifyTesseractJsOcrLegacy` and `verifyTesseractJsOcrLstm` with the audit init script.
@@ -1295,6 +1304,7 @@ run `verifyTesseractJsOcrLegacy` and `verifyTesseractJsOcrLstm` with the audit i
 notices are in `wsl-artifacts/wasm-components/tesseract-js-ocr/{legacy,lstm}-word-metadata`.
 The earlier `{legacy,lstm}` results retain the stock-output comparison. Export each enriched profile
 with `export_ocr_backend.py <repository> <mirror> <source-commit> <legacy|lstm>`.
+For the legacy profile, append `--native` to archive the matching JVM comparison under `native/`.
 
 ## Pure Java path-fill component
 
