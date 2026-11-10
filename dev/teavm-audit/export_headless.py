@@ -53,6 +53,7 @@ def main():
     parser.add_argument('build', type=Path)
     parser.add_argument('tool_commit')
     parser.add_argument('--stage', type=int, default=1)
+    parser.add_argument('--pixels', action='store_true')
     args = parser.parse_args()
     root, build = args.repository, args.build
     if args.stage < 1:
@@ -139,6 +140,28 @@ def main():
                                        for p in sorted((artifacts / 'probe').iterdir()) if p.is_file()},
                        'sourceSha256': {str(p.relative_to(root)): hashlib.sha256(p.read_bytes().replace(b'\r\n', b'\n')).hexdigest()
                                         for p in sorted((root / 'wasm-compat/src').rglob('*')) if p.is_file()}})
+    if args.pixels:
+        pixel_build = build / 'wasm-compat/pixel-probe'
+        pixel_raw = artifacts / 'pixel-probe'
+        pixel_results = root / 'wasm-compat/pixel-results'
+        pixel_raw.mkdir(parents=True, exist_ok=True); pixel_results.mkdir(parents=True, exist_ok=True)
+        for name in ['pixels.wasm', 'pixels.wasm-runtime.js', 'jvm-reference.json', 'verification.json']:
+            shutil.copyfile(pixel_build / name, pixel_raw / name)
+        verification = json.loads((pixel_build / 'verification.json').read_text())
+        shutil.copyfile(pixel_build / 'verification.json', pixel_results / 'verification.json')
+        sample_manifest = pixel_build / 'samples/manifest.json'
+        if verification['samplePixels']:
+            shutil.copytree(pixel_build / 'samples', pixel_raw / 'samples', dirs_exist_ok=True)
+            shutil.copyfile(sample_manifest, pixel_results / 'samples.json')
+        pixel_provenance = {key: provenance[key] for key in ['applicationBaseline', 'toolCommit', 'teaVM', 'target',
+                            'cpuMax', 'allowedCpus', 'memoryMaxBytes', 'memorySwapMaxBytes', 'memoryEventsLocal',
+                            'sourceSha256', 'applicationSourceChanges']}
+        pixel_provenance.update({'imageJ': '1.54p', 'rawArtifacts': raw_path + '/pixel-probe',
+                                'artifactSha256': {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in pixel_raw.iterdir() if p.is_file()},
+                                'limitation': 'Grayscale/threshold/adaptive filtering and runs verified; not full sheet recognition or a complete engine size estimate'})
+        write(pixel_results / 'provenance.json', pixel_provenance)
+        write(pixel_raw / 'provenance.json', pixel_provenance)
+        provenance['pixelVerification'] = verification
     for target in [results, artifacts]:
         write(target / 'provenance.json', provenance)
     print(json.dumps({key: comparison[key] for key in ['rootCount', 'baselineDiagnostics', 'patchedDiagnostics', 'modifiedMethods',

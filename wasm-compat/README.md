@@ -273,6 +273,9 @@ Stage 3 separates the window-listener initializer (79 classes / 247 class-exclud
 methods across all rules). Stage 4 adds the configuration/output-path boundary and the small
 source changes above, reaching **76 / 242 / 313**. The 9,001 selected input methods still match;
 the new namespace hook is dependency-only and compiler-generated overrides are not forced roots.
+Stage 5 adds the pixel-processing boundary below. The broad audit totals remain **76 / 242 / 313**
+and **524 diagnostics / 216 unique messages**; independently compiled numerical probes verify real
+execution paths rather than treating the broad fast graph as proof of runtime compatibility.
 Use `dev/teavm-audit/export_headless.py` with the Windows checkout, Linux build directory and tool SHA
 to export the comparison against the archived stage-5 generic audit. Add `--stage 2` to compare
 against headless stage 1; `--stage 4` compares against headless stage 3. CPU usage remains capped at eight logical CPUs and memory at 8 GiB,
@@ -283,17 +286,30 @@ with no swap. These changes do not yet produce a complete runnable recognition e
 `GrayInput.copyOf(width, height, pixels)` accepts packed unsigned 8-bit grayscale rows (0 black,
 255 white). It validates dimensions before allocating a copy. `takeProcessor()` transfers that
 owned copy to the original ImageJ `ByteProcessor` once, without another copy; input reuse fails.
-File decoding/PDF rendering and the production JavaScript buffer adapter remain outside this API.
+`takeOwnership` instead accepts a buffer whose caller relinquishes all references. The probe's
+JavaScript bridge uses `Int8Array.copyToJavaArray()` / `copyFromJavaArray()` for bulk conversion,
+then transfers that owned Java array without another copy. `GrayPreprocessor.global` and `adaptive`
+call the original algorithms with explicit thresholds/coefficients. Invalid options do not consume
+the input. File decoding/PDF rendering and production Worker job messaging remain outside this API.
 
 The headless compiler changes only ImageJ 1.54p's `ImageProcessor` default-font initialization:
 pixel construction does not initialize the desktop `IJ.font12`. Reads of an unset processor font
 explicitly reject unsupported text rendering. Pixel math is not replaced. This does not supply
 ImageJ's broader GUI/plugin APIs or a font backend.
 
-`verifyPixelProbe` compares original `GlobalFilter` results with a JVM oracle in two Node modules
-and two Chromium Workers: 30 cases / 20,268 pixels match, including one-pixel-wide/high inputs,
-threshold boundaries, input immutability and consume-once ownership. The first global-only probe
-is 67,111 bytes; this is a small numerical test, not the recognition engine's size.
+`verifyPixelProbe` compares original algorithms with a JVM oracle in two Node modules and two
+Chromium Workers: `GlobalFilter` (30 cases / 20,268 pixels), adaptive `VerticalFilter` and
+`RandomFilter` (45 cases / 30,402 pixels), and horizontal/vertical run tables (30 cases). Tests cover
+one-pixel-wide/high inputs, uniform black/white and varied pixels, threshold boundaries, run/pixel
+round trips, input immutability, consume-once ownership and TypedArray subviews with nonzero offsets.
+
+The supplied eight PNG/TIFF samples also match the JVM adaptive-binary reference **byte for byte
+over 48,192,656 pixels**, in Node and a separate Chromium Worker. JVM-only fixture preparation uses
+ImageIO and the original `Picture.adjustImageFormat` / gray-source conversion convention. Gray/binary
+hashes and dimensions fix the comparison input; decoding does not run inside Wasm. TIFF preparation
+uses the first image in each file. The probe is **154,071 bytes**, including the tested pixel and
+run-table operations. The earlier global-only probe was 67,111 bytes; neither is an engine size estimate.
+This does not yet validate scale/staff detection, OCR or MusicXML output.
 
 ```powershell
 .\dev\wsl\Manage-WasmDev.ps1 Build -GradleArgs @(
@@ -302,6 +318,10 @@ is 67,111 bytes; this is a small numerical test, not the recognition engine's si
 ```
 
 Raw probe output is under `build/wasm-compat/pixel-probe` in the Linux mirror.
+Add `-PpixelSamples=/mnt/g/work/20261029/1921music/score_samples` to the command to prepare and compare
+the supplied samples. Omit it for the small synthetic suite. Review snapshots are in
+[pixel-results](pixel-results), with large raw inputs/references outside Git under headless stage 5.
+`export_headless.py --stage 5 --pixels` archives both audit and pixel verification results.
 
 ### Generic compatibility reproduction
 
@@ -367,7 +387,7 @@ Wasm build or proof that every selected method executes correctly.
   This is a compatibility test program, not an engine
   size estimate. No engine throughput claim is made from these tests.
 - The generic stage-5 snapshot used unchanged `app` and `buildSrc` sources from baseline
-  `04697c74fae431ef8436a9429386957a5cb25993`. Current headless stage 4 modifies only `Constant.java`,
+  `04697c74fae431ef8436a9429386957a5cb25993`. Headless stages 4–5 modify only `Constant.java`,
   `ConstantSet.java` and `BookManager.java`; their hashes are recorded in headless provenance. The capped runs recorded
   no OOM or hard memory-limit hits.
 
