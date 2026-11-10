@@ -71,6 +71,7 @@ def main():
     parser.add_argument('--rounding', action='store_true')
     parser.add_argument('--staff', action='store_true')
     parser.add_argument('--grid', action='store_true')
+    parser.add_argument('--clean-grid', action='store_true')
     parser.add_argument('--allow-added-roots', action='store_true')
     args = parser.parse_args()
     root, build = args.repository, args.build
@@ -304,14 +305,17 @@ def main():
         for target in [staff_results, staff_raw]:
             write(target / 'provenance.json', staff_provenance)
         provenance['staffVerification'] = json.loads((staff_build / 'verification.json').read_text())
-    if args.grid:
-        grid_build = build / 'wasm-compat/grid-probe'
-        grid_raw = artifacts / 'grid-probe'
-        grid_results = root / 'wasm-compat/grid-results'
+    if args.grid or args.clean_grid:
+        grid_name = 'clean-grid' if args.clean_grid else 'grid'
+        grid_build = build / f'wasm-compat/{grid_name}-probe'
+        grid_raw = artifacts / f'{grid_name}-probe'
+        grid_results = root / f'wasm-compat/{grid_name}-results'
         grid_raw.mkdir(parents=True, exist_ok=True); grid_results.mkdir(parents=True, exist_ok=True)
         names = ['jvm-reference.json', 'wasm-node-results.json', 'wasm-worker-results.json',
                  'verification.json', 'font-measurements.json', 'diagnostics.tsv']
-        for name in ['grid.wasm', 'grid.wasm-runtime.js'] + names:
+        if args.clean_grid:
+            names.append('raster-clipping.json')
+        for name in [grid_name + '.wasm', grid_name + '.wasm-runtime.js'] + names:
             shutil.copyfile(grid_build / name, grid_raw / name)
         for name in names:
             shutil.copyfile(grid_build / name, grid_results / name)
@@ -330,16 +334,41 @@ def main():
         reference['fontSha256'] = {str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest()
                                   for p in sorted((root / 'app/res').iterdir()) if p.suffix in ['.otf', '.ttf']}
         reference['scope'] = 'Pinned original ScaleBuilder and BracketInter plus unchanged grid/dynamic/lag/math/run algorithms; shared current model runtime'
+        if args.clean_grid:
+            picture_name = 'app/src/main/java/org/audiveris/omr/sheet/Picture.java'
+            original_picture = subprocess.check_output(['git', '-c', f'safe.directory={root}', '-C', str(root),
+                'show', f"{provenance['applicationBaseline']}:{picture_name}"]).decode().replace('\r\n', '\n')
+            current_picture = (root / picture_name).read_text(encoding='utf-8')
+            def raster_method(source):
+                start = source.index('    private ByteProcessor buildNoStaffBuffer ()')
+                brace = source.index('{', start); end, depth = brace + 1, 1
+                while depth:
+                    depth += (source[end] == '{') - (source[end] == '}'); end += 1
+                return source[start:end]
+            original_body, current_body = map(raster_method, [original_picture, current_picture])
+            if original_body != current_body:
+                raise AssertionError('Original Java2D staff-free raster oracle changed')
+            reference['unchangedStaffFreeRasterMethod'] = {'path': picture_name,
+                'method': 'buildNoStaffBuffer()', 'sha256': hashlib.sha256(original_body.encode()).hexdigest()}
         write(grid_raw / 'reference-sources.json', reference)
         grid_provenance = {key: provenance[key] for key in ['applicationBaseline', 'toolCommit', 'teaVM', 'target',
             'cpuMax', 'allowedCpus', 'memoryMaxBytes', 'memorySwapMaxBytes', 'memoryEventsLocal', 'sourceSha256', 'applicationSourceChanges']}
-        grid_provenance.update({'rawArtifacts': raw_path + '/grid-probe',
+        grid_provenance.update({'rawArtifacts': raw_path + '/' + grid_name + '-probe',
             'artifactSha256': {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(grid_raw.iterdir()) if p.is_file()},
             'limitation': 'GridBuilder with explicit host font measurements; staff-line removal, score update and later recognition remain unverified'})
         for target in [grid_results, grid_raw]:
             write(target / 'reference-sources.json', reference)
             write(target / 'provenance.json', grid_provenance)
-        provenance['gridVerification'] = json.loads((grid_build / 'verification.json').read_text())
+        if args.clean_grid:
+            shutil.copytree(grid_build / 'no-staff', grid_raw / 'no-staff', dirs_exist_ok=True)
+            raster_hashes = {p.name: {'sha256': hashlib.sha256(p.read_bytes()).hexdigest(), 'bytes': p.stat().st_size}
+                             for p in sorted((grid_raw / 'no-staff').glob('*.binary'))}
+            for target in [grid_results, grid_raw]:
+                write(target / 'no-staff-reference.json', raster_hashes)
+                grid_provenance['limitation'] = 'GridStep recognition calls with explicit font measurements; later recognition remains unverified'
+                grid_provenance['noStaffReference'] = raster_hashes
+                write(target / 'provenance.json', grid_provenance)
+        provenance['cleanGridVerification' if args.clean_grid else 'gridVerification'] = json.loads((grid_build / 'verification.json').read_text())
     for target in [results, artifacts]:
         write(target / 'provenance.json', provenance)
     print(json.dumps({key: comparison[key] for key in ['rootCount', 'baselineDiagnostics', 'patchedDiagnostics', 'modifiedMethods',

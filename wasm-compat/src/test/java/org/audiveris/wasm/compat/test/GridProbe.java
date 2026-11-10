@@ -66,13 +66,37 @@ public final class GridProbe {
     public static String gridJava(int width, int height, byte[] pixels, String id) {
         return analyze(PixelSheetProbe.create(width, height, pixels, id));
     }
-    public static String analyze(Sheet sheet) {
+    private static Sheet cleanedSheet;
+    public static byte[] cleanedPixels() {
+        if (cleanedSheet == null) { throw new IllegalStateException("No completed grid"); }
+        return (byte[]) cleanedSheet.getPicture().getSource(Picture.SourceKey.NO_STAFF).getPixels();
+    }
+    public static boolean verifyCleanCache() {
+        if (cleanedSheet == null) { throw new IllegalStateException("No completed grid"); }
+        var picture = cleanedSheet.getPicture(); var first = picture.getSource(Picture.SourceKey.NO_STAFF);
+        if (first != picture.getSource(Picture.SourceKey.NO_STAFF)) { throw new AssertionError("Derived source cache"); }
+        byte[] pixels = ((byte[]) first.getPixels()).clone(); picture.disposeSource(Picture.SourceKey.NO_STAFF);
+        var second = picture.getSource(Picture.SourceKey.NO_STAFF);
+        if (first == second || !Arrays.equals(pixels, (byte[]) second.getPixels())) { throw new AssertionError("Derived source invalidation"); }
+        return true;
+    }
+    public static String analyze(Sheet sheet) { return analyze(sheet, false); }
+    public static String analyze(Sheet sheet, boolean complete) {
+        if (complete) { cleanedSheet = null; }
         Sheet previous = HeadlessSheetContext.current(); HeadlessSheetContext.bind(sheet);
         try {
+            byte[] originalBinary = complete ? ((byte[]) sheet.getPicture().getSource(Picture.SourceKey.BINARY).getPixels()).clone() : null;
             sheet.setScale(new ScaleBuilder(sheet).retrieveScale());
             GridBuilder grid = new GridBuilder(sheet);
             grid.linesRetriever.createBothLags(); grid.linesRetriever.retrieveLines();
             grid.linesRetriever.addShortSections(); grid.barsRetriever.process(); grid.linesRetriever.completeLines();
+            if (complete) {
+                new StaffLineCleaner(sheet).process(); sheet.getStub().getBook().updateScores(sheet.getStub());
+                if (!Arrays.equals(originalBinary, (byte[]) sheet.getPicture().getSource(Picture.SourceKey.BINARY).getPixels())) {
+                    throw new AssertionError("Grid processing modified binary input");
+                }
+                cleanedSheet = sheet;
+            }
             StringBuilder result = new StringBuilder("{\"slope\":").append(sheet.getSkew().getSlope()).append(",\"interline\":").append(sheet.getScale().getInterline()).append(",\"staves\":[");
             boolean first = true;
             for (Staff staff : sheet.getStaffManager().getStaves()) {
@@ -111,7 +135,14 @@ public final class GridProbe {
                 } }
                 result.append("]}");
             }
-            return result.append("]}").toString();
+            result.append(']');
+            if (complete) { int lineGlyphs = 0;
+                for (Staff staff : sheet.getStaffManager().getStaves()) { for (LineInfo line : staff.getLines()) {
+                    if (((StaffLine) line).getGlyph() != null) { lineGlyphs++; }
+                } }
+                result.append(",\"staffLineGlyphs\":").append(lineGlyphs)
+                    .append(",\"scores\":").append(sheet.getStub().getBook().getScores().size()); }
+            return result.append('}').toString();
         } catch (StepException rejected) { return "{\"rejected\":true,\"invalid\":" + !sheet.getStub().isValid() + "}"; }
         finally { HeadlessSheetContext.bind(previous); }
     }

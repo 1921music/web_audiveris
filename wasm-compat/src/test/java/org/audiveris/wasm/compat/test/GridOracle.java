@@ -19,13 +19,15 @@ public final class GridOracle {
         Path samples = Path.of(args[0]), output = Path.of(args[1]); ObjectMapper mapper = new ObjectMapper();
         JsonNode manifest = mapper.readTree(samples.resolve("manifest.json").toFile());
         List<Map<String, Object>> results = new ArrayList<>();
+        boolean complete = args.length > 4 && args[4].equals("complete");
+        Path rasters = output.resolveSibling("no-staff"); if (complete) { Files.createDirectories(rasters); }
         try {
-            JsonNode fixture = compare(samples, "staff", 1024, 300, GridProbe.staffPixels(), mapper);
+            JsonNode fixture = compare(samples, "staff", 1024, 300, GridProbe.staffPixels(), mapper, complete, rasters);
             if (fixture.path("staves").size() != 2) { throw new AssertionError("Expected two fixture staves: " + fixture); }
             for (JsonNode page : manifest.get("pages")) {
                 String id = page.get("id").asText();
                 JsonNode result = compare(samples, id, page.get("width").asInt(), page.get("height").asInt(),
-                        Files.readAllBytes(samples.resolve(id + ".binary")), mapper);
+                        Files.readAllBytes(samples.resolve(id + ".binary")), mapper, complete, rasters);
                 results.add(Map.of("id", id, "result", result));
                 System.out.println("Grid oracle " + id + " staves=" + result.path("staves").size() + " rejected=" + result.path("rejected").asBoolean());
             }
@@ -47,11 +49,17 @@ public final class GridOracle {
             mapper.writerWithDefaultPrettyPrinter().writeValue(output.resolveSibling("font-measurements.json").toFile(), measurements);
         } finally { org.audiveris.omr.util.OmrExecutors.shutdown(); }
     }
-    private static JsonNode compare(Path folder, String id, int width, int height, byte[] binary, ObjectMapper mapper) throws Exception {
+    private static JsonNode compare(Path folder, String id, int width, int height, byte[] binary, ObjectMapper mapper, boolean complete, Path rasters) throws Exception {
         RunTable table = new RunTableFactory(Orientation.VERTICAL).createTable(new ByteProcessor(width, height, binary.clone(), null));
         Book book = new Book(folder.resolve("staff-" + id + ".png")); SheetStub stub = new SheetStub(book, 1); book.addStub(stub);
-        JsonNode expected = mapper.readTree(GridProbe.analyze(new Sheet(stub, table)));
-        JsonNode actual = mapper.readTree(GridProbe.gridJava(width, height, binary, id));
+        JsonNode expected = mapper.readTree(GridProbe.analyze(new Sheet(stub, table), complete));
+        byte[] expectedPixels = complete && !expected.path("rejected").asBoolean() ? GridProbe.cleanedPixels().clone() : null;
+        JsonNode actual = mapper.readTree(GridProbe.analyze(PixelSheetProbe.create(width, height, binary, id), complete));
+        if (expectedPixels != null) {
+            if (!Arrays.equals(expectedPixels, GridProbe.cleanedPixels())) { throw new AssertionError("Staff-free pixels differ: " + id); }
+            if (!GridProbe.verifyCleanCache()) { throw new AssertionError("Cache lifecycle"); }
+            Files.write(rasters.resolve(id + ".binary"), expectedPixels);
+        }
         if (!expected.equals(actual)) { throw new AssertionError("Raw picture changes grid geometry: " + id + "\n" + expected + "\n" + actual); }
         return expected;
     }

@@ -276,6 +276,45 @@ gradle.projectsEvaluated {
         commandLine 'node', '--max-old-space-size=256', new File(compat, 'tools/verify-grid.cjs').absolutePath,
                 new File(rootProject.projectDir, 'build/wasm-compat/grid-probe').absolutePath
     }
+    rootProject.tasks.register('buildCleanGridProbe', JavaExec) {
+        dependsOn compile, 'compileWasmCompatibilityTests', 'patchKxmlCompatibility', 'selectWasmLibraryImplementations'
+        classpath = rootProject.files(compatTests) + compatRuntime
+        mainClass = 'audit.CompileCompatibilityProbe'
+        maxHeapSize = '2g'
+        systemProperty 'audiveris.compat.enabled', 'true'
+        systemProperty 'audiveris.compat.headless', 'true'
+        systemProperty 'audiveris.compat.reflectionClasses', 'org.audiveris.wasm.compat.test.GraphSupplierCases$PublicNode,org.audiveris.wasm.compat.test.GraphSupplierCases$HiddenNode,org.audiveris.wasm.compat.test.GraphSupplierCases$MissingNoArg,org.audiveris.wasm.compat.test.GraphSupplierCases$HiddenType'
+        args new File(rootProject.projectDir, 'build/wasm-compat/clean-grid-probe').absolutePath,
+                'org.audiveris.wasm.compat.test.CleanGridProbe', 'clean-grid'
+    }
+    rootProject.tasks.register('testCleanGridJvm', JavaExec) {
+        dependsOn 'compileWasmCompatibilityTests', 'testUpstreamScaleJvm', 'compileUpstreamBracket'
+        def scaleClasses = new File(rootProject.projectDir, 'build/wasm-compat/upstream-scale/classes')
+        def gridOutput = new File(rootProject.projectDir, 'build/wasm-compat/clean-grid-probe')
+        classpath = rootProject.files(scaleClasses, new File(rootProject.projectDir, "build/wasm-compat/upstream-bracket/classes"), compatTests, compatClasses) + app.sourceSets.main.runtimeClasspath
+        mainClass = 'org.audiveris.wasm.compat.test.GridOracle'
+        workingDir app.projectDir
+        maxHeapSize = '768m'
+        systemProperty 'java.awt.headless', 'true'
+        systemProperty 'logback.configurationFile', new File(harness, 'logback.xml').absolutePath
+        environment 'XDG_CONFIG_HOME', new File(gridOutput, 'jvm-config').absolutePath
+        environment 'XDG_DATA_HOME', new File(gridOutput, 'jvm-data').absolutePath
+        environment 'XDG_CACHE_HOME', new File(gridOutput, 'jvm-cache').absolutePath
+        args new File(pixelProbeOutput, 'samples').absolutePath, new File(gridOutput, 'jvm-reference.json').absolutePath, scaleClasses.absolutePath, new File(rootProject.projectDir, 'build/wasm-compat/upstream-bracket/classes').absolutePath, 'complete'
+    }
+    rootProject.tasks.register('verifyCleanGridProbe', Exec) {
+        dependsOn 'testCleanGridJvm', 'testCleanRasterJvm', 'buildCleanGridProbe', 'testGraphSupplierJvm'
+        commandLine 'node', '--max-old-space-size=256', new File(compat, 'tools/verify-clean-grid.cjs').absolutePath,
+                new File(rootProject.projectDir, 'build/wasm-compat/clean-grid-probe').absolutePath
+    }
+    rootProject.tasks.register('testCleanRasterJvm', JavaExec) {
+        dependsOn 'compileWasmCompatibilityTests'
+        classpath = rootProject.files(compatTests, compatClasses) + app.sourceSets.main.runtimeClasspath
+        mainClass = 'org.audiveris.wasm.compat.test.CleanRasterOracle'
+        maxHeapSize = '128m'
+        systemProperty 'java.awt.headless', 'true'
+        args new File(rootProject.projectDir, 'build/wasm-compat/clean-grid-probe/raster-clipping.json').absolutePath
+    }
     rootProject.tasks.register('testGraphSupplierJvm', JavaExec) {
         dependsOn 'compileWasmCompatibilityTests'
         classpath = rootProject.files(compatTests, compatClasses) + app.sourceSets.main.runtimeClasspath

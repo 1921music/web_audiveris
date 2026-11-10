@@ -211,6 +211,7 @@ Stages 1–5 analyze **9,001 roots / 8,588 bodies**. Stage 6 preserves every one
 adds 18 scale-source API/adapter methods. Stage 8 also roots `Book.createMemoryBook`, giving
 **9,020 roots / 8,599 bodies**. Stage 9 adds nine pixel-model methods, giving **9,029 roots / 8,608 bodies**.
 Stage 11 adds a bracket-geometry method, giving **9,030 roots / 8,609 bodies**.
+Stage 12 adds three raw-pixel staff-removal methods, giving **9,033 roots / 8,612 bodies**.
 `-PallowAddedRoots=true` explicitly permits/report additions; it never permits removal, changed
 body/native coverage or reclassification of existing roots. Generic compatibility has 544 diagnostics;
 the initial Worker boundary stage has 525 and the current Worker compatibility stage has **494**
@@ -400,14 +401,14 @@ are under `build/wasm-compat/probe`; audit outputs are under
 
 ## Verified result
 
-The current audit covers **9,030 methods**, including **8,609 method bodies**. Every original
+The current audit covers **9,033 methods**, including **8,612 method bodies**. Every original
 **9,001-method / 8,588-body** root is preserved; 18 scale-context/adapter methods and the memory-book
-factory, nine pixel-model methods and one bracket-geometry seam are added explicitly.
+factory, nine initial pixel-model methods, one bracket-geometry seam and three staff-free raster methods are added explicitly.
 With generic compatibility and the opt-in Worker/presentation substitutions enabled, diagnostics
 fall from **1,276 to 494** (782 fewer); unique messages fall from **336 to 203**.
 The stages are **1,276 → 789 → 702 → 609 → 545 → 544 → 525 → 524 → 495 → 494**. The 544/220 result is the
 generic compatibility layer alone; 525/217 is the initial Worker boundary, 524/216 is the
-stage-6 boundary, 495/204 is the stage-7–9 result, and **494/203** is the current stage-11 result (unchanged from stage 10).
+stage-6 boundary, 495/204 is the stage-7–9 result, and **494/203** is the current stage-12 result (unchanged from stage 10).
 Remaining exclusion candidates are **75 classes / 242 used input methods inside those classes**,
 or **311 methods** when method-only exclusion rules are also included.
 There are no remaining missing-API messages for the generic layer's targeted APIs. The broad fast
@@ -626,6 +627,44 @@ when preparing fresh sample fixtures. Archive using `export_headless.py --stage 
 `wsl-artifacts/wasm-headless/stage11`. The full audit covers **9,030 roots / 8,609 bodies**,
 with **494 diagnostics / 203 unique messages** and **75 classes / 242 class-excluded used methods /
 311 methods across all exclusion rules**. Every original root/body is preserved.
+
+## Staff-line removal and score updating (stage 12)
+
+The Worker probe now performs the recognition calls made by `GridStep`: `GridBuilder`,
+`StaffLineCleaner.process()` and `Book.updateScores()`. `PixelPicture` lazily builds `NO_STAFF`
+by cloning its binary buffer and erasing the same glyph-run rectangles as the original Java2D
+renderer, clipping to image bounds. Horizontal runs use array fills; vertical runs use direct
+pixel writes. The original binary input remains unchanged. The derived source is cached and
+can be disposed/recomputed; exported pixel arrays are copies. Other derived sources and encoded
+images still require their respective backends.
+
+The JVM reference retains the original `Picture.buildNoStaffBuffer()` body, checked against the
+pinned baseline at export. Original image-backed and raw-pixel paths match for the fixture and
+all five accepted real pages, totaling **43,781,600 pixels** per input path. Node compares all
+staff-free bytes for binary and gray inputs; Chromium Workers compare complete SHA-256 hashes.
+The other three real inputs retain their original resolution rejection. A separate JVM comparison
+covers **256 raster/clipping cases / 274,688 pixels**, both run orientations and extreme offsets.
+Cache identity, invalidation/recomputation and output-copy isolation are checked as well.
+
+Geometry, bracket cases and score counts compare **24,158 numbers with maximum difference 0**
+in two Node instances and two Chromium Workers. Each accepted real page creates one in-memory
+score, with the same system/part organization as the JVM path. As before, the oracle pins original
+ScaleBuilder and BracketInter while sharing the current model runtime. The focused Wasm is
+**1,575,109 bytes**, including fixtures and pixel-export/cache checks; this is not a full-engine
+size estimate. OCR, headers, symbols, remaining recognition steps and MusicXML remain outstanding.
+
+Reproduce with `verifyCleanGridProbe -I dev/teavm-audit/audit.init.gradle -Pcompat=true
+-Pheadless=true` through the capped WSL launcher. Archive using `export_headless.py --stage 12
+--clean-grid --allow-added-roots`. `clean-grid-results` holds small comparisons and staff-free
+image hashes; raw images and modules are under `wsl-artifacts/wasm-headless/stage12`.
+The full audit preserves all previous roots and covers **9,033 roots / 8,612 bodies**. Diagnostics
+remain **494 / 203 unique**, with **75 classes / 242 class-excluded used methods / 311 methods
+across all exclusion rules**. The source-erasure helper is named `eraseRuns` so the existing
+name-based UI classifier recognizes it as an engine method; no root-selection rule changes.
+
+During this stage, WSL stalled on an ext4 directory read. The user-authorized WSL-wide restart
+restored builds. The relaunched jobs retain **8 logical CPUs / 8 GiB / no swap**, and verification
+records resource-limit values and the new VM's memory-event counters.
 
 ## Remaining work
 
