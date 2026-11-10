@@ -1202,8 +1202,8 @@ are required, and absent baseline/font metadata stays explicit. Successful empty
 model/unsupported/execution failures are separate outcomes. Coordinates refer to the submitted image;
 the engine retains the crop/padding translation.
 
-This component is not yet connected to `TextsStep`: the page raster cleaner, font measurement,
-host backend adapter and conversion into original `TextLine` objects remain separate work.
+This component is not yet connected to `TextsStep`: the page raster cleaner, font measurement
+and conversion into original `TextLine` objects remain separate work. The host adapter is described below.
 `verifyOcrExchangeProbe` checks its lifecycle in JVM, Node and independent Chromium Workers,
 including actual event-loop gaps between requesting, cancelling and responding.
 After the user restarted the WSL service, all **732 lifecycle/ownership checks** pass in the JVM,
@@ -1236,14 +1236,57 @@ The native JVM model fixture round-trips through two Node instances and two Chro
 including supplementary Unicode characters and transferred/detached buffers. Each instance passes
 **45 checks**, including **25 malformed-data cases**, owned inbound snapshots, actual asynchronous
 Worker-to-host requests/replies, stale-before-decode rejection, empty results and all three failure
-codes. The standalone transport probe is **41,736 bytes**. Its fixture serializer uses reflection
+codes. The standalone transport probe is **44,344 bytes**, including real-image request/resume test exports. Its fixture serializer uses reflection
 only in the separate JVM test entry, which is not reachable from the Wasm entry. The lifecycle
 probe's **732 checks** still pass with the extended model.
 
 Run `verifyOcrTransportProbe` with the audit init script through the capped launcher. Reports are
 in `ocr-transport-results` and runnable artifacts in `wsl-artifacts/wasm-components/ocr-transport`.
-This establishes the host data boundary; a real OCR backend, text-font fallback, TEXTS raster cleanup
-and conversion into original `TextLine` objects are still separate work.
+This establishes the host data boundary. Text-font fallback, TEXTS raster cleanup
+and conversion into original `TextLine` objects remain separate work.
+
+## Tesseract.js OCR adapter
+
+`host/tesseract-js-ocr.mjs` supplies the asynchronous service with an injected worker factory,
+language catalog, asset locations, image encoder and configurable OEM. The default **OEM 0** matches
+the original `TesseractOrder` selection; **OEM 1** is a separate LSTM-only option. Requests are
+serialized per adapter, with one initialized OCR Worker reused across images. Input pixels are
+snapshotted before queueing. Execution failures discard the failed Worker so the next request can
+initialize a fresh one; missing models, unsupported metadata and successful blank recognition remain
+distinct. Closing an adapter shuts down its Worker; cancelling an engine session rejects its late reply.
+
+Tests pin **Tesseract.js/core 7.0.0** and **`@tesseract.js-data/eng` 1.0.0**. The actual OCR engine
+identifies itself as **5.1.0-288-g2a9c1**. Both OEM profiles recognize the native 700×180 fixture as
+**Allegro / moderato / Music / 123**, with **23 real character boxes**. Results, coordinates and
+confidence agree exactly across Node and two independent Chromium Workers within each profile.
+Wasm emits the image request and consumes the real OCR reply through `OcrTransport`; blank and
+missing-model replies also resume with distinct outcomes. Inbound field validation still passes
+all **45 transport checks**. Recovery and language reinitialization contracts additionally use
+injected workers; actual recognition here covers English.
+
+GRAY8 image encoding uses native `CompressionStream`. The **126,000-byte** fixture becomes a
+**4,529-byte** PNG and decodes back to identical gray pixels. Browser tests load every OCR script,
+core and model from the local server; external requests are rejected. Core JS and Wasm are separate
+assets, and the English model is external. The first local measurements, with two concurrent Workers,
+are:
+
+| Profile | OCR core Wasm bytes | English model gzip bytes | First request ms | Reused request ms |
+| --- | ---: | ---: | ---: | ---: |
+| Legacy, OEM 0 | 3,456,075 | 10,923,060 | 884.8–884.9 | 31.3–31.6 |
+| LSTM-only, OEM 1 | 2,862,266 | 2,952,873 | 503.5–503.8 | 38.5–39.6 |
+
+First-request timing includes initialization, local asset loading, PNG encoding and OCR. These
+single-fixture observations establish local request latency; score-image quality and full-engine
+throughput need separate measurements. Both profiles provide line baselines. Word baselines and
+font attributes remain absent in the adapter output, with null metadata preserved for the engine's
+future fallback. Native upstream OCR parity and full TEXTS processing have not yet been established.
+
+Install the locked test dependencies with `npm ci --ignore-scripts` in the capped WSL mirror, then
+run `verifyTesseractJsOcrLegacy` and `verifyTesseractJsOcrLstm` with the audit init script.
+`verifyTesseractJsOcr` selects the legacy profile. Summaries are in
+`tesseract-js-ocr-results/{legacy,lstm}`; input images, result snapshots, local assets and package
+notices are in `wsl-artifacts/wasm-components/tesseract-js-ocr/{legacy,lstm}`. Export each profile
+with `export_ocr_backend.py <repository> <mirror> <source-commit> <legacy|lstm>`.
 
 ## Pure Java path-fill component
 

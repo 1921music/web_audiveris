@@ -907,6 +907,33 @@ gradle.projectsEvaluated {
         commandLine 'node', '--max-old-space-size=256', new File(compat, 'tools/verify-ocr-transport.cjs').absolutePath,
                 ocrTransportOutput.absolutePath
     }
+    def ocrBackendOutput = new File(rootProject.projectDir, 'build/wasm-compat/tesseract-js-ocr')
+    rootProject.tasks.register('prepareOcrBackendFixture', JavaExec) {
+        dependsOn 'compileWasmCompatibilityTests'
+        classpath = rootProject.files(compatTests)
+        mainClass = 'org.audiveris.wasm.compat.test.OcrBackendFixtureOracle'
+        maxHeapSize = '256m'
+        systemProperty 'java.awt.headless', 'true'
+        args new File(ocrBackendOutput, 'fixture').absolutePath
+    }
+    ['Legacy':0, 'Lstm':1].each { label, oem ->
+        rootProject.tasks.register('verifyTesseractJsOcr' + label, Exec) {
+            dependsOn 'prepareOcrBackendFixture', 'buildOcrTransportProbe'
+            def backendOutput = new File(ocrBackendOutput, label.toLowerCase())
+            environment 'AUDIVERIS_OCR_OEM', oem.toString()
+            doFirst {
+                rootProject.copy {
+                    from new File(ocrBackendOutput, 'fixture')
+                    into backendOutput
+                }
+            }
+            commandLine 'node', '--max-old-space-size=384', new File(compat, 'tools/verify-tesseract-js-ocr.cjs').absolutePath,
+                    backendOutput.absolutePath
+        }
+    }
+    rootProject.tasks.register('verifyTesseractJsOcr') {
+        dependsOn 'verifyTesseractJsOcrLegacy'
+    }
     rootProject.tasks.register('testGrayPathJvm', JavaExec) {
         dependsOn 'compileWasmCompatibilityTests'
         classpath = rootProject.files(compatTests, compatClasses, jdkRasterClasses)

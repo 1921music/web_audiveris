@@ -5,6 +5,7 @@ import org.audiveris.wasm.compat.platform.*;
 import org.audiveris.wasm.compat.platform.OcrExchange.*;
 import org.teavm.jso.JSExport;
 import org.teavm.jso.JSObject;
+import org.teavm.jso.typedarrays.Int8Array;
 
 public final class OcrTransportProbe {
     private static OcrExchange session;
@@ -34,6 +35,21 @@ public final class OcrTransportProbe {
         session = new OcrExchange("transport-job", "page-1", generation);
         pending = session.request(3, 2, new byte[]{0, 10, 20, (byte)128, (byte)200, (byte)255}, "eng+deu", Layout.MULTI_BLOCK);
         return OcrTransport.request(pending);
+    }
+    @JSExport public static JSObject imageRequest(int width, int height, Int8Array pixels, String languages, String layout, int generation) {
+        session = new OcrExchange("transport-job", "page-1", generation);
+        pending = session.request(width, height, pixels.copyToJavaArray(), languages, Layout.valueOf(layout));
+        return OcrTransport.request(pending);
+    }
+    @JSExport public static String resumeSummary() {
+        Reply reply = session.takeReply();
+        if (reply.failure() != null) { return "failure:" + reply.failure().code().name(); }
+        int words = 0, characters = 0;
+        for (Line line : reply.result().lines()) {
+            words += line.words().size();
+            for (Word word : line.words()) { characters += word.characters().size(); }
+        }
+        return reply.result().lines().size() + "/" + words + "/" + characters;
     }
     @JSExport public static boolean originalPixelsOwned() {
         return java.util.Arrays.equals(pending.pixels(), new byte[]{0, 10, 20, (byte)128, (byte)200, (byte)255});
