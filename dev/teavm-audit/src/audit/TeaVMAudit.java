@@ -204,6 +204,24 @@ public final class TeaVMAudit {
             throw new IllegalStateException("Not all root method bodies were analyzed; see roots.tsv");
         }
         if (failure != null) { throw new IllegalStateException("Compiler analysis did not complete", failure); }
+        if (Boolean.getBoolean("audiveris.compat.headless")) { verifyHeadlessBoundary(vm, output); }
+    }
+
+    private static void verifyHeadlessBoundary(TeaVM vm, Path output) throws Exception {
+        var cls = vm.getDependencyClassSource().get("org.audiveris.omr.glyph.dynamic.FilamentIndex");
+        var method = cls.getMethod(new org.teavm.model.MethodDescriptor("publish", ValueType.object("org.audiveris.omr.glyph.dynamic.Filament"), ValueType.VOID));
+        List<String> remaining = new ArrayList<>();
+        var reader = new org.teavm.model.instructions.AbstractInstructionReader() {
+            @Override public void getField(org.teavm.model.VariableReader receiver, org.teavm.model.VariableReader instance, org.teavm.model.FieldReference field, ValueType type) {
+                if (field.getFieldName().equals("entityService")) { remaining.add(field + " type=" + type); }
+            }
+            @Override public void create(org.teavm.model.VariableReader receiver, String type) {
+                if (type.equals("org.audiveris.omr.ui.selection.EntityListEvent")) { remaining.add("EntityListEvent construction"); }
+            }
+        };
+        for (var block : method.getProgram().getBasicBlocks()) { block.readAllInstructions(reader); }
+        Files.writeString(output.resolve("post-boundary-checks.json"), "{\"filamentUiPublicationCutInAnalyzedModel\":" + remaining.isEmpty() + "}\n");
+        if (!remaining.isEmpty()) { throw new IllegalStateException("Analyzed model retained UI publication: " + remaining); }
     }
 
     private static Map<String, String> readPlan(Path path) throws Exception {

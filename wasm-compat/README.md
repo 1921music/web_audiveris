@@ -153,22 +153,60 @@ must forward events to `postMessage`. These substitutions do not yet make the fu
   '-Pcompat=true', '-Pheadless=true', '--console=plain')
 ```
 
-The same **9,001 roots / 8,588 bodies** are analyzed. Relative to generic compatibility alone,
-diagnostics fall **544 → 525**; the three diagnostics directly in engine sources disappear.
-Excluded linked classes fall **538 → 441**, and excluded used methods **2,521 → 1,863**.
-The exclusion guard still fails: 441 classes remain, including type-only dependencies. Fast analysis
-is conservative, not a runtime trace. Original-reference crossing tables include original UI branches
-even after substitution; use the modified-method and changed-call tables to inspect actual changes.
+The same **9,001 roots / 8,588 bodies** are analyzed. Generic compatibility has 544 diagnostics;
+the initial Worker boundary stage has 525 and the current presentation-boundary stage has **524**
+(216 unique messages). No diagnostics are located directly in selected engine sources.
+
+| Residual exclusion candidates | Initial Worker boundary | Current presentation boundary |
+| --- | ---: | ---: |
+| Linked classes | 441 | **80** |
+| Used methods inside excluded classes | 1,681 | **249** |
+| Used methods under all exclusion rules, including method-only rules | 1,863 | **320** |
+
+Of the 80 classes, **58 have used methods and 22 are type-only**. These candidates include enums,
+rendering/output helpers and non-UI host dependencies, as well as remaining presentation paths;
+they are not all removable widgets. The exclusion guard still fails. Fast analysis is conservative,
+not a runtime trace. Some inferred witness paths can disagree with the transformed method model.
+The full audit separately checks that `FilamentIndex.publish` has no entity-service read or
+selection-event construction after transformation. Original-reference crossing tables include original
+UI branches even after substitution; inspect modified methods and distinguish inferred edges.
+
+Presentation-only entry points (display windows, check boards, trackers, UI-task impact overloads,
+manual link/task construction and plot windows) explicitly reject desktop execution. The recognition
+overload `RhythmsStep.impact(Collection)`, ledger geometry, grid recognition, MusicXML building and
+image-difference processing remain rooted. No `app` or `buildSrc` source is changed.
+
+`OctaveShiftInter.setGlyph` keeps its original setter and geometry instructions, obtaining the sheet
+from `HeadlessSheetContext.requireSheet()` instead of the selected desktop tab. The host must bind
+the actual job sheet before submitting work and clear it afterward. Queued tasks capture and restore
+this sheet alongside MDC and the host sheet ID; missing context fails explicitly.
+
+Small data/drawing dependencies are separated from window initialization at build time:
+
+- The six Bravura beat-unit codes are mechanically derived from upstream Java sources. The metronome
+  regex uses equivalent BMP `\\uXXXX` fragments because TeaVM rejects Java's `\\x{...}` form here.
+  JVM checks compare positive and negated classes over every BMP character (131,072 comparisons).
+- The template opacity is the same cached `SRC_OVER`/0.25 composite. The two stroke helpers are
+  mechanically copied from the original **Java source**, without `UIUtil`'s window initialization.
+  Source hashes and extraction guards detect upstream changes; this is not handwritten bytecode.
+- `TemplateFactory.buildDecoratedImage` retains its original instruction order except these
+  opacity/stroke references. Offscreen JVM checks cover stroke scaling and saved-stroke identity.
+  Full font/template rendering in Wasm remains unverified.
 
 `verifyHeadlessProbe` runs shared serial-scheduling checks on the JVM and compiles real `WellKnowns`,
 `OmrExecutors`, logging and progress API calls into Wasm. Node loads two module instances; Chromium
 runs two dedicated Workers. Closing one instance leaves the other operational. Tests cover resource
 URI resolution, FIFO/nested futures, errors, cancellation, zero-budget timeouts, shutdown/restart,
 task context restoration and GUI guard pruning that preserves a fixture's engine work. This does not
-validate real sheet recognition or all rewritten model methods. Review snapshots are in
-[headless-results](headless-results); raw graphs/probes are under `wsl-artifacts/wasm-headless/stage1`.
+validate real sheet recognition or all rewritten model methods. The expanded headless probe is
+**383,077 bytes**; it also exercises the regex and template data. This is not an engine size estimate.
+Review snapshots are in [headless-results](headless-results); raw graphs/probes are archived by stage
+under `wsl-artifacts/wasm-headless`. Stage 1 records the initial Worker boundary; stage 2 records
+the presentation-boundary changes described above.
 Use `dev/teavm-audit/export_headless.py` with the Windows checkout, Linux build directory and tool SHA
-to export the comparison against the archived stage-5 generic audit.
+to export the comparison against the archived stage-5 generic audit. Add `--stage 2` to compare
+against headless stage 1. CPU usage remains capped at eight logical CPUs and memory at 8 GiB,
+with no swap. These changes do not yet produce a complete runnable recognition engine.
 
 ### Generic compatibility reproduction
 

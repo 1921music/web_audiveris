@@ -11,7 +11,7 @@ import org.audiveris.wasm.compat.platform.*;
 final class HeadlessPatches {
     private static ValueType obj(String name) { return ValueType.object(name); }
     private static final ValueType STRING = obj("java.lang.String");
-    static void apply(ClassHolder cls) {
+    static void apply(ClassHolder cls, ClassHolderTransformerContext context) {
         if (!cls.getName().startsWith("org.audiveris.omr.")
                 && !cls.getName().equals("org.slf4j.LoggerFactory") && !cls.getName().equals("org.slf4j.MDC")) { return; }
         Map<MethodDescriptor, Program> original = new HashMap<>();
@@ -31,6 +31,7 @@ final class HeadlessPatches {
             case "org.audiveris.omr.step.ui.StepMonitoring": progress(cls); break;
             default: break;
         }
+        PresentationPatches.apply(cls);
         desktopCallbacks(cls);
         for (MethodHolder method : cls.getMethods()) {
             Program before = original.get(method.getDescriptor());
@@ -40,12 +41,24 @@ final class HeadlessPatches {
         for (MethodHolder method : cls.getMethods()) {
             Program program = method.getProgram(); if (program == null) { continue; }
             int oldBlocks = program.basicBlockCount(), oldInstructions = instructions(program);
+            boolean templateOutput = method.getReference().toString().equals("org.audiveris.omr.image.TemplateFactory.buildDecoratedImage(Lorg/audiveris/omr/image/Template;)Ljava/awt/image/BufferedImage;");
+            List<Instruction> preserved = new ArrayList<>(); Map<Instruction, MethodReference> originalCalls = new IdentityHashMap<>();
+            if (templateOutput) {
+                for (BasicBlock block : program.getBasicBlocks()) { for (Instruction instruction : block) {
+                    preserved.add(instruction); if (instruction instanceof InvokeInstruction) { originalCalls.put(instruction, ((InvokeInstruction) instruction).getMethod()); }
+                } }
+            }
             boolean changed = false;
             for (int i = 0; i < program.basicBlockCount(); i++) {
                 for (Instruction instruction : program.basicBlockAt(i)) {
                     if (instruction instanceof GetFieldInstruction) {
                         GetFieldInstruction get = (GetFieldInstruction) instruction;
-                        if (gui(get.getField()) || presentationService(get.getField())) {
+                        if (get.getField().getClassName().equals("org.audiveris.omr.sheet.ui.TemplateView") && get.getField().getFieldName().equals("templateComposite")) {
+                            InvokeInstruction data = new InvokeInstruction(); data.setType(InvocationType.SPECIAL);
+                            data.setMethod(new MethodReference("org.audiveris.wasm.compat.platform.HeadlessRenderData", "templateComposite", obj("java.awt.AlphaComposite")));
+                            data.setReceiver(get.getReceiver()); data.setLocation(get.getLocation()); get.replace(data); changed = true; continue;
+                        }
+                        if (gui(get.getField()) || presentationService(get.getField(), cls, context)) {
                             if (get.getInstance() != null) {
                                 NullCheckInstruction check = new NullCheckInstruction(); check.setValue(get.getInstance()); check.setReceiver(program.createVariable()); get.insertPrevious(check);
                             }
@@ -54,13 +67,22 @@ final class HeadlessPatches {
                         }
                     } else if (instruction instanceof PutFieldInstruction) {
                         PutFieldInstruction put = (PutFieldInstruction) instruction;
-                        if (gui(put.getField()) || presentationService(put.getField())) {
+                        if (gui(put.getField()) || presentationService(put.getField(), cls, context)) {
                             InvokeInstruction reject = new InvokeInstruction(); reject.setType(InvocationType.SPECIAL);
                             reject.setMethod(new MethodReference(HeadlessEvents.class.getName(), "rejectGui", obj("java.lang.Object"), ValueType.VOID));
                             reject.setArguments(put.getValue()); reject.setLocation(put.getLocation()); put.replace(reject); changed = true;
                         }
                     } else if (instruction instanceof InvokeInstruction) {
                         InvokeInstruction call = (InvokeInstruction) instruction;
+                        if (call.getMethod().getClassName().equals("org.audiveris.omr.ui.util.UIUtil")
+                                && Set.of("setAbsoluteStroke", "setAbsoluteDashedStroke").contains(call.getMethod().getName())) {
+                            call.setMethod(new MethodReference("org.audiveris.wasm.compat.platform.HeadlessRenderOps", call.getMethod().getDescriptor())); changed = true; continue;
+                        }
+                        if (call.getMethod().getClassName().equals("org.audiveris.omr.ui.action.AdvancedTopics")
+                                && call.getMethod().getName().equals("processSystemsInParallel")) {
+                            IntegerConstantInstruction constant = new IntegerConstantInstruction(); constant.setConstant(0); constant.setReceiver(call.getReceiver());
+                            constant.setLocation(call.getLocation()); call.replace(constant); changed = true; continue;
+                        }
                         if (call.getMethod().getClassName().equals("javax.swing.SwingUtilities")
                                 && call.getMethod().getName().equals("isEventDispatchThread")) {
                             IntegerConstantInstruction constant = new IntegerConstantInstruction(); constant.setConstant(0); constant.setReceiver(call.getReceiver());
@@ -70,17 +92,38 @@ final class HeadlessPatches {
                 }
             }
             if (changed) {
-                while (new ConstantConditionElimination().optimize(method.getDescriptor(), program)) { }
-                report(method, "headless-gui-guard", oldBlocks, oldInstructions);
+                if (templateOutput) { verifyTemplateOutput(program, preserved, originalCalls); }
+                else { while (new ConstantConditionElimination().optimize(method.getDescriptor(), program)) { } }
+                report(method, templateOutput ? "detached-render-data-preserve-builder-instructions" : "headless-gui-guard", oldBlocks, oldInstructions);
             }
         }
+    }
+    private static void verifyTemplateOutput(Program program, List<Instruction> before, Map<Instruction, MethodReference> calls) {
+        List<Instruction> after = new ArrayList<>();
+        for (BasicBlock block : program.getBasicBlocks()) { for (Instruction instruction : block) { after.add(instruction); } }
+        if (before.size() != after.size()) { throw new IllegalStateException("Template output instructions were removed"); }
+        int opacity = 0, strokes = 0;
+        for (int i = 0; i < before.size(); i++) {
+            Instruction old = before.get(i), current = after.get(i); MethodReference target = calls.get(old);
+            if (old instanceof GetFieldInstruction && ((GetFieldInstruction) old).getField().equals(new FieldReference("org.audiveris.omr.sheet.ui.TemplateView", "templateComposite"))) {
+                if (!(current instanceof InvokeInstruction) || !((InvokeInstruction) current).getMethod().getClassName().equals("org.audiveris.wasm.compat.platform.HeadlessRenderData")) { throw new IllegalStateException("Template opacity adaptation changed"); }
+                opacity++; continue;
+            }
+            if (old != current) { throw new IllegalStateException("Template output computation changed"); }
+            if (target != null && target.getClassName().equals("org.audiveris.omr.ui.util.UIUtil") && Set.of("setAbsoluteStroke", "setAbsoluteDashedStroke").contains(target.getName())) {
+                MethodReference replacement = ((InvokeInstruction) current).getMethod();
+                if (!replacement.getClassName().equals("org.audiveris.wasm.compat.platform.HeadlessRenderOps") || !replacement.getDescriptor().equals(target.getDescriptor())) { throw new IllegalStateException("Template stroke adaptation changed"); }
+                strokes++;
+            } else if (target != null && !target.equals(((InvokeInstruction) current).getMethod())) { throw new IllegalStateException("Template output call changed"); }
+        }
+        if (opacity != 1 || strokes == 0) { throw new IllegalStateException("Review template rendering boundaries"); }
     }
     private static int instructions(Program program) {
         if (program == null) { return 0; } int count = 0;
         for (BasicBlock block : program.getBasicBlocks()) { for (Instruction instruction : block) { count++; } } return count;
     }
     private static boolean reportStarted;
-    private static synchronized void report(MethodHolder method, String kind, int beforeBlocks, int beforeInstructions) {
+    static synchronized void report(MethodHolder method, String kind, int beforeBlocks, int beforeInstructions) {
         String destination = System.getProperty("audiveris.compat.headlessReport"); if (destination == null) { return; }
         try {
             java.nio.file.Path path = java.nio.file.Path.of(destination);
@@ -94,9 +137,18 @@ final class HeadlessPatches {
         } catch (java.io.IOException error) { throw new IllegalStateException("Cannot record headless substitutions", error); }
     }
     private static boolean gui(FieldReference field) { return field.getClassName().equals("org.audiveris.omr.OMR") && field.getFieldName().equals("gui"); }
-    private static boolean presentationService(FieldReference field) {
-        return field.getClassName().equals("org.audiveris.omr.util.BasicIndex") && field.getFieldName().equals("entityService")
-                || field.getClassName().equals("org.audiveris.omr.glyph.GlyphIndex") && field.getFieldName().equals("glyphService");
+    private static boolean presentationService(FieldReference field, ClassHolder current, ClassHolderTransformerContext context) {
+        if (field.getClassName().equals("org.audiveris.omr.glyph.GlyphIndex") && field.getFieldName().equals("glyphService")
+                || field.getClassName().equals("org.audiveris.omr.score.Score") && field.getFieldName().equals("logicalsEditor")) { return true; }
+        if (!field.getFieldName().equals("entityService")) { return false; }
+        // Bytecode may name the subclass when accessing an inherited protected field.
+        ClassReader owner = field.getClassName().equals(current.getName()) ? current : context.getHierarchy().getClassSource().get(field.getClassName());
+        while (owner != null) {
+            FieldReader declared = owner.getField(field.getFieldName());
+            if (declared != null) { return owner.getName().equals("org.audiveris.omr.util.BasicIndex") && declared.getType().equals(obj("org.audiveris.omr.ui.selection.EntityService")); }
+            owner = owner.getParent() == null ? null : context.getHierarchy().getClassSource().get(owner.getParent());
+        }
+        return false;
     }
     private static void desktopCallbacks(ClassHolder cls) {
         String name;
@@ -116,10 +168,22 @@ final class HeadlessPatches {
         }
         if (!found) { throw new IllegalStateException("Review desktop callback " + cls.getName() + "." + name); }
     }
-    private static void rejectBody(MethodHolder method) {
+    static void rejectBody(MethodHolder method) {
         Program program = new Program(); for (int i = 0; i <= method.parameterCount(); i++) { program.createVariable(); }
         BasicBlock block = program.createBasicBlock(); InvokeInstruction reject = new InvokeInstruction(); reject.setType(InvocationType.SPECIAL);
-        reject.setMethod(new MethodReference(HeadlessEvents.class.getName(), "unsupportedDesktop", ValueType.VOID)); block.add(reject); block.add(new ExitInstruction()); method.setProgram(program);
+        reject.setMethod(new MethodReference(HeadlessEvents.class.getName(), "unsupportedDesktop", ValueType.VOID)); block.add(reject);
+        ExitInstruction exit = new ExitInstruction();
+        ValueType resultType = method.getDescriptor().getResultType();
+        if (!resultType.equals(ValueType.VOID)) {
+            Variable result = program.createVariable();
+            if (resultType.equals(ValueType.BOOLEAN)) {
+                IntegerConstantInstruction zero = new IntegerConstantInstruction(); zero.setConstant(0); zero.setReceiver(result); block.add(zero);
+            } else if (resultType instanceof ValueType.Object || resultType instanceof ValueType.Array) {
+                NullConstantInstruction nil = new NullConstantInstruction(); nil.setReceiver(result); block.add(nil);
+            } else { throw new IllegalStateException("Review desktop return type " + method.getReference()); }
+            exit.setValueToReturn(result);
+        }
+        block.add(exit); method.setProgram(program);
     }
     private static void delegate(ClassHolder cls, String method, String helper, Class<?> owner, ValueType... signature) {
         MethodDescriptor descriptor = new MethodDescriptor(method, signature);

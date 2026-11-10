@@ -57,6 +57,7 @@ const root = path.resolve(process.argv[2]);
         assert.equal(result.closed.result, false); assert.equal(result.independent.result, true);
         const report = { node: process.version, chromium: browser.version(), nodeInstances: 2, workers: 2,
             platform: true, serialScheduling: true, resourceUri: true, loggingAndProgress: true,
+            metronomeMusicDataAndRegex: true, templateComposite: true, unboundSheetContextRejected: true,
             guiGuardPreservesEngineWork: true, workerIsolation: true, wasmBytes: fs.statSync(path.join(root, 'headless.wasm')).size };
         fs.writeFileSync(path.join(root, 'verification.json'), JSON.stringify(report, null, 2) + '\n'); console.log(JSON.stringify(report));
     } finally { if (browser) { await browser.close(); } await new Promise(resolve => server.close(resolve)); }

@@ -17,7 +17,14 @@ public final class HeadlessProbe {
     public static void main(String[] args) { }
     private static void check(boolean value) { if (!value) { throw new AssertionError("Headless platform contract"); } }
     @JSExport public static String platform() throws Exception {
-        SerialExecutorTest.run();
+        try { return platformCore(); }
+        catch (Throwable error) { error.printStackTrace(); return error.getClass().getName() + ": " + error.getMessage(); }
+    }
+    private static String platformCore() throws Exception {
+        SerialExecutorTest.run(); HeadlessMusicDataTest.run();
+        HeadlessRenderTest.data();
+        check(HeadlessSheetContext.current() == null);
+        try { HeadlessSheetContext.requireSheet(); throw new AssertionError(); } catch (IllegalStateException expected) { }
         WellKnowns.ensureLoaded();
         check(!WellKnowns.WINDOWS && !WellKnowns.MAC_OS_X && !WellKnowns.LINUX && !WellKnowns.FLATPAK && !WellKnowns.RUNNING_FROM_JAR);
         check(WellKnowns.FILE_ENCODING.equals("UTF-8") && WellKnowns.OS_ARCH.equals("wasm"));

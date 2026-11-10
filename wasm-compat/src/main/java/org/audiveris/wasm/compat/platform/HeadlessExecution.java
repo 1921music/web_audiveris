@@ -25,6 +25,7 @@ public final class HeadlessExecution {
     private static final class Snapshot {
         final java.util.Map<String, String> log = HeadlessLogging.mdc().getCopyOfContextMap();
         final String sheet = HeadlessEvents.sheetId();
+        final org.audiveris.omr.sheet.Sheet model = HeadlessSheetContext.current();
     }
     private static SerialExecutor create() {
         return new SerialExecutor(new SerialExecutor.Context() {
@@ -32,6 +33,7 @@ public final class HeadlessExecution {
             @Override public void restore(Object value) {
                 Snapshot snapshot = (Snapshot) value;
                 HeadlessLogging.mdc().setContextMap(snapshot.log); HeadlessEvents.setSheetId(snapshot.sheet);
+                HeadlessSheetContext.bind(snapshot.model);
             }
         });
     }
