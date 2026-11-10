@@ -851,6 +851,27 @@ gradle.projectsEvaluated {
         args new File(rootProject.projectDir, 'build/wasm-compat/texts-baseline-probe').absolutePath,
                 'org.audiveris.wasm.compat.test.TextsProbe', 'texts'
     }
+    def ocrExchangeOutput = new File(rootProject.projectDir, 'build/wasm-compat/ocr-exchange-probe')
+    rootProject.tasks.register('testOcrExchangeJvm', JavaExec) {
+        dependsOn 'compileWasmCompatibilityTests'
+        classpath = rootProject.files(compatTests, compatClasses)
+        mainClass = 'org.audiveris.wasm.compat.test.OcrExchangeOracle'
+        maxHeapSize = '256m'
+        args new File(ocrExchangeOutput, 'jvm-reference.txt').absolutePath
+    }
+    rootProject.tasks.register('buildOcrExchangeProbe', JavaExec) {
+        dependsOn compile, 'testOcrExchangeJvm', 'patchKxmlCompatibility', 'selectWasmLibraryImplementations'
+        classpath = rootProject.files(compatTests) + compatRuntime
+        mainClass = 'audit.CompileCompatibilityProbe'
+        maxHeapSize = '1g'
+        systemProperty 'audiveris.compat.enabled', 'true'
+        args ocrExchangeOutput.absolutePath, 'org.audiveris.wasm.compat.test.OcrExchangeProbe', 'ocr-exchange'
+    }
+    rootProject.tasks.register('verifyOcrExchangeProbe', Exec) {
+        dependsOn 'buildOcrExchangeProbe'
+        commandLine 'node', '--max-old-space-size=256', new File(compat, 'tools/verify-ocr-exchange.cjs').absolutePath,
+                ocrExchangeOutput.absolutePath
+    }
     rootProject.tasks.register('buildHeadsProbe', JavaExec) {
         dependsOn compile, 'compileWasmCompatibilityTests', 'patchKxmlCompatibility', 'selectWasmLibraryImplementations'
         classpath = rootProject.files(compatTests) + compatRuntime

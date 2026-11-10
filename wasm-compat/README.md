@@ -1190,6 +1190,36 @@ still need platform boundaries. OCR has not been replaced with empty results or 
 a successful text-recognition run. The agreed asynchronous OCR request/resume boundary remains
 the target for that work.
 
+## OCR request/resume boundary
+
+`platform.OcrExchange` is a Worker-owned, per-session boundary with one outstanding request.
+It keeps no suspended Java stack. The recognition caller retains its page/phase context, emits
+a packed GRAY8 request, and consumes a reply before continuing. Requests identify the job, page,
+execution generation and monotonically increasing request number. A cancelled exchange is terminal;
+restarting uses a new generation. Late, duplicate and mismatched replies cannot resume processing.
+Input pixels and nested result lists are owned snapshots. Confidence uses `[0,1]`, character boxes
+are required, and absent baseline/font metadata stays explicit. Successful empty results and
+model/unsupported/execution failures are separate outcomes. Coordinates refer to the submitted image;
+the engine retains the crop/padding translation.
+
+This component is not yet connected to `TextsStep`: the page raster cleaner, font measurement,
+host backend adapter and conversion into original `TextLine` objects remain separate work.
+`verifyOcrExchangeProbe` checks its lifecycle in JVM, Node and independent Chromium Workers,
+including actual event-loop gaps between requesting, cancelling and responding.
+**Verification pending:** the initial build was interrupted by WSL file-I/O stalls. After
+`wsl --shutdown`, a fresh instance failed with `Wsl/Service/CreateInstance/ERROR_TIMEOUT`;
+restarting `WslService` requires administrator privileges unavailable to this process.
+Only the JavaScript verifier syntax and whitespace checks have passed for this new component.
+The preceding stage-24 cue-beam runtime evidence is complete and unaffected.
+
+Backend details must be checked rather than inferred from the library name. Tesseract.js requires
+explicit [`blocks` output](https://github.com/naptha/tesseract.js/blob/master/docs/api.md) for its
+structured hierarchy. The currently inspected tesseract-wasm
+[`TextUnit` API](https://github.com/robertknight/tesseract-wasm/blob/master/src/ocr-engine.ts)
+exposes line/word units, so that API alone does not satisfy the required character-box capability.
+A backend lacking it must report unsupported capability; word boxes must not be split into invented
+character positions. Missing baseline/font fallback quality is still unverified.
+
 ## Remaining work
 
 ### TODO: reconsider the XML properties parser
