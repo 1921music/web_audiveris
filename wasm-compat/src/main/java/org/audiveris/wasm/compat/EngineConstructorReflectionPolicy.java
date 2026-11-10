@@ -11,7 +11,9 @@ public final class EngineConstructorReflectionPolicy extends SimpleReflectionPol
             selectClasses(type -> type != null && name.equals(type.name()))
                     .reflectableMethods(withSignature(int.class).and(named("<init>")));
         }
-        selectClasses(type -> type != null && "org.audiveris.omr.sig.relation.BeamBeamRelation".equals(type.name()))
-                .reflectableMethods(withSignature(new Class<?>[0]).and(named("<init>")));
+        for (String name : new String[]{"org.audiveris.omr.sig.relation.BeamBeamRelation", "org.audiveris.omr.sig.relation.HeadHeadRelation"}) {
+            selectClasses(type -> type != null && name.equals(type.name()))
+                    .reflectableMethods(withSignature(new Class<?>[0]).and(named("<init>")));
+        }
     }
 }

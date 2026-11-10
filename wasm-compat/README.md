@@ -410,7 +410,7 @@ With generic compatibility and the opt-in Worker/presentation substitutions enab
 fall from **1,276 to 494** (782 fewer); unique messages fall from **336 to 203**.
 The stages are **1,276 → 789 → 702 → 609 → 545 → 544 → 525 → 524 → 495 → 494**. The 544/220 result is the
 generic compatibility layer alone; 525/217 is the initial Worker boundary, 524/216 is the
-stage-6 boundary, 495/204 is the stage-7–9 result, and **494/203** is the current stage-22 result (unchanged from stage 10).
+stage-6 boundary, 495/204 is the stage-7–9 result, and **494/203** is the current stage-23 result (unchanged from stage 10).
 Remaining exclusion candidates are **75 classes / 242 used input methods inside those classes**,
 or **310 methods** when method-only exclusion rules are also included.
 There are no remaining missing-API messages for the generic layer's targeted APIs. The broad fast
@@ -1125,6 +1125,40 @@ Wasm hash and require committed source/tool files. Archive with `export_headless
 The following REDUCTION entry also compiles with zero diagnostics. Its pinned/native and
 portable JVM snapshots are prepared separately; Wasm runtime recognition is still unverified
 at this stage. `reduction-baseline.json` records that compilation-only status explicitly.
+
+## Foundation reduction (stage 23)
+
+The REDUCTION probe invokes the original `ReductionStep.doSystem` and protected epilog through
+a test subclass. `SigReducer.reduceFoundations`, configurable stem-end refinement, the free-length
+calculation and glyph-index cleanup retain their original source. Reference JVM classes for
+`ReductionStep`, `SigReducer` and `HeadHeadRelation` are compiled from the baseline and their
+classpath origins are checked. Audiveris source is unchanged in this stage.
+
+The runtime change adds only `HeadHeadRelation()` to the explicit constructor reflection policy.
+The first Wasm attempt exposed `NoSuchMethodException` in the original `SIGraph.insertSupport`;
+its swallowed exceptions were rejected by the probe. With that constructor registered, all eight
+images agree between the original JVM, portable JVM, Node and two independent Chromium Workers,
+for both binary and adaptive GRAY8 input. Five accepted pages retain **2,405 graph vertices**
+(415 / 416 / 508 / 537 / 529) and **2,460 edges** (484 / 409 / 511 / 483 / 573); three remain rejected.
+
+Comparison covers every surviving interpretation's bounds, staff, intrinsic/contextual grade,
+flags, glyph position/orientation and complete runs; head pitches; horizontal/vertical median
+lines; stem widths and free lengths; and all remaining edge endpoints/grades/support ratios.
+Every remaining indexed glyph must belong to a staff line or surviving graph interpretation.
+All preceding phase snapshots, raster comparisons and configuration/resource checks also run.
+
+There are **2,302,728 numeric comparisons**, maximum difference **1.7764e-15**, plus **175,126,400
+head-spot bytes** and **350,252,800 distance bytes**. The component is **2,717,414 bytes** and uses
+the same four external template catalogs and classifier asset. The validator uses a **768 MiB**
+Node old-space cap within the unchanged **8 GiB / 8 CPU** group limits. The full audit retains
+**9,054 roots / 8,631 bodies**, **494 diagnostics / 203 unique messages**, and **75 classes / 242
+class-excluded used methods / 310 used methods across all exclusion rules**.
+
+Reproduce using `verifyReductionProbe -I dev/teavm-audit/audit.init.gradle` through the capped
+launcher; `-PreductionPages=1` limits the Wasm comparison. Archive full results with
+`export_headless.py --stage 23 --reduction --allow-added-roots`.
+The following CUE_BEAMS entry compiles with zero diagnostics; the active cue-beam path remains
+unverified at this stage, separately from the default switch-off path.
 
 ## Remaining work
 

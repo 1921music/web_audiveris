@@ -51,7 +51,7 @@ function compare(actual, expected, label = 'result') {
 (async () => {
     const originalPath = fs.existsSync(path.join(root, 'jvm-original.json')) ? path.join(root, 'jvm-original.json') : path.resolve(root, '../reduction-original-probe/jvm-reference.json');
     const oracle = JSON.parse(fs.readFileSync(originalPath, 'utf8'));
-    const stemSortContract = fs.readFileSync(path.join(root,'../connected-stems-baseline-probe/stem-sort-reference.txt'),'utf8');
+    const stemSortContract = fs.readFileSync(fs.existsSync(path.join(root,'stem-sort-reference.txt')) ? path.join(root,'stem-sort-reference.txt') : path.join(root,'../connected-stems-baseline-probe/stem-sort-reference.txt'),'utf8');
     { const seam = JSON.parse(fs.readFileSync(portablePath, 'utf8')); assert.deepEqual(seam, oracle); }
     const manifest = JSON.parse(fs.readFileSync(path.join(samples, 'manifest.json'), 'utf8'));
     const allPages = manifest.pages.length;
@@ -219,14 +219,14 @@ function compare(actual, expected, label = 'result') {
         fs.writeFileSync(path.join(root, 'wasm-worker-results.json'), JSON.stringify(workers) + '\n');
         const report = {node: process.version, chromium: browser.version(), nodeInstances: 4, workers: 2,
             pages: manifest.pages.length, fullSampleSet: manifest.pages.length === allPages, diagnosticTraceEnabled: Boolean(process.env.AUDIVERIS_STEMS_TRACE_RECT), totalInputPages: allPages, comparedNumbers: numbers, maxDifference, comparedPixelBytes, comparedDistanceBytes,
-            originalHeaderClassesPinned: true, originalStemAlgorithms: true, originalBeamAlgorithms: true, originalLedgerAlgorithms: true, originalDistancePaintingAndChamfer: true, originalHeadsAlgorithms: true, originalConnectedStemsAlgorithms: true, stemDebugRejectedExplicitly: true, pinnedStemSortCases: 768, kernelContract: true, previewOptionRejectedExplicitly: true, debugImageOptionRejectedExplicitly: true,
+            originalHeaderClassesPinned: true, originalStemAlgorithms: true, originalBeamAlgorithms: true, originalLedgerAlgorithms: true, originalDistancePaintingAndChamfer: true, originalHeadsAlgorithms: true, originalConnectedStemsAlgorithms: true, originalReductionAlgorithms: true, unreferencedGlyphCleanupChecked: true, stemDebugRejectedExplicitly: true, pinnedStemSortCases: 768, kernelContract: true, previewOptionRejectedExplicitly: true, debugImageOptionRejectedExplicitly: true,
             geometryRecords: geometry.length, pointWidthRecords: pointWidths.length, externalGeometryBytes: fs.statSync(path.join(profiles, 'symbol-geometry.json')).size,
             templateCatalogs: templateRows.map(r=>({family:r.family,pointSize:r.pointSize,bytes:r.bytes,sha256:r.sha256})),
             samples: oracle.pages.filter(p=>manifest.pages.some(m=>m.id===p.id)).map(p => ({id: p.id, rejected: Boolean(p.result.rejected), headers: p.result.headers?.length || 0,
                 clefs: (p.result.headers || []).filter(h => h.clef).length, keys: (p.result.headers || []).filter(h => h.key).length,
                 times: (p.result.headers || []).filter(h => h.time).length,
                 stemScale: p.result.stemScale || null, seeds: p.result.seeds?.length || 0,
-                beams: p.result.beams?.length || 0, heads: p.result.heads?.length || 0, connectedStems: p.result.connectedStemsCount || 0, stemRelations: p.result.stemRelations?.length || 0, stemConnections: p.result.stemConnections?.length || 0, musicPointSize: p.result.musicPointSize ?? null})),
+                beams: p.result.beams?.length || 0, heads: p.result.heads?.length || 0, connectedStems: p.result.connectedStemsCount || 0, stemRelations: p.result.stemRelations?.length || 0, stemConnections: p.result.stemConnections?.length || 0, reducedVertices: p.result.reducedVertices || 0, reducedRelations: p.result.reducedRelations || 0, musicPointSize: p.result.musicPointSize ?? null})),
             grayThroughReduction: true, modelSha256: modelHash, modelBytes: archive.length, hostTransfer: true, yieldsBetweenInputs: true,
             geometryCopiesAndAppendOnlyEntries: true, explicitProviderInjection: true,
             wasmSha256: sha256(fs.readFileSync(path.join(root, 'reduction.wasm'))),

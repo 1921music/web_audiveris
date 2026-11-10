@@ -9,7 +9,7 @@ import org.audiveris.omr.sheet.*;
 
 /** Original GridBuilder algorithms with the pinned upstream scale class first on the JVM classpath. */
 public final class GridOracle {
-    private static boolean headers, stems, beams, ledgers, distances, heads, connectedStems, reduction;
+    private static boolean headers, stems, beams, ledgers, distances, heads, connectedStems, reduction, cueBeams;
     private static final List<String> beamFailures = new ArrayList<>();
     public static void main(String[] args) throws Exception {
         Path scaleOrigin = Path.of(ScaleBuilder.class.getProtectionDomain().getCodeSource().getLocation().toURI()).toRealPath();
@@ -22,7 +22,10 @@ public final class GridOracle {
         JsonNode manifest = mapper.readTree(samples.resolve("manifest.json").toFile());
         List<Map<String, Object>> results = new ArrayList<>();
         RecordingSymbolGeometry geometry = null;
-        reduction = args.length > 4 && args[4].equals("reduction");
+        cueBeams = args.length > 4 && args[4].equals("cue-beams");
+        reduction = cueBeams || (args.length > 4 && args[4].equals("reduction"));
+        String smallHeads=System.getProperty("audiveris.probe.smallHeads", "");
+        if(cueBeams&&!smallHeads.isEmpty()){CueBeamsProbe.configureSmallHeads(Boolean.parseBoolean(smallHeads));}
         connectedStems = reduction || (args.length > 4 && args[4].equals("connected-stems"));
         String trace=System.getProperty("audiveris.probe.traceRectangle", "");
         if(connectedStems&&!trace.isEmpty()){
@@ -119,6 +122,10 @@ public final class GridOracle {
                 if(!origin.equals(Path.of(args[14]).toRealPath())) {throw new AssertionError("Wrong REDUCTION class: "+type);}
             }
         }
+        if(cueBeams){
+            Path origin=Path.of(org.audiveris.omr.sheet.beam.CueBeamsStep.class.getProtectionDomain().getCodeSource().getLocation().toURI()).toRealPath();
+            if(!origin.equals(Path.of(args[15]).toRealPath())){throw new AssertionError("Wrong CUE_BEAMS class");}
+        }
         if (headers) {
             geometry = new RecordingSymbolGeometry(org.audiveris.omr.ui.symbol.SymbolGeometry.provider());
             org.audiveris.omr.ui.symbol.SymbolGeometry.setProvider(geometry);
@@ -163,11 +170,11 @@ public final class GridOracle {
     private static JsonNode compare(Path folder, String id, int width, int height, byte[] binary, ObjectMapper mapper, boolean complete, Path rasters) throws Exception {
         RunTable table = new RunTableFactory(Orientation.VERTICAL).createTable(new ByteProcessor(width, height, binary.clone(), null));
         Book book = new Book(folder.resolve("staff-" + id + ".png")); SheetStub stub = new SheetStub(book, 1); book.addStub(stub);
-        JsonNode expected = mapper.readTree(reduction ? ReductionProbe.analyze(new Sheet(stub, table)) : connectedStems ? ConnectedStemsProbe.analyze(new Sheet(stub, table)) : heads ? HeadsProbe.analyze(new Sheet(stub, table)) : distances ? DistanceProbe.analyze(new Sheet(stub, table)) : ledgers ? LedgerProbe.analyze(new Sheet(stub, table)) : beams ? BeamProbe.analyze(new Sheet(stub, table)) : stems ? StemProbe.analyze(new Sheet(stub, table)) : headers ? HeaderProbe.analyze(new Sheet(stub, table)) : GridProbe.analyze(new Sheet(stub, table), complete));
+        JsonNode expected = mapper.readTree(cueBeams ? CueBeamsProbe.analyze(new Sheet(stub, table)) : reduction ? ReductionProbe.analyze(new Sheet(stub, table)) : connectedStems ? ConnectedStemsProbe.analyze(new Sheet(stub, table)) : heads ? HeadsProbe.analyze(new Sheet(stub, table)) : distances ? DistanceProbe.analyze(new Sheet(stub, table)) : ledgers ? LedgerProbe.analyze(new Sheet(stub, table)) : beams ? BeamProbe.analyze(new Sheet(stub, table)) : stems ? StemProbe.analyze(new Sheet(stub, table)) : headers ? HeaderProbe.analyze(new Sheet(stub, table)) : GridProbe.analyze(new Sheet(stub, table), complete));
         byte[] expectedPixels = complete && !expected.path("rejected").asBoolean() ? GridProbe.cleanedPixels().clone() : null;
         byte[] expectedDistances = distances && !expected.path("rejected").asBoolean() ? DistanceProbe.distancePixelsJava().clone() : null;
         byte[] expectedHeads = beams && !expected.path("rejected").asBoolean() ? (heads ? HeadsProbe.headPixelsJava() : BeamProbe.headPixelsJava()).clone() : null;
-        JsonNode actual = mapper.readTree(reduction ? ReductionProbe.analyze(PixelSheetProbe.create(width, height, binary, id)) : connectedStems ? ConnectedStemsProbe.analyze(PixelSheetProbe.create(width, height, binary, id)) : heads ? HeadsProbe.analyze(PixelSheetProbe.create(width, height, binary, id)) : distances ? DistanceProbe.analyze(PixelSheetProbe.create(width, height, binary, id)) : ledgers ? LedgerProbe.analyze(PixelSheetProbe.create(width, height, binary, id)) : beams ? BeamProbe.analyze(PixelSheetProbe.create(width, height, binary, id)) : stems ? StemProbe.analyze(PixelSheetProbe.create(width, height, binary, id)) : headers ? HeaderProbe.analyze(PixelSheetProbe.create(width, height, binary, id)) : GridProbe.analyze(PixelSheetProbe.create(width, height, binary, id), complete));
+        JsonNode actual = mapper.readTree(cueBeams ? CueBeamsProbe.analyze(PixelSheetProbe.create(width, height, binary, id)) : reduction ? ReductionProbe.analyze(PixelSheetProbe.create(width, height, binary, id)) : connectedStems ? ConnectedStemsProbe.analyze(PixelSheetProbe.create(width, height, binary, id)) : heads ? HeadsProbe.analyze(PixelSheetProbe.create(width, height, binary, id)) : distances ? DistanceProbe.analyze(PixelSheetProbe.create(width, height, binary, id)) : ledgers ? LedgerProbe.analyze(PixelSheetProbe.create(width, height, binary, id)) : beams ? BeamProbe.analyze(PixelSheetProbe.create(width, height, binary, id)) : stems ? StemProbe.analyze(PixelSheetProbe.create(width, height, binary, id)) : headers ? HeaderProbe.analyze(PixelSheetProbe.create(width, height, binary, id)) : GridProbe.analyze(PixelSheetProbe.create(width, height, binary, id), complete));
         if (expectedPixels != null) {
             if (!Arrays.equals(expectedPixels, GridProbe.cleanedPixels())) { throw new AssertionError("Staff-free pixels differ: " + id); }
             if (!stems && !GridProbe.verifyCleanCache()) { throw new AssertionError("Cache lifecycle"); }
