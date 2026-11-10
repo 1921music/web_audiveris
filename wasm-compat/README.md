@@ -146,6 +146,14 @@ does not create directories or implement file access. A storage adapter remains 
 configuration/model writes. Likewise, the event sink is a synchronous Java boundary; a host bridge
 must forward events to `postMessage`. These substitutions do not yet make the full engine runnable.
 
+Configuration boundary: retain upstream `Constant`/`Param` reads and defaults rather than replacing
+recognition or font settings with compiler literals. A browser configuration bridge remains TODO;
+it must supply per-module settings before dependent static initialization (notably cached font ratios),
+and jobs should use a stable configuration. Host Worker count is a host option; one Java execution
+lane per module is the current execution policy. Source-derived drawing defaults such as template
+opacity preserve upstream behavior, but are not a general runtime configuration API. Logical storage
+paths likewise remain placeholders until a host storage adapter is supplied.
+
 ```powershell
 .\dev\wsl\Manage-WasmDev.ps1 Build -GradleArgs @(
   'verifyWasmCompatibilityBrowser', 'traceTeaVMExclusions', 'compareWasmCompatibilityAudit',
@@ -159,11 +167,11 @@ the initial Worker boundary stage has 525 and the current presentation-boundary 
 
 | Residual exclusion candidates | Initial Worker boundary | Current presentation boundary |
 | --- | ---: | ---: |
-| Linked classes | 441 | **80** |
-| Used methods inside excluded classes | 1,681 | **249** |
-| Used methods under all exclusion rules, including method-only rules | 1,863 | **320** |
+| Linked classes | 441 | **79** |
+| Used methods inside excluded classes | 1,681 | **247** |
+| Used methods under all exclusion rules, including method-only rules | 1,863 | **318** |
 
-Of the 80 classes, **58 have used methods and 22 are type-only**. These candidates include enums,
+Of the 79 classes, **57 have used methods and 22 are type-only**. These candidates include enums,
 rendering/output helpers and non-UI host dependencies, as well as remaining presentation paths;
 they are not all removable widgets. The exclusion guard still fails. Fast analysis is conservative,
 not a runtime trace. Some inferred witness paths can disagree with the transformed method model.
@@ -193,6 +201,11 @@ Small data/drawing dependencies are separated from window initialization at buil
   opacity/stroke references. Offscreen JVM checks cover stroke scaling and saved-stroke identity.
   Full font/template rendering in Wasm remains unverified.
 
+`UIUtil` now initializes its original constants, logger and font ratio without constructing the
+anonymous desktop window-closing listener. The compiler verifies that all other initializer
+instructions remain in order, and application reads of `closeWindow` explicitly reject desktop use.
+Both precise and fast compiler-model checks confirm that configuration/font initialization remains.
+
 `verifyHeadlessProbe` runs shared serial-scheduling checks on the JVM and compiles real `WellKnowns`,
 `OmrExecutors`, logging and progress API calls into Wasm. Node loads two module instances; Chromium
 runs two dedicated Workers. Closing one instance leaves the other operational. Tests cover resource
@@ -202,10 +215,11 @@ validate real sheet recognition or all rewritten model methods. The expanded hea
 **383,077 bytes**; it also exercises the regex and template data. This is not an engine size estimate.
 Review snapshots are in [headless-results](headless-results); raw graphs/probes are archived by stage
 under `wsl-artifacts/wasm-headless`. Stage 1 records the initial Worker boundary; stage 2 records
-the presentation-boundary changes described above.
+the presentation changes (80 classes / 249 class-excluded methods / 320 methods across all rules).
+Stage 3 separates the window-listener initializer, reaching the current 79 / 247 / 318 counts.
 Use `dev/teavm-audit/export_headless.py` with the Windows checkout, Linux build directory and tool SHA
 to export the comparison against the archived stage-5 generic audit. Add `--stage 2` to compare
-against headless stage 1. CPU usage remains capped at eight logical CPUs and memory at 8 GiB,
+against headless stage 1; `--stage 3` compares against headless stage 2. CPU usage remains capped at eight logical CPUs and memory at 8 GiB,
 with no swap. These changes do not yet produce a complete runnable recognition engine.
 
 ### Generic compatibility reproduction
@@ -248,8 +262,8 @@ With generic compatibility and the opt-in Worker/presentation substitutions enab
 fall from **1,276 to 524** (752 fewer); unique messages fall from **336 to 216**.
 The stages are **1,276 → 789 → 702 → 609 → 545 → 544 → 525 → 524**. The 544/220 result is the
 generic compatibility layer alone; 525/217 is the initial Worker boundary and **524/216** is the
-current presentation boundary. Remaining exclusion candidates are **80 classes / 249 used methods
-inside those classes**, or **320 methods** when method-only exclusion rules are also included.
+current presentation boundary. Remaining exclusion candidates are **79 classes / 247 used methods
+inside those classes**, or **318 methods** when method-only exclusion rules are also included.
 There are no remaining missing-API messages for the generic layer's targeted APIs. The broad fast
 analysis also exposes additional unsupported dependency paths; generic-layer new messages and their
 callers are recorded in `results/new-diagnostics.tsv`, and current headless results in
@@ -317,5 +331,5 @@ sources; this does not establish that OCR/native or other platform boundaries ar
 The generic-only audit still has 544 diagnostics, including three directly in selected engine
 sources; the opt-in Worker substitutions address those three paths. Remaining work requires
 resource, execution and platform adapters that preserve recognition behavior. The current reentry
-report includes **80 classes / 249 class-excluded used methods** (**320 methods across all exclusion
+report includes **79 classes / 247 class-excluded used methods** (**318 methods across all exclusion
 rules**); choosing roots alone does not cut transitive dependencies.

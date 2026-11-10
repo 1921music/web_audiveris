@@ -53,6 +53,13 @@ final class HeadlessPatches {
                 for (Instruction instruction : program.basicBlockAt(i)) {
                     if (instruction instanceof GetFieldInstruction) {
                         GetFieldInstruction get = (GetFieldInstruction) instruction;
+                        if (get.getField().equals(new FieldReference("org.audiveris.omr.ui.util.UIUtil", "closeWindow"))) {
+                            InvokeInstruction reject = new InvokeInstruction(); reject.setType(InvocationType.SPECIAL);
+                            reject.setMethod(new MethodReference(HeadlessEvents.class.getName(), "unsupportedDesktop", ValueType.VOID));
+                            reject.setLocation(get.getLocation()); get.insertPrevious(reject);
+                            NullConstantInstruction nil = new NullConstantInstruction(); nil.setReceiver(get.getReceiver());
+                            nil.setLocation(get.getLocation()); get.replace(nil); changed = true; continue;
+                        }
                         if (get.getField().getClassName().equals("org.audiveris.omr.sheet.ui.TemplateView") && get.getField().getFieldName().equals("templateComposite")) {
                             InvokeInstruction data = new InvokeInstruction(); data.setType(InvocationType.SPECIAL);
                             data.setMethod(new MethodReference("org.audiveris.wasm.compat.platform.HeadlessRenderData", "templateComposite", obj("java.awt.AlphaComposite")));

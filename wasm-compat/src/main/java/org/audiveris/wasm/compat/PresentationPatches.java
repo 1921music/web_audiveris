@@ -45,6 +45,7 @@ final class PresentationPatches {
         return Collections.unmodifiableMap(result);
     }
     static void apply(ClassHolder cls) {
+        if (cls.getName().equals(PREFIX + "ui.util.UIUtil")) { detachWindowListener(cls); }
         List<String> entries = DESKTOP.get(cls.getName());
         if (entries != null) {
             Set<String> missing = new LinkedHashSet<>(entries);
@@ -69,6 +70,57 @@ final class PresentationPatches {
             if (cls.getMethod(method) == null) { throw new IllegalStateException("Review metronome regexp boundary"); }
             StandardApiPatches.delegate(cls, "beatUnitRegexp", "beatUnitRegexp", "org.audiveris.wasm.compat.platform.HeadlessMusicData", true, true, ValueType.object("java.lang.String"));
         }
+    }
+    private static void detachWindowListener(ClassHolder cls) {
+        MethodHolder method = cls.getMethod(new MethodDescriptor("<clinit>", ValueType.VOID));
+        Program program = method.getProgram();
+        ConstructInstruction allocation = null; InvokeInstruction constructor = null; PutFieldInstruction assignment = null;
+        Map<Variable, Variable> aliases = new IdentityHashMap<>();
+        List<Instruction> before = new ArrayList<>();
+        for (BasicBlock block : program.getBasicBlocks()) { for (Instruction instruction : block) {
+            before.add(instruction);
+            if (instruction instanceof AssignInstruction) {
+                AssignInstruction copy = (AssignInstruction) instruction; aliases.put(copy.getReceiver(), copy.getAssignee());
+            }
+            if (instruction instanceof ConstructInstruction && ((ConstructInstruction) instruction).getType().equals(cls.getName() + "$1")) {
+                if (allocation != null) { throw new IllegalStateException("Ambiguous UIUtil window listener"); }
+                allocation = (ConstructInstruction) instruction;
+            } else if (instruction instanceof InvokeInstruction) {
+                InvokeInstruction call = (InvokeInstruction) instruction;
+                if (call.getMethod().getClassName().equals(cls.getName() + "$1") && call.getMethod().getName().equals("<init>")) {
+                    if (constructor != null) { throw new IllegalStateException("Ambiguous UIUtil listener constructor"); }
+                    constructor = call;
+                }
+            } else if (instruction instanceof PutFieldInstruction) {
+                PutFieldInstruction put = (PutFieldInstruction) instruction;
+                if (put.getField().equals(new FieldReference(cls.getName(), "closeWindow"))) {
+                    if (assignment != null) { throw new IllegalStateException("Ambiguous UIUtil listener assignment"); }
+                    assignment = put;
+                }
+            }
+        } }
+        if (allocation == null || constructor == null || assignment == null
+                || origin(constructor.getInstance(), aliases) != allocation.getReceiver() || assignment.getValue() != allocation.getReceiver()
+                || !constructor.getArguments().isEmpty()) { throw new IllegalStateException("Review UIUtil window initialization: allocation="
+                        + (allocation == null ? null : allocation.getReceiver()) + ", constructor="
+                        + (constructor == null ? null : constructor.getInstance()) + ", assignment="
+                        + (assignment == null ? null : assignment.getValue())); }
+        // Keep local stack-copy aliases defined, but never construct a desktop listener.
+        NullConstantInstruction nil = new NullConstantInstruction(); nil.setReceiver(allocation.getReceiver()); nil.setLocation(allocation.getLocation());
+        allocation.replace(nil);
+        Set<Instruction> desktop = Collections.newSetFromMap(new IdentityHashMap<>());
+        desktop.add(constructor); desktop.add(assignment);
+        for (Instruction instruction : desktop) { instruction.delete(); }
+        List<Instruction> expected = new ArrayList<>(before); expected.set(expected.indexOf(allocation), nil); expected.removeIf(desktop::contains);
+        List<Instruction> after = new ArrayList<>();
+        for (BasicBlock block : program.getBasicBlocks()) { for (Instruction instruction : block) { after.add(instruction); } }
+        if (!expected.equals(after)) { throw new IllegalStateException("UIUtil font/configuration computation changed"); }
+        HeadlessPatches.report(method, "detach-window-listener-preserve-font-configuration", program.basicBlockCount(), before.size());
+    }
+    private static Variable origin(Variable value, Map<Variable, Variable> aliases) {
+        Set<Variable> seen = Collections.newSetFromMap(new IdentityHashMap<>());
+        while (aliases.containsKey(value) && seen.add(value)) { value = aliases.get(value); }
+        return value;
     }
     private static void sheetContext(ClassHolder cls) {
         MethodHolder method = cls.getMethod(new MethodDescriptor("setGlyph", ValueType.object(PREFIX + "glyph.Glyph"), ValueType.VOID));

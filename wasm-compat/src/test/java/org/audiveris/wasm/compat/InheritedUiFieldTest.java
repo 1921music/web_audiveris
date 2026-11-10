@@ -18,6 +18,21 @@ public final class InheritedUiFieldTest {
         if (fast) { builder.setDependencyAnalyzerFactory((source, resources, loader, services, diagnostics, cache, platforms, properties) ->
                 new org.teavm.dependency.FastDependencyAnalyzer(source, resources, loader, services, diagnostics, cache, platforms, properties)); }
         var vm = builder.build(); vm.installPlugins();
+        ClassReader util = vm.getDependencyClassSource().get("org.audiveris.omr.ui.util.UIUtil");
+        MethodReader initializer = util.getMethod(new MethodDescriptor("<clinit>", ValueType.VOID));
+        Set<String> retained = new HashSet<>();
+        var initialization = new AbstractInstructionReader() {
+            @Override public void create(VariableReader receiver, String type) {
+                if (type.equals("org.audiveris.omr.ui.util.UIUtil$1")) { throw new AssertionError("Desktop listener initialized"); }
+                if (type.equals("org.audiveris.omr.ui.util.UIUtil$Constants")) { retained.add("configuration"); }
+            }
+            @Override public void putField(VariableReader instance, FieldReference field, VariableReader value, ValueType type) {
+                if (field.getFieldName().equals("GLOBAL_FONT_RATIO")) { retained.add("font-ratio"); }
+                if (field.getFieldName().equals("closeWindow")) { throw new AssertionError("Desktop listener assigned"); }
+            }
+        };
+        for (var block : initializer.getProgram().getBasicBlocks()) { block.readAllInstructions(initialization); }
+        if (!retained.equals(Set.of("configuration", "font-ratio"))) { throw new AssertionError("Font configuration lost: " + retained); }
         ClassReader cls = vm.getDependencyClassSource().get("org.audiveris.omr.glyph.dynamic.FilamentIndex");
         MethodReader method = cls.getMethod(new MethodDescriptor("publish", ValueType.object("org.audiveris.omr.glyph.dynamic.Filament"), ValueType.VOID));
         List<String> remaining = new ArrayList<>();
