@@ -38,15 +38,15 @@
     "unattributed": 2
   },
   "platformSubstitutionsEnabled": true,
-  "modifiedMethods": 511,
-  "removedDirectCallsFromModifiedMethods": 250,
-  "addedDirectCallsFromModifiedMethods": 1,
+  "modifiedMethods": 512,
+  "removedDirectCallsFromModifiedMethods": 11,
+  "addedDirectCallsFromModifiedMethods": 6,
   "excludedClassesLinked": {
     "before": 75,
     "after": 75
   },
   "excludedUsedMethods": {
-    "before": 309,
+    "before": 308,
     "after": 308
   },
   "usedMethodsInsideExcludedClasses": {

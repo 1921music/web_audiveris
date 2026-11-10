@@ -1,17 +1,17 @@
 {
   "profile": "headless-candidates-v2",
-  "totalMethods": 14444,
+  "totalMethods": 14447,
   "selectedMethods": 9037,
   "selectedClasses": 1166,
   "selectedBodies": 8616,
   "byAction": {
     "excluded": 4425,
-    "dependency-only": 982,
+    "dependency-only": 985,
     "root": 9037
   },
   "byRule": {
     "class-excluded": 4115,
-    "class-boundary": 982,
+    "class-boundary": 985,
     "engine-candidate": 9037,
     "debug-charts": 64,
     "classifier-training": 34,
@@ -25,8 +25,8 @@
     "manual-symbol-edit": 55
   },
   "policySha256": "3d9cacf0e194a46ab2d01dd0dca19c8ff5f21a7deae0eb89d44c86bcf1197dfc",
-  "classDecisionsSha256": "01bda3466140c2c7a09d8220f0386878d367fd0521d074d76fbf3bd10514eade",
-  "inventorySha256": "507241b130daf22051ee5278603c0d133dfeb5749fc4e8aa989c3ada40a6e11a",
+  "classDecisionsSha256": "577818aebbe14537b6738f5f39b8156eea007545cbeaf1692fafbcb6aa4b89c1",
+  "inventorySha256": "fe67a69166c8795a6e72ac285855fd6bb3850ca331a5df09fb2860b2ecb9753c",
   "excludedClassesForcedAsRoots": 0,
   "excludedMethodsForcedAsRoots": 0
 }

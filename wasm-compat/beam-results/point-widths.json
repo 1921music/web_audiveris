@@ -1,0 +1,36 @@
+[ {
+  "pointSize" : 88,
+  "shape" : "NOTEHEAD_BLACK",
+  "width" : 25.953125,
+  "family" : "Bravura"
+}, {
+  "pointSize" : 89,
+  "shape" : "NOTEHEAD_BLACK",
+  "width" : 26.25,
+  "family" : "Bravura"
+}, {
+  "pointSize" : 90,
+  "shape" : "NOTEHEAD_BLACK",
+  "width" : 26.546875,
+  "family" : "Bravura"
+}, {
+  "pointSize" : 91,
+  "shape" : "NOTEHEAD_BLACK",
+  "width" : 26.84375,
+  "family" : "Bravura"
+}, {
+  "pointSize" : 92,
+  "shape" : "NOTEHEAD_BLACK",
+  "width" : 27.140625,
+  "family" : "Bravura"
+}, {
+  "pointSize" : 95,
+  "shape" : "NOTEHEAD_BLACK",
+  "width" : 28.03125,
+  "family" : "Bravura"
+}, {
+  "pointSize" : 96,
+  "shape" : "NOTEHEAD_BLACK",
+  "width" : 28.3125,
+  "family" : "Bravura"
+} ]
