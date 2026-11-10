@@ -1,0 +1,17 @@
+{
+  "node": "v24.22.2",
+  "chromium": "158.0.8127.18",
+  "nodeInstances": 2,
+  "workers": 2,
+  "paths": 512,
+  "nativeComparedPixels": 890368,
+  "nativeJvmPixelsExact": true,
+  "nodePixelsExact": true,
+  "workerPixelSha256Exact": true,
+  "pixelSha256": "af0f281663a1f833b301697080dba874b2e4e8c8bf0932042334aef2efe08a22",
+  "wasmPerPathHashesExact": true,
+  "unchangedJdkProcessPath": true,
+  "wasmBytes": 130038,
+  "wasmSha256": "307f10a7d249b538bd32ee6a0059e5ee9acacd4fb1053a389891e3ed01d0b654",
+  "limitation": "Thin-stroke non-antialiased Path2D fill component only; rectangle fast paths, wide-stroke spans and TEXTS image cleanup are not yet covered"
+}

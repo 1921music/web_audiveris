@@ -1,0 +1,26 @@
+{
+  "sourceCommit": "797add215e65346c7a86d8af531b063485455ba4",
+  "sourceSha256": {
+    "wasm-compat/src/jdk/java/org/audiveris/wasm/compat/platform/GrayPathRaster.java": "5028e9476eb6548297e4a0843bdad09e78008e4f4fc447c9609ed5c64a21b98a",
+    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/GrayPathProbe.java": "32116c93e3c0e106360731e50a8976cb54c5359240fdc86ff66305892a49e243",
+    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/GrayPathOracle.java": "4d535669a4d0b06489b3a5ff327e89ae3a8984aefc15e7c541edf37df2b86170",
+    "wasm-compat/tools/verify-gray-path.cjs": "70e903eff7f902859d734b65c65cba3323ce8f64f8d1523fda38386c1d305910",
+    "dev/teavm-audit/audit.init.gradle": "908450385a5be284de58db83e018086a13e7a6470e95f0b195fa42a6b0c1c548"
+  },
+  "rawArtifacts": "wsl-artifacts/wasm-components/gray-path",
+  "cpuMax": "800000 100000",
+  "allowedCpus": "0-7",
+  "memoryMaxBytes": 8589934592,
+  "memorySwapMaxBytes": 0,
+  "memoryEventsLocal": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0",
+  "artifactSha256": {
+    "gray-path.wasm": "307f10a7d249b538bd32ee6a0059e5ee9acacd4fb1053a389891e3ed01d0b654",
+    "gray-path.wasm-runtime.js": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "verification.json": "538c300a62d0d10c7104d4c051680c726411fbe8f46ac1249cdc1b4c836f3e5a",
+    "diagnostics.tsv": "fedeabd8a34aba0fa7d1aa2d80ccb94c378549c76c57c6942205c67c8f568b5d",
+    "jvm-reference.txt": "f4b093268fbb63b2fe5ac93d61430f4d8f27279e4cfbb8cd7e0aafad48b6709a",
+    "jdk-reference.json": "d38f4888cbb14838f616762cf88c98b159126fec125a78f25863ae806362c934",
+    "jvm-pixels.binary": "af0f281663a1f833b301697080dba874b2e4e8c8bf0932042334aef2efe08a22"
+  },
+  "limitation": "Thin-stroke non-antialiased Path2D fill component only; rectangle fast paths, wide-stroke spans and TEXTS image cleanup are not yet covered"
+}
