@@ -70,6 +70,7 @@ def main():
     parser.add_argument('--pixel-sheet', action='store_true')
     parser.add_argument('--rounding', action='store_true')
     parser.add_argument('--staff', action='store_true')
+    parser.add_argument('--grid', action='store_true')
     parser.add_argument('--allow-added-roots', action='store_true')
     args = parser.parse_args()
     root, build = args.repository, args.build
@@ -303,6 +304,42 @@ def main():
         for target in [staff_results, staff_raw]:
             write(target / 'provenance.json', staff_provenance)
         provenance['staffVerification'] = json.loads((staff_build / 'verification.json').read_text())
+    if args.grid:
+        grid_build = build / 'wasm-compat/grid-probe'
+        grid_raw = artifacts / 'grid-probe'
+        grid_results = root / 'wasm-compat/grid-results'
+        grid_raw.mkdir(parents=True, exist_ok=True); grid_results.mkdir(parents=True, exist_ok=True)
+        names = ['jvm-reference.json', 'wasm-node-results.json', 'wasm-worker-results.json',
+                 'verification.json', 'font-measurements.json', 'diagnostics.tsv']
+        for name in ['grid.wasm', 'grid.wasm-runtime.js'] + names:
+            shutil.copyfile(grid_build / name, grid_raw / name)
+        for name in names:
+            shutil.copyfile(grid_build / name, grid_results / name)
+        sample_build = build / 'wasm-compat/pixel-probe/samples'
+        shutil.copytree(sample_build, artifacts / 'pixel-probe/samples', dirs_exist_ok=True)
+        shutil.copyfile(sample_build / 'manifest.json', grid_results / 'samples.json')
+        shutil.copyfile(build / 'wasm-compat/staff-probe/supplier-reference.txt', grid_raw / 'supplier-reference.txt')
+        reference = json.loads((root / 'wasm-compat/staff-results/reference-sources.json').read_text())
+        for name, digest in reference['unchangedAlgorithmSourceSha256'].items():
+            if hashlib.sha256((root / name).read_bytes().replace(b'\r\n', b'\n')).hexdigest() != digest:
+                raise AssertionError('Grid algorithm source changed: ' + name)
+        original = build / 'wasm-compat/upstream-bracket'
+        reference['bracket'] = json.loads((original / 'source.json').read_text())
+        reference['bracket']['classSha256'] = {str(p.relative_to(original / 'classes')): hashlib.sha256(p.read_bytes()).hexdigest()
+                                              for p in sorted((original / 'classes').rglob('*.class'))}
+        reference['fontSha256'] = {str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest()
+                                  for p in sorted((root / 'app/res').iterdir()) if p.suffix in ['.otf', '.ttf']}
+        reference['scope'] = 'Pinned original ScaleBuilder and BracketInter plus unchanged grid/dynamic/lag/math/run algorithms; shared current model runtime'
+        write(grid_raw / 'reference-sources.json', reference)
+        grid_provenance = {key: provenance[key] for key in ['applicationBaseline', 'toolCommit', 'teaVM', 'target',
+            'cpuMax', 'allowedCpus', 'memoryMaxBytes', 'memorySwapMaxBytes', 'memoryEventsLocal', 'sourceSha256', 'applicationSourceChanges']}
+        grid_provenance.update({'rawArtifacts': raw_path + '/grid-probe',
+            'artifactSha256': {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(grid_raw.iterdir()) if p.is_file()},
+            'limitation': 'GridBuilder with explicit host font measurements; staff-line removal, score update and later recognition remain unverified'})
+        for target in [grid_results, grid_raw]:
+            write(target / 'reference-sources.json', reference)
+            write(target / 'provenance.json', grid_provenance)
+        provenance['gridVerification'] = json.loads((grid_build / 'verification.json').read_text())
     for target in [results, artifacts]:
         write(target / 'provenance.json', provenance)
     print(json.dumps({key: comparison[key] for key in ['rootCount', 'baselineDiagnostics', 'patchedDiagnostics', 'modifiedMethods',

@@ -19,6 +19,9 @@ final class HeadlessPatches {
         Map<MethodDescriptor, Program> original = new HashMap<>();
         for (MethodHolder method : cls.getMethods()) { original.put(method.getDescriptor(), method.getProgram()); }
         switch (cls.getName()) {
+            case "org.audiveris.omr.sig.inter.BracketInter":
+                if (cls.getMethod(new MethodDescriptor("computeArea", ValueType.VOID)) == null) { throw new IllegalStateException("Review BracketInter geometry boundary"); }
+                StandardApiPatches.delegate(cls, "computeArea", "computeArea", "org.audiveris.omr.sig.inter.WorkerBracketBridge", false, true, ValueType.VOID); break;
             case "org.audiveris.omr.WellKnowns": environment(cls); break;
             case "org.audiveris.omr.util.OmrExecutors": executors(cls); break;
             case "org.audiveris.omr.sheet.Picture": archivedTables(cls); break;

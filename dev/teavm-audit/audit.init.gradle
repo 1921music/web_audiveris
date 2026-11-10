@@ -245,6 +245,37 @@ gradle.projectsEvaluated {
         commandLine 'node', '--max-old-space-size=256', new File(compat, 'tools/verify-staff.cjs').absolutePath,
                 new File(rootProject.projectDir, 'build/wasm-compat/staff-probe').absolutePath
     }
+    rootProject.tasks.register('buildGridProbe', JavaExec) {
+        dependsOn compile, 'compileWasmCompatibilityTests', 'patchKxmlCompatibility', 'selectWasmLibraryImplementations'
+        classpath = rootProject.files(compatTests) + compatRuntime
+        mainClass = 'audit.CompileCompatibilityProbe'
+        maxHeapSize = '2g'
+        systemProperty 'audiveris.compat.enabled', 'true'
+        systemProperty 'audiveris.compat.headless', 'true'
+        systemProperty 'audiveris.compat.reflectionClasses', 'org.audiveris.wasm.compat.test.GraphSupplierCases$PublicNode,org.audiveris.wasm.compat.test.GraphSupplierCases$HiddenNode,org.audiveris.wasm.compat.test.GraphSupplierCases$MissingNoArg,org.audiveris.wasm.compat.test.GraphSupplierCases$HiddenType'
+        args new File(rootProject.projectDir, 'build/wasm-compat/grid-probe').absolutePath,
+                'org.audiveris.wasm.compat.test.GridProbe', 'grid'
+    }
+    rootProject.tasks.register('testGridJvm', JavaExec) {
+        dependsOn 'compileWasmCompatibilityTests', 'testUpstreamScaleJvm', 'compileUpstreamBracket'
+        def scaleClasses = new File(rootProject.projectDir, 'build/wasm-compat/upstream-scale/classes')
+        def gridOutput = new File(rootProject.projectDir, 'build/wasm-compat/grid-probe')
+        classpath = rootProject.files(scaleClasses, new File(rootProject.projectDir, "build/wasm-compat/upstream-bracket/classes"), compatTests, compatClasses) + app.sourceSets.main.runtimeClasspath
+        mainClass = 'org.audiveris.wasm.compat.test.GridOracle'
+        workingDir app.projectDir
+        maxHeapSize = '768m'
+        systemProperty 'java.awt.headless', 'true'
+        systemProperty 'logback.configurationFile', new File(harness, 'logback.xml').absolutePath
+        environment 'XDG_CONFIG_HOME', new File(gridOutput, 'jvm-config').absolutePath
+        environment 'XDG_DATA_HOME', new File(gridOutput, 'jvm-data').absolutePath
+        environment 'XDG_CACHE_HOME', new File(gridOutput, 'jvm-cache').absolutePath
+        args new File(pixelProbeOutput, 'samples').absolutePath, new File(gridOutput, 'jvm-reference.json').absolutePath, scaleClasses.absolutePath, new File(rootProject.projectDir, 'build/wasm-compat/upstream-bracket/classes').absolutePath
+    }
+    rootProject.tasks.register('verifyGridProbe', Exec) {
+        dependsOn 'testGridJvm', 'buildGridProbe', 'testGraphSupplierJvm'
+        commandLine 'node', '--max-old-space-size=256', new File(compat, 'tools/verify-grid.cjs').absolutePath,
+                new File(rootProject.projectDir, 'build/wasm-compat/grid-probe').absolutePath
+    }
     rootProject.tasks.register('testGraphSupplierJvm', JavaExec) {
         dependsOn 'compileWasmCompatibilityTests'
         classpath = rootProject.files(compatTests, compatClasses) + app.sourceSets.main.runtimeClasspath
@@ -394,6 +425,19 @@ gradle.projectsEvaluated {
         commandLine 'node', '--max-old-space-size=256', new File(compat, 'tools/verify-pixels.cjs').absolutePath, pixelProbeOutput.absolutePath
         if (rootProject.findProperty('pixelSamples')) { args '--samples' }
         if ((rootProject.findProperty('pixelScale') ?: 'false').toBoolean()) { dependsOn 'testCurrentScaleJvm'; args '--scale' }
+    }
+    def upstreamBracket = new File(rootProject.projectDir, 'build/wasm-compat/upstream-bracket')
+    rootProject.tasks.register('prepareUpstreamBracket', Exec) {
+        commandLine 'python3', new File(harness, 'prepare_upstream_bracket.py').absolutePath,
+                rootProject.findProperty('upstreamGitRoot') ?: System.getenv('AUDIVERIS_SOURCE_ROOT') ?: rootProject.projectDir.absolutePath, upstreamBracket.absolutePath
+    }
+    rootProject.tasks.register('compileUpstreamBracket', JavaCompile) {
+        dependsOn 'prepareUpstreamBracket', app.tasks.named('classes')
+        source new File(upstreamBracket, 'src')
+        classpath = app.sourceSets.main.runtimeClasspath
+        destinationDirectory = new File(upstreamBracket, 'classes')
+        javaCompiler = app.tasks.named('compileJava').flatMap { it.javaCompiler }
+        options.release = 17; sourceCompatibility = '17'; targetCompatibility = '17'; options.encoding = 'UTF-8'
     }
     def upstreamScale = new File(rootProject.projectDir, 'build/wasm-compat/upstream-scale')
     rootProject.tasks.register('prepareUpstreamScale', Exec) {

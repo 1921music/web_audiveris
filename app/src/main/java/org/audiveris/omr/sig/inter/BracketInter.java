@@ -139,6 +139,12 @@ public class BracketInter
         final Rectangle2D upperRect = font.layoutShapeByCode(Shape.BRACKET_UPPER_SERIF).getBounds();
         final Rectangle2D lowerRect = font.layoutShapeByCode(Shape.BRACKET_LOWER_SERIF).getBounds();
 
+        computeArea(upperRect, lowerRect);
+    }
+
+    /** Compute recognition geometry from measured font bounds, independently of font loading. */
+    protected final void computeArea (Rectangle2D upperRect, Rectangle2D lowerRect)
+    {
         area = AreaUtil.verticalParallelogram(median.getP1(), median.getP2(), getWidth());
 
         // Top serif?
