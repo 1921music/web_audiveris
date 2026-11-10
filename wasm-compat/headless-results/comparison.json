@@ -1,12 +1,11 @@
 {
   "identicalOriginalRoots": false,
   "originalRootSubsetPreserved": true,
-  "rootCount": 9040,
-  "baselineRootCount": 9037,
+  "rootCount": 9042,
+  "baselineRootCount": 9040,
   "addedRoots": [
-    "org.audiveris.omr.sheet.note.DistancesBuilder$RawPainter.<init>(Lij/process/ByteProcessor;)V",
-    "org.audiveris.omr.sheet.note.DistancesBuilder.erasedBuffer(Lij/process/ByteProcessor;)Lij/process/ByteProcessor;",
-    "org.audiveris.omr.sheet.note.DistancesBuilder.erasedRawBuffer(Lij/process/ByteProcessor;)Lij/process/ByteProcessor;"
+    "org.audiveris.omr.score.DrumSet.openConfiguration(Ljava/net/URI;)Ljava/io/InputStream;",
+    "org.audiveris.omr.score.DrumSet.readEntries(Ljava/io/InputStream;)Lorg/audiveris/omr/score/DrumSet$DrumSetEntries;"
   ],
   "baselineDiagnostics": 494,
   "patchedDiagnostics": 494,
@@ -42,15 +41,15 @@
     "unattributed": 2
   },
   "platformSubstitutionsEnabled": true,
-  "modifiedMethods": 514,
-  "removedDirectCallsFromModifiedMethods": 3,
-  "addedDirectCallsFromModifiedMethods": 3,
+  "modifiedMethods": 516,
+  "removedDirectCallsFromModifiedMethods": 0,
+  "addedDirectCallsFromModifiedMethods": 4,
   "excludedClassesLinked": {
     "before": 75,
     "after": 75
   },
   "excludedUsedMethods": {
-    "before": 308,
+    "before": 310,
     "after": 310
   },
   "usedMethodsInsideExcludedClasses": {

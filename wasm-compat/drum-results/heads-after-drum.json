@@ -1,0 +1,11 @@
+{
+  "diagnostics": 92,
+  "strictCompileSucceeded": false,
+  "rawArtifacts": "wsl-artifacts/wasm-headless/stage19/drum-probe/heads-after-drum",
+  "scope": "Unchanged HEADS recognition after drum decoding/transport substitution",
+  "toolCommit": "0ea5bce878511c1f85c3008a6e54ab592a0d375a",
+  "files": {
+    "dependency-paths.tsv": "563054d6b366faaf87b5a413c5ee1a4a7591baf9f0f1abb22a45d16c3d697498",
+    "diagnostics.tsv": "7b5ebe9d7a0a147fe451ea410126ba9d70f018fbf593815fb50cf88526d56b09"
+  }
+}

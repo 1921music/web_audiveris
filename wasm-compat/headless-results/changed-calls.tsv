@@ -1,7 +1,5 @@
 change	caller	callee
-removed	org.audiveris.omr.sheet.note.DistancesBuilder.buildDistances()Lorg/audiveris/omr/image/DistanceTable;	ij.process.ByteProcessor.<init>(Ljava/awt/image/BufferedImage;)V
-removed	org.audiveris.omr.sheet.note.DistancesBuilder.buildDistances()Lorg/audiveris/omr/image/DistanceTable;	ij.process.ByteProcessor.getBufferedImage()Ljava/awt/image/BufferedImage;
-removed	org.audiveris.omr.sheet.note.DistancesBuilder.buildDistances()Lorg/audiveris/omr/image/DistanceTable;	org.audiveris.omr.sheet.note.DistancesBuilder$ImagePainter.<init>(Ljava/awt/image/BufferedImage;)V
-added	org.audiveris.omr.sheet.note.DistancesBuilder.buildDistances()Lorg/audiveris/omr/image/DistanceTable;	org.audiveris.omr.sheet.note.DistancesBuilder.erasedBuffer(Lij/process/ByteProcessor;)Lij/process/ByteProcessor;
-added	org.audiveris.omr.sheet.note.DistancesBuilder.erasedBuffer(Lij/process/ByteProcessor;)Lij/process/ByteProcessor;	org.audiveris.omr.sheet.note.DistancesBuilder.<clinit>()V
-added	org.audiveris.omr.sheet.note.DistancesBuilder.erasedBuffer(Lij/process/ByteProcessor;)Lij/process/ByteProcessor;	org.audiveris.omr.sheet.note.WorkerDistancesBridge.erasedBuffer(Lorg/audiveris/omr/sheet/note/DistancesBuilder;Lij/process/ByteProcessor;)Lij/process/ByteProcessor;
+added	org.audiveris.omr.score.DrumSet.openConfiguration(Ljava/net/URI;)Ljava/io/InputStream;	org.audiveris.omr.score.DrumSet.<clinit>()V
+added	org.audiveris.omr.score.DrumSet.openConfiguration(Ljava/net/URI;)Ljava/io/InputStream;	org.audiveris.wasm.compat.platform.WorkerDrumXml.openConfiguration(Ljava/net/URI;)Ljava/io/InputStream;
+added	org.audiveris.omr.score.DrumSet.readEntries(Ljava/io/InputStream;)Lorg/audiveris/omr/score/DrumSet$DrumSetEntries;	org.audiveris.omr.score.DrumSet.<clinit>()V
+added	org.audiveris.omr.score.DrumSet.readEntries(Ljava/io/InputStream;)Lorg/audiveris/omr/score/DrumSet$DrumSetEntries;	org.audiveris.wasm.compat.platform.WorkerDrumXml.readEntries(Ljava/io/InputStream;)Lorg/audiveris/omr/score/DrumSet$DrumSetEntries;

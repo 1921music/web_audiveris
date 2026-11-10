@@ -1,0 +1,35 @@
+{
+  "commit": "04697c74fae431ef8436a9429386957a5cb25993",
+  "sourceSha256": {
+    "app/src/main/java/org/audiveris/omr/score/DrumSet.java": "b073fee26f38d0b6ccceab7fb12e121dbd70d87c0daa745d2e0cacc6611411c3"
+  },
+  "classSha256": {
+    "org/audiveris/omr/score/DrumSet$Constants.class": "a2b5cd9fa9f45bf36c7a90c0c2073529c94047f282ec3d55bbdcd2835ee0dd2d",
+    "org/audiveris/omr/score/DrumSet$DrumInstrument.class": "c327a1226e494a9d6786e06dd2060d6894f1e6b61355159c463762bfcb4b0848",
+    "org/audiveris/omr/score/DrumSet$DrumSetEntries.class": "0d1d21a5975256a3438de7afc49cc7f4ac39b5b4f0905d6db79d309fa9548dcd",
+    "org/audiveris/omr/score/DrumSet$DrumSetEntry.class": "9161be13d937892cb91399baa607a92454a625436bfe55ccdd5cebeea4f95cd4",
+    "org/audiveris/omr/score/DrumSet$DrumSound.class": "052cfa8d44495227e001729d979bda802e017da2444bf93385731ff3dc3b2369",
+    "org/audiveris/omr/score/DrumSet$LazySingleton.class": "7c54313d431554250845aa87db5601c99674d5201d25576f139d82c2b01dc0e0",
+    "org/audiveris/omr/score/DrumSet$MotifAdapter.class": "a915062706fd2aeb1ea3f2635a677da780194edcb16562e7bbb7ec71574254fe",
+    "org/audiveris/omr/score/DrumSet$MotifSign.class": "86af02640267a80c89dc3824b13507cde8f5b721121759bb05e6906160967b49",
+    "org/audiveris/omr/score/DrumSet$PitchAdapter.class": "a92e5ae4ba09c5574f3699c076614494b29242af564f938e6194d3a34949362b",
+    "org/audiveris/omr/score/DrumSet$SoundAdapter.class": "b137ce42d1d12173b423f206bf510653e9daa7c08d2c4830668e60216a95b851",
+    "org/audiveris/omr/score/DrumSet$StaffEntries.class": "7c961ce9f04bd7fc36c3ffa562346674eaa08ce4c1a0f3311b6038cafd3be998",
+    "org/audiveris/omr/score/DrumSet.class": "01c5d1dd4eb3d89ce69c5bb8359fd43e24c43918db12518b6a6e82ef1ed2389a"
+  },
+  "unchangedBodies": {
+    "public Map<Integer, Map<MotifSign, DrumInstrument>> getStaffSet (": "5ee382edc8cda697d0875f5f5efbe113125ef8aa5b91476608aeedefff998719",
+    "public void dumpResultingDrumSet (": "9479fed1de5a0eadf9c4987c264ab407b89f4475c97581f2aa1bcccb53bf8a94",
+    "private DrumSet (": "50bcec6467ddc7fee46b06d606576ecb6766e6d2fc53a97f508864547d98f51a",
+    "static class MotifAdapter": "a0adee6fd8949529f0dcb18ad0f35ba4d5b5dfef65b0b9fcf6eddcca8bbdddc7",
+    "static class PitchAdapter": "bb6bb1766dccda4e2ecc5774be8f7c6d5a2953712365c44d93a491fad7d2a1dd",
+    "static class SoundAdapter": "6632dd23beb2398f3d4870d3564cbb02373dec9537738806b164fe82110fbfad",
+    "public static class MotifSign": "e93b4ffc51730d0733ad9aacc003a8772b650958538d6cc4be9462b5c33e26de",
+    "public static class DrumInstrument": "ce53182568d142fae67314ac1e8e9c739c7eda8cb44f97e3110863b286b89104"
+  },
+  "sourceSeams": "XML/URI acquisition extracted; XML DTO/adapters accessible to the backend. Original ordering, additions, replacement and removal logic unchanged.",
+  "defaultResource": {
+    "path": "app/res/drum-set.xml",
+    "normalizedSha256": "8e4a2c3bb8495e1181b199c7bb6639e6025f7c75c7971b53a4b89c2f4c4e5652"
+  }
+}

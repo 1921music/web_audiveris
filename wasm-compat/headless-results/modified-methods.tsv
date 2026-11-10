@@ -132,6 +132,8 @@ org.audiveris.omr.log.LogUtil.stopStub()V	platform-method	4	1	7	2
 org.audiveris.omr.math.HiLoPeakFinder.findPeaks(IID)Ljava/util/List;	header-retain-prefix-snapshot	17	17	168	168
 org.audiveris.omr.moments.BasicARTExtractor$Constants.getUnitName()Ljava/lang/String;	platform-method	0	1	0	2
 org.audiveris.omr.plugin.PluginsManager$Constants.getUnitName()Ljava/lang/String;	platform-method	0	1	0	2
+org.audiveris.omr.score.DrumSet.openConfiguration(Ljava/net/URI;)Ljava/io/InputStream;	platform-method	2	1	6	2
+org.audiveris.omr.score.DrumSet.readEntries(Ljava/io/InputStream;)Lorg/audiveris/omr/score/DrumSet$DrumSetEntries;	platform-method	4	1	23	2
 org.audiveris.omr.score.DrumSet$Constants.getUnitName()Ljava/lang/String;	platform-method	0	1	0	2
 org.audiveris.omr.score.LogicalPart$Constants.getUnitName()Ljava/lang/String;	platform-method	0	1	0	2
 org.audiveris.omr.score.Score.close()V	headless-gui-guard	4	3	15	11
