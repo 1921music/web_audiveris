@@ -1,6 +1,6 @@
 {
   "applicationBaseline": "04697c74fae431ef8436a9429386957a5cb25993",
-  "toolCommit": "e0ce1555701303e27f6c23c6377d91ee0f6cf7c0",
+  "toolCommit": "e0dedf7d33333b0c96808c961132fc8f019a4743",
   "teaVM": "0.16.0",
   "target": "wasm-gc",
   "mode": "fast",
@@ -18,30 +18,30 @@
     "oom_group_kill": "0"
   },
   "artifactSha256": {
-    "apis.tsv": "af31da90a00ac1f79a2d719133ae90b340eca1074bb9e2ec57b20b9bdaa1005c",
-    "calls.tsv.gz": "e41d1d8123dc60ec374c4e63355d26ca8c375e8b5e012afb8e40da34c5e646c7",
+    "apis.tsv": "d596ba895835531b3fff85d6f9ad8454f0365f85eacf1c850272dab9d4e8be0b",
+    "calls.tsv.gz": "560d89b57f80672337bce48c79b9a842d6e0a979534897b61c567de6d3ec1b31",
     "class-decisions.json": "f682c27df310a0fba60cb54f9653090ae94665bbaa43d1a5f518bf9d1f8308ad",
     "class-decisions.tsv": "ff68327b788ab2a82f10cdfff8b6ea08da3f9556eec7b4443ff68454cdacbd56",
-    "classified-summary.json": "578af5724303a0fd9c36b80815bce628a710f190f7e7dbc194a822b2582c6eb6",
-    "diagnostics-classified.tsv": "6058f5b569e1676c79b491f1e6fe9110af186df81a512d91b5e76547f9549591",
-    "diagnostics.tsv": "bbf9c44ca5cefd85e318cf334c34bddfe1c6363c7051dce7f7571366d3e6e912",
+    "classified-summary.json": "c533a86650413ea512628942789a0b003d085431dd2d3d6e918871029376564d",
+    "diagnostics-classified.tsv": "5e34ee7be7fc92cfb570a032c9557622ff25fdf6352b88b150ea3b4d496ec7bc",
+    "diagnostics.tsv": "c281086a90d7688c3bda49eec0e3ea30d6fd03f6eebfe06de5fee039510970df",
     "entry-boundaries.tsv": "a197d7614926684dea5b847cc383bb4412181b5ba37ecb70a5c80bc7439ae772",
     "excluded-class-paths.tsv": "04f01131623d610933ea95ecede494192aa5f8c02d87ead5de0b9c72026c59c8",
     "excluded-method-paths.tsv": "2e18ccbe5fa2a26941bf41462ba43f3394c85160b878b06f1958b796a505622a",
     "exclusion-boundaries.tsv": "25c414391e6cf4e5d933b8658cff38f1a7aa5978585465ad157bb7965175c5ae",
-    "exclusion-summary.json": "3347c9f5ac20d43e446d58d8a185353a367b2312992990fbf7ed0822bbc49cf3",
+    "exclusion-summary.json": "497b08d36073a94e5d90cf8062e82c41ae3ef6ac0d3c73802357a7a3bf0036eb",
     "inventory-roots.tsv": "5adf0679cac0d3b5573678bc44e68b1e445a217ecc7ff50a7caaf281d93337b7",
     "kept-to-excluded.tsv": "17f41d609637be092eaa60e42482ef664bc465901f10beb91499eacab84d2ed3",
     "original-reference-paths.tsv": "3bc37568ae598517422da7ffc70cd28b8e60754479eb7ca583e7453ac5ffa61e",
-    "reached-classes.txt": "56c21c86cba4bda732eac51535a4b539ef0555a0569cf83e434b20de9781efd6",
-    "reached-methods.tsv": "30edd81eb9e0bc6b12b4790d09092735656ff49b0e4a8a8b1d667901fcf74586",
+    "reached-classes.txt": "281602dec83e01a6e6bb0714b8c801c646d36115af045227526ea90995903df9",
+    "reached-methods.tsv": "b1ba66a6d90c676ae3f7dfb57332b9fd6655cc54df56588dfdbef939ce22d771",
     "root-plan.tsv": "f42782579634892f014ed220ddcc03af33c1bcd1fd2a46cb3b227d7665a8f063",
     "root-policy.json": "3d9cacf0e194a46ab2d01dd0dca19c8ff5f21a7deae0eb89d44c86bcf1197dfc",
     "root-selection.json": "3892193ee946fe458b202284b9becac00c7e54417a3b99a565b068e124a8c7d3",
     "roots.tsv": "8204467caf9fee043472843e3dbca067fe9d9f42302c27f62d164ecf88496f63",
     "selected-roots.tsv": "f441094a7eaff5cfb58d6092c34123d4b702f2012a8a97c6d17f0b7318742e3b",
-    "source-references.tsv.gz": "08cdd6d7ee9fb4f6feb82ebf3fbfbc6ed9dd19f9813ccb4bf3c8762cdc9d515f",
-    "summary.properties": "d00be344290157f6f263e0653708b68bdc0454199b7ccef5299829c0d4072433"
+    "source-references.tsv.gz": "758aa2ae2ca9373ae8092457ad29cc912c1e78f39cae7248cec61112a2249f52",
+    "summary.properties": "1b3a61707acb082c67f299e087cdc010dfa7c360d7c8299d3992306f3814d417"
   },
   "musicData": {
     "shapes": {
@@ -114,7 +114,7 @@
     "policy": "Verbatim source method extraction; no fields, class initializer or window listener"
   },
   "headlessPlatformEnabled": true,
-  "comparisonBaseline": "wsl-artifacts/wasm-headless/stage5/audit",
+  "comparisonBaseline": "wsl-artifacts/wasm-headless/stage6/audit",
   "applicationSourceChanges": {
     "app/src/main/java/org/audiveris/omr/constant/Constant.java": "98c45eeceea576f6444faedbcabf408554e671d124cac8882f6c007b3f86f7ac",
     "app/src/main/java/org/audiveris/omr/constant/ConstantSet.java": "6881238f5e4116f11cf5621b02f4be50a7fced463e685a78634194ecc66c4053",
@@ -122,8 +122,9 @@
     "app/src/main/java/org/audiveris/omr/sheet/ScaleBuilder.java": "79673e422834baf11d03fd2474ee4d6a1ce9a391aa4fbeb7362cdd5ac6a33e03"
   },
   "applicationSourceChangeNotes": "Configuration seams and ScaleBuilder.Source; see README for source changes and explicitly added analysis roots",
-  "rawArtifacts": "wsl-artifacts/wasm-headless/stage6",
+  "rawArtifacts": "wsl-artifacts/wasm-headless/stage7",
   "probeSha256": {
+    "diagnostics.tsv": "fedeabd8a34aba0fa7d1aa2d80ccb94c378549c76c57c6942205c67c8f568b5d",
     "headless.wasm": "e22ab147ffb86184a36a24ce80d9b0ff27eeb81ae3fc681ee12dab6433add1c1",
     "headless.wasm-runtime.js": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
     "jvm-verification.json": "353f31fcd4d5c49c6bf56874a6e2fdf0500bc4d7a80311bee14280fd6b9d461f",
@@ -136,7 +137,7 @@
     "wasm-compat/src/main/java/org/audiveris/wasm/compat/ClassLoaderPatches.java": "6dced052201b856ba086423cfcc3d662b58ffe4e10e1ac5ed759c1ce01325e8a",
     "wasm-compat/src/main/java/org/audiveris/wasm/compat/CompilerPatches.java": "dd86f9f8a032c0b4fcc6d8aef6bc661fa161b21d9b2c1ada878a5af58bfc4c4b",
     "wasm-compat/src/main/java/org/audiveris/wasm/compat/CompilerReflectionPolicy.java": "1e441f983131c9e1ffdcb0a4f81e4b270654bdacad715ba0cde22fa2766f28d9",
-    "wasm-compat/src/main/java/org/audiveris/wasm/compat/CompilerSubstitutions.java": "75df53f4c4b1d9c77e09001f9069d75843a256f88cf2beebefc13e60264446d9",
+    "wasm-compat/src/main/java/org/audiveris/wasm/compat/CompilerSubstitutions.java": "817db66a8551cf61f9f5b0f05c3b4d47886b67505ec0743e2152068ce60cce36",
     "wasm-compat/src/main/java/org/audiveris/wasm/compat/ConfigurationPatches.java": "6076e61da16d641f8f77805fc10ddf938fa7f267eb15061076239d03ab5ce8d0",
     "wasm-compat/src/main/java/org/audiveris/wasm/compat/ConstantSetReflectionPolicy.java": "7c4d1fa466d86d007dda548275eed63a7c70b8b5ec477bdbdb8ffea3fd1c4626",
     "wasm-compat/src/main/java/org/audiveris/wasm/compat/FloatingPointParser.java": "becb1fd590c45f594a7321d3fa21603f7b89baca0de45f89d8e6a0783cf43912",
@@ -165,6 +166,8 @@
     "wasm-compat/src/main/java/org/audiveris/wasm/compat/bytes/ByteArray.java": "e96d4467fb521a330612814e0c8c5bd77c2742c496bd4954ccc3699fd11af46f",
     "wasm-compat/src/main/java/org/audiveris/wasm/compat/bytes/ByteArrayAccess.java": "8134847376fa0573da698dc5137a6cb29020d2f2c65b10f86ca9a83c3f62e488",
     "wasm-compat/src/main/java/org/audiveris/wasm/compat/bytes/ByteArrayLittleEndian.java": "ba8c4d8c4bcb9ab0262a2ebe5f94d4d62aa1aeb4a5a8bc7a2e484546fd9066ef",
+    "wasm-compat/src/main/java/org/audiveris/wasm/compat/concurrent/ConcurrentSkipListMap.java": "c872daeb825e99540d41bd62ede00a899812e995c701fd8969a2d6496f73108f",
+    "wasm-compat/src/main/java/org/audiveris/wasm/compat/concurrent/ConcurrentSkipListSet.java": "4dbb47350a08dabb7e9a0a1a319b87859dbae08ac6f4ae559c0fb83f4b749b25",
     "wasm-compat/src/main/java/org/audiveris/wasm/compat/lang/Module.java": "488d318380c498db5a12f2a1535d6e9569d6a1f15d28cf7a968cc660db2ba3d5",
     "wasm-compat/src/main/java/org/audiveris/wasm/compat/lang/Modules.java": "806f834304fe3d2db7d2e72ca7c59671edd791c5608e2d85805c9a01ad8d8c3e",
     "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/GrayInput.java": "d80d39672fcdc475e643554c8f718009a37523530664ee4a68b5f21a74011f86",
@@ -194,10 +197,15 @@
     "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/HeadlessMusicDataTest.java": "87ee7f49e8cacc81dcbd3c587b1a008d6c271dc4af79955806aad82e7e9c8efa",
     "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/HeadlessProbe.java": "8dc9e5aa387d8b1bb26a62055b793f7936a4d653fbc6c5c967ddafb03b8b924b",
     "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/HeadlessRenderTest.java": "b34ba017f98efad5889b84b36fa6bf60914b33a3fa10be4396eb53269acfe11a",
+    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/IndexCases.java": "46857c10b42541bbc9a15fcc3b9ef01f72f221820d1bcff35a32df92655b0757",
     "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/LoggerProbe.java": "83f6a109872c43d5f7e8387c057a0d6ccb32b414acc38602c2c1bc5b34c17811",
     "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/ModuleApiTest.java": "0b70889adfca99abdb74182eb869ff55d6f13552fe1568233b78a1e7c413a95a",
     "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/ModuleProbe.java": "7415fe4babe75da7bf2f9a17e6bf8c0e58fd0bb3f5c30c6623ffb45479e7384c",
     "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/OracleTest.java": "795d6504375aacad181b29c4858406f8f09ab53d95415698c4d88d6abc350a59",
+    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/OrderedMapCases.java": "a1f67280ce60553dd5fa3773391f127a2f3ba2772d59f58de6b59328137ec008",
+    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/OrderedMapOracle.java": "941fc0ea649d8ed284cb061aa08b76f6daaea9b8958b5b9f245338e9ac2d856b",
+    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/OrderedMapProbe.java": "b92c840076dd02918be033ab165ba083436c34297f21e54e2703e6baf2a6fa9d",
+    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/OrderedSetCases.java": "a8dd80030c5a45295aec8067394084a03f23c152d30e4412120595125be064af",
     "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/OriginalScaleOracle.java": "e67f800c3611c1b9286641a48deb2ebe47063d4593b59597bdf8ec72bb883e3b",
     "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/PixelJvmOracle.java": "5774d026efa517a55851939fca7aa7dd92b14274b07e4c1943e0b3b506ebb600",
     "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/PixelProbe.java": "0cd7f25084d413044c6db3b7512758b7829e999ac97ce02d1bc5f37584f71c93",
@@ -207,6 +215,7 @@
     "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/ResourceProbe.java": "82702378896318a084ca4379e440bc724847ea630cfaacb2f6dd711813670101",
     "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/ScaleFixtures.java": "dc40b26118ae807b9474485b39c1ba357fe5a04f0bf55a11724db49c5cfb1c65",
     "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/SerialExecutorTest.java": "74f9f79079a4f7c8b2a6b294d302c805cb96d8be214050d37f098db45fe56a5d",
+    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/SheetModelProbe.java": "749259445928608d64ae0fc987592a6feb1aae932e843846000fbcdeb6d8476a",
     "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/StandardApiTest.java": "3a195bcb0f7b4c9e4715ab17dc402c772f7c41ea115d6cea60e17fc8d0f0f3c6",
     "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/UtilityApiTest.java": "ac4d38ca1e95ba52486a24fc5004bcf38b053160e518d5847784e10560aa31b4",
     "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/UtilityProbe.java": "f817380a42f186a607804bd31abb76b5d6edfe9386bf4edf38f5ab5293c842fb",
@@ -215,100 +224,20 @@
     "wasm-compat/src/test/resources/ModuleMessages_fr.properties": "4269627b23f1d343229744ba02e00c9ab5f7bbc23d71059124de3223bc510f60",
     "wasm-compat/src/test/resources/resource.txt": "1fa97e0318e2d68c0ad1b57628d162e64ce62cf75a232227b55c4a0cbb64cc86"
   },
-  "pixelVerification": {
+  "orderedMapVerification": {
     "node": "v24.22.2",
     "chromium": "158.0.8127.18",
     "nodeInstances": 2,
     "workers": 2,
-    "globalThresholdCases": 30,
-    "matchedPixels": 20268,
-    "adaptiveCases": 45,
-    "adaptivePixels": 30402,
-    "runTableCases": 30,
-    "bulkByteInterop": true,
-    "sampleWorkers": 1,
-    "samplePages": [
-      {
-        "id": "00",
-        "pixels": 8694880,
-        "scaleResult": "ok:Scale{ interline(20,21,22) line(4,4,4) beam(10)};invalid=false"
-      },
-      {
-        "id": "01",
-        "pixels": 8694880,
-        "scaleResult": "ok:Scale{ interline(20,21,22) line(4,4,4) beam(10)};invalid=false"
-      },
-      {
-        "id": "02",
-        "pixels": 8694880,
-        "scaleResult": "ok:Scale{ interline(20,21,22) line(4,4,4) beam(10)};invalid=false"
-      },
-      {
-        "id": "03",
-        "pixels": 8694880,
-        "scaleResult": "ok:Scale{ interline(20,21,22) line(4,4,4) beam(10)};invalid=false"
-      },
-      {
-        "id": "04",
-        "pixels": 8694880,
-        "scaleResult": "ok:Scale{ interline(20,21,22) line(4,4,4) beam(10)};invalid=false"
-      },
-      {
-        "id": "05",
-        "pixels": 1572528,
-        "scaleResult": "rejected:Sheet ignored;invalid=true"
-      },
-      {
-        "id": "06",
-        "pixels": 1572864,
-        "scaleResult": "rejected:Sheet ignored;invalid=true"
-      },
-      {
-        "id": "07",
-        "pixels": 1572864,
-        "scaleResult": "rejected:Sheet ignored;invalid=true"
-      }
-    ],
-    "samplePixels": 48192656,
-    "scaleFixtureCases": 4,
-    "upstreamScaleCompared": true,
-    "sampleScaleResults": [
-      {
-        "id": "00",
-        "result": "ok:Scale{ interline(20,21,22) line(4,4,4) beam(10)};invalid=false"
-      },
-      {
-        "id": "01",
-        "result": "ok:Scale{ interline(20,21,22) line(4,4,4) beam(10)};invalid=false"
-      },
-      {
-        "id": "02",
-        "result": "ok:Scale{ interline(20,21,22) line(4,4,4) beam(10)};invalid=false"
-      },
-      {
-        "id": "03",
-        "result": "ok:Scale{ interline(20,21,22) line(4,4,4) beam(10)};invalid=false"
-      },
-      {
-        "id": "04",
-        "result": "ok:Scale{ interline(20,21,22) line(4,4,4) beam(10)};invalid=false"
-      },
-      {
-        "id": "05",
-        "result": "rejected:Sheet ignored;invalid=true"
-      },
-      {
-        "id": "06",
-        "result": "rejected:Sheet ignored;invalid=true"
-      },
-      {
-        "id": "07",
-        "result": "rejected:Sheet ignored;invalid=true"
-      }
-    ],
-    "grayInputOwnership": true,
-    "invalidDimensionsRejected": true,
-    "desktopFontRejected": true,
-    "wasmBytes": 401767
+    "randomizedOperationsPerInstance": 24000,
+    "rangeBoundaryCasesPerInstance": 440,
+    "liveViews": true,
+    "mutableIteration": true,
+    "nullAndRangeExceptions": true,
+    "standardApiCaller": true,
+    "originalBasicIndex": true,
+    "orderedSetOperationsPerInstance": 10000,
+    "orderedSetStreams": true,
+    "wasmBytes": 117991
   }
 }

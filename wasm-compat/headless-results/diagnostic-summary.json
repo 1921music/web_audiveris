@@ -10,51 +10,36 @@
       "engine": 9019
     }
   },
-  "diagnostics": 524,
-  "uniqueMessages": 216,
+  "diagnostics": 495,
+  "uniqueMessages": 204,
   "bySeverity": {
-    "ERROR": 524
+    "ERROR": 495
   },
   "byOrigin": {
-    "engine-side": 522,
+    "engine-side": 493,
     "unattributed": 2
   },
   "byFamily": {
-    "Reflection and class loading": 207,
+    "Reflection and class loading": 182,
     "Other Java runtime": 167,
-    "Threads and synchronization": 69,
+    "Threads and synchronization": 65,
     "Files and streams": 35,
     "Other libraries or compiler diagnostics": 20,
     "XML and JAXB": 26
   },
   "byDirectOwner": {
-    "dependency": 522,
+    "dependency": 493,
     "unattributed": 2
   },
   "byClassDecision": {
-    "external": 522,
+    "external": 493,
     "unattributed": 2
   },
   "callGraph": {
-    "callers": 73358,
-    "edges": 1583433
+    "callers": 73259,
+    "edges": 1565168
   },
   "apis": [
-    {
-      "family": "Reflection and class loading",
-      "message": "Method java.lang.invoke.MethodHandles.lookup()Ljava/lang/invoke/MethodHandles$Lookup; was not found",
-      "count": 27,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "java.util.concurrent.ConcurrentSkipListMap.<clinit>()V @ java/util/concurrent/ConcurrentSkipListMap.java:3435",
-        "jdk.internal.vm.SharedThreadContainer.<clinit>()V @ jdk/internal/vm/SharedThreadContainer.java:45",
-        "java.util.concurrent.ConcurrentLinkedQueue.<clinit>()V @ java/util/concurrent/ConcurrentLinkedQueue.java:1064",
-        "jdk.internal.foreign.Utils.<clinit>()V @ jdk/internal/foreign/Utils.java:64",
-        "java.util.concurrent.atomic.Striped64.<clinit>()V @ java/util/concurrent/atomic/Striped64.java:377"
-      ]
-    },
     {
       "family": "XML and JAXB",
       "message": "Class com.sun.xml.fastinfoset.stax.StAXDocumentSerializer was not found",
@@ -68,6 +53,21 @@
         "org.glassfish.jaxb.runtime.v2.runtime.output.FastInfosetStreamWriterOutput.attribute(ILjava/lang/String;Ljava/lang/String;)V @ org/glassfish/jaxb/runtime/v2/runtime/output/FastInfosetStreamWriterOutput.java:433",
         "org.glassfish.jaxb.runtime.v2.runtime.output.FastInfosetStreamWriterOutput.attribute(ILjava/lang/String;Ljava/lang/String;)V @ org/glassfish/jaxb/runtime/v2/runtime/output/FastInfosetStreamWriterOutput.java:439",
         "org.glassfish.jaxb.runtime.v2.runtime.output.FastInfosetStreamWriterOutput.attribute(ILjava/lang/String;Ljava/lang/String;)V @ org/glassfish/jaxb/runtime/v2/runtime/output/FastInfosetStreamWriterOutput.java:437"
+      ]
+    },
+    {
+      "family": "Reflection and class loading",
+      "message": "Method java.lang.invoke.MethodHandles.lookup()Ljava/lang/invoke/MethodHandles$Lookup; was not found",
+      "count": 24,
+      "origins": [
+        "engine-side"
+      ],
+      "examples": [
+        "jdk.internal.vm.SharedThreadContainer.<clinit>()V @ jdk/internal/vm/SharedThreadContainer.java:45",
+        "java.util.concurrent.ConcurrentLinkedQueue.<clinit>()V @ java/util/concurrent/ConcurrentLinkedQueue.java:1064",
+        "jdk.internal.foreign.Utils.<clinit>()V @ jdk/internal/foreign/Utils.java:64",
+        "org.apache.pdfbox.io.IOUtils.unmapper()Ljava/util/function/Consumer; @ org/apache/pdfbox/io/IOUtils.java:215",
+        "sun.swing.SwingAccessor.ensureClassInitialized(Ljava/lang/Class;)V @ sun/swing/SwingAccessor.java:321"
       ]
     },
     {
@@ -404,8 +404,8 @@
       "examples": [
         "java.util.concurrent.ConcurrentLinkedDeque.pollFirst()Ljava/lang/Object; @ java/util/concurrent/ConcurrentLinkedDeque.java:920",
         "java.util.concurrent.ConcurrentLinkedDeque.bulkRemove(Ljava/util/function/Predicate;)Z @ java/util/concurrent/ConcurrentLinkedDeque.java:1634",
-        "java.util.concurrent.ConcurrentLinkedDeque.removeFirstOccurrence(Ljava/lang/Object;)Z @ java/util/concurrent/ConcurrentLinkedDeque.java:1035",
-        "java.util.concurrent.ConcurrentLinkedDeque.pollLast()Ljava/lang/Object; @ java/util/concurrent/ConcurrentLinkedDeque.java:941"
+        "java.util.concurrent.ConcurrentLinkedDeque.pollLast()Ljava/lang/Object; @ java/util/concurrent/ConcurrentLinkedDeque.java:941",
+        "java.util.concurrent.ConcurrentLinkedDeque.removeFirstOccurrence(Ljava/lang/Object;)Z @ java/util/concurrent/ConcurrentLinkedDeque.java:1035"
       ]
     },
     {
@@ -431,37 +431,9 @@
       ],
       "examples": [
         "java.util.concurrent.ConcurrentLinkedDeque.first()Ljava/util/concurrent/ConcurrentLinkedDeque$Node; @ java/util/concurrent/ConcurrentLinkedDeque.java:721",
+        "java.util.concurrent.ConcurrentLinkedDeque.last()Ljava/util/concurrent/ConcurrentLinkedDeque$Node; @ java/util/concurrent/ConcurrentLinkedDeque.java:746",
         "java.util.concurrent.ConcurrentLinkedDeque.updateHead()V @ java/util/concurrent/ConcurrentLinkedDeque.java:575",
-        "java.util.concurrent.ConcurrentLinkedDeque.updateTail()V @ java/util/concurrent/ConcurrentLinkedDeque.java:605",
-        "java.util.concurrent.ConcurrentLinkedDeque.last()Ljava/util/concurrent/ConcurrentLinkedDeque$Node; @ java/util/concurrent/ConcurrentLinkedDeque.java:746"
-      ]
-    },
-    {
-      "family": "Reflection and class loading",
-      "message": "Method java.lang.invoke.VarHandle.compareAndSet(Ljava/util/concurrent/ConcurrentSkipListMap$Index;Ljava/util/concurrent/ConcurrentSkipListMap$Index;Ljava/util/concurrent/ConcurrentSkipListMap$Index;)Z was not found",
-      "count": 4,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "java.util.concurrent.ConcurrentSkipListMap.doPut(Ljava/lang/Object;Ljava/lang/Object;Z)Ljava/lang/Object; @ java/util/concurrent/ConcurrentSkipListMap.java:615",
-        "java.util.concurrent.ConcurrentSkipListMap.doGet(Ljava/lang/Object;)Ljava/lang/Object; @ java/util/concurrent/ConcurrentSkipListMap.java:550",
-        "java.util.concurrent.ConcurrentSkipListMap.findLast()Ljava/util/concurrent/ConcurrentSkipListMap$Node; @ java/util/concurrent/ConcurrentSkipListMap.java:898",
-        "java.util.concurrent.ConcurrentSkipListMap.findPredecessor(Ljava/lang/Object;Ljava/util/Comparator;)Ljava/util/concurrent/ConcurrentSkipListMap$Node; @ java/util/concurrent/ConcurrentSkipListMap.java:476"
-      ]
-    },
-    {
-      "family": "Reflection and class loading",
-      "message": "Method java.lang.invoke.VarHandle.compareAndSet(Ljava/util/concurrent/ConcurrentSkipListMap;Ljava/util/concurrent/ConcurrentSkipListMap$Index;Ljava/util/concurrent/ConcurrentSkipListMap$Index;)Z was not found",
-      "count": 4,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "java.util.concurrent.ConcurrentSkipListMap.clear()V @ java/util/concurrent/ConcurrentSkipListMap.java:1420",
-        "java.util.concurrent.ConcurrentSkipListMap.doPut(Ljava/lang/Object;Ljava/lang/Object;Z)Ljava/lang/Object; @ java/util/concurrent/ConcurrentSkipListMap.java:678",
-        "java.util.concurrent.ConcurrentSkipListMap.tryReduceLevel()V @ java/util/concurrent/ConcurrentSkipListMap.java:819",
-        "java.util.concurrent.ConcurrentSkipListMap.tryReduceLevel()V @ java/util/concurrent/ConcurrentSkipListMap.java:821"
+        "java.util.concurrent.ConcurrentLinkedDeque.updateTail()V @ java/util/concurrent/ConcurrentLinkedDeque.java:605"
       ]
     },
     {
@@ -546,20 +518,6 @@
         "java.nio.DirectByteBuffer.getChar()C @ java/nio/DirectByteBuffer.java:569",
         "java.nio.DirectByteBuffer.getShort()S @ java/nio/DirectByteBuffer.java:667",
         "java.nio.DirectByteBuffer.getLong()J @ java/nio/DirectByteBuffer.java:863"
-      ]
-    },
-    {
-      "family": "Threads and synchronization",
-      "message": "Method java.util.concurrent.ThreadLocalRandom.getProbe()I was not found",
-      "count": 4,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "java.util.concurrent.ForkJoinPool.poolSubmit(ZLjava/util/concurrent/ForkJoinTask;)Ljava/util/concurrent/ForkJoinTask; @ java/util/concurrent/ForkJoinPool.java:2623",
-        "java.util.concurrent.ForkJoinPool.externalQueue(Ljava/util/concurrent/ForkJoinPool;)Ljava/util/concurrent/ForkJoinPool$WorkQueue; @ java/util/concurrent/ForkJoinPool.java:2648",
-        "java.util.concurrent.ThreadLocalRandom$Access$1.getThreadLocalRandomProbe()I @ java/util/concurrent/ThreadLocalRandom.java:403",
-        "java.util.concurrent.ForkJoinPool.externalSubmissionQueue(Z)Ljava/util/concurrent/ForkJoinPool$WorkQueue; @ java/util/concurrent/ForkJoinPool.java:2635"
       ]
     },
     {
@@ -668,19 +626,6 @@
     },
     {
       "family": "Reflection and class loading",
-      "message": "Method java.lang.invoke.VarHandle.compareAndSet(Ljava/util/concurrent/ConcurrentSkipListMap$Node;Ljava/util/concurrent/ConcurrentSkipListMap$Node;Ljava/util/concurrent/ConcurrentSkipListMap$Node;)Z was not found",
-      "count": 3,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "java.util.concurrent.ConcurrentSkipListMap.doPut(Ljava/lang/Object;Ljava/lang/Object;Z)Ljava/lang/Object; @ java/util/concurrent/ConcurrentSkipListMap.java:653",
-        "java.util.concurrent.ConcurrentSkipListMap.unlinkNode(Ljava/util/concurrent/ConcurrentSkipListMap$Node;Ljava/util/concurrent/ConcurrentSkipListMap$Node;)V @ java/util/concurrent/ConcurrentSkipListMap.java:422",
-        "java.util.concurrent.ConcurrentSkipListMap.unlinkNode(Ljava/util/concurrent/ConcurrentSkipListMap$Node;Ljava/util/concurrent/ConcurrentSkipListMap$Node;)V @ java/util/concurrent/ConcurrentSkipListMap.java:428"
-      ]
-    },
-    {
-      "family": "Reflection and class loading",
       "message": "Method java.lang.invoke.VarHandle.weakCompareAndSet(Ljava/util/concurrent/ConcurrentLinkedQueue;Ljava/util/concurrent/ConcurrentLinkedQueue$Node;Ljava/util/concurrent/ConcurrentLinkedQueue$Node;)Z was not found",
       "count": 3,
       "origins": [
@@ -720,15 +665,15 @@
     },
     {
       "family": "Threads and synchronization",
-      "message": "Method java.util.concurrent.ThreadLocalRandom.nextSecondarySeed()I was not found",
+      "message": "Method java.util.concurrent.ThreadLocalRandom.getProbe()I was not found",
       "count": 3,
       "origins": [
         "engine-side"
       ],
       "examples": [
-        "java.util.concurrent.ConcurrentSkipListMap.doPut(Ljava/lang/Object;Ljava/lang/Object;Z)Ljava/lang/Object; @ java/util/concurrent/ConcurrentSkipListMap.java:661",
-        "java.util.concurrent.ConcurrentSkipListMap.doPut(Ljava/lang/Object;Ljava/lang/Object;Z)Ljava/lang/Object; @ java/util/concurrent/ConcurrentSkipListMap.java:663",
-        "java.util.concurrent.LinkedTransferQueue$DualNode.checkForUniprocessor(Z)V @ java/util/concurrent/LinkedTransferQueue.java:469"
+        "java.util.concurrent.ForkJoinPool.poolSubmit(ZLjava/util/concurrent/ForkJoinTask;)Ljava/util/concurrent/ForkJoinTask; @ java/util/concurrent/ForkJoinPool.java:2623",
+        "java.util.concurrent.ForkJoinPool.externalQueue(Ljava/util/concurrent/ForkJoinPool;)Ljava/util/concurrent/ForkJoinPool$WorkQueue; @ java/util/concurrent/ForkJoinPool.java:2648",
+        "java.util.concurrent.ForkJoinPool.externalSubmissionQueue(Z)Ljava/util/concurrent/ForkJoinPool$WorkQueue; @ java/util/concurrent/ForkJoinPool.java:2635"
       ]
     },
     {
@@ -957,42 +902,6 @@
       "examples": [
         "java.util.concurrent.ConcurrentLinkedQueue.updateHead(Ljava/util/concurrent/ConcurrentLinkedQueue$Node;Ljava/util/concurrent/ConcurrentLinkedQueue$Node;)V @ java/util/concurrent/ConcurrentLinkedQueue.java:292",
         "java.util.concurrent.ConcurrentLinkedQueue.tryCasSuccessor(Ljava/util/concurrent/ConcurrentLinkedQueue$Node;Ljava/util/concurrent/ConcurrentLinkedQueue$Node;Ljava/util/concurrent/ConcurrentLinkedQueue$Node;)Z @ java/util/concurrent/ConcurrentLinkedQueue.java:317"
-      ]
-    },
-    {
-      "family": "Reflection and class loading",
-      "message": "Method java.lang.invoke.VarHandle.compareAndSet(Ljava/util/concurrent/ConcurrentSkipListMap$Node;Ljava/lang/Object;Ljava/lang/Object;)Z was not found",
-      "count": 2,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "java.util.concurrent.ConcurrentSkipListMap.doPut(Ljava/lang/Object;Ljava/lang/Object;Z)Ljava/lang/Object; @ java/util/concurrent/ConcurrentSkipListMap.java:649",
-        "java.util.concurrent.ConcurrentSkipListMap.replace(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Z @ java/util/concurrent/ConcurrentSkipListMap.java:1824"
-      ]
-    },
-    {
-      "family": "Reflection and class loading",
-      "message": "Method java.lang.invoke.VarHandle.compareAndSet(Ljava/util/concurrent/ConcurrentSkipListMap$Node;Ljava/lang/Object;Ljava/lang/Void;)Z was not found",
-      "count": 2,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "java.util.concurrent.ConcurrentSkipListMap.clear()V @ java/util/concurrent/ConcurrentSkipListMap.java:1427",
-        "java.util.concurrent.ConcurrentSkipListMap.doRemove(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; @ java/util/concurrent/ConcurrentSkipListMap.java:780"
-      ]
-    },
-    {
-      "family": "Reflection and class loading",
-      "message": "Method java.lang.invoke.VarHandle.compareAndSet(Ljava/util/concurrent/ConcurrentSkipListMap;Ljava/lang/Void;Ljava/util/concurrent/atomic/LongAdder;)Z was not found",
-      "count": 2,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "java.util.concurrent.ConcurrentSkipListMap.getAdderCount()J @ java/util/concurrent/ConcurrentSkipListMap.java:450",
-        "java.util.concurrent.ConcurrentSkipListMap.addCount(J)V @ java/util/concurrent/ConcurrentSkipListMap.java:440"
       ]
     },
     {
@@ -1905,28 +1814,6 @@
     },
     {
       "family": "Reflection and class loading",
-      "message": "Method java.lang.invoke.VarHandle.compareAndSet(Ljava/util/concurrent/ConcurrentSkipListMap$Index;Ljava/util/concurrent/ConcurrentSkipListMap$Index;Ljava/lang/Void;)Z was not found",
-      "count": 1,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "java.util.concurrent.ConcurrentSkipListMap.clear()V @ java/util/concurrent/ConcurrentSkipListMap.java:1418"
-      ]
-    },
-    {
-      "family": "Reflection and class loading",
-      "message": "Method java.lang.invoke.VarHandle.compareAndSet(Ljava/util/concurrent/ConcurrentSkipListMap;Ljava/lang/Void;Ljava/util/concurrent/ConcurrentSkipListMap$Index;)Z was not found",
-      "count": 1,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "java.util.concurrent.ConcurrentSkipListMap.doPut(Ljava/lang/Object;Ljava/lang/Object;Z)Ljava/lang/Object; @ java/util/concurrent/ConcurrentSkipListMap.java:607"
-      ]
-    },
-    {
-      "family": "Reflection and class loading",
       "message": "Method java.lang.invoke.VarHandle.compareAndSet(Ljava/util/concurrent/FutureTask;II)Z was not found",
       "count": 1,
       "origins": [
@@ -1956,17 +1843,6 @@
       ],
       "examples": [
         "java.util.concurrent.FutureTask.removeWaiter(Ljava/util/concurrent/FutureTask$WaitNode;)V @ java/util/concurrent/FutureTask.java:539"
-      ]
-    },
-    {
-      "family": "Reflection and class loading",
-      "message": "Method java.lang.invoke.VarHandle.compareAndSet(Ljava/util/concurrent/atomic/Striped64;II)Z was not found",
-      "count": 1,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "java.util.concurrent.atomic.Striped64.casCellsBusy()Z @ java/util/concurrent/atomic/Striped64.java:189"
       ]
     },
     {
@@ -2366,28 +2242,6 @@
       ]
     },
     {
-      "family": "Reflection and class loading",
-      "message": "Method java.lang.invoke.VarHandle.weakCompareAndSetRelease(Ljava/util/concurrent/atomic/Striped64$Cell;JJ)Z was not found",
-      "count": 1,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "java.util.concurrent.atomic.Striped64$Cell.cas(JJ)Z @ java/util/concurrent/atomic/Striped64.java:132"
-      ]
-    },
-    {
-      "family": "Reflection and class loading",
-      "message": "Method java.lang.invoke.VarHandle.weakCompareAndSetRelease(Ljava/util/concurrent/atomic/Striped64;JJ)Z was not found",
-      "count": 1,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "java.util.concurrent.atomic.Striped64.casBase(JJ)Z @ java/util/concurrent/atomic/Striped64.java:178"
-      ]
-    },
-    {
       "family": "Other Java runtime",
       "message": "Method java.lang.ref.Cleaner.create(Ljava/util/concurrent/ThreadFactory;)Ljava/lang/ref/Cleaner; was not found",
       "count": 1,
@@ -2565,17 +2419,6 @@
     },
     {
       "family": "Threads and synchronization",
-      "message": "Method java.util.concurrent.ThreadLocalRandom.advanceProbe(I)I was not found",
-      "count": 1,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "java.util.concurrent.ThreadLocalRandom$Access$1.advanceThreadLocalRandomProbe(I)I @ java/util/concurrent/ThreadLocalRandom.java:406"
-      ]
-    },
-    {
-      "family": "Threads and synchronization",
       "message": "Method java.util.concurrent.ThreadLocalRandom.localInit()V was not found",
       "count": 1,
       "origins": [
@@ -2583,6 +2426,17 @@
       ],
       "examples": [
         "java.util.concurrent.ForkJoinPool.registerWorker(Ljava/util/concurrent/ForkJoinPool$WorkQueue;)V @ java/util/concurrent/ForkJoinPool.java:1784"
+      ]
+    },
+    {
+      "family": "Threads and synchronization",
+      "message": "Method java.util.concurrent.ThreadLocalRandom.nextSecondarySeed()I was not found",
+      "count": 1,
+      "origins": [
+        "engine-side"
+      ],
+      "examples": [
+        "java.util.concurrent.LinkedTransferQueue$DualNode.checkForUniprocessor(Z)V @ java/util/concurrent/LinkedTransferQueue.java:469"
       ]
     },
     {

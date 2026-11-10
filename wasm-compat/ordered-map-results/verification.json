@@ -1,0 +1,16 @@
+{
+  "node": "v24.22.2",
+  "chromium": "158.0.8127.18",
+  "nodeInstances": 2,
+  "workers": 2,
+  "randomizedOperationsPerInstance": 24000,
+  "rangeBoundaryCasesPerInstance": 440,
+  "liveViews": true,
+  "mutableIteration": true,
+  "nullAndRangeExceptions": true,
+  "standardApiCaller": true,
+  "originalBasicIndex": true,
+  "orderedSetOperationsPerInstance": 10000,
+  "orderedSetStreams": true,
+  "wasmBytes": 117991
+}
