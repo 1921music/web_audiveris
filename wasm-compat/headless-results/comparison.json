@@ -1,25 +1,25 @@
 {
-  "identicalOriginalRoots": true,
+  "identicalOriginalRoots": false,
   "originalRootSubsetPreserved": true,
-  "rootCount": 9029,
+  "rootCount": 9030,
   "baselineRootCount": 9029,
-  "addedRoots": [],
-  "baselineDiagnostics": 495,
-  "patchedDiagnostics": 494,
-  "diagnosticReduction": 1,
-  "baselineUniqueMessages": 204,
-  "patchedUniqueMessages": 203,
-  "removedMessages": [
-    "Method java.lang.reflect.Constructor.canAccess(Ljava/lang/Object;)Z was not found"
+  "addedRoots": [
+    "org.audiveris.omr.sig.inter.BracketInter.computeArea(Ljava/awt/geom/Rectangle2D;Ljava/awt/geom/Rectangle2D;)V"
   ],
+  "baselineDiagnostics": 494,
+  "patchedDiagnostics": 494,
+  "diagnosticReduction": 0,
+  "baselineUniqueMessages": 203,
+  "patchedUniqueMessages": 203,
+  "removedMessages": [],
   "newMessages": [],
   "newDiagnosticCount": 0,
   "remainingTargetedApiMessages": [],
   "baselineByFamily": {
-    "Reflection and class loading": 182,
     "Other Java runtime": 167,
     "Threads and synchronization": 65,
     "Files and streams": 35,
+    "Reflection and class loading": 181,
     "Other libraries or compiler diagnostics": 20,
     "XML and JAXB": 26
   },
@@ -32,7 +32,7 @@
     "XML and JAXB": 26
   },
   "baselineByDirectOwner": {
-    "dependency": 493,
+    "dependency": 492,
     "unattributed": 2
   },
   "patchedByDirectOwner": {
@@ -40,9 +40,9 @@
     "unattributed": 2
   },
   "platformSubstitutionsEnabled": true,
-  "modifiedMethods": 496,
-  "removedDirectCallsFromModifiedMethods": 2,
-  "addedDirectCallsFromModifiedMethods": 2,
+  "modifiedMethods": 497,
+  "removedDirectCallsFromModifiedMethods": 10,
+  "addedDirectCallsFromModifiedMethods": 1,
   "excludedClassesLinked": {
     "before": 75,
     "after": 75

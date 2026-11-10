@@ -186,6 +186,7 @@ org.audiveris.omr.step.ui.StepMonitoring.notifyStop()V	platform-method	4	1	10	2
 org.audiveris.omr.sheet.BookManager$Constants.getUnitName()Ljava/lang/String;	platform-method	0	1	0	2
 org.audiveris.omr.sheet.PageCleaner$Constants.getUnitName()Ljava/lang/String;	platform-method	0	1	0	2
 org.audiveris.omr.sheet.StaffManager.renderItems(Ljava/awt/Graphics2D;)V	headless-gui-guard	7	7	43	43
+org.audiveris.omr.sig.inter.BracketInter.computeArea()V	platform-method	4	1	29	2
 org.audiveris.omr.sheet.Picture$Constants.getUnitName()Ljava/lang/String;	platform-method	0	1	0	2
 org.audiveris.omr.sheet.ProcessingSwitches$Constants.getUnitName()Ljava/lang/String;	platform-method	0	1	0	2
 org.audiveris.omr.sheet.Profiles$Constants.getUnitName()Ljava/lang/String;	platform-method	0	1	0	2

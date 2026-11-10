@@ -1,5 +1,12 @@
 change	caller	callee
-removed	org.jgrapht.util.SupplierUtil.createSupplier(Ljava/lang/Class;)Ljava/util/function/Supplier;	java.lang.NoSuchMethodError.<init>(Ljava/lang/String;)V
-removed	org.jgrapht.util.SupplierUtil.createSupplier(Ljava/lang/Class;)Ljava/util/function/Supplier;	java.lang.String.<init>([C)V
-added	org.jgrapht.util.SupplierUtil.createSupplier(Ljava/lang/Class;)Ljava/util/function/Supplier;	java.lang.reflect.AccessibleObject.setAccessible(Z)V
-added	org.jgrapht.util.SupplierUtil.createSupplier(Ljava/lang/Class;)Ljava/util/function/Supplier;	org.audiveris.wasm.compat.platform.GraphReflectionAccess.canAccess(Ljava/lang/reflect/Constructor;Ljava/lang/Object;)Z
+removed	org.audiveris.omr.sig.inter.BracketInter.computeArea()V	java.lang.Integer.intValue()I
+removed	org.audiveris.omr.sig.inter.BracketInter.computeArea()V	org.audiveris.omr.sheet.Scale.getInterline()Ljava/lang/Integer;
+removed	org.audiveris.omr.sig.inter.BracketInter.computeArea()V	org.audiveris.omr.sheet.Sheet.getScale()Lorg/audiveris/omr/sheet/Scale;
+removed	org.audiveris.omr.sig.inter.BracketInter.computeArea()V	org.audiveris.omr.sheet.Sheet.getStub()Lorg/audiveris/omr/sheet/SheetStub;
+removed	org.audiveris.omr.sig.inter.BracketInter.computeArea()V	org.audiveris.omr.sheet.SheetStub.getMusicFamily()Lorg/audiveris/omr/ui/symbol/MusicFamily;
+removed	org.audiveris.omr.sig.inter.BracketInter.computeArea()V	org.audiveris.omr.sheet.SystemInfo.getSheet()Lorg/audiveris/omr/sheet/Sheet;
+removed	org.audiveris.omr.sig.inter.BracketInter.computeArea()V	org.audiveris.omr.sig.SIGraph.getSystem()Lorg/audiveris/omr/sheet/SystemInfo;
+removed	org.audiveris.omr.sig.inter.BracketInter.computeArea()V	org.audiveris.omr.sig.inter.BracketInter.computeArea(Lorg/audiveris/omr/ui/symbol/MusicFont;)V
+removed	org.audiveris.omr.sig.inter.BracketInter.computeArea()V	org.audiveris.omr.ui.symbol.MusicFont.<clinit>()V
+removed	org.audiveris.omr.sig.inter.BracketInter.computeArea()V	org.audiveris.omr.ui.symbol.MusicFont.getBaseFont(Lorg/audiveris/omr/ui/symbol/MusicFamily;I)Lorg/audiveris/omr/ui/symbol/MusicFont;
+added	org.audiveris.omr.sig.inter.BracketInter.computeArea()V	org.audiveris.omr.sig.inter.WorkerBracketBridge.computeArea(Lorg/audiveris/omr/sig/inter/BracketInter;)V
