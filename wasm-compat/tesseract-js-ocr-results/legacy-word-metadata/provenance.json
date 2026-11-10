@@ -1,5 +1,5 @@
 {
-  "sourceCommit": "d917e30e6e386be55f875ecb6f06a6ade0e9c1f8",
+  "sourceCommit": "89817d6b2a67b274550fb8fa1e3b9f89af05a645",
   "sourceSha256": {
     "wasm-compat/host/gray8-png.mjs": "fab3b1da1e3f027ab38fc48eef5a5250988fd3a1a55720364e4ad94078b70bba",
     "wasm-compat/host/tesseract-js-ocr.mjs": "861f92561bf914ba95248a677d4994e6d9a54a6b3c5fd4e49dd2f1ffc8bcb58e",
@@ -8,12 +8,13 @@
     "wasm-compat/host/tesseract-word-metadata-node.cjs": "b17efb04d34f1f7c641b96b01642c2405472653b94f15752bc556367e190df95",
     "wasm-compat/package.json": "160bc5321d93ce92b3ac7edf746db502195eae34cf289fcb58ea1786950e9e3d",
     "wasm-compat/package-lock.json": "e9ee4b3a127b77b423ae5efcdc6d15f5784f0b19a9cb6ccfbc49447e42be5ca2",
-    "wasm-compat/tools/verify-tesseract-js-ocr.cjs": "771b6164bee79d2bfeeffe29823f2e27b4891e03c65a65eda3ceb96c766e00b7",
+    "wasm-compat/tools/verify-tesseract-js-ocr.cjs": "aa13f228bf0d601010cc20f1fc920fdbd35ca8929edf595136419d417ab4645b",
     "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/OcrBackendFixtureOracle.java": "8c747d884fa8ff472ea2772895b87babc0f6dba67497128228d7583448e378a8",
-    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/OcrTransportProbe.java": "fb2d4ba3d3e38527d04264c49c835aaefa422da0d1ced1efcedbcf5102465355",
+    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/OcrTransportProbe.java": "ba62b55599138380044880c421f7209c8f3ea30a645ec73337f4d5ea0bda5272",
     "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/OcrTransport.java": "dec38983fc15bbee8f543dc0cd7bda20c718e18ce482e43b9f8f519939b09938",
     "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/OcrExchange.java": "c2a0f75503efd702d4a54488a568f1371208e0bc75b331b5c61f77423c070348",
-    "dev/teavm-audit/audit.init.gradle": "02752902fd1727f2b4a9bd69c4fa4e91fdc93b4a7eba963b08079c401371a5a3",
+    "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/OcrImageFrame.java": "57fd92a512b8e125c3052c1a887d816038f649f43b6b9cdfb2e11b6023f3aff0",
+    "dev/teavm-audit/audit.init.gradle": "bd7b611dbb2d0251db304881dd4abeee2a91589906b333efba07195b3e54ed63",
     "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/NativeOcrBackendOracle.java": "af8eb5371428e14c449f59421e5608ad104c98415aeff6fa8f11920864bea988",
     "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/OcrTransportOracle.java": "b6499e3f0c7be1c99884544a290eb3b3e0b2f2706c5d5fd8966bd17eb45b1464",
     "wasm-compat/tools/compare-native-ocr.py": "d92a64d2ebd4092fe283fd7c8a354fd411434c2c1459e3e06bd2ca13034048a2",
@@ -50,12 +51,12 @@
     "assets/models/eng.traineddata.gz": "ed350f3752f81ee8f38769edc14d92d997dababe23b565c59879372cc46a2468",
     "assets/ocr-assets/tesseract.min.js": "000c27d9cd0def655f77b36c72a389c0ab13793aa31cb4d7aab56d09c0afbc7e",
     "assets/ocr-assets/worker.min.js": "576b7df7e3393e137e51849357c9adb53fe7ac1bb69bfa06cf3d61520f182c6d",
-    "assets/ocr-transport.wasm": "108a9a844af12d86385d8c999cd9fa3754c77fbae3d83d2724820dd10bc492ec",
+    "assets/ocr-transport.wasm": "c66e7e8aaf1494c3380e7fcea8b5b7271b7db9d43020cf0acc6459ad784a1a06",
     "assets/ocr-transport.wasm-runtime.js": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
     "fixture.json": "ca3941b153126ed959fd0b5751b19da26fc98c4753e2367020cf2f0b54d3aafc",
     "host.png": "21eeba38124528cf29a54d3bd2d112f8754e545c36789dba2a5bce0df2e3211c",
     "input.gray": "6f33d2835f9fe80b054b84dcce9523eabe4e17bf5f24edee5a37ec1d015ec938",
-    "native/comparison.json": "677d0cd274138fa35dcb5996b429f828f312bf7ba56ca5d7c576a315822cf5fc",
+    "native/comparison.json": "93a0668a2fe91c33e7d85f4490926f66c847e53f45fd784f52688281f1243f72",
     "native/psm-3.json": "46bbd39e07928144adb1196f746b3250a66de108d50eec427f16a22ad97e7202",
     "native/psm-6.json": "99c80399e567589dc4df3b636aa768d9f6e22b3b7f6c05d6df7f5ea63b404fd3",
     "native.png": "b06d33b90e61d6bee353492b05ece7758567c4ccca611d7f9a5213a35d7ac1ac",
@@ -64,8 +65,8 @@
     "packages/tesseract.js/package.json": "fa342f37afd665595eca66ee867197c47c9ac35a7967123d1132c39a40b3dfbd",
     "packages/tesseract.js-core/LICENSE": "c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08",
     "packages/tesseract.js-core/package.json": "554b867684677c81aa3ffab61f31e83618445fa09adee99e8fff3515cee6ca54",
-    "results.json": "e47a154ae99ed1f2baea8433b394f3dd1b7c111d56cd7daca31ba15ce6074484",
-    "verification.json": "055c7c22e73da0ca7156f7568ab1d2a465df9581d44c10fb84ac8ac2c092049d"
+    "results.json": "69326498ed7306f901e97b4259e919d8d6d1b503f75959acfa4797d0cf20aa54",
+    "verification.json": "1aae6974d57bd14c0fef2ba6064b9dbd6bf7c87847f380f654d6a1ee5111c57f"
   },
   "limitation": "External OCR adapter fixture only; no upstream native OCR parity, font fallback, TEXTS cleanup or full recognition integration is claimed"
 }

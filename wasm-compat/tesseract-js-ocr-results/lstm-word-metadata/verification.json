@@ -25,6 +25,8 @@
   "simulatedLanguageReinitialization": true,
   "wasmRequestAndReplyIntegrated": true,
   "wasmBlankAndModelFailureDistinct": true,
+  "paddedFrameCoordinatesRestored": true,
+  "configuredWhiteMargin": 10,
   "nativeWordMetadata": true,
   "realCharacterBoxes": true,
   "fontAttributesAvailable": false,
@@ -36,12 +38,12 @@
   "wordBaselineAvailable": true,
   "workerTimings": [
     {
-      "firstRequestMs": 447.19999999998254,
-      "warmRequestMs": 39
+      "firstRequestMs": 766.8000000000466,
+      "warmRequestMs": 41.29999999993015
     },
     {
-      "firstRequestMs": 447.70000000001164,
-      "warmRequestMs": 39.5
+      "firstRequestMs": 766.9000000000233,
+      "warmRequestMs": 41.59999999997672
     }
   ],
   "words": [
@@ -54,8 +56,8 @@
   "allBrowserAssetsLocal": true,
   "assets": {
     "/ocr-transport.wasm": {
-      "bytes": 44344,
-      "sha256": "108a9a844af12d86385d8c999cd9fa3754c77fbae3d83d2724820dd10bc492ec"
+      "bytes": 47586,
+      "sha256": "c66e7e8aaf1494c3380e7fcea8b5b7271b7db9d43020cf0acc6459ad784a1a06"
     },
     "/ocr-transport.wasm-runtime.js": {
       "bytes": 17268,

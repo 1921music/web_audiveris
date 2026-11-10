@@ -1,11 +1,12 @@
 {
-  "sourceCommit": "0538ad14fa06b837f2cfaa48748d72f4fde09569",
+  "sourceCommit": "89817d6b2a67b274550fb8fa1e3b9f89af05a645",
   "sourceSha256": {
     "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/OcrExchange.java": "c2a0f75503efd702d4a54488a568f1371208e0bc75b331b5c61f77423c070348",
-    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/OcrExchangeProbe.java": "fae372fec700e6d4ce6a7739ffca0674e24d0dc8f26c21fda988d0cad4405a83",
-    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/OcrExchangeOracle.java": "5b44f076590f1e28837f8b8ec35bf9452370055002ad25f15d0cbd03e143378d",
-    "wasm-compat/tools/verify-ocr-exchange.cjs": "6ee3b341a2b969cf2a6be4d3201f0b7a9c634dbd16b21b394cb8b9968dc9e437",
-    "dev/teavm-audit/audit.init.gradle": "f3f15db3b60da78d4f7eec3f54a25c74746a857b03578eaa09e375f9901732f1"
+    "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/OcrImageFrame.java": "57fd92a512b8e125c3052c1a887d816038f649f43b6b9cdfb2e11b6023f3aff0",
+    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/OcrExchangeProbe.java": "fc0643b7fee98bcc428313f1c2ba22d126b6634d191f25890719224d7c345aa0",
+    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/OcrExchangeOracle.java": "f953f39d2216f7c5756c696f7f40d3ff434abff416c1422eded99a2da687d9f8",
+    "wasm-compat/tools/verify-ocr-exchange.cjs": "e1a2a04efa4dbb895b7a53dff6da3ab590f9e384846773e52fc1148be6e1d969",
+    "dev/teavm-audit/audit.init.gradle": "bd7b611dbb2d0251db304881dd4abeee2a91589906b333efba07195b3e54ed63"
   },
   "rawArtifacts": "wsl-artifacts/wasm-components/ocr-exchange",
   "cpuMax": "800000 100000",
@@ -14,11 +15,12 @@
   "memorySwapMaxBytes": 0,
   "memoryEventsLocal": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0",
   "artifactSha256": {
-    "ocr-exchange.wasm": "a7648aa8d6b323386e5d6b3ddca9674bd7a8c374510bc299362f9044a5ac34e7",
+    "ocr-exchange.wasm": "5e48e27679560d37cd92823205f732746e371cb3f72da0711ef5b9d9d52ebdaa",
     "ocr-exchange.wasm-runtime.js": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
-    "verification.json": "47aa94efdce21399616e93529e010378fc3092e250a96e0fa67f74423f792ff4",
+    "verification.json": "109c52718adb4967041922f3763931bbbded4794708f2ba2dbee1d361de23bc7",
     "diagnostics.tsv": "fedeabd8a34aba0fa7d1aa2d80ccb94c378549c76c57c6942205c67c8f568b5d",
-    "jvm-reference.txt": "56b590f45939ffe735e5956f5832f212c44d5413dc2e22e832af1bd210f51122"
+    "jvm-reference.txt": "c0383599b2e766f9f599b193945d106d11247240ae07a2329bd18c6853b2e288",
+    "jvm-frame-reference.json": "707ad9863c53ea6eaac0ac796f57b14e8d29ce7bce73c6d0a0aae0c6cc9f506f"
   },
   "limitation": "OCR transport/lifecycle component only; TEXTS raster cleanup, backend OCR and result ingestion are not yet integrated"
 }

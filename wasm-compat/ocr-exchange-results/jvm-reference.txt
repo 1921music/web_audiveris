@@ -1,1 +1,1 @@
-OCR exchange contracts: 732
+OCR exchange contracts: 9062; GRAY8 frames: -5616317785691246141

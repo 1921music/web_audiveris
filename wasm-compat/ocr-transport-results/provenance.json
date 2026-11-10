@@ -1,12 +1,13 @@
 {
-  "sourceCommit": "5379b845b6595a92a137ac7baa99ec64b5be2436",
+  "sourceCommit": "89817d6b2a67b274550fb8fa1e3b9f89af05a645",
   "sourceSha256": {
     "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/OcrExchange.java": "c2a0f75503efd702d4a54488a568f1371208e0bc75b331b5c61f77423c070348",
+    "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/OcrImageFrame.java": "57fd92a512b8e125c3052c1a887d816038f649f43b6b9cdfb2e11b6023f3aff0",
     "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/OcrTransport.java": "dec38983fc15bbee8f543dc0cd7bda20c718e18ce482e43b9f8f519939b09938",
-    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/OcrTransportProbe.java": "fb2d4ba3d3e38527d04264c49c835aaefa422da0d1ced1efcedbcf5102465355",
-    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/OcrTransportOracle.java": "f83fa5aabb9e0dbdfb7dfb8564d1e3c605b8c74c49a5e0f0bde43f612645fae7",
+    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/OcrTransportProbe.java": "ba62b55599138380044880c421f7209c8f3ea30a645ec73337f4d5ea0bda5272",
+    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/OcrTransportOracle.java": "b6499e3f0c7be1c99884544a290eb3b3e0b2f2706c5d5fd8966bd17eb45b1464",
     "wasm-compat/tools/verify-ocr-transport.cjs": "e50e888a8a6fff5a8a7007cf243d0c233c176cdeddfc96d7736017cb2e5a1b0c",
-    "dev/teavm-audit/audit.init.gradle": "d8dc13612fdc51ec246b27ad3f798645e0e18a756430916e31195971e6d33d4e"
+    "dev/teavm-audit/audit.init.gradle": "bd7b611dbb2d0251db304881dd4abeee2a91589906b333efba07195b3e54ed63"
   },
   "rawArtifacts": "wsl-artifacts/wasm-components/ocr-transport",
   "cpuMax": "800000 100000",
@@ -15,9 +16,9 @@
   "memorySwapMaxBytes": 0,
   "memoryEventsLocal": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0",
   "artifactSha256": {
-    "ocr-transport.wasm": "108a9a844af12d86385d8c999cd9fa3754c77fbae3d83d2724820dd10bc492ec",
+    "ocr-transport.wasm": "c66e7e8aaf1494c3380e7fcea8b5b7271b7db9d43020cf0acc6459ad784a1a06",
     "ocr-transport.wasm-runtime.js": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
-    "verification.json": "ead0b08132e6bcb443ac4ff549fc59b4092b14a6917fead9d3a9296507029e3b",
+    "verification.json": "da34254c6c359cd740d0ccf8dcf3f8033fb7b63128edf105c94e0a560019ef58",
     "diagnostics.tsv": "fedeabd8a34aba0fa7d1aa2d80ccb94c378549c76c57c6942205c67c8f568b5d",
     "jvm-reference.txt": "5082122cc79851318e2eb69be47d07747bc81bd3283b28dec3dc7577b1ad7631"
   },

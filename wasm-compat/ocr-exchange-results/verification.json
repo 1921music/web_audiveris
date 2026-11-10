@@ -3,14 +3,21 @@
   "chromium": "158.0.8127.18",
   "nodeInstances": 2,
   "workers": 2,
-  "contract": "OCR exchange contracts: 732",
+  "contract": "OCR exchange contracts: 9062; GRAY8 frames: -5616317785691246141",
   "workerIsolation": true,
   "asynchronousRoundTrip": true,
   "staleAndDuplicateRepliesRejected": true,
   "cancellationTerminal": true,
   "emptyAndFailureDistinct": true,
   "pixelSnapshotsOwned": true,
-  "wasmBytes": 39676,
-  "wasmSha256": "a7648aa8d6b323386e5d6b3ddca9674bd7a8c374510bc299362f9044a5ac34e7",
+  "nativeGray8Margins": {
+    "cases": 640,
+    "gray8Bytes": 890694,
+    "nativePixelsExact": true
+  },
+  "frameCoordinatesRestored": true,
+  "frameReplyAppliedOnce": true,
+  "wasmBytes": 47912,
+  "wasmSha256": "5e48e27679560d37cd92823205f732746e371cb3f72da0711ef5b9d9d52ebdaa",
   "limitation": "OCR transport/lifecycle component only; TEXTS raster cleanup, backend OCR and result ingestion are not yet integrated"
 }
