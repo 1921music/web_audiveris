@@ -19,6 +19,7 @@ final class HeadlessPatches {
         Map<MethodDescriptor, Program> original = new HashMap<>();
         for (MethodHolder method : cls.getMethods()) { original.put(method.getDescriptor(), method.getProgram()); }
         switch (cls.getName()) {
+            case "org.audiveris.omr.sheet.beam.SpotsBuilder": spotImages(cls); break;
             case "org.audiveris.omr.sheet.stem.StemScaler": stemBuffer(cls, context); break;
             case "org.audiveris.omr.math.HiLoPeakFinder": prefixCopies(cls, 1); break;
             case "org.audiveris.omr.sheet.clef.ClefBuilder": grayCopies(cls, 1); prefixCopies(cls, 1); break;
@@ -221,6 +222,43 @@ final class HeadlessPatches {
             exit.setValueToReturn(result);
         }
         block.add(exit); method.setProgram(program);
+    }
+    private static void spotImages(ClassHolder cls) {
+        int gray = 0, runs = 0, snapshots = 0, failures = 0, saves = 0;
+        for (MethodHolder method : cls.getMethods()) {
+            Program program = method.getProgram(); if (program == null) { continue; }
+            int before = instructions(program), changed = 0;
+            for (BasicBlock block : program.getBasicBlocks()) { for (Instruction instruction : block) {
+                if (!(instruction instanceof InvokeInstruction)) { continue; }
+                var call = (InvokeInstruction) instruction; var target = call.getMethod();
+                String helper = null; ValueType parameter = null, result = null;
+                if (target.equals(new MethodReference("ij.process.ByteProcessor", "getBufferedImage", obj("java.awt.image.BufferedImage")))) {
+                    helper = "gray"; parameter = obj("ij.process.ByteProcessor"); result = obj("java.awt.image.BufferedImage"); gray++;
+                } else if (target.equals(new MethodReference("org.audiveris.omr.run.RunTable", "getBufferedImage", obj("java.awt.image.BufferedImage")))) {
+                    helper = "runs"; parameter = obj("org.audiveris.omr.run.RunTable"); result = obj("java.awt.image.BufferedImage"); runs++;
+                } else if (target.equals(new MethodReference("ij.process.ByteProcessor", "duplicate", obj("ij.process.ImageProcessor")))) {
+                    helper = "duplicate"; parameter = obj("ij.process.ByteProcessor"); result = obj("ij.process.ByteProcessor"); snapshots++;
+                } else if (target.equals(new MethodReference("org.audiveris.omr.image.ImageUtil", "saveOnDisk",
+                        obj("java.awt.image.BufferedImage"), STRING, STRING, ValueType.VOID))) {
+                    call.setMethod(new MethodReference(HeadlessSpotImages.class.getName(), "save", obj("java.awt.image.BufferedImage"), STRING, STRING, ValueType.VOID));
+                    saves++; changed++; continue;
+                } else if (method.getName().equals("buildSheetSpots") && target.equals(new MethodReference("org.slf4j.Logger", "warn", STRING,
+                        obj("java.lang.Throwable"), ValueType.VOID))) {
+                    call.setInstance(null); call.setType(InvocationType.SPECIAL);
+                    call.setMethod(new MethodReference(HeadlessSpotImages.class.getName(), "failed", STRING, obj("java.lang.Throwable"), ValueType.VOID));
+                    failures++; changed++; continue;
+                }
+                if (helper != null) {
+                    Variable input = call.getInstance(); call.setInstance(null); call.setType(InvocationType.SPECIAL);
+                    call.setMethod(new MethodReference(HeadlessSpotImages.class.getName(), helper, parameter, result));
+                    call.setArguments(input); changed++;
+                }
+            } }
+            if (changed > 0) { report(method, "spot-gray-snapshot-debug-output-and-failure-boundaries", program.basicBlockCount(), before); }
+        }
+        if (gray != 3 || runs != 1 || snapshots != 1 || failures != 1 || saves != 3) {
+            throw new IllegalStateException("Review spot image sites: " + gray + "/" + runs + "/" + snapshots + "/" + failures + "/" + saves);
+        }
     }
     private static void stemBuffer(ClassHolder cls, ClassHolderTransformerContext context) {
         ValueType sheetType = obj("org.audiveris.omr.sheet.Sheet"), pixels = obj("ij.process.ByteProcessor");

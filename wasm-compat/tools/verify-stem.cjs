@@ -7,11 +7,13 @@ const assert = require('node:assert/strict');
 Error.stackTraceLimit = 100;
 const {chromium} = require('playwright');
 const root = path.resolve(process.argv[2]), samples = path.resolve(root, '../pixel-probe/samples');
+const profiles = fs.existsSync(path.join(root, 'symbol-geometry.json')) ? root : path.resolve(root, '../stem-portable-probe');
+const portablePath = fs.existsSync(path.join(root, 'jvm-portable.json')) ? path.join(root, 'jvm-portable.json') : path.resolve(root, '../stem-portable-probe/jvm-reference.json');
 const modelPath = process.argv[3] || (fs.existsSync(path.join(root, 'model.zip')) ? path.join(root, 'model.zip') : path.resolve(root, '../../../app/res/basic-classifier.zip'));
 const sha256 = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
 let numbers = 0, maxDifference = 0;
 let comparedPixelBytes = 0;
-const buffers = path.resolve(root, '../stem-original-probe/stem-buffers');
+const buffers = fs.existsSync(path.join(root, 'stem-buffers')) ? path.join(root, 'stem-buffers') : path.resolve(root, '../stem-original-probe/stem-buffers');
 const pixelHashes = Object.fromEntries(fs.readdirSync(buffers).filter(name => name.endsWith('.binary'))
     .map(name => [name.slice(0, -7), sha256(fs.readFileSync(path.join(buffers, name)))]));
 function comparePixels(api, id) {
@@ -38,10 +40,10 @@ function compare(actual, expected, label = 'result') {
 (async () => {
     const originalPath = fs.existsSync(path.join(root, 'jvm-original.json')) ? path.join(root, 'jvm-original.json') : path.resolve(root, '../stem-original-probe/jvm-reference.json');
     const oracle = JSON.parse(fs.readFileSync(originalPath, 'utf8'));
-    const seam = JSON.parse(fs.readFileSync(path.resolve(root, '../stem-portable-probe/jvm-reference.json'), 'utf8')); assert.deepEqual(seam, oracle);
+    const seam = JSON.parse(fs.readFileSync(portablePath, 'utf8')); assert.deepEqual(seam, oracle);
     const manifest = JSON.parse(fs.readFileSync(path.join(samples, 'manifest.json'), 'utf8'));
-    const serifs = JSON.parse(fs.readFileSync(path.resolve(root, '../stem-portable-probe/font-measurements.json'), 'utf8'));
-    const geometry = JSON.parse(fs.readFileSync(path.resolve(root, '../stem-portable-probe/symbol-geometry.json'), 'utf8'));
+    const serifs = JSON.parse(fs.readFileSync(path.join(profiles, 'font-measurements.json'), 'utf8'));
+    const geometry = JSON.parse(fs.readFileSync(path.join(profiles, 'symbol-geometry.json'), 'utf8'));
     const archive = fs.readFileSync(modelPath), modelHash = sha256(archive);
     vm.runInThisContext(fs.readFileSync(path.join(root, 'stem.wasm-runtime.js'), 'utf8'), {
         importModuleDynamically: vm.constants.USE_MAIN_CONTEXT_DEFAULT_LOADER
@@ -151,7 +153,7 @@ function compare(actual, expected, label = 'result') {
         const report = {node: process.version, chromium: browser.version(), nodeInstances: 3, workers: 2,
             pages: manifest.pages.length, comparedNumbers: numbers, maxDifference, comparedPixelBytes,
             originalHeaderClassesPinned: true, originalStemAlgorithms: true, debugImageOptionRejectedExplicitly: true,
-            geometryRecords: geometry.length, externalGeometryBytes: fs.statSync(path.resolve(root, '../stem-portable-probe/symbol-geometry.json')).size,
+            geometryRecords: geometry.length, externalGeometryBytes: fs.statSync(path.join(profiles, 'symbol-geometry.json')).size,
             samples: oracle.pages.map(p => ({id: p.id, rejected: Boolean(p.result.rejected), headers: p.result.headers?.length || 0,
                 clefs: (p.result.headers || []).filter(h => h.clef).length, keys: (p.result.headers || []).filter(h => h.key).length,
                 times: (p.result.headers || []).filter(h => h.time).length,

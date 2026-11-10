@@ -195,8 +195,7 @@ public class BlackHeadSizer
 
         final double w = blackHeadScale.getWidthMean();
         final MusicFamily family = sheet.getStub().getMusicFamily();
-        final MusicFont font = MusicFont.getHeadFont(family, sheet.getScale(), 0);
-        final MusicFontScale musicFontScale = font.buildMusicFontScale(w);
+        final MusicFontScale musicFontScale = org.audiveris.omr.ui.symbol.SymbolGeometry.musicFontScale(family, w);
         sheet.getScale().setMusicFontScale(musicFontScale);
         logger.debug("{}", musicFontScale);
     }

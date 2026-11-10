@@ -15,6 +15,8 @@ public final class CompilerSubstitutions extends SimpleSubstitutionPolicy {
         sink.selectClasses(named("java.util.UUID")).replacePackage("java.util", "org.audiveris.wasm.compat.util");
         sink.selectClasses(named("java.lang.Module")).replacePackage("java.lang", "org.audiveris.wasm.compat.lang");
         if (Boolean.getBoolean("audiveris.compat.headless")) {
+            sink.selectClasses(named("java.awt.image.Kernel"))
+                    .replacePackage("java.awt.image", "org.audiveris.wasm.compat.awt.image");
             sink.selectClasses(named("java.util.concurrent.ConcurrentSkipListMap")
                     .or(named("java.util.concurrent.ConcurrentSkipListMap$1"))
                     .or(named("java.util.concurrent.ConcurrentSkipListMap$1$1"))

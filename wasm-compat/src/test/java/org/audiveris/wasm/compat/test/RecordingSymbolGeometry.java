@@ -11,8 +11,16 @@ import org.audiveris.omr.ui.symbol.*;
 final class RecordingSymbolGeometry implements SymbolGeometry.Provider {
     private final SymbolGeometry.Provider original;
     private final Map<String, Map<String, Object>> records = new TreeMap<>();
+    private final Map<String, Map<String, Object>> pointWidths = new TreeMap<>();
     RecordingSymbolGeometry(SymbolGeometry.Provider original) { this.original = original; }
     Collection<Map<String, Object>> records() { return records.values(); }
+    Collection<Map<String, Object>> pointWidths() { return pointWidths.values(); }
+    @Override public double widthAtPointSize(MusicFamily family, Shape shape, int pointSize) {
+        double width = original.widthAtPointSize(family, shape, pointSize);
+        pointWidths.putIfAbsent(family + ":" + shape + ":" + pointSize,
+            Map.of("family", family.name(), "shape", shape.name(), "pointSize", pointSize, "width", width));
+        return width;
+    }
     void recordPitchOffsets() {
         for (Shape shape : new Shape[]{Shape.G_CLEF, Shape.G_CLEF_SMALL, Shape.G_CLEF_8VA, Shape.G_CLEF_8VB,
                 Shape.F_CLEF, Shape.F_CLEF_SMALL, Shape.F_CLEF_8VA, Shape.F_CLEF_8VB, Shape.FLAT}) {

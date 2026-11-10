@@ -14,11 +14,29 @@ public final class SymbolGeometry {
         Rectangle2D bounds(MusicFamily family, Shape shape, int interline);
         Point2D centroidOffset(MusicFamily family, Shape shape, int interline);
         Dimension timeDimension(MusicFamily family, Shape shape, int interline, int numerator, int denominator);
+        default double widthAtPointSize(MusicFamily family, Shape shape, int pointSize) {
+            throw new UnsupportedOperationException("Point-size font measurements are not installed");
+        }
     }
     private static Provider configured;
     private SymbolGeometry() { }
     public static Provider provider() { return configured != null ? configured : DefaultHolder.INSTANCE; }
     public static void setProvider(Provider provider) { configured = provider; }
+
+    /** The original MusicFont.computePointSize interpolation, with only the font measurements delegated. */
+    public static org.audiveris.omr.sheet.Scale.MusicFontScale musicFontScale(MusicFamily family, double width) {
+        Provider metrics = provider(); Shape shape = Shape.NOTEHEAD_BLACK;
+        int v1 = (int) Math.rint(width * 3.3);
+        double w1 = metrics.widthAtPointSize(family, shape, v1);
+        int dv = (int) Math.rint(width * 0.25);
+        int v2 = w1 < width ? v1 + dv : v1 - dv;
+        double w2 = metrics.widthAtPointSize(family, shape, v2);
+        double dw = w2 - w1;
+        int value = Math.abs(dw) < 0.01 ? v1 : (int) Math.rint(v1 + ((v2 - v1) * ((width - w1) / (w2 - w1))));
+        // Retain the original final measurement used for verification logging.
+        metrics.widthAtPointSize(family, shape, value);
+        return new org.audiveris.omr.sheet.Scale.MusicFontScale(family.name(), value);
+    }
 
     /** Same normalized-centroid positioning as ShapeSymbol.getCentroid(Rectangle). */
     public static Point centroid(MusicFamily family, Shape shape, int interline, Rectangle box) {
@@ -30,6 +48,9 @@ public final class SymbolGeometry {
         static final Provider INSTANCE = new AwtProvider();
     }
     private static final class AwtProvider implements Provider {
+        @Override public double widthAtPointSize(MusicFamily family, Shape shape, int pointSize) {
+            return new MusicFont(family, pointSize).layoutShapeByCode(shape).getBounds().getWidth();
+        }
         @Override public Rectangle2D bounds(MusicFamily family, Shape shape, int interline) {
             return shape.getFontSymbolByInterline(family, interline).getLayout().getBounds();
         }

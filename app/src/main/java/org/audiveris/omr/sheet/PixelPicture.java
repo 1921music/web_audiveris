@@ -19,6 +19,7 @@ public final class PixelPicture extends Picture {
     private final ByteProcessor gray;
     private final ByteProcessor binary;
     private final RunTable binaryTable;
+    private RunTable headSpots;
 
     public PixelPicture(Sheet sheet, ByteProcessor gray, ByteProcessor binary) {
         super(sheet, Objects.requireNonNull(binary, "Missing binary pixels").getWidth(), binary.getHeight());
@@ -63,12 +64,19 @@ public final class PixelPicture extends Picture {
         org.audiveris.omr.image.RunTableRaster.erase(output, table, dx, dy);
     }
     @Override public RunTable getVerticalTable(TableKey key) {
-        return Objects.requireNonNull(key) == TableKey.BINARY ? binaryTable : null;
+        return Objects.requireNonNull(key) == TableKey.BINARY ? binaryTable : headSpots;
     }
     @Override public BufferedImage getImage(ImageKey key) {
         throw new UnsupportedOperationException("Raw pixels require an image-encoding backend");
     }
     @Override public void setTable(TableKey key, RunTable table, boolean modified) {
-        throw new UnsupportedOperationException("Replacing raw-pixel tables is not implemented yet");
+        if (table == null) { return; }
+        if (Objects.requireNonNull(key) != TableKey.HEAD_SPOTS) {
+            throw new UnsupportedOperationException("Replacing the owned binary table requires a new pixel input");
+        }
+        if (table.getWidth() != getWidth() || table.getHeight() != getHeight()) {
+            throw new UnsupportedOperationException("Raw table dimensions must preserve the input geometry");
+        }
+        headSpots = table;
     }
 }

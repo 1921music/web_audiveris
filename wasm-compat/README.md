@@ -410,7 +410,7 @@ With generic compatibility and the opt-in Worker/presentation substitutions enab
 fall from **1,276 to 494** (782 fewer); unique messages fall from **336 to 203**.
 The stages are **1,276 → 789 → 702 → 609 → 545 → 544 → 525 → 524 → 495 → 494**. The 544/220 result is the
 generic compatibility layer alone; 525/217 is the initial Worker boundary, 524/216 is the
-stage-6 boundary, 495/204 is the stage-7–9 result, and **494/203** is the current stage-15 result (unchanged from stage 10).
+stage-6 boundary, 495/204 is the stage-7–9 result, and **494/203** is the current stage-16 result (unchanged from stage 10).
 Remaining exclusion candidates are **75 classes / 242 used input methods inside those classes**,
 or **308 methods** when method-only exclusion rules are also included.
 There are no remaining missing-API messages for the generic layer's targeted APIs. The broad fast
@@ -813,6 +813,59 @@ Archive using `export_headless.py --stage 15 --stem --allow-added-roots`. Small 
 reference hashes are in `stem-results`; full outputs, images and optional raster research live
 in the ignored stage-15 archive. BEAMS and subsequent recognition, browser font/raster backends,
 OCR and complete MusicXML output remain outstanding.
+
+## Beam recognition and head-spot preparation (stage 16)
+
+The original median/Gaussian filters, morphological closing, connected-component extraction,
+beam/hook recognition, multiple-rest processing and black-head statistics now run after STEM_SEEDS.
+The strict beam probe drops from 92 diagnostics to zero. `java.awt.image.Kernel` uses a data-only
+substitution with the same coefficient copying, origins, destination-array and clone behavior;
+**2,507 JVM conformance checks** cover random float bits, invalid/overflow dimensions and subclass
+cloning. Original API names also exercise that contract inside the Wasm instances.
+
+`BlackHeadSizer` changes only its two-line font acquisition. `SymbolGeometry` retains the original
+`MusicFont.computePointSize` interpolation and requests glyph widths explicitly in **point-size
+units**, separately from interline-based bounds. The default JVM provider measures the same fonts;
+the host supplies immutable widths in Wasm. The original and new calculations match for **774
+widths across six families**. Actual pages use seven extra width records and estimate music point
+sizes **90 / 92 / 92 / 91 / 91**, matching the upstream reference. These measurements remain
+external fixture resources, and a general browser font backend remains to be implemented.
+
+`PixelPicture` stores a HEAD_SPOTS run table in memory for later recognition, preserving the owned
+input dimensions. Binary-table replacement and encoded-image output remain separate capabilities.
+One fresh full-frame gray snapshot call and the spot-preview output calls receive scoped compiler
+adaptations. Recognition filtering/thresholds are preserved; debug output requests fail explicitly.
+The headless spot-preparation catch now propagates failure instead of quietly returning a partial
+result. The original GUI/JVM behavior is unchanged.
+
+`BeamBeamRelation()` joins the two existing filament constructors in the explicit reflection
+metadata; no general classpath scan is introduced. A missing constructor initially produced ERROR
+logs while shapes were still returned. The verifier now rejects those logs and checks **all graph
+relations**, not just shapes. The JVM reference pins seven original beam classes, along with the
+earlier reference classes, checks their origins, and rejects swallowed exceptions or ERROR logs.
+The final relation inventory includes **13 BeamBeamRelation edges** among 813 relations on the
+five accepted real pages. Beam-only free glyphs are removed at the original epilog; glyphs that
+also belong to other groups are retained as upstream requires.
+
+Binary and adaptive-filtered GRAY8 inputs agree in Node and two Chromium Workers. Five pages yield
+**69 BeamInter / 20 BeamHookInter** objects (22 / 14 / 10 / 27 / 16 per page); three preserve the
+original low-resolution rejection. Header/seed results, beam geometry, grades, head-size statistics,
+music scaling and relation endpoints/ratios match: **72,284 numeric comparisons**, maximum
+difference **7.2165e-16**. Head-spot rasters match for **175,126,400 pixel bytes**, including Worker
+SHA-256 checks. Independent instances verify both stem-debug and spot-preview configuration errors.
+The probe is **2,232,168 bytes** with an external 396,100-byte classifier model. No complete-engine
+size or throughput claim follows from these component measurements.
+The complete audit retains **9,037 roots / 8,616 bodies**, with **494 diagnostics / 203 unique**.
+Remaining candidates are **75 classes / 242 class-excluded used methods / 308 methods across
+all exclusion rules**, unchanged from stage 15; the beam component itself compiles without diagnostics.
+
+Reproduce with `verifyBeamProbe -I dev/teavm-audit/audit.init.gradle` through the capped launcher;
+add `-PpixelSamples=/mnt/g/work/20261029/1921music/score_samples` for fresh fixtures. Archive with
+`export_headless.py --stage 16 --beam --allow-added-roots`. Small evidence lives in `beam-results`;
+full matrices, relation lists, intermediate images and pinned classes live in the ignored raw
+archive. The stem/beam verifiers accept both live build folders and the exported artifact folders.
+LEDGERS and later recognition, general font/raster backends, OCR and complete MusicXML remain
+outstanding.
 
 ## Remaining work
 

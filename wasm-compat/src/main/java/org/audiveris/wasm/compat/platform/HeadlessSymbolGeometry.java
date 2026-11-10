@@ -31,6 +31,18 @@ public final class HeadlessSymbolGeometry implements SymbolGeometry.Provider {
     private static String key(int kind, String family, String shape, int interline, int numerator, int denominator) {
         return kind + ":" + family + ":" + shape + ":" + interline + ":" + numerator + ":" + denominator;
     }
+    public static void registerPointWidth(String family, String shape, int pointSize, double width) {
+        Objects.requireNonNull(family); Objects.requireNonNull(shape);
+        if (family.isBlank() || pointSize < 0 || !Double.isFinite(width) || width < 0) {
+            throw new IllegalArgumentException("Invalid point-size font width");
+        }
+        String key = key(4, family, shape, pointSize, 0, 0);
+        if (entries.containsKey(key)) { throw new IllegalArgumentException("Font measurement already installed: " + key); }
+        entries.put(key, new Measurement(width, 0, 0, 0));
+    }
+    @Override public double widthAtPointSize(MusicFamily family, Shape shape, int pointSize) {
+        return require(4, family, shape, pointSize, 0, 0).a;
+    }
     private static Measurement require(int kind, MusicFamily family, Shape shape, int interline, int numerator, int denominator) {
         String key = key(kind, Objects.requireNonNull(family).name(), shape == null ? "" : shape.name(), interline, numerator, denominator);
         Measurement value = entries.get(key);
