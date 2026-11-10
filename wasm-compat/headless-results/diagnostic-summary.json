@@ -1,13 +1,13 @@
 {
   "roots": {
-    "classes": 1163,
-    "methods": 9020,
-    "methodsWithBody": 8599,
+    "classes": 1165,
+    "methods": 9029,
+    "methodsWithBody": 8608,
     "nativeMethods": 0,
-    "usedMethods": 9020,
-    "analyzedBodies": 8599,
+    "usedMethods": 9029,
+    "analyzedBodies": 8608,
     "byCategory": {
-      "engine": 9020
+      "engine": 9029
     }
   },
   "diagnostics": 495,
@@ -36,8 +36,8 @@
     "unattributed": 2
   },
   "callGraph": {
-    "callers": 73271,
-    "edges": 1565047
+    "callers": 73278,
+    "edges": 1564779
   },
   "apis": [
     {
@@ -108,11 +108,11 @@
         "engine-side"
       ],
       "examples": [
-        "java.nio.DirectByteBuffer.address()J @ java/nio/DirectByteBuffer.java:323",
         "java.nio.DirectByteBuffer.asCharBuffer()Ljava/nio/CharBuffer; @ java/nio/DirectByteBuffer.java:622",
         "java.nio.DirectByteBuffer.asCharBuffer()Ljava/nio/CharBuffer; @ java/nio/DirectByteBuffer.java:630",
         "java.nio.DirectByteBuffer.asCharBuffer()Ljava/nio/CharBuffer; @ java/nio/DirectByteBuffer.java:624",
-        "java.nio.DirectByteBuffer.asIntBuffer()Ljava/nio/IntBuffer; @ java/nio/DirectByteBuffer.java:818"
+        "java.nio.DirectByteBuffer.asIntBuffer()Ljava/nio/IntBuffer; @ java/nio/DirectByteBuffer.java:818",
+        "java.nio.DirectByteBuffer.asIntBuffer()Ljava/nio/IntBuffer; @ java/nio/DirectByteBuffer.java:826"
       ]
     },
     {
@@ -303,11 +303,11 @@
         "engine-side"
       ],
       "examples": [
-        "java.nio.DirectByteBuffer.address()J @ java/nio/DirectByteBuffer.java:316",
         "java.nio.DirectByteBuffer.get()B @ java/nio/DirectByteBuffer.java:332",
         "java.nio.DirectByteBuffer.get(I)B @ java/nio/DirectByteBuffer.java:340",
         "java.nio.DirectByteBuffer.put(B)Ljava/nio/ByteBuffer; @ java/nio/DirectByteBuffer.java:360",
-        "java.nio.DirectByteBuffer.compact()Ljava/nio/MappedByteBuffer; @ java/nio/DirectByteBuffer.java:391"
+        "java.nio.DirectByteBuffer.compact()Ljava/nio/MappedByteBuffer; @ java/nio/DirectByteBuffer.java:391",
+        "java.nio.DirectByteBuffer.address()J @ java/nio/DirectByteBuffer.java:316"
       ]
     },
     {

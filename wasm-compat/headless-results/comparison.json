@@ -1,10 +1,18 @@
 {
   "identicalOriginalRoots": false,
   "originalRootSubsetPreserved": true,
-  "rootCount": 9020,
-  "baselineRootCount": 9019,
+  "rootCount": 9029,
+  "baselineRootCount": 9020,
   "addedRoots": [
-    "org.audiveris.omr.sheet.Book.createMemoryBook(Ljava/lang/String;)Lorg/audiveris/omr/sheet/Book;"
+    "org.audiveris.omr.sheet.Picture.<init>(Lorg/audiveris/omr/sheet/Sheet;II)V",
+    "org.audiveris.omr.sheet.PixelPicture$1.<clinit>()V",
+    "org.audiveris.omr.sheet.PixelPicture.<init>(Lorg/audiveris/omr/sheet/Sheet;Lij/process/ByteProcessor;Lij/process/ByteProcessor;)V",
+    "org.audiveris.omr.sheet.PixelPicture.getImage(Lorg/audiveris/omr/sheet/Picture$ImageKey;)Ljava/awt/image/BufferedImage;",
+    "org.audiveris.omr.sheet.PixelPicture.getSource(Lorg/audiveris/omr/sheet/Picture$SourceKey;)Lij/process/ByteProcessor;",
+    "org.audiveris.omr.sheet.PixelPicture.getVerticalTable(Lorg/audiveris/omr/sheet/Picture$TableKey;)Lorg/audiveris/omr/run/RunTable;",
+    "org.audiveris.omr.sheet.PixelPicture.setTable(Lorg/audiveris/omr/sheet/Picture$TableKey;Lorg/audiveris/omr/run/RunTable;Z)V",
+    "org.audiveris.omr.sheet.Sheet.<init>(Lorg/audiveris/omr/sheet/SheetStub;Lij/process/ByteProcessor;Lij/process/ByteProcessor;)V",
+    "org.audiveris.omr.sheet.SheetStub.createMemorySheet(Lij/process/ByteProcessor;Lij/process/ByteProcessor;)Lorg/audiveris/omr/sheet/Sheet;"
   ],
   "baselineDiagnostics": 495,
   "patchedDiagnostics": 495,
@@ -40,16 +48,16 @@
     "unattributed": 2
   },
   "platformSubstitutionsEnabled": true,
-  "modifiedMethods": 491,
-  "removedDirectCallsFromModifiedMethods": 296,
-  "addedDirectCallsFromModifiedMethods": 11,
+  "modifiedMethods": 495,
+  "removedDirectCallsFromModifiedMethods": 100,
+  "addedDirectCallsFromModifiedMethods": 14,
   "excludedClassesLinked": {
     "before": 76,
-    "after": 76
+    "after": 75
   },
   "excludedUsedMethods": {
     "before": 313,
-    "after": 313
+    "after": 311
   },
   "usedMethodsInsideExcludedClasses": {
     "before": 242,
@@ -57,7 +65,7 @@
   },
   "remainingClassBreakdown": {
     "withUsedMethods": 55,
-    "typeOnly": 21
+    "typeOnly": 20
   },
   "strictExclusionPass": false
 }

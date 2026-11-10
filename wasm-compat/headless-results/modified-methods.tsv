@@ -13,6 +13,7 @@ org.audiveris.omr.sheet.Sheet.createGlyphsController()V	platform-method	2	1	18	2
 org.audiveris.omr.sheet.Sheet.getErrorsEditor()Lorg/audiveris/omr/ui/ErrorsEditor;	platform-method	2	1	5	3
 org.audiveris.omr.sheet.Sheet.getGlyphsController()Lorg/audiveris/omr/glyph/ui/GlyphsController;	platform-method	4	1	11	3
 org.audiveris.omr.sheet.Sheet.getInterController()Lorg/audiveris/omr/sig/ui/InterController;	platform-method	4	1	15	3
+org.audiveris.omr.sheet.Sheet.getPicture()Lorg/audiveris/omr/sheet/Picture;	platform-method	7	1	31	3
 org.audiveris.omr.sheet.Sheet.getSheetEditor()Lorg/audiveris/omr/sheet/ui/SheetEditor;	platform-method	4	1	30	3
 org.audiveris.omr.sheet.Sheet.lambda$reset$0()V	platform-method	2	1	6	2
 org.audiveris.omr.sheet.Sheet.addItemRenderer(Lorg/audiveris/omr/ui/util/ItemRenderer;)Z	headless-gui-guard	5	4	16	8
@@ -72,11 +73,11 @@ org.audiveris.omr.sheet.SheetStub.<init>()V	single-lane-model-lock-ownership	2	2
 org.audiveris.omr.sheet.SheetStub.<init>(Lorg/audiveris/omr/sheet/Book;I)V	single-lane-model-lock-ownership	2	2	31	31
 org.audiveris.omr.sheet.SheetStub.<init>(Lorg/audiveris/omr/sheet/Book;ILorg/audiveris/omr/sheet/SheetStub;)V	single-lane-model-lock-ownership	2	2	56	56
 org.audiveris.omr.sheet.SheetStub.doOneStep(Lorg/audiveris/omr/step/OmrStep;)V	worker-run-options-preserve-step-execution-and-save	13	13	90	89
+org.audiveris.omr.sheet.SheetStub.getSheet()Lorg/audiveris/omr/sheet/Sheet;	platform-method	44	1	215	3
 org.audiveris.omr.sheet.SheetStub.lambda$setUpgraded$0()V	platform-method	4	1	16	2
 org.audiveris.omr.sheet.SheetStub.decideOnRemoval(Ljava/lang/String;Z)V	headless-gui-guard	11	8	56	39
 org.audiveris.omr.sheet.SheetStub.display()V	headless-gui-guard	9	3	30	5
 org.audiveris.omr.sheet.SheetStub.doOneStep(Lorg/audiveris/omr/step/OmrStep;)V	headless-gui-guard	13	13	89	89
-org.audiveris.omr.sheet.SheetStub.getSheet()Lorg/audiveris/omr/sheet/Sheet;	headless-gui-guard	44	39	215	200
 org.audiveris.omr.sheet.SheetStub.initTransients(Lorg/audiveris/omr/sheet/Book;)V	headless-gui-guard	8	7	36	29
 org.audiveris.omr.sheet.SheetStub.invalidate()V	headless-gui-guard	4	3	34	29
 org.audiveris.omr.sheet.SheetStub.reachStep(Lorg/audiveris/omr/step/OmrStep;Z)V	headless-gui-guard	45	31	216	179
@@ -138,11 +139,14 @@ org.audiveris.omr.sheet.Book.<init>()V	single-lane-model-lock-ownership	2	2	35	3
 org.audiveris.omr.sheet.Book.<init>(Ljava/nio/file/Path;)V	single-lane-model-lock-ownership	2	2	44	44
 org.audiveris.omr.sheet.Book.lambda$setModified$0()V	platform-method	6	1	22	2
 org.audiveris.omr.sheet.Book.checkRadixChange(Ljava/nio/file/Path;)V	headless-gui-guard	5	4	41	35
-org.audiveris.omr.sheet.Book.close(Ljava/lang/Integer;)V	headless-gui-guard	11	10	52	46
+org.audiveris.omr.sheet.Book.close(Ljava/lang/Integer;)V	headless-gui-guard	11	8	52	40
 org.audiveris.omr.sheet.Book.export(Ljava/util/List;Ljava/util/List;)Z	headless-gui-guard	25	22	157	150
+org.audiveris.omr.sheet.Book.getBrowserFrame()Ljavax/swing/JFrame;	headless-gui-guard	4	4	16	18
+org.audiveris.omr.sheet.Book.getParameterDialog()Ljavax/swing/JDialog;	headless-gui-guard	2	2	5	6
 org.audiveris.omr.sheet.Book.initTransients(Ljava/lang/String;Ljava/nio/file/Path;)Z	headless-gui-guard	30	28	189	172
 org.audiveris.omr.sheet.Book.resetTo(Lorg/audiveris/omr/step/OmrStep;)V	headless-gui-guard	17	15	57	50
 org.audiveris.omr.sheet.Book.setModified(Z)V	headless-gui-guard	4	3	14	8
+org.audiveris.omr.sheet.Book.setParameterDialog(Ljavax/swing/JDialog;)V	headless-gui-guard	2	2	6	6
 org.audiveris.omr.sheet.Book.swapAllSheets()V	headless-gui-guard	12	11	44	41
 org.audiveris.omr.sheet.Book.upgradeStubs()V	headless-gui-guard	26	20	126	111
 org.audiveris.omr.sheet.Book.lambda$reachBookStep$0(Lorg/audiveris/omr/sheet/SheetStub;Lorg/audiveris/omr/step/OmrStep;Z)Ljava/lang/Boolean;	headless-gui-guard	7	7	31	31

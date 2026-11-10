@@ -1,0 +1,49 @@
+{
+  "node": "v24.22.2",
+  "chromium": "158.0.8127.18",
+  "nodeInstances": 1,
+  "workers": 2,
+  "realPages": 8,
+  "pixels": 48192656,
+  "originalSheetScalePath": true,
+  "comparedToUpstreamJvm": true,
+  "bufferOwnership": true,
+  "hostTransfer": true,
+  "binaryInputSha256Verified": true,
+  "validatedInitialization": true,
+  "pageResults": [
+    {
+      "result": "ok:Scale{ interline(20,21,22) line(4,4,4) beam(10)};invalid=false",
+      "id": "00"
+    },
+    {
+      "result": "ok:Scale{ interline(20,21,22) line(4,4,4) beam(10)};invalid=false",
+      "id": "01"
+    },
+    {
+      "result": "ok:Scale{ interline(20,21,22) line(4,4,4) beam(10)};invalid=false",
+      "id": "02"
+    },
+    {
+      "result": "ok:Scale{ interline(20,21,22) line(4,4,4) beam(10)};invalid=false",
+      "id": "03"
+    },
+    {
+      "result": "ok:Scale{ interline(20,21,22) line(4,4,4) beam(10)};invalid=false",
+      "id": "04"
+    },
+    {
+      "result": "rejected:Sheet ignored;invalid=true",
+      "id": "05"
+    },
+    {
+      "result": "rejected:Sheet ignored;invalid=true",
+      "id": "06"
+    },
+    {
+      "result": "rejected:Sheet ignored;invalid=true",
+      "id": "07"
+    }
+  ],
+  "wasmBytes": 870360
+}
