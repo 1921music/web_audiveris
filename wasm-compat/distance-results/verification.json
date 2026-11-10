@@ -1,0 +1,151 @@
+{
+  "node": "v24.22.2",
+  "chromium": "158.0.8127.18",
+  "nodeInstances": 4,
+  "workers": 2,
+  "pages": 8,
+  "comparedNumbers": 93620,
+  "maxDifference": 7.216449660063518e-16,
+  "comparedPixelBytes": 175126400,
+  "comparedDistanceBytes": 350252800,
+  "originalHeaderClassesPinned": true,
+  "originalStemAlgorithms": true,
+  "originalBeamAlgorithms": true,
+  "originalLedgerAlgorithms": true,
+  "originalDistancePaintingAndChamfer": true,
+  "kernelContract": true,
+  "previewOptionRejectedExplicitly": true,
+  "debugImageOptionRejectedExplicitly": true,
+  "geometryRecords": 20,
+  "pointWidthRecords": 7,
+  "externalGeometryBytes": 3241,
+  "samples": [
+    {
+      "id": "00",
+      "rejected": false,
+      "headers": 8,
+      "clefs": 8,
+      "keys": 8,
+      "times": 2,
+      "stemScale": [
+        4,
+        4
+      ],
+      "seeds": 190,
+      "beams": 22,
+      "distances": 7,
+      "musicPointSize": 90
+    },
+    {
+      "id": "01",
+      "rejected": false,
+      "headers": 10,
+      "clefs": 10,
+      "keys": 10,
+      "times": 0,
+      "stemScale": [
+        4,
+        4
+      ],
+      "seeds": 200,
+      "beams": 14,
+      "distances": 7,
+      "musicPointSize": 92
+    },
+    {
+      "id": "02",
+      "rejected": false,
+      "headers": 10,
+      "clefs": 10,
+      "keys": 10,
+      "times": 0,
+      "stemScale": [
+        4,
+        4
+      ],
+      "seeds": 219,
+      "beams": 10,
+      "distances": 7,
+      "musicPointSize": 92
+    },
+    {
+      "id": "03",
+      "rejected": false,
+      "headers": 10,
+      "clefs": 10,
+      "keys": 10,
+      "times": 0,
+      "stemScale": [
+        4,
+        4
+      ],
+      "seeds": 285,
+      "beams": 27,
+      "distances": 7,
+      "musicPointSize": 91
+    },
+    {
+      "id": "04",
+      "rejected": false,
+      "headers": 10,
+      "clefs": 10,
+      "keys": 10,
+      "times": 0,
+      "stemScale": [
+        4,
+        4
+      ],
+      "seeds": 242,
+      "beams": 16,
+      "distances": 7,
+      "musicPointSize": 91
+    },
+    {
+      "id": "05",
+      "rejected": true,
+      "headers": 0,
+      "clefs": 0,
+      "keys": 0,
+      "times": 0,
+      "stemScale": null,
+      "seeds": 0,
+      "beams": 0,
+      "distances": 0,
+      "musicPointSize": null
+    },
+    {
+      "id": "06",
+      "rejected": true,
+      "headers": 0,
+      "clefs": 0,
+      "keys": 0,
+      "times": 0,
+      "stemScale": null,
+      "seeds": 0,
+      "beams": 0,
+      "distances": 0,
+      "musicPointSize": null
+    },
+    {
+      "id": "07",
+      "rejected": true,
+      "headers": 0,
+      "clefs": 0,
+      "keys": 0,
+      "times": 0,
+      "stemScale": null,
+      "seeds": 0,
+      "beams": 0,
+      "distances": 0,
+      "musicPointSize": null
+    }
+  ],
+  "grayThroughDistances": true,
+  "modelSha256": "327194c47116a8ebf5771d04cea08a4e563ec93d2955e1efd990a54a9245f29e",
+  "modelBytes": 396100,
+  "hostTransfer": true,
+  "geometryCopiesAndAppendOnlyEntries": true,
+  "explicitProviderInjection": true,
+  "wasmBytes": 2306285,
+  "limitation": "Explicit host font measurements; Distance preparation only; template resources and HEADS recognition remain unverified"
+}

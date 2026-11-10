@@ -282,7 +282,8 @@ org.audiveris.omr.sheet.ledger.LedgersFilter$Constants.getUnitName()Ljava/lang/S
 org.audiveris.omr.sheet.ledger.LedgersPostAnalysis$Constants.getUnitName()Ljava/lang/String;	platform-method	0	1	0	2
 org.audiveris.omr.sheet.ledger.LedgersStep.displayUI(Lorg/audiveris/omr/step/OmrStep;Lorg/audiveris/omr/sheet/Sheet;)V	platform-method	4	1	16	2
 org.audiveris.omr.sheet.note.ChordsBuilder$Constants.getUnitName()Ljava/lang/String;	platform-method	0	1	0	2
-org.audiveris.omr.sheet.note.DistancesBuilder.buildDistances()Lorg/audiveris/omr/image/DistanceTable;	headless-gui-guard	5	3	122	42
+org.audiveris.omr.sheet.note.DistancesBuilder.erasedBuffer(Lij/process/ByteProcessor;)Lij/process/ByteProcessor;	platform-method	2	1	17	2
+org.audiveris.omr.sheet.note.DistancesBuilder.buildDistances()Lorg/audiveris/omr/image/DistanceTable;	headless-gui-guard	5	3	111	31
 org.audiveris.omr.sheet.note.DistancesBuilder$Constants.getUnitName()Ljava/lang/String;	platform-method	0	1	0	2
 org.audiveris.omr.sheet.note.HeadSeedTally$Constants.getUnitName()Ljava/lang/String;	platform-method	0	1	0	2
 org.audiveris.omr.sheet.note.NoteHeadsBuilder$Constants.getUnitName()Ljava/lang/String;	platform-method	0	1	0	2

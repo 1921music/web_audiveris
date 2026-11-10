@@ -1,0 +1,15 @@
+{
+  "diagnostics": 94,
+  "strictCompileSucceeded": false,
+  "scope": "Unchanged HEADS recognition after the stage-18 adapters; diagnostic baseline only",
+  "rawArtifacts": "wsl-artifacts/wasm-headless/stage18/distance-probe/heads-baseline",
+  "files": {
+    "dependency-paths.tsv": "a6af4842ee14b9cf4d78cbb7742ea94049e3e9a15f875835ebce6e2e8a6196de",
+    "diagnostics.tsv": "17d4eed94664c2f98c38ab3566a52847c1868c676ad3dbf466dfc0dc4b64114d"
+  },
+  "toolCommit": "d6e149c0a38afd29055fff7cd3bbd29eb00fd8a5",
+  "representativeBoundaries": [
+    "TemplateFactory/MusicFont to native AWT/font/image runtime",
+    "NoteHeadsBuilder to DrumSet JAXB resource loading"
+  ]
+}

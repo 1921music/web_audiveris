@@ -1,6 +1,7 @@
 change	caller	callee
-removed	org.audiveris.omr.sheet.ledger.LedgersBuilder.buildLedgers(Ljava/util/List;)V	ch.qos.logback.classic.Logger.warn(Ljava/lang/String;Ljava/lang/Throwable;)V
-removed	org.audiveris.omr.sheet.ledger.LedgersBuilder.buildLedgers(Ljava/util/List;)V	org.slf4j.Logger.warn(Ljava/lang/String;Ljava/lang/Throwable;)V
-removed	org.audiveris.omr.sheet.ledger.LedgersBuilder.buildLedgers(Ljava/util/List;)V	org.slf4j.helpers.AbstractLogger.warn(Ljava/lang/String;Ljava/lang/Throwable;)V
-removed	org.audiveris.omr.sheet.ledger.LedgersBuilder.buildLedgers(Ljava/util/List;)V	org.slf4j.spi.LocationAwareLogger.warn(Ljava/lang/String;Ljava/lang/Throwable;)V
-added	org.audiveris.omr.sheet.ledger.LedgersBuilder.buildLedgers(Ljava/util/List;)V	org.audiveris.wasm.compat.platform.HeadlessSpotImages.failed(Ljava/lang/String;Ljava/lang/Throwable;)V
+removed	org.audiveris.omr.sheet.note.DistancesBuilder.buildDistances()Lorg/audiveris/omr/image/DistanceTable;	ij.process.ByteProcessor.<init>(Ljava/awt/image/BufferedImage;)V
+removed	org.audiveris.omr.sheet.note.DistancesBuilder.buildDistances()Lorg/audiveris/omr/image/DistanceTable;	ij.process.ByteProcessor.getBufferedImage()Ljava/awt/image/BufferedImage;
+removed	org.audiveris.omr.sheet.note.DistancesBuilder.buildDistances()Lorg/audiveris/omr/image/DistanceTable;	org.audiveris.omr.sheet.note.DistancesBuilder$ImagePainter.<init>(Ljava/awt/image/BufferedImage;)V
+added	org.audiveris.omr.sheet.note.DistancesBuilder.buildDistances()Lorg/audiveris/omr/image/DistanceTable;	org.audiveris.omr.sheet.note.DistancesBuilder.erasedBuffer(Lij/process/ByteProcessor;)Lij/process/ByteProcessor;
+added	org.audiveris.omr.sheet.note.DistancesBuilder.erasedBuffer(Lij/process/ByteProcessor;)Lij/process/ByteProcessor;	org.audiveris.omr.sheet.note.DistancesBuilder.<clinit>()V
+added	org.audiveris.omr.sheet.note.DistancesBuilder.erasedBuffer(Lij/process/ByteProcessor;)Lij/process/ByteProcessor;	org.audiveris.omr.sheet.note.WorkerDistancesBridge.erasedBuffer(Lorg/audiveris/omr/sheet/note/DistancesBuilder;Lij/process/ByteProcessor;)Lij/process/ByteProcessor;

@@ -1,9 +1,13 @@
 {
-  "identicalOriginalRoots": true,
+  "identicalOriginalRoots": false,
   "originalRootSubsetPreserved": true,
-  "rootCount": 9037,
+  "rootCount": 9040,
   "baselineRootCount": 9037,
-  "addedRoots": [],
+  "addedRoots": [
+    "org.audiveris.omr.sheet.note.DistancesBuilder$RawPainter.<init>(Lij/process/ByteProcessor;)V",
+    "org.audiveris.omr.sheet.note.DistancesBuilder.erasedBuffer(Lij/process/ByteProcessor;)Lij/process/ByteProcessor;",
+    "org.audiveris.omr.sheet.note.DistancesBuilder.erasedRawBuffer(Lij/process/ByteProcessor;)Lij/process/ByteProcessor;"
+  ],
   "baselineDiagnostics": 494,
   "patchedDiagnostics": 494,
   "diagnosticReduction": 0,
@@ -38,16 +42,16 @@
     "unattributed": 2
   },
   "platformSubstitutionsEnabled": true,
-  "modifiedMethods": 513,
-  "removedDirectCallsFromModifiedMethods": 4,
-  "addedDirectCallsFromModifiedMethods": 1,
+  "modifiedMethods": 514,
+  "removedDirectCallsFromModifiedMethods": 3,
+  "addedDirectCallsFromModifiedMethods": 3,
   "excludedClassesLinked": {
     "before": 75,
     "after": 75
   },
   "excludedUsedMethods": {
     "before": 308,
-    "after": 308
+    "after": 310
   },
   "usedMethodsInsideExcludedClasses": {
     "before": 242,
