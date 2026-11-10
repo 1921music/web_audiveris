@@ -1,0 +1,8 @@
+{
+  "diagnostics": 0,
+  "strictCompileSucceeded": true,
+  "wasmBytes": 2419299,
+  "wasmSha256": "4b4cce9a5a000ea02cc4ae71d3692495368073c8456008db0038c8d5667039d2",
+  "runtimeRecognitionVerified": false,
+  "rawArtifacts": "wsl-artifacts/wasm-headless/stage20/template-probe/heads-compiled"
+}

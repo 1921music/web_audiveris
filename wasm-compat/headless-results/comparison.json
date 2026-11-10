@@ -1,11 +1,20 @@
 {
   "identicalOriginalRoots": false,
   "originalRootSubsetPreserved": true,
-  "rootCount": 9042,
-  "baselineRootCount": 9040,
+  "rootCount": 9053,
+  "baselineRootCount": 9042,
   "addedRoots": [
-    "org.audiveris.omr.score.DrumSet.openConfiguration(Ljava/net/URI;)Ljava/io/InputStream;",
-    "org.audiveris.omr.score.DrumSet.readEntries(Ljava/io/InputStream;)Lorg/audiveris/omr/score/DrumSet$DrumSetEntries;"
+    "org.audiveris.omr.image.TemplateFactory$DefaultSource.<clinit>()V",
+    "org.audiveris.omr.image.TemplateFactory$DefaultSource.<init>()V",
+    "org.audiveris.omr.image.TemplateFactory$NativeSource.<init>()V",
+    "org.audiveris.omr.image.TemplateFactory$NativeSource.build(Lorg/audiveris/omr/glyph/Shape;Lorg/audiveris/omr/ui/symbol/MusicFamily;I)Lorg/audiveris/omr/image/Template;",
+    "org.audiveris.omr.image.TemplateFactory$NativeSource.keyPoints(Lorg/audiveris/omr/glyph/Shape;Lorg/audiveris/omr/ui/symbol/MusicFamily;I)Ljava/util/List;",
+    "org.audiveris.omr.image.TemplateFactory$Source.build(Lorg/audiveris/omr/glyph/Shape;Lorg/audiveris/omr/ui/symbol/MusicFamily;I)Lorg/audiveris/omr/image/Template;",
+    "org.audiveris.omr.image.TemplateFactory$Source.keyPoints(Lorg/audiveris/omr/glyph/Shape;Lorg/audiveris/omr/ui/symbol/MusicFamily;I)Ljava/util/List;",
+    "org.audiveris.omr.image.TemplateFactory.resourceProfile()[D",
+    "org.audiveris.omr.image.TemplateFactory.setSource(Lorg/audiveris/omr/image/TemplateFactory$Source;)V",
+    "org.audiveris.omr.image.TemplateFactory.source()Lorg/audiveris/omr/image/TemplateFactory$Source;",
+    "org.audiveris.omr.image.TemplateFactory.templateImagesRequested()Z"
   ],
   "baselineDiagnostics": 494,
   "patchedDiagnostics": 494,
@@ -41,8 +50,8 @@
     "unattributed": 2
   },
   "platformSubstitutionsEnabled": true,
-  "modifiedMethods": 516,
-  "removedDirectCallsFromModifiedMethods": 0,
+  "modifiedMethods": 518,
+  "removedDirectCallsFromModifiedMethods": 1,
   "addedDirectCallsFromModifiedMethods": 4,
   "excludedClassesLinked": {
     "before": 75,

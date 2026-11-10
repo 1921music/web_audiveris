@@ -1,0 +1,35 @@
+{
+  "commit": "04697c74fae431ef8436a9429386957a5cb25993",
+  "sourceSha256": {
+    "app/src/main/java/org/audiveris/omr/image/TemplateFactory.java": "9cdeddd96ef6f1e94fa741cdd8a46ed63808b73f4631e6ef4fcbaa619970eccd"
+  },
+  "classSha256": {
+    "org/audiveris/omr/image/TemplateFactory$1.class": "7606a9e576f97be26ce49c9773be6dfb9e5699e75ddb048639883ac18bf5883f",
+    "org/audiveris/omr/image/TemplateFactory$Builder.class": "2d4e4870de0eed1b999a0d882914267abc00a4a8276515f85847ebdf52d38136",
+    "org/audiveris/omr/image/TemplateFactory$Catalog.class": "9ddbae3b973c8426ee72d7ee932edee5c2d1c1e477ac0e338d6f4c136d18f4ff",
+    "org/audiveris/omr/image/TemplateFactory$Constants.class": "c5627cef6ea115fcf35f24cc8b14cc5c1578ff03c1e593ef0b06cb614b97787e",
+    "org/audiveris/omr/image/TemplateFactory.class": "13897b8581452093a79218af791f9093957955a1513e319c6a4896d82cf41979"
+  },
+  "unchangedFactoryBodies": {
+    "private static class Builder": "9854872907ee1c0198a0c6f778ae4ddec85cf2c6cf9c87a8509b6cf871488417",
+    "private static void addAnchors (": "0db0970fefd34452a43d47fa368f4f4194eba5cc8f0ef2eec4607c264d2c0c33",
+    "public static double maxDistanceFromSymbol (": "c323cbfd427d996f9c0082a6fbf888d9f781e789025299afab59745359c15edc",
+    "private static int maxRawDistanceFromSymbol (": "f7877a30c3ffcac5d6c7421d0af03e0f19c6db28bc502d033f4e61de5f165b66"
+  },
+  "unchangedTemplateInputs": {
+    "glyph/ShapeSet.java": "41cce38a2934b20ef50405f97d4e86416a1a3970be202ec308f4b6d606f14fcc",
+    "ui/symbol/TemplateSymbol.java": "3f5160b93214ef6b939cf125057410202b3e991aa949fd0da64c496e5d5db913",
+    "image/PixelDistance.java": "44242e015a0df7c7c47b4d5c59a86278f4665e12724e9b63b207008dbf5dce00",
+    "image/Anchored.java": "37bb29e42098677717088e7288e461dd7cf1e28cb75886ed43c1e3398bdc9991"
+  },
+  "sourceSeams": "Template data source and scalar font-size acquisition only; Template matching and native Builder source unchanged. One fresh-binary dilation call is scoped in the compiler.",
+  "fontResources": {
+    "app/res/Bravura.otf": "dca2d90c88437a701b1c2e71fa54e76f9fa41d7deee935d74dc871ea66ecfdd2",
+    "app/res/FinaleJazz.otf": "a8ea0408ef7628ca38ae29eaa1b4357d2b0bf11747f6eee3c5f9ed5cca358e08",
+    "app/res/FinaleJazzText.otf": "b3421c9171d41a5c7e24c772848c87af695f012cdfab2f849d86829435a8baff",
+    "app/res/JazzPerc.ttf": "310ef24d859055f1ba026fe3a86359eb3be1e3ebbcac6cb9029281952e958538",
+    "app/res/Leland.otf": "cacca69cb750d851023d52a8e41d3373904aa82afc7247085f37d4ee6823506c",
+    "app/res/MusicalSymbols.ttf": "07fb37d9fd2c6ccceb1124d0e9e7aa8a4ffe03ae2f0a3bff5e620b241b59d5cc",
+    "app/res/Primus.ttf": "25f73922f6462d50a250e98cbb3b69909a7546eae8167e99592c3d641b80facd"
+  }
+}

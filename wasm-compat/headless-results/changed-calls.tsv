@@ -1,5 +1,6 @@
 change	caller	callee
-added	org.audiveris.omr.score.DrumSet.openConfiguration(Ljava/net/URI;)Ljava/io/InputStream;	org.audiveris.omr.score.DrumSet.<clinit>()V
-added	org.audiveris.omr.score.DrumSet.openConfiguration(Ljava/net/URI;)Ljava/io/InputStream;	org.audiveris.wasm.compat.platform.WorkerDrumXml.openConfiguration(Ljava/net/URI;)Ljava/io/InputStream;
-added	org.audiveris.omr.score.DrumSet.readEntries(Ljava/io/InputStream;)Lorg/audiveris/omr/score/DrumSet$DrumSetEntries;	org.audiveris.omr.score.DrumSet.<clinit>()V
-added	org.audiveris.omr.score.DrumSet.readEntries(Ljava/io/InputStream;)Lorg/audiveris/omr/score/DrumSet$DrumSetEntries;	org.audiveris.wasm.compat.platform.WorkerDrumXml.readEntries(Ljava/io/InputStream;)Lorg/audiveris/omr/score/DrumSet$DrumSetEntries;
+removed	org.audiveris.omr.image.Template.getForegroundPixels(Ljava/awt/Rectangle;Lij/process/ByteProcessor;Z)Ljava/util/List;	ij.process.ByteProcessor.dilate()V
+added	org.audiveris.omr.image.Template.getForegroundPixels(Ljava/awt/Rectangle;Lij/process/ByteProcessor;Z)Ljava/util/List;	org.audiveris.wasm.compat.platform.TemplateDilation.dilate(Lij/process/ByteProcessor;)V
+added	org.audiveris.omr.image.TemplateFactory.source()Lorg/audiveris/omr/image/TemplateFactory$Source;	org.audiveris.omr.image.TemplateFactory.<clinit>()V
+added	org.audiveris.omr.image.TemplateFactory.source()Lorg/audiveris/omr/image/TemplateFactory$Source;	org.audiveris.wasm.compat.platform.WorkerTemplates.<clinit>()V
+added	org.audiveris.omr.image.TemplateFactory.source()Lorg/audiveris/omr/image/TemplateFactory$Source;	org.audiveris.wasm.compat.platform.WorkerTemplates.source()Lorg/audiveris/omr/image/TemplateFactory$Source;
