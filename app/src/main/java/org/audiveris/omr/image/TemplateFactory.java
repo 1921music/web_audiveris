@@ -93,6 +93,46 @@ public class TemplateFactory
     /** Singleton. */
     private static final TemplateFactory INSTANCE = new TemplateFactory();
 
+    /** Font-derived template data, independent of the backend used to rasterize symbols. */
+    public interface Source {
+        Template build(Shape shape, MusicFamily family, int pointSize);
+        List<PixelDistance> keyPoints(Shape shape, MusicFamily family, int pointSize);
+    }
+
+    private static Source configuredSource;
+
+    public static Source source() {
+        return configuredSource != null ? configuredSource : DefaultSource.INSTANCE;
+    }
+
+    public static void setSource(Source source) {
+        if (!INSTANCE.catalogs.isEmpty()) { throw new IllegalStateException("Template catalogs are already in use"); }
+        configuredSource = source;
+    }
+
+    /** Parameters affecting template data; consumers must use resources generated for these values. */
+    public static double[] resourceProfile() {
+        return new double[]{constants.binarizationThreshold.getValue(), constants.stemDx.getValue(),
+                constants.stemDy.getValue(), constants.holeLargerRatio.getValue(),
+                constants.defaultPointSize.getValue(), constants.minCellPerSide.getValue(),
+                constants.maxRawDistanceFromSymbol.getValue()};
+    }
+
+    public static boolean templateImagesRequested() { return constants.saveTemplates.isSet(); }
+
+    private static final class DefaultSource {
+        static final Source INSTANCE = new NativeSource();
+    }
+
+    private static final class NativeSource implements Source {
+        @Override public Template build(Shape shape, MusicFamily family, int pointSize) {
+            return new Builder(shape, family, pointSize).buildTemplate();
+        }
+        @Override public List<PixelDistance> keyPoints(Shape shape, MusicFamily family, int pointSize) {
+            return new Builder(shape, family, pointSize).processSymbol(1);
+        }
+    }
+
     /** All shapes with hole(s). */
     private static final EnumSet shapesWithHoles = EnumSet.of(
             // 2
@@ -604,7 +644,7 @@ public class TemplateFactory
                                                          MusicFamily family,
                                                          int pointSize)
     {
-        return new Builder(shape, family, pointSize).processSymbol(1);
+        return source().keyPoints(shape, family, pointSize);
     }
 
     //~ Inner Classes ------------------------------------------------------------------------------
@@ -1060,7 +1100,7 @@ public class TemplateFactory
                     pointSize);
 
             for (Shape shape : ShapeSet.Heads) {
-                templates.put(shape, new Builder(shape, family, pointSize).buildTemplate());
+                templates.put(shape, source().build(shape, family, pointSize));
             }
         }
 

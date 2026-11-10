@@ -15,6 +15,7 @@ from export_beam import export_beam
 from export_ledger import export_ledger
 from export_distance import export_distance
 from export_drum import export_drum
+from export_template import export_template
 
 
 def write(path, value):
@@ -85,6 +86,7 @@ def main():
     parser.add_argument('--ledger', action='store_true')
     parser.add_argument('--distance', action='store_true')
     parser.add_argument('--drum', action='store_true')
+    parser.add_argument('--templates', action='store_true')
     parser.add_argument('--allow-added-roots', action='store_true')
     args = parser.parse_args()
     root, build = args.repository, args.build
@@ -463,6 +465,8 @@ def main():
         export_distance(root, build, artifacts, raw_path, provenance)
     if args.drum:
         export_drum(root, build, artifacts, raw_path, provenance)
+    if args.templates:
+        export_template(root, build, artifacts, raw_path, provenance)
     for target in [results, artifacts]:
         write(target / 'provenance.json', provenance)
     print(json.dumps({key: comparison[key] for key in ['rootCount', 'baselineDiagnostics', 'patchedDiagnostics', 'modifiedMethods',

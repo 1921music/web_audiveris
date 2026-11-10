@@ -697,7 +697,7 @@ public class MusicFont
                 MusicFamily.Bravura,
                 "Default font family for music symbols");
 
-        private final Constant.Ratio headRatio = new Constant.Ratio(
+        final Constant.Ratio headRatio = new Constant.Ratio(
                 1.0, // Was 1.1,
                 "Ratio applied on font size for better head rendering");
     }

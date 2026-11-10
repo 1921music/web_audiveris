@@ -1135,7 +1135,7 @@ public class Staff
      */
     public int getHeadPointSize ()
     {
-        return MusicFont.getHeadPointSize(system.getSheet().getScale(), specificInterline);
+        return org.audiveris.omr.ui.symbol.FontFamilyDefaults.headPointSize(system.getSheet().getScale(), specificInterline);
     }
 
     //-----------//

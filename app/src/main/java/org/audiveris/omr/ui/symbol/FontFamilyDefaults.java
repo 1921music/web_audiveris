@@ -21,4 +21,14 @@ public final class FontFamilyDefaults {
     private FontFamilyDefaults() { }
     static MusicFont.Constants musicConstants() { return musicConstants; }
     static TextFont.Constants textConstants() { return textConstants; }
+
+    /** Same point-size calculation as MusicFont, without initializing desktop fonts. */
+    public static int headPointSize(org.audiveris.omr.sheet.Scale scale, double staffInterline) {
+        final var musicFontScale = scale.getMusicFontScale();
+        if (musicFontScale != null) {
+            final double ratio = staffInterline / scale.getInterline();
+            return (int) Math.rint(ratio * musicFontScale.getPointSize());
+        }
+        return 4 * (int) Math.rint(staffInterline * musicConstants.headRatio.getValue());
+    }
 }

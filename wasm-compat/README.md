@@ -402,15 +402,15 @@ are under `build/wasm-compat/probe`; audit outputs are under
 
 ## Verified result
 
-The current audit covers **9,042 methods**, including **8,621 method bodies**. Every original
+The current audit covers **9,053 methods**, including **8,630 method bodies**. Every original
 **9,001-method / 8,588-body** root is preserved; 18 scale-context/adapter methods and the memory-book
 factory, nine initial pixel-model methods, one bracket-geometry seam, three staff-free raster methods,
-two model-construction methods, two shared run-raster methods and three raw-distance preparation methods and two drum configuration boundaries are added explicitly.
+two model-construction methods, two shared run-raster methods and three raw-distance preparation methods and two drum configuration boundaries and eleven template-source methods are added explicitly.
 With generic compatibility and the opt-in Worker/presentation substitutions enabled, diagnostics
 fall from **1,276 to 494** (782 fewer); unique messages fall from **336 to 203**.
 The stages are **1,276 → 789 → 702 → 609 → 545 → 544 → 525 → 524 → 495 → 494**. The 544/220 result is the
 generic compatibility layer alone; 525/217 is the initial Worker boundary, 524/216 is the
-stage-6 boundary, 495/204 is the stage-7–9 result, and **494/203** is the current stage-19 result (unchanged from stage 10).
+stage-6 boundary, 495/204 is the stage-7–9 result, and **494/203** is the current stage-20 result (unchanged from stage 10).
 Remaining exclusion candidates are **75 classes / 242 used input methods inside those classes**,
 or **310 methods** when method-only exclusion rules are also included.
 There are no remaining missing-API messages for the generic layer's targeted APIs. The broad fast
@@ -975,6 +975,51 @@ dependencies remain, and complete HEADS recognition is still unverified.
 Reproduce using `verifyDrumProbe` and `buildHeadsBaselineProbe` through the capped launcher.
 The latter intentionally fails until the remaining HEADS boundaries are implemented. Archive with
 `export_headless.py --stage 19 --drum --allow-added-roots`; small reports live in `drum-results`.
+
+## Font-derived template resources (stage 20)
+
+`TemplateFactory.Source` supplies template dimensions, slim bounds, anchors and matching key
+points. The JVM default calls the original `Builder`; its rasterization, hole processing,
+distance transform, reduction and anchor algorithms are unchanged. Worker compilation replaces
+only the default source with an immutable catalog backend. The original `Template` source,
+including weighted matching and foreground extraction, is unchanged. An explicitly installed
+source is honored; source replacement is rejected after catalogs are in use.
+
+Catalogs are external binary resources keyed by family and point size, with a versioned format
+and the seven factory parameters that affect their contents. Installation validates a complete
+catalog before publication, copies data into owned records, rejects duplicate/trailing/malformed
+resources, and retains explicit null entries for symbols unsupported by a font. Lookup rejects
+parameter mismatches and missing resources; preview output requires a host image backend.
+The tested families and sizes are fixture choices, not limits on the runtime source API.
+
+`Staff.getHeadPointSize` delegates to the font-free `FontFamilyDefaults` calculation. The same
+original music-font constants and scaling rules remain active; **15,760 JVM comparisons** cover
+scale interpolation, fractional interlines and head-ratio overrides.
+
+Foreground dilation exposed ImageJ LUT/global-preference initialization. Only the single
+`ByteProcessor.dilate()` call on Template's freshly created, white-filled binary buffer is
+adapted. Compiler guards verify buffer construction, fill value and receiver identity. Its 3x3
+minimum matches native ImageJ for **2,048 random/edge cases**, three iterations each and
+**1,890,453 pixel comparisons**. Other ImageJ dilation, LUT and preference behavior is unchanged.
+
+The pinned original factory and current JVM factory produce identical **30 catalogs** across
+six families and five point sizes: **720 templates / 460,129 key points**. Node and two Chromium
+Workers compare complete catalog data and all encoded matching, hole evaluation and foreground
+pixel results, including clipping and all available anchors: **275,086,940 bytes agree exactly**.
+Checks also cover record ownership, explicit source injection, immutable catalogs, atomic install,
+parameter mismatch, duplicate input and preview configuration. The focused module is
+**416,472 bytes**; catalog files remain external. This is not an engine size/throughput estimate.
+TODO: measure actual catalog transfer/allocation costs before considering per-shape lazy bundles.
+
+The focused HEADS entry now passes strict compilation with **zero diagnostics**. Its recognition
+on real pages is not yet verified. The full method-preserving audit selects **9,053 roots /
+8,630 bodies**, retaining all original roots, and still reports **494 diagnostics / 203 unique**.
+Remaining candidates stay **75 classes / 242 class-excluded used methods / 310 methods across
+all exclusion rules**. Compiler success for this component does not establish full-engine parity.
+
+Reproduce with `verifyTemplateProbe` and `buildHeadsBaselineProbe` through the capped launcher.
+Archive using `export_headless.py --stage 20 --templates --allow-added-roots`; small reports are in
+`template-results`, with complete catalogs, matching vectors and pinned classes in the raw archive.
 
 ## Remaining work
 

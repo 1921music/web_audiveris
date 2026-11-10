@@ -19,6 +19,8 @@ final class HeadlessPatches {
         Map<MethodDescriptor, Program> original = new HashMap<>();
         for (MethodHolder method : cls.getMethods()) { original.put(method.getDescriptor(), method.getProgram()); }
         switch (cls.getName()) {
+            case "org.audiveris.omr.image.Template": templateDilation(cls); break;
+            case "org.audiveris.omr.image.TemplateFactory": templateSource(cls); break;
             case "org.audiveris.omr.score.DrumSet":
                 if (cls.getMethod(new MethodDescriptor("readEntries", obj("java.io.InputStream"), obj("org.audiveris.omr.score.DrumSet$DrumSetEntries")))==null
                         || cls.getMethod(new MethodDescriptor("openConfiguration", obj("java.net.URI"), obj("java.io.InputStream")))==null) {
@@ -437,6 +439,57 @@ final class HeadlessPatches {
         }
         if (replaced != 1) { throw new IllegalStateException("Review SymbolGeometry default initialization: " + replaced); }
         report(method, "symbol-geometry-default-provider", program.basicBlockCount(), before);
+    }
+    private static void templateDilation(ClassHolder cls) {
+        ValueType pixels=obj("ij.process.ByteProcessor");
+        MethodHolder method=cls.getMethod(new MethodDescriptor("getForegroundPixels",obj("java.awt.Rectangle"),pixels,ValueType.BOOLEAN,obj("java.util.List")));
+        if(method==null||method.getProgram()==null) {throw new IllegalStateException("Review template dilation boundary");}
+        Program program=method.getProgram();int before=instructions(program),constructors=0,fills=0,calls=0;
+        Variable fresh=null;Map<Variable,Variable> aliases=new IdentityHashMap<>();Map<Variable,Integer> values=new IdentityHashMap<>();
+        for(BasicBlock block:program.getBasicBlocks()) {for(Instruction instruction:block) {
+            if(instruction instanceof AssignInstruction) {var a=(AssignInstruction)instruction;aliases.put(a.getReceiver(),a.getAssignee());}
+            if(instruction instanceof IntegerConstantInstruction) {var c=(IntegerConstantInstruction)instruction;values.put(c.getReceiver(),c.getConstant());}
+            if(instruction instanceof InvokeInstruction) {
+                var call=(InvokeInstruction)instruction;
+                if(call.getMethod().equals(new MethodReference("ij.process.ByteProcessor","<init>",ValueType.INTEGER,ValueType.INTEGER,ValueType.VOID))) {fresh=call.getInstance();constructors++;}
+            }
+        }}
+        if(fresh!=null) {while(aliases.containsKey(fresh)) {fresh=aliases.get(fresh);}}
+        for(BasicBlock block:program.getBasicBlocks()) {for(Instruction instruction:block) {
+            if(!(instruction instanceof InvokeInstruction)) {continue;}
+            var call=(InvokeInstruction)instruction;
+            if(call.getMethod().equals(new MethodReference("org.audiveris.omr.util.ByteUtil","fill",pixels,ValueType.INTEGER,ValueType.VOID))) {
+                Variable target=call.getArguments().get(0);while(aliases.containsKey(target)) {target=aliases.get(target);}
+                Variable color=call.getArguments().get(1);while(aliases.containsKey(color)) {color=aliases.get(color);}
+                if(target!=fresh||!Integer.valueOf(255).equals(values.get(color))) {throw new IllegalStateException("Unexpected template fill buffer/value");}fills++;
+            }
+            if(call.getMethod().equals(new MethodReference("ij.process.ByteProcessor","dilate",ValueType.VOID))) {
+                Variable target=call.getInstance();while(aliases.containsKey(target)) {target=aliases.get(target);}
+                if(target!=fresh) {throw new IllegalStateException("Template dilation must use its fresh buffer");}
+                call.setArguments(call.getInstance());call.setInstance(null);call.setType(InvocationType.SPECIAL);
+                call.setMethod(new MethodReference(TemplateDilation.class.getName(),"dilate",pixels,ValueType.VOID));calls++;
+            }
+        }}
+        if(constructors!=1||fills!=1||calls!=1) {throw new IllegalStateException("Review template buffer construction: "+constructors+"/"+fills+"/"+calls);}
+        report(method,"fresh-binary-template-dilation",program.basicBlockCount(),before);
+    }
+    private static void templateSource(ClassHolder cls) {
+        ValueType type=obj("org.audiveris.omr.image.TemplateFactory$Source");
+        MethodHolder method=cls.getMethod(new MethodDescriptor("source",type));
+        if(method==null||method.getProgram()==null) {throw new IllegalStateException("Review template source boundary");}
+        Program program=method.getProgram();int before=instructions(program),count=0;
+        for(BasicBlock block:program.getBasicBlocks()) {for(Instruction instruction:block) {
+            if(instruction instanceof GetFieldInstruction) {
+                var get=(GetFieldInstruction)instruction;
+                if(!get.getField().equals(new FieldReference("org.audiveris.omr.image.TemplateFactory$DefaultSource","INSTANCE"))) {continue;}
+                if(get.getInstance()!=null) {throw new IllegalStateException("Expected static template source");}
+                var call=new InvokeInstruction();call.setType(InvocationType.SPECIAL);
+                call.setMethod(new MethodReference(WorkerTemplates.class.getName(),"source",type));
+                call.setReceiver(get.getReceiver());call.setLocation(get.getLocation());get.replace(call);count++;
+            }
+        }}
+        if(count!=1) {throw new IllegalStateException("Review template source initialization: "+count);}
+        report(method,"template-default-source",program.basicBlockCount(),before);
     }
     private static void delegate(ClassHolder cls, String method, String helper, Class<?> owner, ValueType... signature) {
         MethodDescriptor descriptor = new MethodDescriptor(method, signature);
