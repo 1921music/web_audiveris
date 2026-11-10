@@ -1,7 +1,4 @@
 class	before	after	category	usedMethodsAfter	representativeRoot	representativePath	evidence
-org.audiveris.omr.CLI	type-only	not-linked	cut-by-boundary-substitutions	0			type-link-only
-org.audiveris.omr.Main	used-method	not-linked	cut-by-boundary-substitutions	0	org.audiveris.omr.sheet.SheetStub.doOneStep(Lorg/audiveris/omr/step/OmrStep;)V	org.audiveris.omr.sheet.SheetStub.doOneStep(Lorg/audiveris/omr/step/OmrStep;)V -> org.audiveris.omr.Main.<clinit>()V	representative-fast-path-includes-inferred-edges; not proof of runtime reachability
-org.audiveris.omr.Main$Constants	used-method	not-linked	cut-by-boundary-substitutions	0	org.audiveris.omr.sheet.SheetStub.doOneStep(Lorg/audiveris/omr/step/OmrStep;)V	org.audiveris.omr.sheet.SheetStub.doOneStep(Lorg/audiveris/omr/step/OmrStep;)V -> org.audiveris.omr.Main.<clinit>()V -> org.audiveris.omr.Main$Constants.<init>()V	representative-fast-path-includes-inferred-edges; not proof of runtime reachability
 org.audiveris.omr.classifier.BasicClassifier$ChartListener	type-only	type-only	no-execution-path	0			type-link-only
 org.audiveris.omr.classifier.SampleRepository	type-only	type-only	no-execution-path	0			type-link-only
 org.audiveris.omr.classifier.TrainingMonitor	type-only	type-only	no-execution-path	0			type-link-only

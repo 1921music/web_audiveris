@@ -1,0 +1,58 @@
+{
+  "identicalOriginalRoots": true,
+  "rootCount": 9001,
+  "baselineDiagnostics": 524,
+  "patchedDiagnostics": 524,
+  "diagnosticReduction": 0,
+  "baselineUniqueMessages": 216,
+  "patchedUniqueMessages": 216,
+  "removedMessages": [],
+  "newMessages": [],
+  "newDiagnosticCount": 0,
+  "remainingTargetedApiMessages": [],
+  "baselineByFamily": {
+    "Reflection and class loading": 207,
+    "Other Java runtime": 167,
+    "Threads and synchronization": 69,
+    "Files and streams": 35,
+    "Other libraries or compiler diagnostics": 20,
+    "XML and JAXB": 26
+  },
+  "patchedByFamily": {
+    "Reflection and class loading": 207,
+    "Other Java runtime": 167,
+    "Threads and synchronization": 69,
+    "Files and streams": 35,
+    "Other libraries or compiler diagnostics": 20,
+    "XML and JAXB": 26
+  },
+  "baselineByDirectOwner": {
+    "dependency": 522,
+    "unattributed": 2
+  },
+  "patchedByDirectOwner": {
+    "dependency": 522,
+    "unattributed": 2
+  },
+  "platformSubstitutionsEnabled": true,
+  "modifiedMethods": 485,
+  "removedDirectCallsFromModifiedMethods": 1,
+  "addedDirectCallsFromModifiedMethods": 5,
+  "excludedClassesLinked": {
+    "before": 76,
+    "after": 76
+  },
+  "excludedUsedMethods": {
+    "before": 313,
+    "after": 313
+  },
+  "usedMethodsInsideExcludedClasses": {
+    "before": 242,
+    "after": 242
+  },
+  "remainingClassBreakdown": {
+    "withUsedMethods": 55,
+    "typeOnly": 21
+  },
+  "strictExclusionPass": false
+}

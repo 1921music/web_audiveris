@@ -1,0 +1,52 @@
+{
+  "node": "v24.22.2",
+  "chromium": "158.0.8127.18",
+  "nodeInstances": 2,
+  "workers": 2,
+  "globalThresholdCases": 30,
+  "matchedPixels": 20268,
+  "adaptiveCases": 45,
+  "adaptivePixels": 30402,
+  "runTableCases": 30,
+  "bulkByteInterop": true,
+  "sampleWorkers": 1,
+  "samplePages": [
+    {
+      "id": "00",
+      "pixels": 8694880
+    },
+    {
+      "id": "01",
+      "pixels": 8694880
+    },
+    {
+      "id": "02",
+      "pixels": 8694880
+    },
+    {
+      "id": "03",
+      "pixels": 8694880
+    },
+    {
+      "id": "04",
+      "pixels": 8694880
+    },
+    {
+      "id": "05",
+      "pixels": 1572528
+    },
+    {
+      "id": "06",
+      "pixels": 1572864
+    },
+    {
+      "id": "07",
+      "pixels": 1572864
+    }
+  ],
+  "samplePixels": 48192656,
+  "grayInputOwnership": true,
+  "invalidDimensionsRejected": true,
+  "desktopFontRejected": true,
+  "wasmBytes": 154071
+}
