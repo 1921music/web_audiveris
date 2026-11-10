@@ -410,7 +410,7 @@ With generic compatibility and the opt-in Worker/presentation substitutions enab
 fall from **1,276 to 494** (782 fewer); unique messages fall from **336 to 203**.
 The stages are **1,276 → 789 → 702 → 609 → 545 → 544 → 525 → 524 → 495 → 494**. The 544/220 result is the
 generic compatibility layer alone; 525/217 is the initial Worker boundary, 524/216 is the
-stage-6 boundary, 495/204 is the stage-7–9 result, and **494/203** is the current stage-21 result (unchanged from stage 10).
+stage-6 boundary, 495/204 is the stage-7–9 result, and **494/203** is the current stage-22 result (unchanged from stage 10).
 Remaining exclusion candidates are **75 classes / 242 used input methods inside those classes**,
 or **310 methods** when method-only exclusion rules are also included.
 There are no remaining missing-API messages for the generic layer's targeted APIs. The broad fast
@@ -1065,6 +1065,66 @@ Reproduce with `verifyHeadsProbe -I dev/teavm-audit/audit.init.gradle` through t
 exporter rejects it as full verification. The host supplies only the family/point-size catalogs
 required by the input pages. Archive complete results using `export_headless.py --stage 21
 --heads --allow-added-roots`.
+
+## Stem connections (stage 22)
+
+The STEMS probe performs the original `StemsStep` prolog, per-system `StemsRetriever.process`,
+beam finalization and graph contextualization. Completed step flags through HEADS are recorded
+before STEMS starts. Ten original stem/linker classes are compiled from the application baseline,
+their JVM class origins are checked, and native/portable JVM results agree for all eight inputs.
+Five accepted pages produce **587 stems** (99 / 99 / 135 / 137 / 117) and **2,099 stem connections**;
+three retain their original low-resolution rejection.
+
+Snapshots include stem bounds, median lines, widths, intrinsic/contextual grades and complete
+glyph runs; all graph edges and support ratios; head side/consistency, beam portion, connection
+gaps and extension points; and the grades of every contextualized graph vertex. The preceding
+HEADS and raster snapshots remain part of the same comparison. ERROR logs and exceptions
+captured by the original algorithms reject a result.
+
+All eight binary and adaptive GRAY8 inputs agree in Node and two independent Chromium Workers:
+**1,539,000 numeric comparisons**, maximum difference **1.7764e-15**. Pre-discard head-spot rasters
+agree for **175,126,400 bytes**, and distance tables for **350,252,800 bytes**. The accepted pages
+have **5,401 post-STEMS graph edges**. The strict component is **2,636,716 bytes**, with the same
+four external template catalogs and classifier asset used for HEADS. Full-engine size and
+throughput remain to be measured.
+
+The validator releases completed Node snapshots and module references before collecting the
+Worker results. Its old-space cap is **768 MiB**: the earlier 384 MiB cap was reached while
+returning the complete dense comparison snapshots. The WSL group keeps its **8 GiB total**
+limit, and records zero memory-limit/OOM events. The completed run verifies both Node and Worker
+paths with the same Wasm hash.
+
+Two desktop debug-image methods, `StemBuilder.saveConnection` and the corner linker's
+`saveStump`, are replaced by explicit unsupported-operation failures. Their signatures and
+image-creation/save calls are checked before replacement. Original flags, defaults and call-site
+conditions remain in place; recognition methods are retained and Audiveris source is unchanged
+in this stage. A Wasm check exercises the connection-image rejection directly.
+
+The mixed comparator in `StemBuilder.sortItems` compares two half-linkers by reference point,
+but other pairs by their line endpoints. Such rules can be non-transitive: TeaVM's bottom-up
+merge sort and the JDK's TimSort then produce different candidate orders. On the first real page,
+this changed a few head/beam connections despite identical stem glyphs. Only that one sort call
+now uses the unchanged JDK `java.util.TimSort` class through a compiler bridge. Other collection
+sorts retain their normal implementation. The comparator and original recognition code are kept.
+TimSort executes as compiled Wasm inside each Worker.
+The JDK release, TimSort source hash and class hash are recorded with the reference sources.
+
+`testStemSortJvm` compares the wrapper with native list sorting on **768 lists**, including both
+directions, lengths through 128, sublist offsets, unchanged surrounding elements and comparator
+failure cases. Normal Node instances and both Workers compare the complete results with that
+JVM reference. TODO: reconsider the original mixed comparator when intentionally revising the
+recognition algorithm; a consistent ordering could remove this implementation-specific dependency.
+
+Run `verifyConnectedStemsProbe -I dev/teavm-audit/audit.init.gradle` through the capped launcher.
+`-PconnectedStemsPages=1` limits the Wasm run for diagnosis. JVM `-PconnectedStemsTrace=x,y,w,h`
+traces a region on the first page into separate `*-trace` reference directories; Node supports
+`AUDIVERIS_STEMS_TRACE_RECT=x,y,w,h`. Full exports reject subset or trace runs, check the verified
+Wasm hash and require committed source/tool files. Archive with `export_headless.py --stage 22
+--connected-stems --allow-added-roots`.
+
+The following REDUCTION entry also compiles with zero diagnostics. Its pinned/native and
+portable JVM snapshots are prepared separately; Wasm runtime recognition is still unverified
+at this stage. `reduction-baseline.json` records that compilation-only status explicitly.
 
 ## Remaining work
 

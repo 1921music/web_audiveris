@@ -14,6 +14,7 @@ final class HeadlessPatches {
     static void apply(ClassHolder cls, ClassHolderTransformerContext context) {
         ImageJPatches.apply(cls);
         GraphApiPatches.apply(cls);
+        StemSortPatches.apply(cls);
         if (!cls.getName().startsWith("org.audiveris.omr.")
                 && !cls.getName().equals("org.slf4j.LoggerFactory") && !cls.getName().equals("org.slf4j.MDC")) { return; }
         Map<MethodDescriptor, Program> original = new HashMap<>();
@@ -39,6 +40,11 @@ final class HeadlessPatches {
             case "org.audiveris.omr.sheet.ledger.LedgersBuilder": ledgerFailure(cls); break;
             case "org.audiveris.omr.sheet.beam.SpotsBuilder": spotImages(cls); break;
             case "org.audiveris.omr.sheet.stem.StemScaler": stemBuffer(cls, context); break;
+            case "org.audiveris.omr.sheet.stem.StemBuilder":
+                stemDebugImage(cls, new MethodDescriptor("saveConnection", obj("org.audiveris.omr.sheet.stem.StemLinker"),
+                        obj("org.audiveris.omr.glyph.Glyph"), obj("java.util.List"), ValueType.VOID)); break;
+            case "org.audiveris.omr.sheet.stem.HeadLinker$SLinker$CLinker":
+                stemDebugImage(cls, new MethodDescriptor("saveStump", obj("org.audiveris.omr.glyph.Glyph"), ValueType.VOID)); break;
             case "org.audiveris.omr.math.HiLoPeakFinder": prefixCopies(cls, 1); break;
             case "org.audiveris.omr.sheet.clef.ClefBuilder": grayCopies(cls, 1); prefixCopies(cls, 1); break;
             case "org.audiveris.omr.sheet.key.KeyExtractor": prefixCopies(cls, 1); break;
@@ -255,6 +261,24 @@ final class HeadlessPatches {
         } }
         if (count != 1) { throw new IllegalStateException("Review ledger catch sites: " + count); }
         report(method, "ledger-failure-propagation", program.basicBlockCount(), before);
+    }
+    private static void stemDebugImage(ClassHolder cls, MethodDescriptor descriptor) {
+        MethodHolder method = cls.getMethod(descriptor);
+        if (method == null || method.getProgram() == null) {
+            throw new IllegalStateException("Review stem debug-image boundary: " + cls.getName() + "." + descriptor);
+        }
+        int graphics = 0, saves = 0;
+        for (BasicBlock block : method.getProgram().getBasicBlocks()) { for (Instruction instruction : block) {
+            if (instruction instanceof InvokeInstruction) {
+                MethodReference target = ((InvokeInstruction) instruction).getMethod();
+                if (target.equals(new MethodReference("java.awt.image.BufferedImage", "createGraphics", obj("java.awt.Graphics2D")))) { graphics++; }
+                if (target.equals(new MethodReference("org.audiveris.omr.image.ImageUtil", "saveOnDisk",
+                        obj("java.awt.image.BufferedImage"), STRING, STRING, ValueType.VOID))) { saves++; }
+            }
+        } }
+        if (graphics != 1 || saves != 1) { throw new IllegalStateException("Review stem debug-image body: " + method.getReference()); }
+        // Original call-site flags remain configurable. An explicitly requested desktop image fails.
+        rejectBody(method);
     }
     private static void spotImages(ClassHolder cls) {
         int gray = 0, runs = 0, snapshots = 0, failures = 0, saves = 0;

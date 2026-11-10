@@ -17,6 +17,7 @@ from export_distance import export_distance
 from export_drum import export_drum
 from export_template import export_template
 from export_heads import export_heads
+from export_connected_stems import export_connected_stems
 
 
 def write(path, value):
@@ -24,13 +25,21 @@ def write(path, value):
 
 
 def application_changes(root):
-    git = ['git', '-c', f'safe.directory={root}', '-C', str(root)]
+    git = ['git', '-c', f'safe.directory={root}', '-c', 'core.autocrlf=true', '-C', str(root)]
     changed = subprocess.check_output(git + ['diff', '--name-only', '-z',
         '04697c74fae431ef8436a9429386957a5cb25993', '--', 'app/src/main/java']).decode().split('\0')
     untracked = subprocess.check_output(git + ['ls-files', '--others', '--exclude-standard', '-z',
         '--', 'app/src/main/java']).decode().split('\0')
-    return {name: hashlib.sha256((root / name).read_bytes().replace(b'\r\n', b'\n')).hexdigest()
-            for name in sorted(set(changed + untracked)) if name.endswith('.java')}
+    result = {}
+    for name in sorted(set(changed + untracked)):
+        if not name.endswith('.java'):
+            continue
+        current = (root / name).read_bytes().replace(b'\r\n', b'\n')
+        original = subprocess.run(git + ['show', '04697c74fae431ef8436a9429386957a5cb25993:' + name],
+                                  stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+        if original.returncode or original.stdout.replace(b'\r\n', b'\n') != current:
+            result[name] = hashlib.sha256(current).hexdigest()
+    return result
 
 
 def calls(folder, selected):
@@ -89,11 +98,22 @@ def main():
     parser.add_argument('--drum', action='store_true')
     parser.add_argument('--templates', action='store_true')
     parser.add_argument('--heads', action='store_true')
+    parser.add_argument('--connected-stems', action='store_true')
     parser.add_argument('--allow-added-roots', action='store_true')
     args = parser.parse_args()
     root, build = args.repository, args.build
     if args.stage < 1:
         raise ValueError('stage must be positive')
+    # Evidence must identify the source revision that was compiled, even if another
+    # step is being developed while a large archive is copied to the Windows drive.
+    git = ['git', '-c', f'safe.directory={root}', '-c', 'core.autocrlf=true',
+           '-c', 'core.safecrlf=false', '-C', str(root)]
+    source_paths = ['app/src/main/java', 'wasm-compat/src', 'wasm-compat/tools', 'dev/teavm-audit']
+    subprocess.check_call(git + ['diff', '--exit-code', args.tool_commit, '--'] + source_paths,
+                          stdout=subprocess.DEVNULL)
+    untracked = subprocess.check_output(git + ['ls-files', '--others', '--exclude-standard', '--'] + source_paths)
+    if untracked.strip():
+        raise AssertionError('Commit source/tool files before exporting evidence')
     baseline = 'wsl-artifacts/wasm-compat/stage5/audit' if args.stage == 1 else f'wsl-artifacts/wasm-headless/stage{args.stage - 1}/audit'
     before = root / baseline
     after = build / 'teavm-audit/fast-selected-compat-headless'
@@ -471,6 +491,8 @@ def main():
         export_template(root, build, artifacts, raw_path, provenance)
     if args.heads:
         export_heads(root, build, artifacts, raw_path, provenance)
+    if args.connected_stems:
+        export_connected_stems(root, build, artifacts, raw_path, provenance)
     for target in [results, artifacts]:
         write(target / 'provenance.json', provenance)
     print(json.dumps({key: comparison[key] for key in ['rootCount', 'baselineDiagnostics', 'patchedDiagnostics', 'modifiedMethods',
