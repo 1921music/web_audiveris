@@ -12,18 +12,24 @@ def main():
     profile = sys.argv[4]
     if profile not in ['legacy', 'lstm']:
         raise ValueError('Choose legacy or lstm profile')
-    source = mirror / 'build/wasm-compat/tesseract-js-ocr' / profile
+    folder = profile + '-word-metadata'
+    source = mirror / 'build/wasm-compat/tesseract-js-ocr' / folder
     read = lambda p: json.loads(p.read_text(encoding='utf-8'))
     sha = lambda p: hashlib.sha256(p.read_bytes()).hexdigest()
     report = read(source / 'verification.json')
     for key in ['workerResultsExact', 'queuedInputSnapshotsOwned', 'pngPixelsExact', 'nodeWorkerReused',
-                'allBrowserAssetsLocal', 'wasmRequestAndReplyIntegrated', 'wasmBlankAndModelFailureDistinct']:
+                'allBrowserAssetsLocal', 'wasmRequestAndReplyIntegrated', 'wasmBlankAndModelFailureDistinct',
+                'nativeWordMetadata', 'wordBaselineAvailable', 'metadataAlignmentGuard', 'metadataIteratorReleasedOnFailure']:
         if not report[key]:
             raise AssertionError('Incomplete OCR verification: ' + key)
     if report['workers'] != 2 or report['version'] != '7.0.0' or report['characters'] != 23 or report['oem'] != (0 if profile == 'legacy' else 1):
         raise AssertionError('Unexpected OCR fixture/version')
+    if profile == 'legacy' and not report['fontAttributesAvailable']:
+        raise AssertionError('Legacy OCR font metadata was lost')
     sources = [
         'wasm-compat/host/gray8-png.mjs', 'wasm-compat/host/tesseract-js-ocr.mjs',
+        'wasm-compat/host/tesseract-word-metadata.mjs', 'wasm-compat/host/tesseract-core-word-metadata.js',
+        'wasm-compat/host/tesseract-word-metadata-node.cjs',
         'wasm-compat/package.json', 'wasm-compat/package-lock.json',
         'wasm-compat/tools/verify-tesseract-js-ocr.cjs',
         'wasm-compat/src/test/java/org/audiveris/wasm/compat/test/OcrBackendFixtureOracle.java',
@@ -39,8 +45,8 @@ def main():
         if data != committed:
             raise AssertionError('OCR compiled/tested source revision mismatch: ' + name)
         source_hashes[name] = hashlib.sha256(data).hexdigest()
-    raw_relative = 'wsl-artifacts/wasm-components/tesseract-js-ocr/' + profile
-    raw = root / raw_relative; tracked = root / 'wasm-compat/tesseract-js-ocr-results' / profile
+    raw_relative = 'wsl-artifacts/wasm-components/tesseract-js-ocr/' + folder
+    raw = root / raw_relative; tracked = root / 'wasm-compat/tesseract-js-ocr-results' / folder
     raw.mkdir(parents=True, exist_ok=True); tracked.mkdir(parents=True, exist_ok=True)
     for name in ['fixture.json', 'input.gray', 'native.png', 'host.png', 'results.json', 'verification.json']:
         shutil.copyfile(source / name, raw / name)
@@ -48,11 +54,11 @@ def main():
     for url, expected in report['assets'].items():
         if url in ['/ocr-transport.wasm', '/ocr-transport.wasm-runtime.js']:
             path = mirror / 'build/wasm-compat/ocr-transport-probe' / url[1:]
-        elif url in ['/host/gray8-png.mjs', '/host/tesseract-js-ocr.mjs']:
+        elif url in ['/host/gray8-png.mjs', '/host/tesseract-js-ocr.mjs', '/host/tesseract-word-metadata.mjs', '/host/tesseract-core-word-metadata.js']:
             path = mirror / 'wasm-compat' / url[1:]
         elif url in ['/ocr-assets/tesseract.min.js', '/ocr-assets/worker.min.js']:
             path = modules / 'tesseract.js/dist' / Path(url).name
-        elif url in ['/ocr-assets/tesseract-core' + ('-' + report['coreFlavor'] if report['coreFlavor'] else '') + suffix for suffix in ['.js', '.wasm']]:
+        elif url in ['/core-assets/tesseract-core' + ('-' + report['coreFlavor'] if report['coreFlavor'] else '') + suffix for suffix in ['.js', '.wasm']]:
             path = modules / 'tesseract.js-core' / Path(url).name
         elif url == '/models/eng.traineddata.gz':
             path = modules / '@tesseract.js-data/eng' / ('4.0.0' if profile == 'legacy' else '4.0.0_best_int') / 'eng.traineddata.gz'
@@ -62,6 +68,7 @@ def main():
             raise AssertionError('Tested OCR asset changed: ' + url)
         target = raw / 'assets' / url[1:]; target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(path, target)
+    shutil.copyfile(mirror / 'wasm-compat/host/tesseract-word-metadata-node.cjs', raw / 'assets/host/tesseract-word-metadata-node.cjs')
     packages = {}
     for package in ['tesseract.js', 'tesseract.js-core', '@tesseract.js-data/eng']:
         metadata = read(modules / package / 'package.json')

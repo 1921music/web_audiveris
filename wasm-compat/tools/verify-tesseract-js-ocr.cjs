@@ -7,6 +7,15 @@ const sha=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
 (async()=>{
     const {TesseractJsOcr,normalizeTesseractResult}=await import(pathToFileURL(path.join(compat,'host/tesseract-js-ocr.mjs')));
     const {encodeGray8Png}=await import(pathToFileURL(path.join(compat,'host/gray8-png.mjs')));
+    const {attachNativeWordMetadata}=await import(pathToFileURL(path.join(compat,'host/tesseract-word-metadata.mjs')));
+    assert.throws(()=>attachNativeWordMetadata({}));
+    let destroyed=0;const iterator={Begin(){},Empty(){return false;},getBoundingBox(){return {x0:1,y0:0,x1:1,y1:1};},Next(){return false;}};
+    function MockApi(){}MockApi.prototype.GetJSONText=()=>JSON.stringify({blocks:[{paragraphs:[{lines:[{words:[{bbox:{x0:0,y0:0,x1:1,y1:1}}]}]}]}]});
+    MockApi.prototype.GetIterator=()=>iterator;
+    function MockIterator(){}Object.assign(MockIterator.prototype,{getWordFontAttributes(){},getBaseline(){},getBoundingBox(){}});
+    const mockModule={TessBaseAPI:MockApi,ResultIterator:MockIterator,destroy(value){assert.equal(value,iterator);destroyed++;}};
+    attachNativeWordMetadata(mockModule);const wrapped=MockApi.prototype.GetJSONText;attachNativeWordMetadata(mockModule);
+    assert.equal(MockApi.prototype.GetJSONText,wrapped);assert.throws(()=>new MockApi().GetJSONText(),/not aligned/);assert.equal(destroyed,1);
     const fixture=JSON.parse(fs.readFileSync(path.join(root,'fixture.json'),'utf8'));
     const original=new Uint8Array(fs.readFileSync(path.join(root,'input.gray')));
     const transportRoot=path.resolve(root,'../../ocr-transport-probe');
@@ -33,7 +42,8 @@ const sha=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
         worker.setParameters=async params=>{modes.push(params.tessedit_pageseg_mode);return set(params);};
         worker.recognize=async(...args)=>{const result=await recognize(...args);versions.push(result.data.version);return result;};return worker;
     };
-    const adapter=new TesseractJsOcr({oem,createWorker:trackedFactory,availableLanguages:['eng'],workerOptions:{langPath:modelDir,cacheMethod:'none',gzip:true}});
+    const adapter=new TesseractJsOcr({oem,createWorker:trackedFactory,availableLanguages:['eng'],workerOptions:{
+        workerPath:path.join(compat,'host/tesseract-word-metadata-node.cjs'),langPath:modelDir,cacheMethod:'none',gzip:true}});
     const request=(id,layout='SINGLE_BLOCK',pixels=original)=>({token:{job:'ocr-backend',page:'fixture',generation:1,request:id},width:fixture.width,height:fixture.height,pixels,languages:'eng',layout});
     function recognized(reply){
         if(reply.failure){throw new Error(reply.failure.code+': '+reply.failure.message);}
@@ -46,6 +56,13 @@ const sha=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
         const pixels=original.slice(),one=engineRequest(engine,1,'SINGLE_BLOCK',pixels),two=engineRequest(otherEngine,2,'MULTI_BLOCK',pixels);
         const a=adapter.recognize(one),b=adapter.recognize(two);one.pixels.fill(0);two.pixels.fill(0);pixels.fill(0);
         [first,second]=await Promise.all([a,b]);recognized(first);recognized(second);
+        assert.ok(first.result.lines.every(line=>line.words.every(word=>word.baseline!==null)));
+        if(oem===0){
+            assert.ok(first.result.capabilities.fontAttributes);
+            const words=first.result.lines.flatMap(line=>line.words);
+            assert.ok(words.every(word=>word.font&&word.font.pointSize>0&&word.font.name===null));
+            assert.equal(words[0].font.bold,true);assert.equal(words[2].font.serif,true);
+        }
         assert.ok(engine.receive(first));assert.ok(otherEngine.receive(second));assert.equal(engine.resumeSummary(),'2/4/23');assert.equal(otherEngine.resumeSummary(),'2/4/23');
         blank=await adapter.recognize(engineRequest(engine,3,'SINGLE_BLOCK',new Uint8Array(original.length).fill(255)));
         assert.ok(blank.result);assert.equal(blank.result.lines.flatMap(line=>line.words).length,0);
@@ -74,22 +91,27 @@ const sha=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
     const files={
         '/ocr-transport.wasm':path.join(transportRoot,'ocr-transport.wasm'),'/ocr-transport.wasm-runtime.js':path.join(transportRoot,'ocr-transport.wasm-runtime.js'),
         '/host/tesseract-js-ocr.mjs':path.join(compat,'host/tesseract-js-ocr.mjs'),'/host/gray8-png.mjs':path.join(compat,'host/gray8-png.mjs'),
+        '/host/tesseract-word-metadata.mjs':path.join(compat,'host/tesseract-word-metadata.mjs'),
+        '/host/tesseract-core-word-metadata.js':path.join(compat,'host/tesseract-core-word-metadata.js'),
         '/ocr-assets/tesseract.min.js':path.join(modules,'tesseract.js/dist/tesseract.min.js'),
         '/ocr-assets/worker.min.js':path.join(modules,'tesseract.js/dist/worker.min.js'),
-        ['/ocr-assets/'+coreName+'.js']:path.join(modules,'tesseract.js-core',coreName+'.js'),
-        ['/ocr-assets/'+coreName+'.wasm']:path.join(modules,'tesseract.js-core',coreName+'.wasm'),
+        ['/core-assets/'+coreName+'.js']:path.join(modules,'tesseract.js-core',coreName+'.js'),
+        ['/core-assets/'+coreName+'.wasm']:path.join(modules,'tesseract.js-core',coreName+'.wasm'),
         '/models/eng.traineddata.gz':path.join(modelDir,'eng.traineddata.gz')
     };
     let origin;const requested={};
     const server=http.createServer((req,res)=>{
-        if(req.url==='/'){res.end('<!doctype html><title>Local OCR backend verification</title>');return;}
-        if(req.url==='/outer-worker.js'){
+        const url=new URL(req.url,origin||'http://127.0.0.1').pathname;
+        if(url==='/'){res.end('<!doctype html><title>Local OCR backend verification</title>');return;}
+        if(url==='/outer-worker.js'){
             res.setHeader('Content-Type','text/javascript');res.end(`importScripts('/ocr-assets/tesseract.min.js','/ocr-transport.wasm-runtime.js');onmessage=async event=>{
-                let adapter;try{const {TesseractJsOcr}=await import('/host/tesseract-js-ocr.mjs');let created=0,versions=[];
+                let adapter;try{const {TesseractJsOcr}=await import('/host/tesseract-js-ocr.mjs');
+                    const {browserWordMetadataOptions}=await import('/host/tesseract-word-metadata.mjs');let created=0,versions=[];
                     adapter=new TesseractJsOcr({oem:${oem},availableLanguages:['eng'],createWorker:async(...args)=>{
                         created++;const worker=await Tesseract.createWorker(...args),recognize=worker.recognize.bind(worker);
                         worker.recognize=async(...args)=>{const result=await recognize(...args);versions.push(result.data.version);return result;};return worker;
-                    },workerOptions:{workerPath:'${origin}/ocr-assets/worker.min.js',workerBlobURL:false,corePath:'${origin}/ocr-assets/${coreName}.js',langPath:'${origin}/models',cacheMethod:'none',gzip:true}});
+                    },workerOptions:browserWordMetadataOptions({workerPath:'${origin}/ocr-assets/worker.min.js',corePath:'${origin}/core-assets/${coreName}.js',langPath:'${origin}/models',cacheMethod:'none',gzip:true},
+                        {loaderPath:'${origin}/host/tesseract-core-word-metadata.js',metadataModulePath:'${origin}/host/tesseract-word-metadata.mjs'})});
                     const api=(await TeaVM.wasmGC.load('/ocr-transport.wasm')).exports,input=event.data;
                     const request=generation=>api.imageRequest(input.width,input.height,new Int8Array(input.pixels.buffer),'eng','SINGLE_BLOCK',generation);
                     const started=performance.now(),first=await adapter.recognize(request(1)),firstRequestMs=performance.now()-started;
@@ -100,8 +122,8 @@ const sha=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
                 }catch(error){postMessage({error:String(error.stack||error)});}finally{if(adapter){await adapter.close();}}
             };`);return;
         }
-        const file=files[req.url];if(!file){res.writeHead(404).end();return;}
-        requested[req.url]=(requested[req.url]||0)+1;
+        const file=files[url];if(!file){res.writeHead(404).end();return;}
+        requested[url]=(requested[url]||0)+1;
         res.setHeader('Content-Type',file.endsWith('.wasm')?'application/wasm':file.endsWith('.gz')?'application/octet-stream':'text/javascript');
         fs.createReadStream(file).pipe(res);
     });
@@ -125,7 +147,8 @@ const sha=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
             nodeWorkerReused:true,workerResultsExact:true,queuedInputSnapshotsOwned:true,layoutParametersHonored:true,blankSuccessDistinct:true,missingModelDistinct:true,
             simulatedFailureRecovery:true,simulatedLanguageReinitialization:true,
             wasmRequestAndReplyIntegrated:true,wasmBlankAndModelFailureDistinct:true,
-            realCharacterBoxes:true,fontAttributesAvailable:false,lineBaselineAvailable:first.result.lines.some(line=>line.baseline!==null),
+            nativeWordMetadata:true,realCharacterBoxes:true,fontAttributesAvailable:first.result.lines.some(line=>line.words.some(word=>word.font!==null)),lineBaselineAvailable:first.result.lines.some(line=>line.baseline!==null),
+            metadataAlignmentGuard:true,metadataIteratorReleasedOnFailure:true,metadataHookIdempotent:true,separateCoreAssetDirectory:true,
             wordBaselineAvailable:first.result.lines.some(line=>line.words.some(word=>word.baseline!==null)),
             workerTimings:workers.map(row=>({firstRequestMs:row.firstRequestMs,warmRequestMs:row.warmRequestMs})),
             words:first.result.lines.flatMap(line=>line.words).map(word=>word.text),characters:first.result.lines.flatMap(line=>line.words).reduce((sum,word)=>sum+word.characters.length,0),

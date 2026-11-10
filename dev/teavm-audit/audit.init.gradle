@@ -919,7 +919,7 @@ gradle.projectsEvaluated {
     ['Legacy':0, 'Lstm':1].each { label, oem ->
         rootProject.tasks.register('verifyTesseractJsOcr' + label, Exec) {
             dependsOn 'prepareOcrBackendFixture', 'buildOcrTransportProbe'
-            def backendOutput = new File(ocrBackendOutput, label.toLowerCase())
+            def backendOutput = new File(ocrBackendOutput, label.toLowerCase() + '-word-metadata')
             environment 'AUDIVERIS_OCR_OEM', oem.toString()
             doFirst {
                 rootProject.copy {

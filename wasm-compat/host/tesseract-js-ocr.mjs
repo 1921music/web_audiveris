@@ -15,6 +15,13 @@ function baseline(value){
     if(!['x0','y0','x1','y1'].every(key=>Number.isFinite(value[key]))){unsupported('Invalid OCR baseline');}
     return {x1:value.x0,y1:value.y0,x2:value.x1,y2:value.y1};
 }
+function font(value){
+    if(value==null){return null;}
+    if(!['bold','italic','underlined','monospace','serif','smallcaps'].every(key=>typeof value[key]==='boolean')
+            ||!Number.isInteger(value.pointSize)||value.pointSize<=0||value.pointSize>2147483647){unsupported('Invalid native OCR font metadata');}
+    return {bold:value.bold,italic:value.italic,underlined:value.underlined,monospace:value.monospace,
+        serif:value.serif,smallcaps:value.smallcaps,pointSize:value.pointSize,name:null};
+}
 /** Retain real character boxes and line baselines. Missing font/word-baseline metadata stays absent. */
 export function normalizeTesseractResult(data){
     const capabilities={characters:true,baselines:true,fontAttributes:false},lines=[];
@@ -37,8 +44,9 @@ export function normalizeTesseractResult(data){
                         if(typeof symbol.text!=='string'||symbol.text.length===0){unsupported('Missing OCR character text');}
                         return {text:symbol.text,bounds:box(symbol.bbox)};
                     });
+                    const nativeFont=font(word.audiveris_font);if(nativeFont){capabilities.fontAttributes=true;}
                     words.push({text:word.text,bounds:box(word.bbox),confidence:word.confidence/100,
-                        baseline:baseline(word.baseline),font:null,characters});
+                        baseline:baseline(word.baseline),font:nativeFont,characters});
                 }
                 lines.push({words,baseline:baseline(line.baseline)});
             }
