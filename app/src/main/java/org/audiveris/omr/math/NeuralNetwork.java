@@ -199,6 +199,52 @@ public class NeuralNetwork
                         w2(outputWeights)));
     }
 
+    /**
+     * Create a network from measured model data without a serialization framework or random
+     * initialization. Arrays are copied; forward inference and training use the same implementation.
+     */
+    public NeuralNetwork (String[] inputLabels, String[] outputLabels,
+                          double[][] hiddenWeights, double[][] outputWeights,
+                          double learningRate, double momentum, double lambda, int epochsTotal)
+    {
+        Objects.requireNonNull(inputLabels);
+        Objects.requireNonNull(outputLabels);
+        Objects.requireNonNull(hiddenWeights);
+        if (inputLabels.length == 0 || outputLabels.length == 0 || hiddenWeights.length == 0
+                || !Double.isFinite(learningRate) || !Double.isFinite(momentum)
+                || !Double.isFinite(lambda) || epochsTotal < 0) {
+            throw new IllegalArgumentException("Invalid network dimensions or parameters");
+        }
+        inputSize = inputLabels.length;
+        hiddenSize = hiddenWeights.length;
+        outputSize = outputLabels.length;
+        this.inputLabels = new StringArray(inputLabels.clone());
+        this.outputLabels = new StringArray(outputLabels.clone());
+        this.hiddenWeights = copyWeights(hiddenWeights, hiddenSize, inputSize + 1);
+        this.outputWeights = copyWeights(outputWeights, outputSize, hiddenSize + 1);
+        this.learningRate = learningRate;
+        this.momentum = momentum;
+        this.lambda = lambda;
+        this.epochsTotal = epochsTotal;
+    }
+
+    private static double[][] copyWeights (double[][] weights, int rows, int columns)
+    {
+        Objects.requireNonNull(weights);
+        if (weights.length != rows) { throw new IllegalArgumentException("Invalid weight row count"); }
+        double[][] copy = new double[rows][];
+        for (int row = 0; row < rows; row++) {
+            if (weights[row] == null || weights[row].length != columns) {
+                throw new IllegalArgumentException("Invalid weight column count");
+            }
+            copy[row] = weights[row].clone();
+            for (double value : copy[row]) {
+                if (!Double.isFinite(value)) { throw new IllegalArgumentException("Non-finite network weight"); }
+            }
+        }
+        return copy;
+    }
+
     //~ Methods ------------------------------------------------------------------------------------
 
     //------//

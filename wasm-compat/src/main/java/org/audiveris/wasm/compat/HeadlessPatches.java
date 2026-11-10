@@ -19,6 +19,12 @@ final class HeadlessPatches {
         Map<MethodDescriptor, Program> original = new HashMap<>();
         for (MethodHolder method : cls.getMethods()) { original.put(method.getDescriptor(), method.getProgram()); }
         switch (cls.getName()) {
+            case "org.audiveris.omr.classifier.BasicClassifier":
+                if (cls.getMethod(new MethodDescriptor("load", ValueType.arrayOf(STRING), obj("org.audiveris.omr.classifier.AbstractClassifier$Network"))) == null) {
+                    throw new IllegalStateException("Review BasicClassifier model-loading boundary");
+                }
+                StandardApiPatches.delegate(cls, "load", "load", "org.audiveris.omr.classifier.WorkerClassifierBridge", false, true,
+                        ValueType.arrayOf(STRING), obj("org.audiveris.omr.classifier.AbstractClassifier$Network")); break;
             case "org.audiveris.omr.sig.inter.BracketInter":
                 if (cls.getMethod(new MethodDescriptor("computeArea", ValueType.VOID)) == null) { throw new IllegalStateException("Review BracketInter geometry boundary"); }
                 StandardApiPatches.delegate(cls, "computeArea", "computeArea", "org.audiveris.omr.sig.inter.WorkerBracketBridge", false, true, ValueType.VOID); break;

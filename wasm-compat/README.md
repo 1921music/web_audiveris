@@ -212,6 +212,7 @@ adds 18 scale-source API/adapter methods. Stage 8 also roots `Book.createMemoryB
 **9,020 roots / 8,599 bodies**. Stage 9 adds nine pixel-model methods, giving **9,029 roots / 8,608 bodies**.
 Stage 11 adds a bracket-geometry method, giving **9,030 roots / 8,609 bodies**.
 Stage 12 adds three raw-pixel staff-removal methods, giving **9,033 roots / 8,612 bodies**.
+Stage 13 adds a network-data constructor and copy/validation helper: **9,035 roots / 8,614 bodies**.
 `-PallowAddedRoots=true` explicitly permits/report additions; it never permits removal, changed
 body/native coverage or reclassification of existing roots. Generic compatibility has 544 diagnostics;
 the initial Worker boundary stage has 525 and the current Worker compatibility stage has **494**
@@ -221,7 +222,7 @@ the initial Worker boundary stage has 525 and the current Worker compatibility s
 | --- | ---: | ---: |
 | Linked classes | 441 | **75** |
 | Used input methods inside excluded classes | 1,681 | **242** |
-| Used input methods under all exclusion rules, including method-only rules | 1,863 | **311** |
+| Used input methods under all exclusion rules, including method-only rules | 1,863 | **309** |
 
 Of the 75 classes, **55 have used methods and 20 are type-only**. These candidates include enums,
 rendering/output helpers and non-UI host dependencies, as well as remaining presentation paths;
@@ -401,16 +402,16 @@ are under `build/wasm-compat/probe`; audit outputs are under
 
 ## Verified result
 
-The current audit covers **9,033 methods**, including **8,612 method bodies**. Every original
+The current audit covers **9,035 methods**, including **8,614 method bodies**. Every original
 **9,001-method / 8,588-body** root is preserved; 18 scale-context/adapter methods and the memory-book
-factory, nine initial pixel-model methods, one bracket-geometry seam and three staff-free raster methods are added explicitly.
+factory, nine initial pixel-model methods, one bracket-geometry seam and three staff-free raster methods and two model-construction methods are added explicitly.
 With generic compatibility and the opt-in Worker/presentation substitutions enabled, diagnostics
 fall from **1,276 to 494** (782 fewer); unique messages fall from **336 to 203**.
 The stages are **1,276 → 789 → 702 → 609 → 545 → 544 → 525 → 524 → 495 → 494**. The 544/220 result is the
 generic compatibility layer alone; 525/217 is the initial Worker boundary, 524/216 is the
-stage-6 boundary, 495/204 is the stage-7–9 result, and **494/203** is the current stage-12 result (unchanged from stage 10).
+stage-6 boundary, 495/204 is the stage-7–9 result, and **494/203** is the current stage-13 result (unchanged from stage 10).
 Remaining exclusion candidates are **75 classes / 242 used input methods inside those classes**,
-or **311 methods** when method-only exclusion rules are also included.
+or **309 methods** when method-only exclusion rules are also included.
 There are no remaining missing-API messages for the generic layer's targeted APIs. The broad fast
 analysis also exposes additional unsupported dependency paths; generic-layer new messages and their
 callers are recorded in `results/new-diagnostics.tsv`, and current headless results in
@@ -666,6 +667,52 @@ During this stage, WSL stalled on an ext4 directory read. The user-authorized WS
 restored builds. The relaunched jobs retain **8 logical CPUs / 8 GiB / no swap**, and verification
 records resource-limit values and the new VM's memory-event counters.
 
+## Classifier model loading and inference (stage 13)
+
+The original `BasicClassifier`, connected-component extraction, glyph descriptors, normalization,
+and neural forward/sigmoid computations now execute in Wasm. Only `BasicClassifier.load` is
+substituted: the host explicitly installs a model archive before recognition, rather than relying
+on JVM training directories. ZIP streams and directly constructed kxml2 parsers read the original
+`model.xml`, `means.xml` and `stds.xml`; there is no reflective XML factory or JAXB at this boundary.
+The bridge retains the original engine-label compatibility check. Installation publishes only
+complete, structurally valid model data and freezes on first use. Invalid/truncated archives,
+zero standard deviations and dimension mismatches fail; failed installation preserves prior data.
+
+`NeuralNetwork` gains a constructor for supplied weights and a validating copy helper. Existing
+inference and JAXB entry points remain unchanged. The constructor copies labels and matrices,
+rejects non-finite weights, and preserves learning parameters and epoch metadata without random
+initialization. The oracle compiles the original NeuralNetwork from commit `04697c74`, verifies
+its class origin, and uses the original classifier/JAXB path. The portable JVM loader has **exact
+weight and normalization hashes**, matching metadata (**110 / 149 / 149 cells, 160 epochs**).
+Original classifier/features/moments sources and forward/run/sigmoid bodies are checked at export.
+
+The test uses 164 selected components: four from the synthetic fixture and up to 32 from each of
+five accepted real staff-free pages. It compares raw features, all 149 natural grades, the winning
+shape and the unconditioned top three candidates, plus 128 deterministic neural-input vectors.
+There are **62,392 portable-JVM comparisons and 162,880 Wasm comparisons** in two Node instances
+and two Chromium Workers. Maximum numeric difference is **3.7471e-15**; winning/top-three classes
+match. The verifier allows 2e-13 absolute error for grades and 1e-12 relative/scaled error for
+features. Per-system CHECKED shape decisions and complete HEADERS processing remain unverified.
+
+The original model is an external **396,100-byte ZIP**, supplied to each Worker with transferable
+buffers. It is not embedded in generic compatibility resources or Wasm. The classifier probe is
+**814,106 bytes**, including lifecycle/copy fixtures; this is not a full-engine estimate. The
+latest local Node series measured roughly **127–137 ms** to install the model once per instance.
+Timing details are diagnostic samples, not a throughput benchmark: kernel/page timings include
+fixture JSON generation, and page calls also include connected components and features.
+TODO: measure representative browser cold-start/allocation costs before considering a predecoded
+binary asset; retain the original supplied double values in any such format.
+
+Reproduce with `verifyClassifierProbe -I dev/teavm-audit/audit.init.gradle -Pcompat=true
+-Pheadless=true` through the capped launcher. The task also prepares the stage-12 JVM staff-free fixtures; add
+`-PpixelSamples=/mnt/g/work/20261029/1921music/score_samples` for a fresh sample build.
+Archive using `export_headless.py --stage 13 --classifier --allow-added-roots`.
+`classifier-results` contains small summaries, input hashes and provenance; full numeric matrices,
+model/invalid-model assets and raw input images live under `wsl-artifacts/wasm-headless/stage13`.
+The audit preserves all previous roots: **9,035 roots / 8,614 bodies**, **494 diagnostics / 203 unique**,
+**75 classes / 242 class-excluded used methods / 309 methods across all exclusion rules**. The
+last count drops by two classifier-training paths after explicit host model acquisition.
+
 ## Remaining work
 
 ### TODO: reconsider the XML properties parser
@@ -704,5 +751,5 @@ sources; this does not establish that OCR/native or other platform boundaries ar
 The generic-only audit still has 544 diagnostics, including three directly in selected engine
 sources; the opt-in Worker substitutions address those three paths. Remaining work requires
 resource, execution and platform adapters that preserve recognition behavior. The current reentry
-report includes **75 classes / 242 class-excluded used input methods** (**311 methods across all exclusion
+report includes **75 classes / 242 class-excluded used input methods** (**309 methods across all exclusion
 rules**); choosing roots alone does not cut transitive dependencies.

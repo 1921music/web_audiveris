@@ -72,6 +72,7 @@ def main():
     parser.add_argument('--staff', action='store_true')
     parser.add_argument('--grid', action='store_true')
     parser.add_argument('--clean-grid', action='store_true')
+    parser.add_argument('--classifier', action='store_true')
     parser.add_argument('--allow-added-roots', action='store_true')
     args = parser.parse_args()
     root, build = args.repository, args.build
@@ -369,6 +370,75 @@ def main():
                 grid_provenance['noStaffReference'] = raster_hashes
                 write(target / 'provenance.json', grid_provenance)
         provenance['cleanGridVerification' if args.clean_grid else 'gridVerification'] = json.loads((grid_build / 'verification.json').read_text())
+    if args.classifier:
+        classifier_build = build / 'wasm-compat/classifier-probe'
+        classifier_raw = artifacts / 'classifier-probe'
+        classifier_results = root / 'wasm-compat/classifier-results'
+        classifier_raw.mkdir(parents=True, exist_ok=True); classifier_results.mkdir(parents=True, exist_ok=True)
+        for name in ['classifier.wasm', 'classifier.wasm-runtime.js', 'jvm-reference.json', 'jvm-portable.json',
+                     'wasm-node-results.json', 'wasm-worker-results.json', 'verification.json', 'diagnostics.tsv',
+                     'bad-stds.zip', 'bad-dimensions.zip']:
+            shutil.copyfile(classifier_build / name, classifier_raw / name)
+        for name in ['verification.json', 'diagnostics.tsv']:
+            shutil.copyfile(classifier_build / name, classifier_results / name)
+        shutil.copyfile(root / 'app/res/basic-classifier.zip', classifier_raw / 'model.zip')
+        shutil.copytree(build / 'wasm-compat/clean-grid-probe/no-staff', artifacts / 'clean-grid-probe/no-staff', dirs_exist_ok=True)
+        original = build / 'wasm-compat/upstream-neural'
+        shutil.copytree(original, artifacts / 'upstream-neural', dirs_exist_ok=True)
+        neural_source = json.loads((original / 'source.json').read_text())
+        neural_source['classSha256'] = {str(p.relative_to(original / 'classes')): hashlib.sha256(p.read_bytes()).hexdigest()
+                                       for p in sorted((original / 'classes').rglob('*.class'))}
+        neural_path = 'app/src/main/java/org/audiveris/omr/math/NeuralNetwork.java'
+        original_neural = subprocess.check_output(['git', '-c', f'safe.directory={root}', '-C', str(root),
+            'show', f"{provenance['applicationBaseline']}:{neural_path}"]).decode().replace('\r\n', '\n')
+        current_neural = (root / neural_path).read_text(encoding='utf-8')
+        unchanged_methods = {}
+        for signature in ['private void forward (', 'public double[] run (', 'private double sigmoid (']:
+            bodies = []
+            for source in [original_neural, current_neural]:
+                start = source.index(signature); end = source.index('{', start) + 1; depth = 1
+                while depth:
+                    depth += (source[end] == '{') - (source[end] == '}'); end += 1
+                bodies.append(source[start:end])
+            if bodies[0] != bodies[1]:
+                raise AssertionError('Original neural inference changed: ' + signature)
+            unchanged_methods[signature] = hashlib.sha256(bodies[0].encode()).hexdigest()
+        names = ['classifier/BasicClassifier.java', 'classifier/AbstractClassifier.java', 'classifier/MixGlyphDescriptor.java',
+                 'math/PoorManAlgebra.java', 'glyph/Glyph.java', 'glyph/GlyphFactory.java']
+        names += [str(p.relative_to(root / 'app/src/main/java/org/audiveris/omr'))
+                  for p in sorted((root / 'app/src/main/java/org/audiveris/omr/moments').rglob('*.java'))]
+        algorithm_hashes = {}
+        for name in names:
+            relative = 'app/src/main/java/org/audiveris/omr/' + name
+            if relative in provenance['applicationSourceChanges']:
+                raise AssertionError('Classifier algorithm changed: ' + relative)
+            algorithm_hashes[relative] = hashlib.sha256((root / relative).read_bytes().replace(b'\r\n', b'\n')).hexdigest()
+        reference = {'neural': neural_source, 'unchangedNeuralMethodSha256': unchanged_methods,
+            'unchangedAlgorithmSourceSha256': algorithm_hashes,
+            'scope': 'Pinned original NeuralNetwork and unchanged classifier/features/moments algorithms; shared current model runtime'}
+        oracle = json.loads((classifier_build / 'jvm-reference.json').read_text())
+        portable = json.loads((classifier_build / 'jvm-portable.json').read_text())
+        if any(oracle[key] != portable[key] for key in ['metadata', 'weightSha256', 'normSha256']):
+            raise AssertionError('Classifier JVM model loader mismatch')
+        write(classifier_results / 'jvm-loader-comparison.json', {'metadata': oracle['metadata'],
+            'weightSha256': oracle['weightSha256'], 'normSha256': oracle['normSha256'], 'exactWeightsAndNorms': True})
+        inputs = [{key: value for key, value in page.items() if key != 'result'} for page in oracle['pages']]
+        model_sha = hashlib.sha256((classifier_raw / 'model.zip').read_bytes()).hexdigest()
+        baseline_model = subprocess.check_output(['git', '-c', f'safe.directory={root}', '-C', str(root),
+            'show', f"{provenance['applicationBaseline']}:app/res/basic-classifier.zip"])
+        if hashlib.sha256(baseline_model).hexdigest() != model_sha:
+            raise AssertionError('Default classifier archive differs from the pinned baseline')
+        reference['model'] = {'path': 'app/res/basic-classifier.zip', 'sha256': model_sha,
+                              'bytes': len(baseline_model), 'matchesOriginalBaseline': True}
+        classifier_provenance = {key: provenance[key] for key in ['applicationBaseline', 'toolCommit', 'teaVM', 'target',
+            'cpuMax', 'allowedCpus', 'memoryMaxBytes', 'memorySwapMaxBytes', 'memoryEventsLocal', 'sourceSha256', 'applicationSourceChanges']}
+        classifier_provenance.update({'rawArtifacts': raw_path + '/classifier-probe', 'modelSha256': model_sha,
+            'artifactSha256': {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(classifier_raw.iterdir()) if p.is_file()},
+            'limitation': 'Classifier component with an explicit host model asset; full HEADERS and subsequent recognition are unverified'})
+        for target in [classifier_results, classifier_raw]:
+            write(target / 'reference-sources.json', reference); write(target / 'inputs.json', inputs)
+            write(target / 'provenance.json', classifier_provenance)
+        provenance['classifierVerification'] = json.loads((classifier_build / 'verification.json').read_text())
     for target in [results, artifacts]:
         write(target / 'provenance.json', provenance)
     print(json.dumps({key: comparison[key] for key in ['rootCount', 'baselineDiagnostics', 'patchedDiagnostics', 'modifiedMethods',
