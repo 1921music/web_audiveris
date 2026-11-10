@@ -76,13 +76,19 @@ public abstract class ConstantSet
      */
     public ConstantSet ()
     {
-        unit = getClass().getDeclaringClass().getName();
+        unit = getUnitName();
 
         //        System.out.println(
         //            "\n" + Thread.currentThread().getName() +
         //            ": Creating ConstantSet " + unit);
         // Register this instance
         UnitManager.getInstance().addSet(this);
+    }
+
+    /** Resolve the configuration namespace; alternate runtimes can supply class metadata directly. */
+    protected String getUnitName ()
+    {
+        return getClass().getDeclaringClass().getName();
     }
 
     //~ Methods ------------------------------------------------------------------------------------
@@ -289,7 +295,7 @@ public abstract class ConstantSet
             // Assign the constructed map atomically
             map = tempMap;
         } catch (Throwable ex) {
-            logger.warn("Error initializing map of ConstantSet " + this, ex);
+            throw new IllegalStateException("Error initializing map of ConstantSet " + this, ex);
         }
     }
 

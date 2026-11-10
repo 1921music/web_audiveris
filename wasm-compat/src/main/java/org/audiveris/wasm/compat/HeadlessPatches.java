@@ -31,6 +31,7 @@ final class HeadlessPatches {
             case "org.audiveris.omr.step.ui.StepMonitoring": progress(cls); break;
             default: break;
         }
+        ConfigurationPatches.apply(cls, context);
         PresentationPatches.apply(cls);
         desktopCallbacks(cls);
         for (MethodHolder method : cls.getMethods()) {

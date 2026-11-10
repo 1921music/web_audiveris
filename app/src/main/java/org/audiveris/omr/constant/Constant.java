@@ -415,7 +415,7 @@ public abstract class Constant<E>
             //                " name:" + name);
         } catch (Exception ex) {
             logger.warn("Error registering constant {}", qName);
-            ex.printStackTrace();
+            throw new IllegalStateException("Error registering constant " + qName, ex);
         }
     }
 

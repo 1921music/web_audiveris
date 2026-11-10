@@ -8,6 +8,7 @@ import org.audiveris.wasm.compat.platform.SerialExecutor;
 public final class SerialExecutorTest {
     private static void check(boolean condition) { if (!condition) { throw new AssertionError("Serial executor contract"); } }
     public static void main(String[] args) throws Exception {
+        HeadlessConfigurationTest.prepare("jvm"); HeadlessConfigurationTest.run();
         run(); HeadlessMusicDataTest.run(); HeadlessMusicDataTest.jvmReference();
         HeadlessRenderTest.data(); HeadlessRenderTest.jvmDrawing();
         if (args.length > 0) { java.nio.file.Files.writeString(java.nio.file.Path.of(args[0]), "{\"serialSchedulingContract\":true,\"metronomeRegexBmpComparisons\":131072,\"sourceExtractedStrokeMethods\":true,\"templateComposite\":true}\n"); }

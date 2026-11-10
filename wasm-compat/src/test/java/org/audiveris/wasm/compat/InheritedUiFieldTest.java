@@ -18,6 +18,17 @@ public final class InheritedUiFieldTest {
         if (fast) { builder.setDependencyAnalyzerFactory((source, resources, loader, services, diagnostics, cache, platforms, properties) ->
                 new org.teavm.dependency.FastDependencyAnalyzer(source, resources, loader, services, diagnostics, cache, platforms, properties)); }
         var vm = builder.build(); vm.installPlugins();
+        ClassReader set = vm.getDependencyClassSource().get("org.audiveris.omr.ui.util.UIUtil$Constants");
+        MethodReader namespace = set.getMethod(new MethodDescriptor("getUnitName", ValueType.object("java.lang.String")));
+        List<String> names = new ArrayList<>();
+        var literal = new AbstractInstructionReader() {
+            @Override public void stringConstant(VariableReader receiver, String value) { names.add(value); }
+        };
+        for (var block : namespace.getProgram().getBasicBlocks()) { block.readAllInstructions(literal); }
+        try {
+            String originalName = Class.forName(set.getName(), false, InheritedUiFieldTest.class.getClassLoader()).getDeclaringClass().getName();
+            if (!names.equals(List.of(originalName))) { throw new AssertionError("Constant namespace changed: " + names); }
+        } catch (ClassNotFoundException error) { throw new AssertionError(error); }
         ClassReader util = vm.getDependencyClassSource().get("org.audiveris.omr.ui.util.UIUtil");
         MethodReader initializer = util.getMethod(new MethodDescriptor("<clinit>", ValueType.VOID));
         Set<String> retained = new HashSet<>();

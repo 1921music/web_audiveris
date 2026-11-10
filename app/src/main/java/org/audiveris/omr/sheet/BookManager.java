@@ -630,6 +630,10 @@ public class BookManager
      */
     public static void setBaseFolder (Path dir)
     {
+        // Register source/user values before assigning the explicit new value.
+        if (!constants.initialize()) {
+            throw new IllegalStateException("Book settings are not fully initialized");
+        }
         Main.getCli().nullifyOutputFolder();
         constants.baseFolder.setValue(dir.toString());
     }

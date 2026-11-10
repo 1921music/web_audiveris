@@ -114,7 +114,9 @@ JDK 25 so they can call recent API names directly; compatibility implementations
 
 `-Pheadless=true -Pcompat=true` enables application/platform substitutions in addition to the
 generic API compatibility layer. The default audit remains unchanged. This mode rewrites TeaVM's
-class model; `app` and `buildSrc` sources, root selection and dependency JARs remain unchanged.
+class model. Root selection and dependency JARs remain unchanged. Stages 1–3 used unchanged
+application sources; stage 4 also makes the small source changes described below. `buildSrc`
+is unchanged.
 
 | Boundary | Worker policy |
 | --- | --- |
@@ -146,13 +148,56 @@ does not create directories or implement file access. A storage adapter remains 
 configuration/model writes. Likewise, the event sink is a synchronous Java boundary; a host bridge
 must forward events to `postMessage`. These substitutions do not yet make the full engine runnable.
 
-Configuration boundary: retain upstream `Constant`/`Param` reads and defaults rather than replacing
-recognition or font settings with compiler literals. A browser configuration bridge remains TODO;
-it must supply per-module settings before dependent static initialization (notably cached font ratios),
-and jobs should use a stable configuration. Host Worker count is a host option; one Java execution
-lane per module is the current execution policy. Source-derived drawing defaults such as template
-opacity preserve upstream behavior, but are not a general runtime configuration API. Logical storage
-paths likewise remain placeholders until a host storage adapter is supplied.
+Configuration now has a Java host boundary: call `HeadlessConfiguration.configure(runOverrides,
+persistedValues, saveEachSheetStep)` before engine initialization. Keys are the original qualified
+constant names. Lookup order is run override, persisted value, then the original `Constant` default.
+The input maps are copied; the first lookup freezes configuration. Use a fresh module/Worker to
+change settings that may already be cached in static fields. Original decoding, mutation/reset,
+duplicate registration guards and registry removal remain in use. This is a Java boundary tested
+through exported probe methods, not a completed production JavaScript messaging API.
+
+`ConstantManager` uses this snapshot instead of CLI discovery or `run.properties` file access in
+headless mode. `storeResource()` sends an immutable, cleaned snapshot to an installed persistence
+callback; without one it explicitly fails. Cleanup preserves unknown saved keys and removes values
+equal to their source defaults. A host using asynchronous browser storage must await its own write
+acknowledgment before reporting durable persistence; callback acceptance alone is not that guarantee.
+`saveEachSheetStep` defaults to false and preserves the original `storeSheet()` path when enabled;
+sheet/model storage is still a separate unimplemented backend.
+
+`setOutputFolder(absoluteLogicalPath)` supplies the former CLI output override before the first
+lookup. `BookManager` retains its original fallback selection and directory/storage instructions.
+Its explicit `setBaseFolder` operation clears that override and updates the original base-folder
+constant; this does not imply that the browser filesystem backend is implemented.
+
+`SheetStub.doOneStep` takes its timeout from the original `org.audiveris.omr.Main.sheetStepTimeOut`
+configuration key and save policy from the host, without initializing `Main` or querying `CLI`.
+The default timeout is mechanically read from `Main.java` (120 seconds); overrides must be positive.
+The compiler retains step scheduling, recognition, timeout handling, finalization and the save call.
+The serial executor still cannot preempt a synchronous step; enforce hard deadlines from the host.
+
+Small deliberate source changes keep this boundary straightforward:
+
+- `ConstantSet.getUnitName()` isolates the existing JVM namespace lookup. TeaVM emits per-subclass
+  overrides from the class file's declaring-class metadata; JVM lookup behavior stays the same.
+  Compiler-added methods are analyzed as dependencies, while the audit enumerates input methods
+  for the root policy. No original method is silently dropped.
+- Failed registration/map initialization now throws with its cause in `Constant` and `ConstantSet`.
+  Previously swallowed failures could leave an uninitialized constant spinning in its wait loop.
+  A Worker that fails initialization must be discarded; configuration updates are not transactional
+  recovery of partially constructed engine state.
+- `BookManager.setBaseFolder` initializes its constant set before assigning the new value. Otherwise
+  a later first read could register defaults over an update made before registration.
+
+Only declared fields of reached `ConstantSet` subclasses receive reflection metadata. Their original
+map-building logic remains; there is no runtime classpath scan or reflective method opt-in for this
+feature. Worker-local pending-set and package-child collections use sorted snapshot traversal so
+registration during initialization does not invalidate iteration. They are intended for the single
+execution lane within each module. TODO: measure complete engine initialization/metadata size and
+consider generated direct field access if it is significant.
+
+Host Worker count is a host option. Drawing defaults such as template opacity retain upstream
+values; logical storage paths still need a host storage adapter. These boundaries do not replace
+recognition or font settings with compiler literals.
 
 ```powershell
 .\dev\wsl\Manage-WasmDev.ps1 Build -GradleArgs @(
@@ -167,11 +212,11 @@ the initial Worker boundary stage has 525 and the current presentation-boundary 
 
 | Residual exclusion candidates | Initial Worker boundary | Current presentation boundary |
 | --- | ---: | ---: |
-| Linked classes | 441 | **79** |
-| Used methods inside excluded classes | 1,681 | **247** |
-| Used methods under all exclusion rules, including method-only rules | 1,863 | **318** |
+| Linked classes | 441 | **76** |
+| Used input methods inside excluded classes | 1,681 | **242** |
+| Used input methods under all exclusion rules, including method-only rules | 1,863 | **313** |
 
-Of the 79 classes, **57 have used methods and 22 are type-only**. These candidates include enums,
+Of the 76 classes, **55 have used methods and 21 are type-only**. These candidates include enums,
 rendering/output helpers and non-UI host dependencies, as well as remaining presentation paths;
 they are not all removable widgets. The exclusion guard still fails. Fast analysis is conservative,
 not a runtime trace. Some inferred witness paths can disagree with the transformed method model.
@@ -182,7 +227,8 @@ UI branches even after substitution; inspect modified methods and distinguish in
 Presentation-only entry points (display windows, check boards, trackers, UI-task impact overloads,
 manual link/task construction and plot windows) explicitly reject desktop execution. The recognition
 overload `RhythmsStep.impact(Collection)`, ledger geometry, grid recognition, MusicXML building and
-image-difference processing remain rooted. No `app` or `buildSrc` source is changed.
+image-difference processing remain rooted. The three configuration source files above are the only
+application changes from the baseline; `buildSrc` remains unchanged.
 
 `OctaveShiftInter.setGlyph` keeps its original setter and geometry instructions, obtaining the sheet
 from `HeadlessSheetContext.requireSheet()` instead of the selected desktop tab. The host must bind
@@ -210,16 +256,25 @@ Both precise and fast compiler-model checks confirm that configuration/font init
 `OmrExecutors`, logging and progress API calls into Wasm. Node loads two module instances; Chromium
 runs two dedicated Workers. Closing one instance leaves the other operational. Tests cover resource
 URI resolution, FIFO/nested futures, errors, cancellation, zero-budget timeouts, shutdown/restart,
-task context restoration and GUI guard pruning that preserves a fixture's engine work. This does not
+task context restoration and GUI guard pruning that preserves a fixture's engine work.
+Additional checks use the original `Constant`/`ConstantSet`, inject a font ratio of 1.5 into real
+`UIUtil`, exercise `BookManager` output overrides/updates, verify per-Worker run options and reject
+invalid numeric initialization with its cause. The shared JVM tests cover snapshot isolation,
+priority/freeze behavior and pending-set iteration; compiler-model tests compare generated unit
+names with JVM class metadata. These checks do not
 validate real sheet recognition or all rewritten model methods. The expanded headless probe is
-**383,077 bytes**; it also exercises the regex and template data. This is not an engine size estimate.
+**481,678 bytes**; it also exercises configuration, constant-set metadata, regex and template data.
+Stage 3's smaller probe was 383,077 bytes. These are test-program sizes, not engine size estimates.
 Review snapshots are in [headless-results](headless-results); raw graphs/probes are archived by stage
 under `wsl-artifacts/wasm-headless`. Stage 1 records the initial Worker boundary; stage 2 records
 the presentation changes (80 classes / 249 class-excluded methods / 320 methods across all rules).
-Stage 3 separates the window-listener initializer, reaching the current 79 / 247 / 318 counts.
+Stage 3 separates the window-listener initializer (79 classes / 247 class-excluded methods / 318
+methods across all rules). Stage 4 adds the configuration/output-path boundary and the small
+source changes above, reaching **76 / 242 / 313**. The 9,001 selected input methods still match;
+the new namespace hook is dependency-only and compiler-generated overrides are not forced roots.
 Use `dev/teavm-audit/export_headless.py` with the Windows checkout, Linux build directory and tool SHA
 to export the comparison against the archived stage-5 generic audit. Add `--stage 2` to compare
-against headless stage 1; `--stage 3` compares against headless stage 2. CPU usage remains capped at eight logical CPUs and memory at 8 GiB,
+against headless stage 1; `--stage 4` compares against headless stage 3. CPU usage remains capped at eight logical CPUs and memory at 8 GiB,
 with no swap. These changes do not yet produce a complete runnable recognition engine.
 
 ### Generic compatibility reproduction
@@ -262,8 +317,9 @@ With generic compatibility and the opt-in Worker/presentation substitutions enab
 fall from **1,276 to 524** (752 fewer); unique messages fall from **336 to 216**.
 The stages are **1,276 → 789 → 702 → 609 → 545 → 544 → 525 → 524**. The 544/220 result is the
 generic compatibility layer alone; 525/217 is the initial Worker boundary and **524/216** is the
-current presentation boundary. Remaining exclusion candidates are **79 classes / 247 used methods
-inside those classes**, or **318 methods** when method-only exclusion rules are also included.
+current headless configuration boundary (the diagnostic totals are unchanged from stage 3).
+Remaining exclusion candidates are **76 classes / 242 used input methods inside those classes**,
+or **313 methods** when method-only exclusion rules are also included.
 There are no remaining missing-API messages for the generic layer's targeted APIs. The broad fast
 analysis also exposes additional unsupported dependency paths; generic-layer new messages and their
 callers are recorded in `results/new-diagnostics.tsv`, and current headless results in
@@ -284,8 +340,10 @@ Wasm build or proof that every selected method executes correctly.
 - The expanded probe Wasm is **768,016 bytes**, including XML/resources and Jackson's large-number parsers.
   This is a compatibility test program, not an engine
   size estimate. No engine throughput claim is made from these tests.
-- `app` and `buildSrc` remain unchanged from upstream baseline
-  `04697c74fae431ef8436a9429386957a5cb25993`. The capped runs recorded no OOM or hard memory-limit hits.
+- The generic stage-5 snapshot used unchanged `app` and `buildSrc` sources from baseline
+  `04697c74fae431ef8436a9429386957a5cb25993`. Current headless stage 4 modifies only `Constant.java`,
+  `ConstantSet.java` and `BookManager.java`; their hashes are recorded in headless provenance. The capped runs recorded
+  no OOM or hard memory-limit hits.
 
 Reviewable snapshots are in [results](results); bulky audit graphs and runnable probe artifacts
 are kept outside Git in `wsl-artifacts/wasm-compat/stage5`. The original stage's artifacts remain
@@ -331,5 +389,5 @@ sources; this does not establish that OCR/native or other platform boundaries ar
 The generic-only audit still has 544 diagnostics, including three directly in selected engine
 sources; the opt-in Worker substitutions address those three paths. Remaining work requires
 resource, execution and platform adapters that preserve recognition behavior. The current reentry
-report includes **79 classes / 247 class-excluded used methods** (**318 methods across all exclusion
+report includes **76 classes / 242 class-excluded used input methods** (**313 methods across all exclusion
 rules**); choosing roots alone does not cut transitive dependencies.

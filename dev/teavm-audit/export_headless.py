@@ -129,6 +129,11 @@ def main():
         shutil.copyfile(render / 'render-ops.json', results / 'render-ops.json')
         provenance['renderOps'] = json.loads((render / 'render-ops.json').read_text())
     provenance.update({'headlessPlatformEnabled': True, 'comparisonBaseline': baseline,
+                       'applicationSourceChanges': {name: hashlib.sha256((root / name).read_bytes().replace(b'\r\n', b'\n')).hexdigest()
+                                                    for name in ['app/src/main/java/org/audiveris/omr/constant/Constant.java',
+                                                                 'app/src/main/java/org/audiveris/omr/constant/ConstantSet.java',
+                                                                 'app/src/main/java/org/audiveris/omr/sheet/BookManager.java']},
+                       'applicationSourceChangeNotes': 'Stage 4: ConstantSet namespace hook, fail-fast initialization and initialize-before-update for book output settings; recognition roots unchanged',
                        'rawArtifacts': raw_path,
                        'probeSha256': {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
                                        for p in sorted((artifacts / 'probe').iterdir()) if p.is_file()},

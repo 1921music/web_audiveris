@@ -1,1 +1,2 @@
 org.audiveris.wasm.compat.CompilerReflectionPolicy
+org.audiveris.wasm.compat.ConstantSetReflectionPolicy

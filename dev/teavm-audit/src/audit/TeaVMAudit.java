@@ -67,6 +67,8 @@ public final class TeaVMAudit {
                     });
         }
         TeaVM vm = builder.build();
+        // Root policy describes input methods, not compiler-generated overrides.
+        var originalSource = new TeaVMBuilder(new WasmGCTarget()).setStrict(true).build().getDependencyClassSource();
         vm.installPlugins();
         vm.setEntryPoint(EmptyEntry.class.getName());
         vm.setOptimizationLevel(TeaVMOptimizationLevel.SIMPLE);
@@ -80,7 +82,10 @@ public final class TeaVMAudit {
             if (scope.equals("all") || scope.equals("inventory")) { rootClasses.add(name); }
             ClassReader cls = vm.getDependencyClassSource().get(name);
             if (cls == null) { throw new IllegalStateException("Application class not found: " + name); }
-            for (MethodReader method : cls.getMethods()) {
+            ClassReader originalClass = originalSource.get(name);
+            for (MethodReader originalMethod : originalClass.getMethods()) {
+                MethodReader method = cls.getMethod(originalMethod.getDescriptor());
+                if (method == null) { throw new IllegalStateException("Original method removed: " + originalMethod.getReference()); }
                 String signature = method.getReference().toString().replace('/', '.');
                 String category = category(name, method.getName());
                 if (isComponent(vm.getDependencyClassSource(), name, new java.util.HashSet<>())

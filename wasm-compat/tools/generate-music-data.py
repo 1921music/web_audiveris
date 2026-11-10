@@ -7,7 +7,7 @@ from pathlib import Path
 
 
 def extract(root, output):
-    names = ['glyph/ShapeSet.java', 'ui/symbol/BravuraSymbols.java', 'ui/field/MusicPane.java', 'ui/symbol/Symbols.java', 'sheet/ui/TemplateView.java', 'ui/util/UIUtil.java']
+    names = ['glyph/ShapeSet.java', 'ui/symbol/BravuraSymbols.java', 'ui/field/MusicPane.java', 'ui/symbol/Symbols.java', 'sheet/ui/TemplateView.java', 'ui/util/UIUtil.java', 'Main.java']
     sources = {name: (root / 'app/src/main/java/org/audiveris/omr' / name).read_text(encoding='utf-8') for name in names}
     pane = sources[names[2]]
     # Fail if the source algorithm changes: the generator only implements this reviewed pure-data body.
@@ -54,6 +54,12 @@ def extract(root, output):
     target = output / 'src/org/audiveris/wasm/compat/platform/HeadlessMusicData.java'
     target.parent.mkdir(parents=True, exist_ok=True)
     additions = '\n'.join(f'        codes.add(0x{code:X});' for code in codes)
+    timeout = re.search(r'\bsheetStepTimeOut\s*=\s*new Constant.Integer\(\s*"Seconds",\s*(\d+),', sources['Main.java'])
+    if not timeout:
+        raise ValueError('Review default sheet-step timeout')
+    (target.parent / 'HeadlessDefaults.java').write_text(
+        'package org.audiveris.wasm.compat.platform;\npublic final class HeadlessDefaults {\n'
+        '    public static int defaultStepTimeout() { return ' + timeout[1] + '; }\n}\n', encoding='utf-8')
     target.write_text('''// Generated from upstream BeatUnits/Bravura/MusicPane; do not edit.
 package org.audiveris.wasm.compat.platform;
 public final class HeadlessMusicData {
@@ -104,7 +110,7 @@ public final class HeadlessMusicData {
     (output / 'render-ops.json').write_text(json.dumps({'source': names[5], 'sourceSha256': hashlib.sha256(sources[names[5]].encode()).hexdigest(),
         'methodSourceSha256': {name: hashlib.sha256(method.encode()).hexdigest() for name, method in zip(['setAbsoluteStroke', 'setAbsoluteDashedStroke'], methods)},
         'generatedSourceSha256': hashlib.sha256(render_source.encode()).hexdigest(), 'policy': 'Verbatim source method extraction; no fields, class initializer or window listener'}, indent=2) + '\n', encoding='utf-8')
-    metadata = {'shapes': cases, 'threshold': threshold, 'codes': codes, 'templateComposite': {'rule': composite[1], 'alpha': composite[2]},
+    metadata = {'shapes': cases, 'threshold': threshold, 'codes': codes, 'defaultStepTimeoutSeconds': int(timeout[1]), 'templateComposite': {'rule': composite[1], 'alpha': composite[2]},
                 'sourcesSha256': {name: hashlib.sha256(text.encode()).hexdigest() for name, text in sources.items()}}
     (output / 'music-data.json').write_text(json.dumps(metadata, indent=2) + '\n', encoding='utf-8')
 

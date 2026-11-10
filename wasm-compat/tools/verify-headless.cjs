@@ -11,8 +11,10 @@ const root = path.resolve(process.argv[2]);
     });
     const one = (await TeaVM.wasmGC.load(path.join(root, 'headless.wasm'))).exports;
     const two = (await TeaVM.wasmGC.load(path.join(root, 'headless.wasm'))).exports;
+    one.configure('node-one'); two.configure('node-two');
     assert.equal(one.platform(), 'platform-ok'); assert.equal(two.platform(), 'platform-ok');
     one.close(); assert.equal(one.open(), false); assert.equal(two.open(), true);
+    assert.equal(one.rejectInvalidConfiguration(), true); assert.equal(two.open(), true);
     const server = http.createServer((request, response) => {
         if (request.url === '/') { response.end('<!doctype html><title>Worker platform tests</title>'); return; }
         if (request.url === '/worker.js') {
@@ -22,7 +24,9 @@ const root = path.resolve(process.argv[2]);
                 onmessage = async event => {
                     try {
                         if (!api) api = (await TeaVM.wasmGC.load('/headless.wasm')).exports;
-                        const result = api[event.data](); postMessage({result, dom: typeof document, domParser: typeof DOMParser});
+                        const message = typeof event.data === 'string' ? {method: event.data} : event.data;
+                        const result = message.arg === undefined ? api[message.method]() : api[message.method](message.arg);
+                        postMessage({result, dom: typeof document, domParser: typeof DOMParser});
                     } catch (error) { postMessage({error: String(error.stack || error)}); }
                 };`); return;
         }
@@ -37,27 +41,32 @@ const root = path.resolve(process.argv[2]);
         await page.goto(`http://127.0.0.1:${server.address().port}/`);
         const result = await page.evaluate(async () => {
             const workers = [new Worker('/worker.js'), new Worker('/worker.js')];
-            async function call(index, method) {
+            async function call(index, method, arg) {
                 return new Promise((resolve, reject) => {
                     const timer = setTimeout(() => reject(new Error('Worker timeout')), 30000);
                     workers[index].onmessage = event => { clearTimeout(timer); event.data.error ? reject(new Error(event.data.error)) : resolve(event.data); };
                     workers[index].onerror = event => { clearTimeout(timer); reject(new Error(event.message)); };
-                    workers[index].postMessage(method);
+                    workers[index].postMessage({method, arg});
                 });
             }
             try {
+                await call(0, 'configure', 'worker-one'); await call(1, 'configure', 'worker-two');
                 const first = await call(0, 'platform'), second = await call(1, 'platform');
                 await call(0, 'close');
-                return { first, second, closed: await call(0, 'open'), independent: await call(1, 'open') };
+                return { first, second, closed: await call(0, 'open'), rejectedInvalid: await call(0, 'rejectInvalidConfiguration'), independent: await call(1, 'open') };
             } finally { workers.forEach(worker => worker.terminate()); }
         });
         for (const item of [result.first, result.second]) {
             assert.equal(item.result, 'platform-ok'); assert.equal(item.dom, 'undefined'); assert.equal(item.domParser, 'undefined');
         }
         assert.equal(result.closed.result, false); assert.equal(result.independent.result, true);
+        assert.equal(result.rejectedInvalid.result, true);
         const report = { node: process.version, chromium: browser.version(), nodeInstances: 2, workers: 2,
             platform: true, serialScheduling: true, resourceUri: true, loggingAndProgress: true,
             metronomeMusicDataAndRegex: true, templateComposite: true, unboundSheetContextRejected: true,
+            configurationSnapshots: true, originalConstantLifecycle: true, configurationIsolation: true,
+            constantSetMetadata: true, fontRatioOverride: 1.5, invalidConfigurationRejected: true, stepRunOptions: true,
+            originalBookOutputPathOptions: true,
             guiGuardPreservesEngineWork: true, workerIsolation: true, wasmBytes: fs.statSync(path.join(root, 'headless.wasm')).size };
         fs.writeFileSync(path.join(root, 'verification.json'), JSON.stringify(report, null, 2) + '\n'); console.log(JSON.stringify(report));
     } finally { if (browser) { await browser.close(); } await new Promise(resolve => server.close(resolve)); }

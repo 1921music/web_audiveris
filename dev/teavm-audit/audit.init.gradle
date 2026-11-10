@@ -59,7 +59,7 @@ gradle.projectsEvaluated {
     def musicData = new File(rootProject.projectDir, 'build/wasm-compat/music-data')
     rootProject.tasks.register('generateWasmMusicData', Exec) {
         inputs.file(new File(compat, 'tools/generate-music-data.py'))
-        for (name in ['glyph/ShapeSet.java', 'ui/symbol/BravuraSymbols.java', 'ui/field/MusicPane.java', 'ui/symbol/Symbols.java', 'sheet/ui/TemplateView.java', 'ui/util/UIUtil.java']) {
+        for (name in ['glyph/ShapeSet.java', 'ui/symbol/BravuraSymbols.java', 'ui/field/MusicPane.java', 'ui/symbol/Symbols.java', 'sheet/ui/TemplateView.java', 'ui/util/UIUtil.java', 'Main.java']) {
             inputs.file(new File(app.projectDir, 'src/main/java/org/audiveris/omr/' + name))
         }
         outputs.dir musicData

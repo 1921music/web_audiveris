@@ -15,12 +15,25 @@ import org.teavm.jso.JSExport;
 
 public final class HeadlessProbe {
     public static void main(String[] args) { }
+    @JSExport public static void configure(String marker) { HeadlessConfigurationTest.prepare(marker); }
+    @JSExport public static boolean rejectInvalidConfiguration() { return org.audiveris.omr.constant.WorkerConstantContract.rejectInvalidConfiguration(); }
     private static void check(boolean value) { if (!value) { throw new AssertionError("Headless platform contract"); } }
     @JSExport public static String platform() throws Exception {
         try { return platformCore(); }
         catch (Throwable error) { error.printStackTrace(); return error.getClass().getName() + ": " + error.getMessage(); }
     }
     private static String platformCore() throws Exception {
+        HeadlessConfigurationTest.run(); org.audiveris.omr.constant.WorkerConstantContract.run();
+        check(org.audiveris.omr.ui.util.UIUtil.getGlobalFontRatio() == 1.5);
+        check(org.audiveris.omr.ui.util.UIUtil.GLOBAL_FONT_RATIO == 1.5f);
+        if (!org.audiveris.omr.sheet.BookManager.getBaseFolder().equals(HeadlessConfiguration.outputFolder())) {
+            throw new AssertionError("Book output override: " + org.audiveris.omr.sheet.BookManager.getBaseFolder() + " expected " + HeadlessConfiguration.outputFolder());
+        }
+        org.audiveris.omr.sheet.BookManager.setBaseFolder(java.nio.file.Paths.get("/audiveris/changed"));
+        check(HeadlessConfiguration.outputFolder() == null);
+        if (!org.audiveris.omr.sheet.BookManager.getBaseFolder().toString().equals("/audiveris/changed")) {
+            throw new AssertionError("Book output update: " + org.audiveris.omr.sheet.BookManager.getBaseFolder());
+        }
         SerialExecutorTest.run(); HeadlessMusicDataTest.run();
         HeadlessRenderTest.data();
         check(HeadlessSheetContext.current() == null);
