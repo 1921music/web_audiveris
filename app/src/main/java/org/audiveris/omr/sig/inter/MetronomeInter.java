@@ -301,11 +301,9 @@ public class MetronomeInter
                 final SheetStub stub = staff.getSystem().getSheet().getStub();
                 final MusicFamily musicFamily = stub.getMusicFamily();
                 final FontInfo fi = new FontInfo(m.unitFontSize, musicFamily.getFontName());
-                final MusicFont f = new MusicFont(fi);
                 final Note note = Note.noteOf(m.unit);
                 final String str = note.getString();
-                final TextLayout layout = f.layout(str);
-                final Rectangle2D rect = layout.getBounds();
+                final Rectangle2D rect = org.audiveris.omr.text.TextFontGeometry.provider().musicLayoutBounds(fi, str);
                 final Rectangle buRect = beatUnit.getBounds();
                 m.baseCenter = new Point2D.Double(
                         buRect.x + buRect.width / 2,
@@ -1131,16 +1129,17 @@ public class MetronomeInter
                 if (ctx.note != null) {
                     final Scale scale = ctx.sheet.getScale();
                     final MusicFamily family = ctx.sheet.getStub().getMusicFamily();
-                    final MusicFont musicFont = MusicFont.getBaseFont(family, scale.getInterline());
+                    final FontInfo musicInfo = new FontInfo(
+                            org.audiveris.omr.ui.symbol.FontFamilyDefaults.pointSize(scale.getInterline()), family.getFontName());
                     final Rectangle bounds = ctx.noteGlyph.getBounds();
                     final Point2D location = LineUtil.intersectionAtX(word.getBaseline(), bounds.x);
                     created.add(
-                            new BeatUnitInter(
+                            BeatUnitInter.fromFontInfo(
                                     ctx.noteGlyph,
                                     bounds,
                                     1.0,
                                     ctx.note.getString(),
-                                    musicFont,
+                                    musicInfo,
                                     ctx.note,
                                     PointUtil.rounded(location)));
                 }

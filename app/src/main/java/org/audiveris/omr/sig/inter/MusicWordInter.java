@@ -157,6 +157,13 @@ public class MusicWordInter
     }
 
     //~ Methods ------------------------------------------------------------------------------------
+    /** Recognition constructor using an explicit music-font description rather than an AWT font. */
+    protected MusicWordInter(Glyph glyph, Rectangle bounds, Double grade, Shape shape, FontInfo musicInfo,
+                             String value, Point location)
+    {
+        super(glyph, bounds, shape, grade, value,
+                org.audiveris.omr.text.TextFontGeometry.adjustedMusicFont(musicInfo, value, bounds), location);
+    }
 
     //---------------//
     // beforeMarshal //
@@ -247,10 +254,7 @@ public class MusicWordInter
         }
 
         // As opposed to a plain WordInter, we use MusicFont rather than TextFont
-        final MusicFont font = new MusicFont(fontInfo);
-        final TextLayout layout = font.layout(value);
-
-        return (int) Math.rint(layout.getAdvance());
+        return (int) Math.rint(org.audiveris.omr.text.TextFontGeometry.provider().musicAdvance(fontInfo, value));
     }
 
     //-----------//
@@ -272,9 +276,7 @@ public class MusicWordInter
                             0));
         }
 
-        final MusicFont musicFont = new MusicFont(fontInfo);
-        final TextLayout layout = musicFont.layout(value);
-        final Rectangle2D rect = layout.getBounds();
+        final Rectangle2D rect = org.audiveris.omr.text.TextFontGeometry.provider().musicLayoutBounds(fontInfo, value);
 
         return new Rectangle(
                 bounds = new Rectangle(
@@ -298,9 +300,7 @@ public class MusicWordInter
             return new Dimension(0, 0);
         }
 
-        final MusicFont musicFont = new MusicFont(fontInfo);
-        final TextLayout layout = musicFont.layout(value);
-        final Rectangle2D rect = layout.getBounds();
+        final Rectangle2D rect = org.audiveris.omr.text.TextFontGeometry.provider().musicLayoutBounds(fontInfo, value);
 
         return new Dimension((int) Math.rint(rect.getWidth()), (int) Math.rint(rect.getHeight()));
     }
@@ -366,11 +366,9 @@ public class MusicWordInter
             final Sheet sheet = staff.getSystem().getSheet();
             final Scale scale = sheet.getScale();
             final MusicFamily family = sheet.getStub().getMusicFamily();
-            final MusicFont musicFont = MusicFont.getBaseFont(family, scale.getInterline());
-            fontInfo = new FontInfo(
-                    musicFont.computeSize(value, bounds.getSize()),
-                    musicFont.getFontName());
-            location = musicFont.computeLocation(value, bounds);
+            final FontInfo base = new FontInfo(org.audiveris.omr.ui.symbol.FontFamilyDefaults.pointSize(scale.getInterline()), family.getFontName());
+            fontInfo = org.audiveris.omr.text.TextFontGeometry.adjustedMusicFont(base, value, bounds);
+            location = org.audiveris.omr.text.TextFontGeometry.musicLocation(base, value, bounds);
         }
     }
 }

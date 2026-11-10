@@ -54,6 +54,8 @@ final class HeadlessPatches {
             case "org.audiveris.omr.sig.inter.AbstractPitchedInter": pitchOffsets(cls); break;
             case "org.audiveris.omr.ui.symbol.SymbolGeometry":
                 symbolGeometryDefault(cls); break;
+            case "org.audiveris.omr.text.TextFontGeometry":
+                textGeometryDefault(cls); break;
             case "org.audiveris.omr.classifier.BasicClassifier":
                 if (cls.getMethod(new MethodDescriptor("load", ValueType.arrayOf(STRING), obj("org.audiveris.omr.classifier.AbstractClassifier$Network"))) == null) {
                     throw new IllegalStateException("Review BasicClassifier model-loading boundary");
@@ -444,6 +446,25 @@ final class HeadlessPatches {
         InvokeInstruction call = new InvokeInstruction(); call.setType(InvocationType.SPECIAL);
         call.setMethod(new MethodReference(HeadlessSymbolGeometry.class.getName(), "fillPitchOffsets", map, ValueType.VOID));
         call.setArguments(values); block.add(call); block.add(new ExitInstruction()); method.setProgram(program);
+    }
+    private static void textGeometryDefault(ClassHolder cls) {
+        String provider = cls.getName() + "$Provider";
+        MethodHolder method = cls.getMethod(new MethodDescriptor("provider", obj(provider)));
+        if (method == null || method.getProgram() == null) { throw new IllegalStateException("Review text geometry boundary"); }
+        Program program = method.getProgram(); int before = instructions(program), replaced = 0;
+        for (BasicBlock block : program.getBasicBlocks()) {
+            var original = new ArrayList<Instruction>(); for (Instruction instruction : block) { original.add(instruction); }
+            for (Instruction instruction : original) {
+                if (!(instruction instanceof GetFieldInstruction get)
+                        || !get.getField().equals(new FieldReference(cls.getName() + "$DefaultHolder", "INSTANCE"))) { continue; }
+                if (get.getInstance() != null) { throw new IllegalStateException("Expected static text provider"); }
+                InvokeInstruction call = new InvokeInstruction(); call.setType(InvocationType.SPECIAL);
+                call.setMethod(new MethodReference(HeadlessTextFontGeometry.class.getName(), "provider", obj(provider)));
+                call.setReceiver(get.getReceiver()); call.setLocation(get.getLocation()); get.replace(call); replaced++;
+            }
+        }
+        if (replaced != 1) { throw new IllegalStateException("Review text default initialization: " + replaced); }
+        report(method, "text-geometry-default-provider", program.basicBlockCount(), before);
     }
     private static void symbolGeometryDefault(ClassHolder cls) {
         MethodHolder method = cls.getMethod(new MethodDescriptor("provider", obj("org.audiveris.omr.ui.symbol.SymbolGeometry$Provider")));

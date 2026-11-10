@@ -189,6 +189,12 @@ public class TesseractOCR
     @Override
     public double getMinConfidence ()
     {
+        return minimumConfidence();
+    }
+
+    /** Recognition threshold without initializing an OCR service instance or loading a model. */
+    public static double minimumConfidence ()
+    {
         return constants.minConfidence.getValue();
     }
 

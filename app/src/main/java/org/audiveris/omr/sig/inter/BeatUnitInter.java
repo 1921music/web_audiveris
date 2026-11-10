@@ -116,6 +116,19 @@ public class BeatUnitInter
     }
 
     //~ Methods ------------------------------------------------------------------------------------
+    /** Recognition factory that keeps font measurement independent of desktop font instances. */
+    public static BeatUnitInter fromFontInfo(Glyph glyph, Rectangle bounds, Double grade, String value,
+                                             org.audiveris.omr.text.FontInfo info, Note note, Point location)
+    {
+        return new BeatUnitInter(info, glyph, bounds, grade, value, note, location);
+    }
+
+    private BeatUnitInter(org.audiveris.omr.text.FontInfo info, Glyph glyph, Rectangle bounds, Double grade,
+                          String value, Note note, Point location)
+    {
+        super(glyph, bounds, grade, note.toShape(), info, value, location);
+        this.note = note;
+    }
 
     //--------//
     // accept //

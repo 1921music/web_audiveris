@@ -21,9 +21,6 @@
 // </editor-fold>
 package org.audiveris.omr.text;
 
-import org.audiveris.omr.ui.symbol.OmrFont;
-import org.audiveris.omr.ui.symbol.TextFont;
-import static org.audiveris.omr.ui.symbol.TextFont.TEXT_FONT_NAME;
 import static org.audiveris.omr.util.RegexUtil.group;
 
 import org.slf4j.Logger;
@@ -298,9 +295,7 @@ public class FontInfo
                                              String value,
                                              Rectangle bounds)
     {
-        final TextFont textFont = TextFont.getBestFont(attrs, pointSize);
-        final int fontSize = textFont.computeSize(value, bounds.getSize());
-        return new FontInfo(attrs, fontSize, textFont.getFontName());
+        return TextFontGeometry.adjustedFont(attrs, pointSize, value, bounds);
     }
 
     //---------------//
@@ -314,7 +309,7 @@ public class FontInfo
      */
     public static FontInfo createDefault (int fontSize)
     {
-        return new FontInfo(false, false, false, false, false, false, fontSize, TEXT_FONT_NAME);
+        return new FontInfo(false, false, false, false, false, false, fontSize, TextFontGeometry.provider().defaultFontName());
     }
 
     //---------------------//
@@ -348,8 +343,8 @@ public class FontInfo
             // Discard one-char words, they are not reliable
             if (length > 1) {
                 final FontInfo info = word.getFontInfo();
-                final OmrFont font = new TextFont(info);
-                final int fontSize = font.computeSize(word.getValue(), word.getBounds().getSize());
+                final int fontSize = TextFontGeometry.adjustedFont(info.getAttributes(), info.pointSize,
+                        word.getValue(), word.getBounds()).pointSize;
                 sizeTotal += (fontSize * length);
                 charCount += length;
 

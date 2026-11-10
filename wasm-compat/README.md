@@ -5,6 +5,10 @@ The opt-in headless layer also uses the small source boundaries documented below
 is opt-in (`-Pcompat=true`) in the audit harness and targets TeaVM 0.16.0 / Wasm GC.
 It does not yet make the complete recognition engine executable in a browser.
 
+The last archived full audit remains **stage 24**. The newer TEXTS continuation and font-boundary
+changes below have not yet received a new all-method audit; stage-24 counts describe that archived
+run, not a re-analysis of these changes.
+
 ## Approach
 
 - `CompilerSubstitutions` uses TeaVM's substitution SPI to replace `java.awt.Point`,
@@ -1316,6 +1320,48 @@ notices are in `wsl-artifacts/wasm-components/tesseract-js-ocr/{legacy,lstm}-wor
 The earlier `{legacy,lstm}` results retain the stock-output comparison. Export each enriched profile
 with `export_ocr_backend.py <repository> <mirror> <source-commit> <legacy|lstm>`.
 For the legacy profile, append `--native` to archive the matching JVM comparison under `native/`.
+
+## TEXTS continuation work in progress
+
+`WorkerTextsBridge` retains a sheet and an owned, already-cleaned GRAY8 buffer across the external
+OCR request. A matching reply restores the image origin, builds original `TextWord` / `TextLine`
+objects, performs the original ordinate sorting and font adjustment, then calls the original
+`TextsStep.doSystem` for each system and its epilog. Failures remain failures, cancellation rejects
+late replies, and a continuation can be resumed only once. As in `TesseractOrder`, individual
+words without font metadata are skipped; a backend with no font capability needs an explicit
+fallback and cannot silently become an empty successful TEXTS result.
+
+The small source boundary `TextFontGeometry` separates exact font measurements from recognition.
+Its JVM default keeps Java2D visual bounds, layout bounds and advances. Font fitting retains the
+original float arithmetic and rounding. `FontInfo`, `TextWord`, `WordInter`, `MusicWordInter` and
+the recognition-side metronome construction delegate measurements through this boundary. Music
+and ordinary text use separate entries. `HeadlessTextFontGeometry` accepts exact supplied values,
+rejects missing/conflicting values and preserves the configured default font name. It is an
+explicit resource boundary, not a portable font implementation or a Canvas approximation.
+The original Tesseract confidence constant also has a scalar accessor so system recognition does
+not need to instantiate an OCR service merely to read that setting.
+
+Verified so far: **4,096 JVM checks** compare original text fitting and exact recorded replay;
+the TEXTS continuation entry compiled with strict TeaVM checking and **zero diagnostics** after
+the text/music font split. Subsequent graph-output/test changes and the real-score continuation
+comparison are still pending verification. The first score run exposed the original per-word
+missing-font filtering rule, which is now reflected in the bridge but has not yet been rerun.
+
+Execution was interrupted by WSL becoming unresponsive during `verifyTextGeometryProbe` on
+2026-11-11. A simple WSL command and `wsl --shutdown` also stopped responding; restarting
+`WslService` was denied by Windows service permissions. No successful Worker font or score-TEXTS
+result is claimed for this work. CPU **8**, total memory **8 GiB**, swap **0** were retained.
+The pending shutdown eventually completed, but the next capped WSL liveness command still did
+not respond. The committed source is on Windows and does not depend on that running command.
+
+After WSL recovery, run the capped launcher with the audit init script and
+`verifyTextGeometryProbe verifyTextsContinuationProbe` (initially one accepted score page;
+`-PtextsPages=0` selects all pages). The score oracle compares original cleanup/OCR/TEXTS with the
+continuation, including imported words, graph word geometry and relations. Its exact native
+cleaned rasters, OCR replies and font measurements are explicitly supplied fixtures for the
+Wasm checks. Browser-side TEXTS cleanup, general font measurement and live OCR on score pages
+remain separate work. A new full audit and earlier-stage regression checks are also required
+before updating the global verified counts.
 
 ## Text font measurement investigation
 

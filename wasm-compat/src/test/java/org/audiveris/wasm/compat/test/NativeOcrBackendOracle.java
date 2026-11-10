@@ -49,7 +49,7 @@ public final class NativeOcrBackendOracle {
             }
         }
     }
-    private static OcrExchange.Result read(TessBaseAPI api) {
+    static OcrExchange.Result read(TessBaseAPI api) {
         var lines = new ArrayList<OcrExchange.Line>();
         var words = new ArrayList<OcrExchange.Word>(); Word word = null;
         OcrExchange.Baseline lineBaseline = null; boolean fonts = false;

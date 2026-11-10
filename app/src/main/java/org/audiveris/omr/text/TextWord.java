@@ -27,8 +27,6 @@ import org.audiveris.omr.glyph.Glyph;
 import org.audiveris.omr.math.LineUtil;
 import org.audiveris.omr.sheet.Scale;
 import org.audiveris.omr.sheet.Sheet;
-import org.audiveris.omr.ui.symbol.OmrFont;
-import org.audiveris.omr.ui.symbol.TextFont;
 import org.audiveris.omr.util.Navigable;
 import org.audiveris.omr.util.StringUtil;
 import org.audiveris.omr.util.WrappedBoolean;
@@ -37,9 +35,7 @@ import org.audiveris.omr.util.XmlUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.Font;
 import java.awt.Rectangle;
-import java.awt.font.TextLayout;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -215,9 +211,7 @@ public class TextWord
             int size = scale.toPixels(constants.standardFontSize);
             fontInfo = FontInfo.createDefault(size);
 
-            Font font = new TextFont(fontInfo);
-            TextLayout layout = new TextLayout(dash, font, OmrFont.frc);
-            Rectangle2D rect = layout.getBounds();
+            Rectangle2D rect = TextFontGeometry.provider().layoutBounds(fontInfo, dash);
 
             // chars
             chars.clear();

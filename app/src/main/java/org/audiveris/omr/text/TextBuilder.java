@@ -1379,7 +1379,7 @@ public class TextBuilder
      */
     public static boolean isMainlyItalic (TextLine line)
     {
-        final double minConfidence = TesseractOCR.getInstance().getMinConfidence();
+        final double minConfidence = TesseractOCR.minimumConfidence();
         int reliableWords = 0;
         int italicWords = 0;
 

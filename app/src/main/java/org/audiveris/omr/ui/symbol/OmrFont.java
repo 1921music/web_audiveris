@@ -213,7 +213,7 @@ public abstract class OmrFont
      */
     public static int getPointSize (int staffInterline)
     {
-        return 4 * staffInterline;
+        return FontFamilyDefaults.pointSize(staffInterline);
     }
 
     //--------//

@@ -254,10 +254,7 @@ public class WordInter
             return 0;
         }
 
-        final TextFont font = new TextFont(fontInfo);
-        final TextLayout layout = font.layout(value);
-
-        return (int) Math.rint(layout.getAdvance());
+        return (int) Math.rint(org.audiveris.omr.text.TextFontGeometry.provider().advance(fontInfo, value));
     }
 
     //-----------//
@@ -280,9 +277,7 @@ public class WordInter
         }
 
         // Use the best suitable font, based on word fontInfo
-        final TextFont textFont = TextFont.getBestFont(fontInfo);
-        final TextLayout layout = textFont.layout(value);
-        final Rectangle2D rect = layout.getBounds();
+        final Rectangle2D rect = org.audiveris.omr.text.TextFontGeometry.provider().layoutBounds(fontInfo, value);
 
         return new Rectangle(
                 bounds = new Rectangle(
@@ -321,9 +316,7 @@ public class WordInter
             return new Dimension(0, 0);
         }
 
-        final TextFont textFont = new TextFont(fontInfo);
-        final TextLayout layout = textFont.layout(value);
-        final Rectangle2D rect = layout.getBounds();
+        final Rectangle2D rect = org.audiveris.omr.text.TextFontGeometry.provider().layoutBounds(fontInfo, value);
 
         return new Dimension((int) Math.rint(rect.getWidth()), (int) Math.rint(rect.getHeight()));
     }

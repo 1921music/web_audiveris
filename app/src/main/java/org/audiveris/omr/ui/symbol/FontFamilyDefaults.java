@@ -19,6 +19,8 @@ public final class FontFamilyDefaults {
             textConstants.defaultTextFamily, Param.GLOBAL_SCOPE);
 
     private FontFamilyDefaults() { }
+    /** Original OmrFont staff-interline to point-size conversion, without loading a font. */
+    public static int pointSize(int staffInterline) { return 4 * staffInterline; }
     static MusicFont.Constants musicConstants() { return musicConstants; }
     static TextFont.Constants textConstants() { return textConstants; }
 
