@@ -274,6 +274,7 @@ org.audiveris.omr.sheet.key.KeyRoi.getAreaPixels(Lij/process/ByteProcessor;Lorg/
 org.audiveris.omr.sheet.key.KeyRoi.getSlicePixels(Lij/process/ByteProcessor;Lorg/audiveris/omr/sheet/key/KeySlice;Z)Lij/process/ByteProcessor;	raw-gray-header-copy	16	16	150	150
 org.audiveris.omr.sheet.key.KeyColumn$Constants.getUnitName()Ljava/lang/String;	platform-method	0	1	0	2
 org.audiveris.omr.sheet.key.KeyExtractor$Constants.getUnitName()Ljava/lang/String;	platform-method	0	1	0	2
+org.audiveris.omr.sheet.ledger.LedgersBuilder.buildLedgers(Ljava/util/List;)V	ledger-failure-propagation	10	10	87	87
 org.audiveris.omr.sheet.ledger.LedgersBuilder.addCheckBoard()V	platform-method	2	1	25	2
 org.audiveris.omr.sheet.ledger.LedgersBuilder$Constants.getUnitName()Ljava/lang/String;	platform-method	0	1	0	2
 org.audiveris.omr.sheet.ledger.LedgersFilter.process()Ljava/util/Map;	headless-gui-guard	5	3	106	70

@@ -38,9 +38,9 @@
     "unattributed": 2
   },
   "platformSubstitutionsEnabled": true,
-  "modifiedMethods": 512,
-  "removedDirectCallsFromModifiedMethods": 11,
-  "addedDirectCallsFromModifiedMethods": 6,
+  "modifiedMethods": 513,
+  "removedDirectCallsFromModifiedMethods": 4,
+  "addedDirectCallsFromModifiedMethods": 1,
   "excludedClassesLinked": {
     "before": 75,
     "after": 75

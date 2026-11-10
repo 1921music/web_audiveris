@@ -1,0 +1,169 @@
+{
+  "ledger": {
+    "commit": "04697c74fae431ef8436a9429386957a5cb25993",
+    "sourceSha256": {
+      "app/src/main/java/org/audiveris/omr/sheet/ledger/LedgersFilter.java": "c570bfb386098880cc5b7e10dae2edcc9f42a244e28a5c10df4cf0271d7a4010",
+      "app/src/main/java/org/audiveris/omr/sheet/ledger/LedgersBuilder.java": "319451ccde8dcc72423cf3e81bb13d28486fefe9d02eac870f2ac15c590b28ef",
+      "app/src/main/java/org/audiveris/omr/sheet/ledger/LedgersPostAnalysis.java": "a5476cc63b048bc46acf033c7a21c1e83f04164a2188f116bf3c5d064bc15a4c",
+      "app/src/main/java/org/audiveris/omr/sheet/ledger/LedgersStep.java": "8dba09ed700dd86b6c1fade723a637469479c33f72b9f2dc2cfe239483b36b20"
+    },
+    "classSha256": {
+      "org/audiveris/omr/sheet/ledger/LedgersBuilder$Constants.class": "4ae95e10592673f03ab043e95d8aa3650cefc9747f8edcd52aa6dac2ea57a201",
+      "org/audiveris/omr/sheet/ledger/LedgersBuilder$LedgerCheckBoard.class": "ab6d700c91ec835f5aaf8eb781790c3dfe500325d213760b8f6e5b29c724665c",
+      "org/audiveris/omr/sheet/ledger/LedgersBuilder$LedgerSuite$ConvexityCheck.class": "2eb72194df260ab3c1d5f174a4b6685d1db642d574b2e515d2ec1bc764187919",
+      "org/audiveris/omr/sheet/ledger/LedgersBuilder$LedgerSuite$LeftPitchCheck.class": "75e3eb5c8031111c39eb0b4fe54a7d788124a2074777b218f96779e052b8d658",
+      "org/audiveris/omr/sheet/ledger/LedgersBuilder$LedgerSuite$MaxThicknessCheck.class": "cb266afbb676e2bc5d1631a87efb1bd96dc9ace045e06e05f347c12bcf5485be",
+      "org/audiveris/omr/sheet/ledger/LedgersBuilder$LedgerSuite$MinLengthCheck.class": "675c40bd2d5f000ec1bfc86630aaa4c5fdfa864cbc787f86f292067c5b54a605",
+      "org/audiveris/omr/sheet/ledger/LedgersBuilder$LedgerSuite$MinThicknessCheck.class": "c732951cd7cf42ca7f1d228dd966dedfd2728635dfd49c86c82e10c6ff5a80e0",
+      "org/audiveris/omr/sheet/ledger/LedgersBuilder$LedgerSuite$RightPitchCheck.class": "1b93e8fddb8e592d701d04181e9085bb652a77c87b066f415fd21108bad5caf3",
+      "org/audiveris/omr/sheet/ledger/LedgersBuilder$LedgerSuite$StraightCheck.class": "b2de64f8f6f106f3434783236c390a991d4cd97b3c81c722e646a3c4635d2694",
+      "org/audiveris/omr/sheet/ledger/LedgersBuilder$LedgerSuite.class": "e164dc3c62fb5ab98aa2202dbd22905a507b6cb6e9f85cd94a147e811d1443f7",
+      "org/audiveris/omr/sheet/ledger/LedgersBuilder$StickContext.class": "d8aaa28dff67c406867bd5cf212dc5a18e169d0b268a08c13ea87a1a092d07ad",
+      "org/audiveris/omr/sheet/ledger/LedgersBuilder$Suites.class": "92db887ff75bc4f84399fb100ab3579b17de5a6b08ffc01cac9fc69ce2768f02",
+      "org/audiveris/omr/sheet/ledger/LedgersBuilder.class": "6d855f6320de1f8fafdfac9ab6981cffeafe3b5726b276f2f887f9f3149995e0",
+      "org/audiveris/omr/sheet/ledger/LedgersFilter$Constants.class": "b9ed3f24304ec1f77e47ed8e7bacb9f358e9aa874e992eb1d4cc9047ec1113ea",
+      "org/audiveris/omr/sheet/ledger/LedgersFilter.class": "584422379ac25a2c7c1cf43e165d44ea4a993d33acfe93eeff92f3dff63e1537",
+      "org/audiveris/omr/sheet/ledger/LedgersPostAnalysis$Constants.class": "312f95629416c30d2457d641650effac7cded4dc939ef66284e2a32a3147640b",
+      "org/audiveris/omr/sheet/ledger/LedgersPostAnalysis$Info.class": "1a717d56e3a6df350c3501ff426dca8f701a89fff22f28cbe232d39ecc79dc91",
+      "org/audiveris/omr/sheet/ledger/LedgersPostAnalysis.class": "5d5114808c9e03a36656dd07dff05a7f1a0b1a426496244bad327ad48780e11c",
+      "org/audiveris/omr/sheet/ledger/LedgersStep$Context.class": "54ca0240126c94ed5782e4c3ae040a60f07fefcc1ff6de0bc64f940897149141",
+      "org/audiveris/omr/sheet/ledger/LedgersStep.class": "c0d5b91c56f8cee8c344565708f9266466ea37bd9d43e122d2d276f09fa37814"
+    }
+  },
+  "beam": {
+    "commit": "04697c74fae431ef8436a9429386957a5cb25993",
+    "sourceSha256": {
+      "app/src/main/java/org/audiveris/omr/sheet/beam/SpotsBuilder.java": "b73681ed3336ba6e0f0fcf1cb3d0e39aa48d60fb9a659aad2785ee495cba64ee",
+      "app/src/main/java/org/audiveris/omr/sheet/beam/BeamsBuilder.java": "33bdd7ff7a3d74186107ba4e828dcb7169fddaba859faa9107e30f0357d5d972",
+      "app/src/main/java/org/audiveris/omr/sheet/beam/MultipleRestsBuilder.java": "f98d4de127fc632f9f789e78b7db57a402b7279dca02033d73dfb9702acb56f6",
+      "app/src/main/java/org/audiveris/omr/sheet/beam/BlackHeadSizer.java": "7a4cdd8a66787410641e55f39ac658ee28db3ff07d6e75bbc6d48bad85839f99",
+      "app/src/main/java/org/audiveris/omr/sheet/beam/BeamStructure.java": "7fbd6b68caa8d8f772c5baefac5248d064d338fa7fde03e555c16cac56ac6485",
+      "app/src/main/java/org/audiveris/omr/sheet/beam/BeamItem.java": "4fa1776084e5067dca88758c5565432d4f420d38104395e9ca7fcd966a612172",
+      "app/src/main/java/org/audiveris/omr/sheet/beam/BeamLine.java": "76f60f23329c3ad069b6747d687c7aabc1e928a0a8b034e9474dda2c183bf198"
+    },
+    "classSha256": {
+      "org/audiveris/omr/sheet/beam/BeamItem.class": "a6acbc3ed9d1e532ec8f7536b73f567b1cb45de9997e7e8fb7526bb08ea7054c",
+      "org/audiveris/omr/sheet/beam/BeamLine.class": "0d407722a9a6aec5abea71d851fd60f3bcd439ee9783345abc0b108f21688d7d",
+      "org/audiveris/omr/sheet/beam/BeamStructure$Constants.class": "27b13be15df3855c43b9830a7035513dee4822ace2168cc27b00c705f4569f4a",
+      "org/audiveris/omr/sheet/beam/BeamStructure$SectionBorder.class": "cb13c9ba65d1991d01742c13adec080be154392b97147c17628506f6d8da9b3d",
+      "org/audiveris/omr/sheet/beam/BeamStructure.class": "4e3aa4076877689264d07db39a08e9f89b7b2770c864672dd2da7363dbd8ecf5",
+      "org/audiveris/omr/sheet/beam/BeamsBuilder$Constants.class": "78773d25020747c506db7d26746677c54774375b8a8db22d60a765194bbab59f",
+      "org/audiveris/omr/sheet/beam/BeamsBuilder$CueAggregate.class": "de71c4a21741b5b58331030518adf2d8264bbf06e19fe74a9e7652e93ff79ea6",
+      "org/audiveris/omr/sheet/beam/BeamsBuilder$ItemParameters.class": "aefcee12054cb203b19526527d8f92c6b084021f09d76894545a23f804164375",
+      "org/audiveris/omr/sheet/beam/BeamsBuilder$Parameters.class": "6e32cc893de481f17f6101b474a80e4edfcc8a460f0886407c6f625cbb530d23",
+      "org/audiveris/omr/sheet/beam/BeamsBuilder.class": "bf47bdb45a945bf72fe4935e45e8342fca6f7d76c3c714a2476115a1782f6939",
+      "org/audiveris/omr/sheet/beam/BlackHeadSizer$Constants.class": "675317bca07e622683f038a736a584ac07fba33e120b50bc26c85e4c7e3644d2",
+      "org/audiveris/omr/sheet/beam/BlackHeadSizer$Parameters.class": "ca99d315071071fad331853d5c0433a4d87e9704865d2ca10caa96f843edfa4d",
+      "org/audiveris/omr/sheet/beam/BlackHeadSizer.class": "26ece136d5ce253939326e5d34a0419d3d07d44cfcebe4be62a44e5ae1d8915d",
+      "org/audiveris/omr/sheet/beam/MultipleRestsBuilder$Constants.class": "bc0ac208bf3b27f41e419ed34b3154f7e248b34d7c97f239e16c51bccd4c2eb8",
+      "org/audiveris/omr/sheet/beam/MultipleRestsBuilder$Parameters.class": "8d9f5908b79c7be1ce2d9531432295d1ff2d461f202c05a392684fc828354762",
+      "org/audiveris/omr/sheet/beam/MultipleRestsBuilder.class": "5ac6abfdfa1f7cd70e34f7338536491c21fe93491ca0912919be02dc012f464f",
+      "org/audiveris/omr/sheet/beam/SpotsBuilder$Constants.class": "b80b99bf07a8c5a3f3735e01fa7ee611c49ac7d91bdfc1a339a4a40a721dc28d",
+      "org/audiveris/omr/sheet/beam/SpotsBuilder.class": "391744a979feba5ab5b4c0c2668eeed5b7a2ae0df3ce1b614c2a650a075eacd8"
+    }
+  },
+  "stem": {
+    "commit": "04697c74fae431ef8436a9429386957a5cb25993",
+    "sourceSha256": {
+      "app/src/main/java/org/audiveris/omr/sheet/stem/StemScaler.java": "30b1b4a8d346392a4dd78a1648da0f498981004a6cd1ad62116a5929e7b13fe3",
+      "app/src/main/java/org/audiveris/omr/sheet/stem/StemChecker.java": "3cd2a2bc0f20f52e202bde269a19c7747be9b4d9670141c93ce30a21f7e1bfbd",
+      "app/src/main/java/org/audiveris/omr/sheet/stem/VerticalsBuilder.java": "ef62328eb13759b0c4b026d24efb6f79a6c913d6e97c6681357e4911265b4ed4"
+    },
+    "classSha256": {
+      "org/audiveris/omr/sheet/stem/StemChecker$BlackCheck.class": "a5680541db39eee1b990b2f36021ebbed6ad686c386481fc52be258fba390c04",
+      "org/audiveris/omr/sheet/stem/StemChecker$BlackRatioCheck.class": "c1b261b99b24c0bbb9b088c75a4668937746c666249e58adaf95d60dc452e80f",
+      "org/audiveris/omr/sheet/stem/StemChecker$CleanCheck.class": "cd0c8f044826c1383f2a321e28ddf9c4dc82abdf2cb7b937bb99cc5a90e34f23",
+      "org/audiveris/omr/sheet/stem/StemChecker$Constants.class": "b404c640eb2f2ec9760552afedab6a430d2c084b7be7b9c7495b6b9e0e699276",
+      "org/audiveris/omr/sheet/stem/StemChecker$GapCheck.class": "aa8d03a838b25de253524b0aa47e93a5ce9a483018475993cf7289e9031f317d",
+      "org/audiveris/omr/sheet/stem/StemChecker$LengthCheck.class": "efc6fe381bcddb54931e24518355641c7e6de1d3232f150aa5919fbef780532c",
+      "org/audiveris/omr/sheet/stem/StemChecker$SeedCheckSuite.class": "2b9ecc449ddb7b58616583c0c99ea952e75635382c22a39f487c14d57d0dd784",
+      "org/audiveris/omr/sheet/stem/StemChecker$SlopeCheck.class": "7c61490109aa83d20bae96c35b58f4fe0f82b7957aec3ce297a451e883039f0c",
+      "org/audiveris/omr/sheet/stem/StemChecker$StickContext.class": "4a44e571901b59915f3890713decbdead21051cb0edb250636923946a2694a2d",
+      "org/audiveris/omr/sheet/stem/StemChecker$StraightCheck.class": "d0ec5e10df6a1972c878428e64baabed7b92f6357f7a3d0328329640612032c7",
+      "org/audiveris/omr/sheet/stem/StemChecker$VertCheckBoard.class": "b8bb2787371424fea31eadf5aac84d9a3bb182d5227d992bef967dcf307793f4",
+      "org/audiveris/omr/sheet/stem/StemChecker.class": "c5527422fa1a53aaf0b18b4a1099270a4751b44d1dae2439f7ff5e00ff2c6587",
+      "org/audiveris/omr/sheet/stem/StemScaler$Constants.class": "ba05e7d6f2a5827e736710c040a123a9f23f5e0c70c88caf087f94c56927fee6",
+      "org/audiveris/omr/sheet/stem/StemScaler$HistoKeeper.class": "f3b6c74b0f68b849ed7c51aa0915930af2608e64f2d3991d6b2d90449396e5c0",
+      "org/audiveris/omr/sheet/stem/StemScaler$StemsCleaner.class": "aa36023805147a2b0ddc2103ed3305e3301f1715c5ef485657303d24bd083af4",
+      "org/audiveris/omr/sheet/stem/StemScaler.class": "afee9e309963edf22335235c50a9205e2dc10254a5d36ebcd2fb40a2ee131ddc",
+      "org/audiveris/omr/sheet/stem/VerticalsBuilder$Constants.class": "ef400ddd3aed0976e2f026ef87dc97b790633460b7ff4987932571ef07f0629d",
+      "org/audiveris/omr/sheet/stem/VerticalsBuilder.class": "16afcba3632da0829b21ded8737083d05eb1ce14edfbc9c5721928dce3bda290"
+    }
+  },
+  "header": {
+    "commit": "04697c74fae431ef8436a9429386957a5cb25993",
+    "sourceSha256": {
+      "app/src/main/java/org/audiveris/omr/sig/inter/AbstractInter.java": "c12257b10c826afac01922c4bf4783f68d0733eba237d44d36ac5a741ceed2c9",
+      "app/src/main/java/org/audiveris/omr/sig/inter/TimeWholeInter.java": "1685ffbc9f9a4c205615789360db35df0df732965b6ba35f772967011c927dae",
+      "app/src/main/java/org/audiveris/omr/sig/inter/TimeCustomInter.java": "be80a244cbae61f715fc69f03c01d120d7e500c6c84a09193d1973a306e5d55f",
+      "app/src/main/java/org/audiveris/omr/sheet/clef/ClefBuilder.java": "3345cf5982a2b2f3dd7ab04d943e9a20d3d549b5b12208536f496cbe024ea5f3",
+      "app/src/main/java/org/audiveris/omr/sheet/key/KeyRoi.java": "8c1540f8504edbe8ab7c46f5db973e162ccdcf2aba1b0adde8dd1ce4da6b6fe2"
+    },
+    "classSha256": {
+      "org/audiveris/omr/sheet/clef/ClefBuilder$ClefAdapter.class": "210133e4a4168058308c15f152afe296c3a445cc3494370b1647291fc546f0f3",
+      "org/audiveris/omr/sheet/clef/ClefBuilder$Column.class": "526bad3e7d7d1468ca9c961a7bea660067a66be553ed8ccbb451613820081f11",
+      "org/audiveris/omr/sheet/clef/ClefBuilder$Constants.class": "c5dc2457435401259aabb8af932a0d253137a36c0561c526bc674aa4d7c3393c",
+      "org/audiveris/omr/sheet/clef/ClefBuilder$Parameters.class": "4fb9523bf7b0dc9a86adc0bfafcf42aa450ebabc7a0104758430a892834607e7",
+      "org/audiveris/omr/sheet/clef/ClefBuilder.class": "0ab0b9cbd3570996ec4f1b56b6c134202643afdba2a0de4d5587b725b9cd6dfb",
+      "org/audiveris/omr/sheet/key/KeyRoi.class": "e7fece1e1c9903a6b57e3ad786c3887992db84fdb17bb4de18cd8c6df6f152f1",
+      "org/audiveris/omr/sig/inter/AbstractInter$JaxbAdapter.class": "ef850c103f7187d177fc2d7b2499159979d0898978d07ed873058fa1347fcf97",
+      "org/audiveris/omr/sig/inter/AbstractInter.class": "64c3137f3f64d59c9d8db015a8b1446134a086904bfa15634e403742e2b4c553",
+      "org/audiveris/omr/sig/inter/TimeCustomInter.class": "51574fc23251b355c083ea71d44a3d6d0281394092fabc406d59611d7612d0fd",
+      "org/audiveris/omr/sig/inter/TimeWholeInter.class": "5b72a414dc01f9aa53a60c1eef45486e6b6d024029f6080a2c6bccf53ab2f719"
+    }
+  },
+  "scale": {
+    "commit": "04697c74fae431ef8436a9429386957a5cb25993",
+    "path": "app/src/main/java/org/audiveris/omr/sheet/ScaleBuilder.java",
+    "sha256": "48aecb0be015dc828ebd9c263d8324397fc118eee15b3f02418dfcc5a0dce10f",
+    "classSha256": {
+      "org/audiveris/omr/sheet/ScaleBuilder$Constants.class": "d1ab115e4849371f8307b851f8efd2ab8fac993eedbd68cc59315f065b0afa6f",
+      "org/audiveris/omr/sheet/ScaleBuilder$HistoKeeper.class": "9cd545cea49f0aa4f0685a5ecdeabaf5fd6228b6151f0c3b7102eea78bc47777",
+      "org/audiveris/omr/sheet/ScaleBuilder.class": "d3271e7225758b793583f2d65760d7f27ba8e84516800aa587048e3dac03c9be"
+    }
+  },
+  "bracket": {
+    "commit": "04697c74fae431ef8436a9429386957a5cb25993",
+    "path": "app/src/main/java/org/audiveris/omr/sig/inter/BracketInter.java",
+    "sha256": "7b7d5935a0a6f780ea93b064383a0cf0a54f468d5edb543ce936c88bd41f4e83",
+    "classSha256": {
+      "org/audiveris/omr/sig/inter/BracketInter$BracketKind.class": "f3ad6cf4d55e4267908053df1b3dcd32c9258189069ae0cdc6be07e43a507cb3",
+      "org/audiveris/omr/sig/inter/BracketInter.class": "2bd6123075e42191e624b24d43af7442ec49525676d0a1af6d5b946053b3e5ba"
+    }
+  },
+  "neural": {
+    "commit": "04697c74fae431ef8436a9429386957a5cb25993",
+    "path": "app/src/main/java/org/audiveris/omr/math/NeuralNetwork.java",
+    "sha256": "ca88f55cace56a9324fe77cafdcb8ec1e355e972587207d911866310decd7fe9",
+    "classSha256": {
+      "org/audiveris/omr/math/NeuralNetwork$StringArray.class": "934e9f62dbd415d0b1f89cac56452c8c874f4f75956418982cdec7be65fe9659",
+      "org/audiveris/omr/math/NeuralNetwork.class": "0d00320175e4213814b72cf50faeed4ecd3a0c7738a4c2108579c76e4c5ba190"
+    }
+  },
+  "unchangedSourceSha256": {
+    "app/src/main/java/org/audiveris/omr/sheet/beam/SpotsBuilder.java": "b73681ed3336ba6e0f0fcf1cb3d0e39aa48d60fb9a659aad2785ee495cba64ee",
+    "app/src/main/java/org/audiveris/omr/sheet/beam/BeamsBuilder.java": "33bdd7ff7a3d74186107ba4e828dcb7169fddaba859faa9107e30f0357d5d972",
+    "app/src/main/java/org/audiveris/omr/sheet/beam/MultipleRestsBuilder.java": "f98d4de127fc632f9f789e78b7db57a402b7279dca02033d73dfb9702acb56f6",
+    "app/src/main/java/org/audiveris/omr/sheet/beam/BeamStructure.java": "7fbd6b68caa8d8f772c5baefac5248d064d338fa7fde03e555c16cac56ac6485",
+    "app/src/main/java/org/audiveris/omr/sheet/beam/BeamItem.java": "4fa1776084e5067dca88758c5565432d4f420d38104395e9ca7fcd966a612172",
+    "app/src/main/java/org/audiveris/omr/sheet/beam/BeamLine.java": "76f60f23329c3ad069b6747d687c7aabc1e928a0a8b034e9474dda2c183bf198",
+    "app/src/main/java/org/audiveris/omr/image/AbstractGrayFilter.java": "3e76cbaed0bbfaef01d44d694c75e22ae13c150e6060c396f60c49bd80d08b32",
+    "app/src/main/java/org/audiveris/omr/image/GaussianGrayFilter.java": "cdda7f5a3b41f85cdad46e99de4862935bf81cf24ceb6d4253ee22cc5f8a332d",
+    "app/src/main/java/org/audiveris/omr/image/MedianGrayFilter.java": "3a11ad9fa80a5cde2a9e2a58b3de2d71a3067c537a118a19f01f9438af19b017",
+    "app/src/main/java/org/audiveris/omr/image/MorphoProcessor.java": "bc772ec0e060318e9e64927dd7b27a5c233a3ef78fac088a0cdeee38bc59f784",
+    "app/src/main/java/org/audiveris/omr/image/StructureElement.java": "0641c437efe5702c61c609fc3c338238c2f71e5104e6e8f60e289370c9d19919",
+    "app/src/main/java/org/audiveris/omr/sheet/ledger/LedgersFilter.java": "c570bfb386098880cc5b7e10dae2edcc9f42a244e28a5c10df4cf0271d7a4010",
+    "app/src/main/java/org/audiveris/omr/sheet/ledger/LedgersBuilder.java": "319451ccde8dcc72423cf3e81bb13d28486fefe9d02eac870f2ac15c590b28ef",
+    "app/src/main/java/org/audiveris/omr/sheet/ledger/LedgersStep.java": "8dba09ed700dd86b6c1fade723a637469479c33f72b9f2dc2cfe239483b36b20",
+    "app/src/main/java/org/audiveris/omr/glyph/GlyphFactory.java": "00af72a5f9c3def2dd4fb1f2ceed5cf5ea57390bc268afe8f28d862ee516e642",
+    "app/src/main/java/org/audiveris/omr/run/RunTableFactory.java": "2dbde434cff4f0bc094355e46318bf1e6fdd978c509290893279649560353ac2",
+    "app/src/main/java/org/audiveris/omr/math/Population.java": "7baa668aac8a6b2233b4c8fa9a3e528379b47136afa9a84234733f0e629826c6"
+  },
+  "ledgerLoggingChange": "Only eager nullable float formatting changed to SLF4J parameterized debug logging; recognition unchanged",
+  "blackHeadSizerChange": "Only font acquisition delegates to SymbolGeometry; native interpolation checked across six families",
+  "reflectionConstructors": [
+    "StaffFilament(int)",
+    "StraightFilament(int)",
+    "BeamBeamRelation()"
+  ]
+}
