@@ -12,7 +12,7 @@
   "unicodeAndLineBaseline": true,
   "inboundSnapshotsOwned": true,
   "plainDataAndTransferablePixels": true,
-  "wasmBytes": 41736,
-  "wasmSha256": "9752825236c0c368212f66d1ede67e2dca4c6ebfaaec960dd079781ad5930a0e",
+  "wasmBytes": 44344,
+  "wasmSha256": "108a9a844af12d86385d8c999cd9fa3754c77fbae3d83d2724820dd10bc492ec",
   "limitation": "Host transport component only; no actual OCR backend, TEXTS cleanup or TextLine ingestion is claimed"
 }

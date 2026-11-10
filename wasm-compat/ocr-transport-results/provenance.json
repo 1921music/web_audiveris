@@ -1,12 +1,12 @@
 {
-  "sourceCommit": "0538ad14fa06b837f2cfaa48748d72f4fde09569",
+  "sourceCommit": "5379b845b6595a92a137ac7baa99ec64b5be2436",
   "sourceSha256": {
     "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/OcrExchange.java": "c2a0f75503efd702d4a54488a568f1371208e0bc75b331b5c61f77423c070348",
     "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/OcrTransport.java": "dec38983fc15bbee8f543dc0cd7bda20c718e18ce482e43b9f8f519939b09938",
-    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/OcrTransportProbe.java": "d2781d8b588ea88df237f61d4b84303f6877350f1766e9869662787df9632bf2",
+    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/OcrTransportProbe.java": "fb2d4ba3d3e38527d04264c49c835aaefa422da0d1ced1efcedbcf5102465355",
     "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/OcrTransportOracle.java": "f83fa5aabb9e0dbdfb7dfb8564d1e3c605b8c74c49a5e0f0bde43f612645fae7",
     "wasm-compat/tools/verify-ocr-transport.cjs": "e50e888a8a6fff5a8a7007cf243d0c233c176cdeddfc96d7736017cb2e5a1b0c",
-    "dev/teavm-audit/audit.init.gradle": "f3f15db3b60da78d4f7eec3f54a25c74746a857b03578eaa09e375f9901732f1"
+    "dev/teavm-audit/audit.init.gradle": "d8dc13612fdc51ec246b27ad3f798645e0e18a756430916e31195971e6d33d4e"
   },
   "rawArtifacts": "wsl-artifacts/wasm-components/ocr-transport",
   "cpuMax": "800000 100000",
@@ -15,9 +15,9 @@
   "memorySwapMaxBytes": 0,
   "memoryEventsLocal": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0",
   "artifactSha256": {
-    "ocr-transport.wasm": "9752825236c0c368212f66d1ede67e2dca4c6ebfaaec960dd079781ad5930a0e",
+    "ocr-transport.wasm": "108a9a844af12d86385d8c999cd9fa3754c77fbae3d83d2724820dd10bc492ec",
     "ocr-transport.wasm-runtime.js": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
-    "verification.json": "44ff1093e85516102b42d6320ac491398a6218b4edd69b85cbe35609d33b0ee1",
+    "verification.json": "ead0b08132e6bcb443ac4ff549fc59b4092b14a6917fead9d3a9296507029e3b",
     "diagnostics.tsv": "fedeabd8a34aba0fa7d1aa2d80ccb94c378549c76c57c6942205c67c8f568b5d",
     "jvm-reference.txt": "5082122cc79851318e2eb69be47d07747bc81bd3283b28dec3dc7577b1ad7631"
   },

@@ -1,0 +1,100 @@
+{
+  "backend": "tesseract.js",
+  "version": "7.0.0",
+  "coreVersion": "7.0.0",
+  "modelPackage": "1.0.0",
+  "oem": 1,
+  "upstreamEngineMode": false,
+  "coreFlavor": "relaxedsimd-lstm",
+  "node": "v24.22.2",
+  "chromium": "158.0.8127.18",
+  "workers": 2,
+  "engineVersions": [
+    "5.1.0-288-g2a9c1"
+  ],
+  "nativeInputBytes": 126000,
+  "pngBytes": 4529,
+  "pngPixelsExact": true,
+  "nodeWorkerReused": true,
+  "workerResultsExact": true,
+  "queuedInputSnapshotsOwned": true,
+  "layoutParametersHonored": true,
+  "blankSuccessDistinct": true,
+  "missingModelDistinct": true,
+  "simulatedFailureRecovery": true,
+  "simulatedLanguageReinitialization": true,
+  "wasmRequestAndReplyIntegrated": true,
+  "wasmBlankAndModelFailureDistinct": true,
+  "realCharacterBoxes": true,
+  "fontAttributesAvailable": false,
+  "lineBaselineAvailable": true,
+  "wordBaselineAvailable": false,
+  "workerTimings": [
+    {
+      "firstRequestMs": 503.5,
+      "warmRequestMs": 38.5
+    },
+    {
+      "firstRequestMs": 503.8000000000029,
+      "warmRequestMs": 39.599999999998545
+    }
+  ],
+  "words": [
+    "Allegro",
+    "moderato",
+    "Music",
+    "123"
+  ],
+  "characters": 23,
+  "allBrowserAssetsLocal": true,
+  "assets": {
+    "/ocr-transport.wasm": {
+      "bytes": 44344,
+      "sha256": "108a9a844af12d86385d8c999cd9fa3754c77fbae3d83d2724820dd10bc492ec"
+    },
+    "/ocr-transport.wasm-runtime.js": {
+      "bytes": 17268,
+      "sha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b"
+    },
+    "/host/tesseract-js-ocr.mjs": {
+      "bytes": 7157,
+      "sha256": "d8f3ffb83e0f68ccf5d52e4daf9bb20676c6e5718d5a505107a5065503e9e913"
+    },
+    "/host/gray8-png.mjs": {
+      "bytes": 1759,
+      "sha256": "fab3b1da1e3f027ab38fc48eef5a5250988fd3a1a55720364e4ad94078b70bba"
+    },
+    "/ocr-assets/tesseract.min.js": {
+      "bytes": 62961,
+      "sha256": "000c27d9cd0def655f77b36c72a389c0ab13793aa31cb4d7aab56d09c0afbc7e"
+    },
+    "/ocr-assets/worker.min.js": {
+      "bytes": 111307,
+      "sha256": "576b7df7e3393e137e51849357c9adb53fe7ac1bb69bfa06cf3d61520f182c6d"
+    },
+    "/ocr-assets/tesseract-core-relaxedsimd-lstm.js": {
+      "bytes": 89360,
+      "sha256": "a37ac78b707e8d5d3d2e532cc3c4e69b04d127ea44a608f1e7de17640402aa5c"
+    },
+    "/ocr-assets/tesseract-core-relaxedsimd-lstm.wasm": {
+      "bytes": 2862266,
+      "sha256": "7985c92d4c64e7267d24cadffe1b2a1da6bf8aa55fdcaf953fe94fe122a24545"
+    },
+    "/models/eng.traineddata.gz": {
+      "bytes": 2952873,
+      "sha256": "45b4cb346724ac1774f1c36f42f182b887bcdb28ebe63e6fff90ac41f3fcff91"
+    }
+  },
+  "requested": {
+    "/ocr-assets/tesseract.min.js": 2,
+    "/ocr-transport.wasm-runtime.js": 2,
+    "/host/tesseract-js-ocr.mjs": 2,
+    "/host/gray8-png.mjs": 2,
+    "/ocr-transport.wasm": 2,
+    "/ocr-assets/worker.min.js": 2,
+    "/ocr-assets/tesseract-core-relaxedsimd-lstm.js": 2,
+    "/ocr-assets/tesseract-core-relaxedsimd-lstm.wasm": 2,
+    "/models/eng.traineddata.gz": 2
+  },
+  "limitation": "External OCR adapter fixture only; no upstream native OCR parity, font fallback, TEXTS cleanup or full recognition integration is claimed"
+}
