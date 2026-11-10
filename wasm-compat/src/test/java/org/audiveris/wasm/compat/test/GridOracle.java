@@ -9,7 +9,7 @@ import org.audiveris.omr.sheet.*;
 
 /** Original GridBuilder algorithms with the pinned upstream scale class first on the JVM classpath. */
 public final class GridOracle {
-    private static boolean headers, stems, beams;
+    private static boolean headers, stems, beams, ledgers;
     private static final List<String> beamFailures = new ArrayList<>();
     public static void main(String[] args) throws Exception {
         Path scaleOrigin = Path.of(ScaleBuilder.class.getProtectionDomain().getCodeSource().getLocation().toURI()).toRealPath();
@@ -22,7 +22,8 @@ public final class GridOracle {
         JsonNode manifest = mapper.readTree(samples.resolve("manifest.json").toFile());
         List<Map<String, Object>> results = new ArrayList<>();
         RecordingSymbolGeometry geometry = null;
-        beams = args.length > 4 && args[4].equals("beams");
+        ledgers = args.length > 4 && args[4].equals("ledgers");
+        beams = ledgers || (args.length > 4 && args[4].equals("beams"));
         stems = beams || (args.length > 4 && args[4].equals("stems"));
         headers = stems || (args.length > 4 && args[4].equals("headers"));
         if (beams) {
@@ -56,6 +57,14 @@ public final class GridOracle {
                     org.audiveris.omr.sheet.beam.BeamItem.class, org.audiveris.omr.sheet.beam.BeamLine.class)) {
                 Path origin = Path.of(type.getProtectionDomain().getCodeSource().getLocation().toURI()).toRealPath();
                 if (!origin.equals(Path.of(args[7]).toRealPath())) { throw new AssertionError("Wrong original beam class: " + type); }
+            }
+        }
+        if (ledgers && args.length > 8) {
+            for (Class<?> type : List.of(org.audiveris.omr.sheet.ledger.LedgersFilter.class,
+                    org.audiveris.omr.sheet.ledger.LedgersBuilder.class, org.audiveris.omr.sheet.ledger.LedgersPostAnalysis.class,
+                    org.audiveris.omr.sheet.ledger.LedgersStep.class)) {
+                Path origin = Path.of(type.getProtectionDomain().getCodeSource().getLocation().toURI()).toRealPath();
+                if (!origin.equals(Path.of(args[8]).toRealPath())) { throw new AssertionError("Wrong original ledger class: " + type); }
             }
         }
         if (headers) {
@@ -100,10 +109,10 @@ public final class GridOracle {
     private static JsonNode compare(Path folder, String id, int width, int height, byte[] binary, ObjectMapper mapper, boolean complete, Path rasters) throws Exception {
         RunTable table = new RunTableFactory(Orientation.VERTICAL).createTable(new ByteProcessor(width, height, binary.clone(), null));
         Book book = new Book(folder.resolve("staff-" + id + ".png")); SheetStub stub = new SheetStub(book, 1); book.addStub(stub);
-        JsonNode expected = mapper.readTree(beams ? BeamProbe.analyze(new Sheet(stub, table)) : stems ? StemProbe.analyze(new Sheet(stub, table)) : headers ? HeaderProbe.analyze(new Sheet(stub, table)) : GridProbe.analyze(new Sheet(stub, table), complete));
+        JsonNode expected = mapper.readTree(ledgers ? LedgerProbe.analyze(new Sheet(stub, table)) : beams ? BeamProbe.analyze(new Sheet(stub, table)) : stems ? StemProbe.analyze(new Sheet(stub, table)) : headers ? HeaderProbe.analyze(new Sheet(stub, table)) : GridProbe.analyze(new Sheet(stub, table), complete));
         byte[] expectedPixels = complete && !expected.path("rejected").asBoolean() ? GridProbe.cleanedPixels().clone() : null;
         byte[] expectedHeads = beams && !expected.path("rejected").asBoolean() ? BeamProbe.headPixelsJava().clone() : null;
-        JsonNode actual = mapper.readTree(beams ? BeamProbe.analyze(PixelSheetProbe.create(width, height, binary, id)) : stems ? StemProbe.analyze(PixelSheetProbe.create(width, height, binary, id)) : headers ? HeaderProbe.analyze(PixelSheetProbe.create(width, height, binary, id)) : GridProbe.analyze(PixelSheetProbe.create(width, height, binary, id), complete));
+        JsonNode actual = mapper.readTree(ledgers ? LedgerProbe.analyze(PixelSheetProbe.create(width, height, binary, id)) : beams ? BeamProbe.analyze(PixelSheetProbe.create(width, height, binary, id)) : stems ? StemProbe.analyze(PixelSheetProbe.create(width, height, binary, id)) : headers ? HeaderProbe.analyze(PixelSheetProbe.create(width, height, binary, id)) : GridProbe.analyze(PixelSheetProbe.create(width, height, binary, id), complete));
         if (expectedPixels != null) {
             if (!Arrays.equals(expectedPixels, GridProbe.cleanedPixels())) { throw new AssertionError("Staff-free pixels differ: " + id); }
             if (!stems && !GridProbe.verifyCleanCache()) { throw new AssertionError("Cache lifecycle"); }

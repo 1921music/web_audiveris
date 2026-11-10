@@ -254,17 +254,15 @@ public class LedgersPostAnalysis
         }
 
         logger.debug(
-                "{}",
-                String.format(
-                        "Filter minDeltaAboveRatio:%.2f maxDeltaAboveRatio:%.2f"
-                                + " minDeltaBelowRatio:%.2f maxDeltaBelowRatio:%.2f"
-                                + " minHeightRatio:%.2f maxHeightRatio:%.2f",
-                        minDeltaAboveRatio,
-                        maxDeltaAboveRatio,
-                        minDeltaBelowRatio,
-                        maxDeltaBelowRatio,
-                        minHeightRatio,
-                        maxHeightRatio));
+                "Filter minDeltaAboveRatio:{} maxDeltaAboveRatio:{}"
+                        + " minDeltaBelowRatio:{} maxDeltaBelowRatio:{}"
+                        + " minHeightRatio:{} maxHeightRatio:{}",
+                minDeltaAboveRatio,
+                maxDeltaAboveRatio,
+                minDeltaBelowRatio,
+                maxDeltaBelowRatio,
+                minHeightRatio,
+                maxHeightRatio);
 
         // Infos sorted by ledger ID are much more convenient for user review.
         final List<Info> infos = new ArrayList<>(infoMap.values());

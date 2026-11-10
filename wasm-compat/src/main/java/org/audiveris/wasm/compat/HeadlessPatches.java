@@ -19,6 +19,7 @@ final class HeadlessPatches {
         Map<MethodDescriptor, Program> original = new HashMap<>();
         for (MethodHolder method : cls.getMethods()) { original.put(method.getDescriptor(), method.getProgram()); }
         switch (cls.getName()) {
+            case "org.audiveris.omr.sheet.ledger.LedgersBuilder": ledgerFailure(cls); break;
             case "org.audiveris.omr.sheet.beam.SpotsBuilder": spotImages(cls); break;
             case "org.audiveris.omr.sheet.stem.StemScaler": stemBuffer(cls, context); break;
             case "org.audiveris.omr.math.HiLoPeakFinder": prefixCopies(cls, 1); break;
@@ -222,6 +223,21 @@ final class HeadlessPatches {
             exit.setValueToReturn(result);
         }
         block.add(exit); method.setProgram(program);
+    }
+    private static void ledgerFailure(ClassHolder cls) {
+        MethodHolder method = cls.getMethod(new MethodDescriptor("buildLedgers", obj("java.util.List"), ValueType.VOID));
+        if (method == null || method.getProgram() == null) { throw new IllegalStateException("Review ledger failure boundary"); }
+        Program program = method.getProgram(); int count = 0, before = instructions(program);
+        for (BasicBlock block : program.getBasicBlocks()) { for (Instruction instruction : block) {
+            if (!(instruction instanceof InvokeInstruction)) { continue; }
+            var call = (InvokeInstruction) instruction;
+            if (call.getMethod().equals(new MethodReference("org.slf4j.Logger", "warn", STRING, obj("java.lang.Throwable"), ValueType.VOID))) {
+                call.setInstance(null); call.setType(InvocationType.SPECIAL);
+                call.setMethod(new MethodReference(HeadlessSpotImages.class.getName(), "failed", STRING, obj("java.lang.Throwable"), ValueType.VOID)); count++;
+            }
+        } }
+        if (count != 1) { throw new IllegalStateException("Review ledger catch sites: " + count); }
+        report(method, "ledger-failure-propagation", program.basicBlockCount(), before);
     }
     private static void spotImages(ClassHolder cls) {
         int gray = 0, runs = 0, snapshots = 0, failures = 0, saves = 0;

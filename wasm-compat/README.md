@@ -410,7 +410,7 @@ With generic compatibility and the opt-in Worker/presentation substitutions enab
 fall from **1,276 to 494** (782 fewer); unique messages fall from **336 to 203**.
 The stages are **1,276 → 789 → 702 → 609 → 545 → 544 → 525 → 524 → 495 → 494**. The 544/220 result is the
 generic compatibility layer alone; 525/217 is the initial Worker boundary, 524/216 is the
-stage-6 boundary, 495/204 is the stage-7–9 result, and **494/203** is the current stage-16 result (unchanged from stage 10).
+stage-6 boundary, 495/204 is the stage-7–9 result, and **494/203** is the current stage-17 result (unchanged from stage 10).
 Remaining exclusion candidates are **75 classes / 242 used input methods inside those classes**,
 or **308 methods** when method-only exclusion rules are also included.
 There are no remaining missing-API messages for the generic layer's targeted APIs. The broad fast
@@ -864,8 +864,42 @@ add `-PpixelSamples=/mnt/g/work/20261029/1921music/score_samples` for fresh fixt
 `export_headless.py --stage 16 --beam --allow-added-roots`. Small evidence lives in `beam-results`;
 full matrices, relation lists, intermediate images and pinned classes live in the ignored raw
 archive. The stem/beam verifiers accept both live build folders and the exported artifact folders.
-LEDGERS and later recognition, general font/raster backends, OCR and complete MusicXML remain
-outstanding.
+At this stage LEDGERS and later recognition, general font/raster backends, OCR and complete
+MusicXML remained outstanding; stage 17 extends the comparison below.
+
+## Ledger recognition (stage 17)
+
+The strict ledger probe continues through the original `LedgersFilter.process`,
+`LedgersBuilder.buildLedgers` and `LedgersPostAnalysis.process`, including candidate checks,
+population-based rejection, rebuilding affected systems and `Staff.buildAllLedgerLines`.
+The JVM reference compiles four original ledger classes from the pinned application baseline
+and checks their loaded origins. The portable JVM run uses the current application classes.
+
+One application change replaces eager `String.format` in a debug message with SLF4J arguments.
+An empty ledger population leaves nullable thresholds: the JDK formats these as `null`, while
+TeaVM throws on the `%f` conversion even when debug logging is disabled. Only log presentation
+changes; candidate thresholds and recognition calculations are retained. Export guards check
+this exact logging edit and reject other post-analysis source changes.
+
+The Worker-only compiler adaptation changes the ledger builder's catch from logging a warning
+and continuing with partial results to propagating the failure. JVM reference verification and
+Wasm verification also reject captured ERROR logs. The other ledger recognition source remains
+unchanged; no additional geometry, font or reflection adapter is needed for this stage.
+
+Five accepted real pages yield **288 ledgers** (38 / 42 / 53 / 79 / 76). Besides their staff,
+index, bounds, grade and glyph weight, the probe samples **2,592 pitch positions** above and below
+the staves to check the derived external ledger-line geometry. Three low-resolution inputs
+retain their upstream rejection. Binary and adaptive GRAY8 inputs are compared in Node and two
+independent Chromium Workers, alongside the preceding header, stem, beam and head-spot results.
+There are **93,452 numeric comparisons**, with maximum difference **7.2165e-16**, and
+**175,126,400 head-spot pixel bytes** agree. The strict component has no diagnostics and produces
+a **2,295,959-byte Wasm** with the same external classifier and font measurements as stage 16.
+
+Reproduce with `verifyLedgerProbe -I dev/teavm-audit/audit.init.gradle` through the capped launcher.
+Archive with `export_headless.py --stage 17 --ledger --allow-added-roots`; small reports live in
+`ledger-results`, while full matrices, pixels and pinned classes remain in the ignored raw
+archive. HEADS and subsequent recognition, general font/template backends, OCR and complete
+MusicXML remain outstanding.
 
 ## Remaining work
 
@@ -905,5 +939,5 @@ sources; this does not establish that OCR/native or other platform boundaries ar
 The generic-only audit still has 544 diagnostics, including three directly in selected engine
 sources; the opt-in Worker substitutions address those three paths. Remaining work requires
 resource, execution and platform adapters that preserve recognition behavior. The current reentry
-report includes **75 classes / 242 class-excluded used input methods** (**309 methods across all exclusion
+report includes **75 classes / 242 class-excluded used input methods** (**308 methods across all exclusion
 rules**); choosing roots alone does not cut transitive dependencies.

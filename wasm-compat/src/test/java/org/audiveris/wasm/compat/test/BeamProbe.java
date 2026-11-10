@@ -14,6 +14,7 @@ import org.teavm.jso.typedarrays.Int8Array;
 public final class BeamProbe {
     public static void main(String[] args) { }
     private static final List<String> errors = new ArrayList<>();
+    public static void checkErrors() { if (!errors.isEmpty()) { throw new IllegalStateException("Recognition logged errors: " + errors); } }
     private static void monitor() {
         org.audiveris.wasm.compat.platform.HeadlessEvents.setSink((kind, subject, detail) -> {
             if (kind.equals("log") && detail.startsWith("ERROR ")) { errors.add(subject + ": " + detail); }
@@ -124,7 +125,7 @@ public final class BeamProbe {
                     result.append('}');
                 }
             }
-            if (!errors.isEmpty()) { throw new IllegalStateException("Recognition logged errors: " + errors); }
+            checkErrors();
             return result.append("]}").toString();
         } finally { HeadlessSheetContext.bind(previous); }
     }
