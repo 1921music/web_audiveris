@@ -213,6 +213,7 @@ org.audiveris.omr.ui.GuiActions.clearLog(Ljava/awt/event/ActionEvent;)V	headless
 org.audiveris.omr.ui.MacApplication.invoke(Ljava/lang/Object;Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;	headless-gui-guard	20	19	96	91
 org.audiveris.omr.ui.MainGui.startup()V	headless-gui-guard	4	4	71	71
 org.audiveris.omr.ui.action.Preferences.show()V	headless-gui-guard	2	2	10	10
+org.audiveris.omr.ui.util.UIUtil.<clinit>()V	detach-window-listener-preserve-font-configuration	2	2	19	17
 org.audiveris.omr.ui.util.UIUtil.directoryChooser(ZLjava/awt/Component;Ljava/io/File;Ljava/lang/String;)Ljava/io/File;	headless-gui-guard	34	33	153	149
 org.audiveris.omr.ui.util.UIUtil.fileChooser(ZLjava/awt/Component;Ljava/io/File;Lorg/audiveris/omr/ui/util/OmrFileFilter;Ljava/lang/String;)Ljava/io/File;	headless-gui-guard	41	40	188	184
 org.audiveris.omr.ui.util.UIUtil.filesChooser(ZLjava/awt/Component;Ljava/io/File;Lorg/audiveris/omr/ui/util/OmrFileFilter;Ljava/lang/String;)[Ljava/io/File;	headless-gui-guard	38	37	165	161

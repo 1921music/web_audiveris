@@ -36,8 +36,8 @@
     "unattributed": 2
   },
   "callGraph": {
-    "callers": 73148,
-    "edges": 1576596
+    "callers": 73146,
+    "edges": 1576584
   },
   "apis": [
     {
