@@ -19,6 +19,7 @@ public final class CompilerPatches implements TeaVMPlugin {
     @Override public void install(TeaVMHost host) {
         if (!Boolean.getBoolean("audiveris.compat.enabled")) { return; }
         ReachabilityFenceIntrinsic.install(host);
+        RoundingIntrinsic.install(host);
         host.add((cls, context) -> {
             StandardApiPatches.apply(cls);
             PropertyApiPatches.apply(cls);

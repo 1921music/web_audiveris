@@ -212,7 +212,7 @@ adds 18 scale-source API/adapter methods. Stage 8 also roots `Book.createMemoryB
 **9,020 roots / 8,599 bodies**. Stage 9 adds nine pixel-model methods, giving **9,029 roots / 8,608 bodies**.
 `-PallowAddedRoots=true` explicitly permits/report additions; it never permits removal, changed
 body/native coverage or reclassification of existing roots. Generic compatibility has 544 diagnostics;
-the initial Worker boundary stage has 525 and the current Worker compatibility stage has **495**
+the initial Worker boundary stage has 525 and the current Worker compatibility stage has **494**
 (204 unique messages). No diagnostics are located directly in selected engine sources.
 
 | Residual exclusion candidates | Initial Worker boundary | Current presentation boundary |
@@ -403,10 +403,10 @@ The current audit covers **9,029 methods**, including **8,608 method bodies**. E
 **9,001-method / 8,588-body** root is preserved; 18 scale-context/adapter methods and the memory-book
 factory and nine pixel-model methods are added explicitly.
 With generic compatibility and the opt-in Worker/presentation substitutions enabled, diagnostics
-fall from **1,276 to 495** (781 fewer); unique messages fall from **336 to 204**.
-The stages are **1,276 → 789 → 702 → 609 → 545 → 544 → 525 → 524 → 495**. The 544/220 result is the
+fall from **1,276 to 494** (782 fewer); unique messages fall from **336 to 203**.
+The stages are **1,276 → 789 → 702 → 609 → 545 → 544 → 525 → 524 → 495 → 494**. The 544/220 result is the
 generic compatibility layer alone; 525/217 is the initial Worker boundary, 524/216 is the
-stage-6 boundary and **495/204** is the current stage-9 result (unchanged from stage 7, with expanded model/pixel roots).
+stage-6 boundary, 495/204 is the stage-7–9 result, and **494/203** is the current stage-10 result.
 Remaining exclusion candidates are **75 classes / 242 used input methods inside those classes**,
 or **311 methods** when method-only exclusion rules are also included.
 There are no remaining missing-API messages for the generic layer's targeted APIs. The broad fast
@@ -426,7 +426,7 @@ Wasm build or proof that every selected method executes correctly.
   and the GC fence without DOMParser. Module/resource-bundle, logger and context-classloader
   fixtures also match in Node, Chromium and its Worker. The JVM fixture uses Jackson's
   original multi-release JAR; Wasm uses the selected unchanged base entries.
-- The expanded probe Wasm is **768,016 bytes**, including XML/resources and Jackson's large-number parsers.
+- The expanded probe Wasm is **768,055 bytes**, including XML/resources and Jackson's large-number parsers.
   This is a compatibility test program, not an engine
   size estimate. No engine throughput claim is made from these tests.
 - The generic stage-5 snapshot used unchanged `app` and `buildSrc` sources from baseline
@@ -551,6 +551,43 @@ bodies**). Diagnostics remain **495 / 204 unique**. Residual candidates are **75
 class-excluded used input methods / 311 methods across all rules**. Small reports are in
 `pixel-sheet-results`; archive with `export_headless.py --stage 9 --pixel-sheet --allow-added-roots`.
 
+## Horizontal staff retrieval and rounding correctness (stage 10)
+
+The original horizontal staff-retrieval algorithms now execute in Wasm, including a single call
+from packed gray pixels through adaptive binarization, scale estimation and staff retrieval.
+Five accepted sample pages produce **8 / 10 / 10 / 10 / 10 staves** (48 total); the other three
+retain the original resolution rejection. Binary and gray paths, a synthetic two-staff fixture,
+Node and two Chromium Workers compare **4,181 numbers with maximum difference 0** against JVM
+results. The verifier allows 1e-8 pixels and 1e-12 slope, but observes exact equality.
+
+This exposed a correctness defect in TeaVM 0.16.0's existing `Math.rint` and `Math.round`:
+16 of 25 selected edge inputs differ from the JDK in an unpatched Wasm baseline. Compatibility
+substitutions preserve ties, signed zero, NaN, infinities and saturation. `rint` compiles to
+Wasm `f64.nearest`; its emitted function body is checked. The JVM oracle performs **233,556
+checks**, while Wasm compares edge cases and an 8,192-input checksum in two Node instances and
+two Chromium Workers. The focused corrected module is **19,228 bytes**, versus 19,155 bytes
+for the stock baseline (+73 bytes for this test component, not an engine size estimate).
+
+JGraphT's original supplier code remains intact apart from its constructor-access query, which
+uses a helper scoped to that caller. Unknown same-package access cases fail explicitly.
+Reflection metadata exposes only `StaffFilament(int)` and `StraightFilament(int)` constructors
+for engine use; additional fixture metadata is confined to the test module. Supplier access,
+fresh allocation and missing-constructor failures are compared with the JDK.
+
+No application sources change in this stage. The oracle uses the pinned original ScaleBuilder
+and unchanged grid, dynamic-filament, lag, math and run sources, with the current shared model
+runtime; it is not an entirely pristine upstream application. Original image-backed and raw-pixel
+JVM paths also match. The staff probe is **1,182,981 bytes**, including test fixtures.
+Barline/system completion, OCR, symbol recognition and MusicXML output remain to be verified.
+
+Reproduce through the capped WSL launcher with Gradle tasks `verifyStaffProbe`,
+`verifyMathRoundingProbe` and `compareMathRoundingBaseline`, the audit init script and
+`-Pcompat=true -Pheadless=true -PpixelSamples=/mnt/g/work/20261029/1921music/score_samples`.
+Archive with `export_headless.py --stage 10 --rounding --staff`. Small reports live in
+`rounding-results` and `staff-results`; raw modules and inputs live under
+`wsl-artifacts/wasm-headless/stage10`. The audit still covers **9,029 roots / 8,608 bodies**,
+with **75 classes / 242 class-excluded used methods / 311 methods across all exclusion rules**.
+
 ## Remaining work
 
 ### TODO: reconsider the XML properties parser
@@ -583,7 +620,7 @@ For the Worker comparison, use `node wasm-compat/tools/bench-xml-browser.cjs <jd
 <kxml2-directory>` through the same launcher. The reported component sizes above refer to the
 archived stage-3 modules, not a fresh build of later compatibility layers.
 
-The current headless audit has **495 diagnostics**, including reflection/classloading, thread APIs,
+The current headless audit has **494 diagnostics**, including reflection/classloading, thread APIs,
 file/XML operations and other dependency runtime paths. None are located directly in selected engine
 sources; this does not establish that OCR/native or other platform boundaries are implemented.
 The generic-only audit still has 544 diagnostics, including three directly in selected engine

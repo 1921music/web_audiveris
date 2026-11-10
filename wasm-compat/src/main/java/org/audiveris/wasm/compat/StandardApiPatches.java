@@ -10,6 +10,10 @@ final class StandardApiPatches {
     static void apply(ClassHolder cls) {
         ValueType string = object("java.lang.String"), type = object("java.lang.Class");
         switch (cls.getName()) {
+            case "java.lang.Math":
+                delegate(cls, "rint", "rint", RoundingMath.class.getName(), true, true, ValueType.DOUBLE, ValueType.DOUBLE);
+                delegate(cls, "round", "round", RoundingMath.class.getName(), true, true, ValueType.DOUBLE, ValueType.LONG);
+                delegate(cls, "round", "round", RoundingMath.class.getName(), true, true, ValueType.FLOAT, ValueType.INTEGER); break;
             case "java.lang.Double":
                 delegate(cls, "parseDouble", "parseDouble", FloatingPointParser.class.getName(), true, true, string, ValueType.DOUBLE); break;
             case "java.lang.Float":

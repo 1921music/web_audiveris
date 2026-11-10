@@ -68,6 +68,8 @@ def main():
     parser.add_argument('--ordered-maps', action='store_true')
     parser.add_argument('--models', action='store_true')
     parser.add_argument('--pixel-sheet', action='store_true')
+    parser.add_argument('--rounding', action='store_true')
+    parser.add_argument('--staff', action='store_true')
     parser.add_argument('--allow-added-roots', action='store_true')
     args = parser.parse_args()
     root, build = args.repository, args.build
@@ -246,6 +248,61 @@ def main():
         for target in [sheet_results, sheet_raw]:
             write(target / 'provenance.json', sheet_provenance)
         provenance['pixelSheetVerification'] = json.loads((sheet_build / 'verification.json').read_text())
+    if args.rounding:
+        rounding_build = build / 'wasm-compat/rounding-probe'
+        rounding_raw = artifacts / 'rounding-probe'
+        rounding_results = root / 'wasm-compat/rounding-results'
+        rounding_raw.mkdir(parents=True, exist_ok=True); rounding_results.mkdir(parents=True, exist_ok=True)
+        names = ['jvm-reference.txt', 'jvm-checksum.txt', 'jvm-verification.json', 'verification.json', 'baseline-comparison.json', 'diagnostics.tsv']
+        for name in ['rounding.wasm', 'rounding.wasm-runtime.js'] + names:
+            shutil.copyfile(rounding_build / name, rounding_raw / name)
+        for name in names:
+            shutil.copyfile(rounding_build / name, rounding_results / name)
+        baseline_raw = artifacts / 'rounding-baseline'; baseline_raw.mkdir(parents=True, exist_ok=True)
+        for name in ['rounding.wasm', 'rounding.wasm-runtime.js', 'diagnostics.tsv']:
+            shutil.copyfile(build / 'wasm-compat/rounding-baseline' / name, baseline_raw / name)
+        rounding_provenance = {key: provenance[key] for key in ['applicationBaseline', 'toolCommit', 'teaVM', 'target',
+            'cpuMax', 'allowedCpus', 'memoryMaxBytes', 'memorySwapMaxBytes', 'memoryEventsLocal', 'sourceSha256']}
+        rounding_provenance.update({'rawArtifacts': raw_path + '/rounding-probe', 'stockArtifacts': raw_path + '/rounding-baseline',
+            'artifactSha256': {str(p.relative_to(artifacts)): hashlib.sha256(p.read_bytes()).hexdigest()
+                               for folder in [rounding_raw, baseline_raw] for p in sorted(folder.iterdir()) if p.is_file()}})
+        for target in [rounding_results, rounding_raw]:
+            write(target / 'provenance.json', rounding_provenance)
+        provenance['roundingVerification'] = json.loads((rounding_build / 'verification.json').read_text())
+    if args.staff:
+        staff_build = build / 'wasm-compat/staff-probe'
+        staff_raw = artifacts / 'staff-probe'
+        staff_results = root / 'wasm-compat/staff-results'
+        staff_raw.mkdir(parents=True, exist_ok=True); staff_results.mkdir(parents=True, exist_ok=True)
+        names = ['jvm-reference.json', 'wasm-node-results.json', 'wasm-worker-results.json', 'verification.json', 'supplier-reference.txt', 'diagnostics.tsv']
+        for name in ['staff.wasm', 'staff.wasm-runtime.js'] + names:
+            shutil.copyfile(staff_build / name, staff_raw / name)
+        for name in names:
+            shutil.copyfile(staff_build / name, staff_results / name)
+        sample_build = build / 'wasm-compat/pixel-probe/samples'
+        shutil.copytree(sample_build, artifacts / 'pixel-probe/samples', dirs_exist_ok=True)
+        shutil.copyfile(sample_build / 'manifest.json', staff_results / 'samples.json')
+        original = build / 'wasm-compat/upstream-scale'
+        scale_source = json.loads((original / 'source.json').read_text())
+        scale_source['classSha256'] = {str(p.relative_to(original / 'classes')): hashlib.sha256(p.read_bytes()).hexdigest()
+                                     for p in sorted((original / 'classes').rglob('*.class'))}
+        algorithm_dirs = ['app/src/main/java/org/audiveris/omr/' + name for name in ['sheet/grid', 'glyph/dynamic', 'lag', 'math', 'run']]
+        changed_algorithms = [name for name in provenance['applicationSourceChanges'] if any(name.startswith(folder + '/') for folder in algorithm_dirs)]
+        if changed_algorithms:
+            raise AssertionError('Staff reference algorithm sources changed: ' + ', '.join(changed_algorithms))
+        algorithm_hashes = {str(p.relative_to(root)): hashlib.sha256(p.read_bytes().replace(b'\r\n', b'\n')).hexdigest()
+                            for folder in algorithm_dirs for p in sorted((root / folder).rglob('*.java'))}
+        reference = {'scale': scale_source, 'unchangedAlgorithmSourceSha256': algorithm_hashes,
+            'scope': 'Pinned upstream ScaleBuilder plus unchanged grid/dynamic/lag/math/run algorithm sources; shared current model runtime, not an entirely pristine upstream application'}
+        write(staff_results / 'reference-sources.json', reference); write(staff_raw / 'reference-sources.json', reference)
+        staff_provenance = {key: provenance[key] for key in ['applicationBaseline', 'toolCommit', 'teaVM', 'target',
+            'cpuMax', 'allowedCpus', 'memoryMaxBytes', 'memorySwapMaxBytes', 'memoryEventsLocal', 'sourceSha256', 'applicationSourceChanges']}
+        staff_provenance.update({'rawArtifacts': raw_path + '/staff-probe',
+            'artifactSha256': {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(staff_raw.iterdir()) if p.is_file()},
+            'limitation': 'Gray/binary input through horizontal staff retrieval; barline/system completion, OCR, symbols and MusicXML are unverified'})
+        for target in [staff_results, staff_raw]:
+            write(target / 'provenance.json', staff_provenance)
+        provenance['staffVerification'] = json.loads((staff_build / 'verification.json').read_text())
     for target in [results, artifacts]:
         write(target / 'provenance.json', provenance)
     print(json.dumps({key: comparison[key] for key in ['rootCount', 'baselineDiagnostics', 'patchedDiagnostics', 'modifiedMethods',

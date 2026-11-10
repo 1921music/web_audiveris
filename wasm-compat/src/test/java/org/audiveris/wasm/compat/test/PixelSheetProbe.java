@@ -19,10 +19,14 @@ public final class PixelSheetProbe {
         try { return "ok:" + new ScaleBuilder(sheet).retrieveScale() + ";invalid=" + !sheet.getStub().isValid(); }
         catch (StepException rejected) { return "rejected:" + rejected.getMessage() + ";invalid=" + !sheet.getStub().isValid(); }
     }
-    private static Sheet create(int width, int height, byte[] binary, String id) {
-        Book book = Book.createMemoryBook(id); SheetStub stub = new SheetStub(book, 1); book.addStub(stub);
+    static Sheet create(int width, int height, byte[] binary, String id) {
         ByteProcessor pixels = org.audiveris.wasm.compat.platform.GrayInput.takeOwnership(width, height, binary).takeProcessor();
-        Sheet sheet = stub.createMemorySheet(null, pixels);
+        return create(null, pixels, id);
+    }
+    static Sheet create(ByteProcessor gray, ByteProcessor pixels, String id) {
+        Book book = Book.createMemoryBook(id); SheetStub stub = new SheetStub(book, 1); book.addStub(stub);
+        int width = pixels.getWidth(), height = pixels.getHeight();
+        Sheet sheet = stub.createMemorySheet(gray, pixels);
         if (sheet.getWidth() != width || sheet.getHeight() != height || !stub.isDone(OmrStep.LOAD) || !stub.isDone(OmrStep.BINARY)) {
             throw new AssertionError("Pixel sheet initialization");
         }

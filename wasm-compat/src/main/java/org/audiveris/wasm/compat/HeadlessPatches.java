@@ -13,6 +13,7 @@ final class HeadlessPatches {
     private static final ValueType STRING = obj("java.lang.String");
     static void apply(ClassHolder cls, ClassHolderTransformerContext context) {
         ImageJPatches.apply(cls);
+        GraphApiPatches.apply(cls);
         if (!cls.getName().startsWith("org.audiveris.omr.")
                 && !cls.getName().equals("org.slf4j.LoggerFactory") && !cls.getName().equals("org.slf4j.MDC")) { return; }
         Map<MethodDescriptor, Program> original = new HashMap<>();
