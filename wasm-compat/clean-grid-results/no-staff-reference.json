@@ -1,0 +1,26 @@
+{
+  "00.binary": {
+    "sha256": "06a870240c81b342e6bb6f89afdeba4e3353d85c282dce7e903e995d3ae75772",
+    "bytes": 8694880
+  },
+  "01.binary": {
+    "sha256": "3bf828c7421ca07779773f12bc2525597f1e41bf2125fc9a41e08c308bb89e6c",
+    "bytes": 8694880
+  },
+  "02.binary": {
+    "sha256": "4d906a12674d329750a7d417f680ece689bfdb269ea01336b989994e63c25c55",
+    "bytes": 8694880
+  },
+  "03.binary": {
+    "sha256": "618656a2bd4402faa94faff0be7bd01302464e19468cefd2254602d14e231b0d",
+    "bytes": 8694880
+  },
+  "04.binary": {
+    "sha256": "5cee0d5c4bda2a19a91aad4f4e3a4dc649d410184c38b07f8dce499d5200dd8b",
+    "bytes": 8694880
+  },
+  "staff.binary": {
+    "sha256": "0b20da235099764bc7fb23622c12772462e9c81bb63c2b892498cea172da39a3",
+    "bytes": 307200
+  }
+}

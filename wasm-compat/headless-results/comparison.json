@@ -1,10 +1,12 @@
 {
   "identicalOriginalRoots": false,
   "originalRootSubsetPreserved": true,
-  "rootCount": 9030,
-  "baselineRootCount": 9029,
+  "rootCount": 9033,
+  "baselineRootCount": 9030,
   "addedRoots": [
-    "org.audiveris.omr.sig.inter.BracketInter.computeArea(Ljava/awt/geom/Rectangle2D;Ljava/awt/geom/Rectangle2D;)V"
+    "org.audiveris.omr.sheet.PixelPicture.disposeSource(Lorg/audiveris/omr/sheet/Picture$SourceKey;)V",
+    "org.audiveris.omr.sheet.PixelPicture.eraseRuns(Lij/process/ByteProcessor;Lorg/audiveris/omr/run/RunTable;II)V",
+    "org.audiveris.omr.sheet.PixelPicture.withoutStaffLines()Lij/process/ByteProcessor;"
   ],
   "baselineDiagnostics": 494,
   "patchedDiagnostics": 494,
@@ -41,8 +43,8 @@
   },
   "platformSubstitutionsEnabled": true,
   "modifiedMethods": 497,
-  "removedDirectCallsFromModifiedMethods": 10,
-  "addedDirectCallsFromModifiedMethods": 1,
+  "removedDirectCallsFromModifiedMethods": 0,
+  "addedDirectCallsFromModifiedMethods": 0,
   "excludedClassesLinked": {
     "before": 75,
     "after": 75
