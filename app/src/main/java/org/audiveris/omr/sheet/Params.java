@@ -25,9 +25,8 @@ import org.audiveris.omr.image.FilterDescriptor;
 import org.audiveris.omr.image.FilterParam;
 import org.audiveris.omr.text.Language;
 import org.audiveris.omr.ui.symbol.MusicFamily;
-import org.audiveris.omr.ui.symbol.MusicFont;
+import org.audiveris.omr.ui.symbol.FontFamilyDefaults;
 import org.audiveris.omr.ui.symbol.TextFamily;
-import org.audiveris.omr.ui.symbol.TextFont;
 import org.audiveris.omr.util.param.IntegerParam;
 import org.audiveris.omr.util.param.StringParam;
 
@@ -264,8 +263,8 @@ public abstract class Params<P>
         public final void setParents (Object ignored)
         {
             // These (default) parents are taken from diverse sources
-            musicFamily.setParent(MusicFont.defaultMusicParam);
-            textFamily.setParent(TextFont.defaultTextParam);
+            musicFamily.setParent(FontFamilyDefaults.defaultMusicParam);
+            textFamily.setParent(FontFamilyDefaults.defaultTextParam);
             inputQuality.setParent(Profiles.defaultQualityParam);
             binarizationFilter.setParent(FilterDescriptor.defaultFilter);
             interlineSpecification.setParent(Scale.defaultInterlineSpecification);

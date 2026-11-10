@@ -5,6 +5,7 @@ import hashlib
 import gzip
 import json
 import shutil
+import subprocess
 from pathlib import Path
 from compare_compat import compare, rows
 from export_results import export
@@ -12,6 +13,16 @@ from export_results import export
 
 def write(path, value):
     path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+
+
+def application_changes(root):
+    git = ['git', '-c', f'safe.directory={root}', '-C', str(root)]
+    changed = subprocess.check_output(git + ['diff', '--name-only', '-z',
+        '04697c74fae431ef8436a9429386957a5cb25993', '--', 'app/src/main/java']).decode().split('\0')
+    untracked = subprocess.check_output(git + ['ls-files', '--others', '--exclude-standard', '-z',
+        '--', 'app/src/main/java']).decode().split('\0')
+    return {name: hashlib.sha256((root / name).read_bytes().replace(b'\r\n', b'\n')).hexdigest()
+            for name in sorted(set(changed + untracked)) if name.endswith('.java')}
 
 
 def calls(folder, selected):
@@ -55,6 +66,7 @@ def main():
     parser.add_argument('--stage', type=int, default=1)
     parser.add_argument('--pixels', action='store_true')
     parser.add_argument('--ordered-maps', action='store_true')
+    parser.add_argument('--models', action='store_true')
     parser.add_argument('--allow-added-roots', action='store_true')
     args = parser.parse_args()
     root, build = args.repository, args.build
@@ -132,12 +144,8 @@ def main():
         shutil.copyfile(render / 'render-ops.json', results / 'render-ops.json')
         provenance['renderOps'] = json.loads((render / 'render-ops.json').read_text())
     provenance.update({'headlessPlatformEnabled': True, 'comparisonBaseline': baseline,
-                       'applicationSourceChanges': {name: hashlib.sha256((root / name).read_bytes().replace(b'\r\n', b'\n')).hexdigest()
-                                                    for name in ['app/src/main/java/org/audiveris/omr/constant/Constant.java',
-                                                                 'app/src/main/java/org/audiveris/omr/constant/ConstantSet.java',
-                                                                 'app/src/main/java/org/audiveris/omr/sheet/BookManager.java',
-                                                                 'app/src/main/java/org/audiveris/omr/sheet/ScaleBuilder.java']},
-                       'applicationSourceChangeNotes': 'Configuration seams and ScaleBuilder.Source; see README for source changes and explicitly added analysis roots',
+                       'applicationSourceChanges': application_changes(root),
+                       'applicationSourceChangeNotes': 'Java sources changed/added against the application baseline, including configuration, scale input and memory-model seams; see README for coverage',
                        'rawArtifacts': raw_path,
                        'probeSha256': {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
                                        for p in sorted((artifacts / 'probe').iterdir()) if p.is_file()},
@@ -191,6 +199,24 @@ def main():
         for target in [map_results, map_raw]:
             write(target / 'provenance.json', map_provenance)
         provenance['orderedMapVerification'] = json.loads((map_build / 'verification.json').read_text())
+    if args.models:
+        for name in ['font-defaults', 'sheet-model']:
+            model_build = build / f'wasm-compat/{name}-probe'
+            model_raw = artifacts / f'{name}-probe'
+            model_results = root / 'wasm-compat/model-results' / name
+            model_raw.mkdir(parents=True, exist_ok=True); model_results.mkdir(parents=True, exist_ok=True)
+            for filename in [f'{name}.wasm', f'{name}.wasm-runtime.js', 'jvm-reference.txt', 'verification.json', 'diagnostics.tsv']:
+                shutil.copyfile(model_build / filename, model_raw / filename)
+            for filename in ['jvm-reference.txt', 'verification.json', 'diagnostics.tsv']:
+                shutil.copyfile(model_build / filename, model_results / filename)
+            model_provenance = {key: provenance[key] for key in ['applicationBaseline', 'toolCommit', 'teaVM', 'target',
+                'cpuMax', 'allowedCpus', 'memoryMaxBytes', 'memorySwapMaxBytes', 'memoryEventsLocal', 'sourceSha256', 'applicationSourceChanges']}
+            model_provenance.update({'rawArtifacts': raw_path + f'/{name}-probe',
+                'artifactSha256': {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(model_raw.iterdir()) if p.is_file()},
+                'limitation': 'Configuration and model initialization only; no attached raster, staff detection or full recognition'})
+            for target in [model_results, model_raw]:
+                write(target / 'provenance.json', model_provenance)
+            provenance[name + 'Verification'] = json.loads((model_build / 'verification.json').read_text())
     for target in [results, artifacts]:
         write(target / 'provenance.json', provenance)
     print(json.dumps({key: comparison[key] for key in ['rootCount', 'baselineDiagnostics', 'patchedDiagnostics', 'modifiedMethods',

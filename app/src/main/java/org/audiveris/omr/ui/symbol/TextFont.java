@@ -25,7 +25,6 @@ import org.audiveris.omr.constant.Constant;
 import org.audiveris.omr.constant.ConstantSet;
 import org.audiveris.omr.text.FontAttributes;
 import org.audiveris.omr.text.FontInfo;
-import org.audiveris.omr.util.param.ConstantBasedParam;
 import org.audiveris.omr.util.param.Param;
 
 import org.slf4j.Logger;
@@ -44,7 +43,7 @@ public class TextFont
 {
     //~ Static fields/initializers -----------------------------------------------------------------
 
-    private static final Constants constants = new Constants();
+    private static final Constants constants = FontFamilyDefaults.textConstants();
 
     private static final Logger logger = LoggerFactory.getLogger(TextFont.class);
 
@@ -59,9 +58,7 @@ public class TextFont
             constants.defaultTextFontSize.getValue());
 
     /** Default text font family. */
-    public static final Param<TextFamily> defaultTextParam = new ConstantBasedParam<>(
-            constants.defaultTextFamily,
-            Param.GLOBAL_SCOPE);
+    public static final Param<TextFamily> defaultTextParam = FontFamilyDefaults.defaultTextParam;
 
     //~ Constructors -------------------------------------------------------------------------------
 
@@ -258,10 +255,10 @@ public class TextFont
     //-----------//
     // Constants //
     //-----------//
-    private static class Constants
+    static class Constants
             extends ConstantSet
     {
-        private final Constant.Enum<TextFamily> defaultTextFamily = new Constant.Enum<>(
+        final Constant.Enum<TextFamily> defaultTextFamily = new Constant.Enum<>(
                 TextFamily.class,
                 TextFamily.SansSerif,
                 "Default font family for text");

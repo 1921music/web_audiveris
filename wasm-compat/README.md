@@ -208,7 +208,8 @@ recognition or font settings with compiler literals.
 ```
 
 Stages 1–5 analyze **9,001 roots / 8,588 bodies**. Stage 6 preserves every one of those roots and
-adds the 18 methods of the scale-source API/adapter, giving **9,019 roots / 8,598 bodies**.
+adds 18 scale-source API/adapter methods. Stage 8 also roots `Book.createMemoryBook`, giving
+**9,020 roots / 8,599 bodies**.
 `-PallowAddedRoots=true` explicitly permits/report additions; it never permits removal, changed
 body/native coverage or reclassification of existing roots. Generic compatibility has 544 diagnostics;
 the initial Worker boundary stage has 525 and the current Worker compatibility stage has **495**
@@ -283,6 +284,7 @@ Stage 6 separates scale input from `Sheet`, expands coverage to **9,019 roots / 
 and retains the same exclusion/diagnostic totals. The original 9,001-root subset is preserved.
 Stage 7 adds single-lane ordered Map/Set replacements, reaching **495 diagnostics / 204 unique
 messages**, with the same **9,019 / 8,598** coverage and **76 / 242 / 313** exclusion totals.
+Stage 8 adds the memory-model startup path and its new factory root (**9,020 / 8,599**); diagnostics and exclusion totals remain unchanged.
 Use `dev/teavm-audit/export_headless.py` with the Windows checkout, Linux build directory and tool SHA
 to export the comparison against the archived stage-5 generic audit. Add `--stage 2` to compare
 against headless stage 1; `--stage 4` compares against headless stage 3. CPU usage remains capped at eight logical CPUs and memory at 8 GiB,
@@ -397,13 +399,14 @@ are under `build/wasm-compat/probe`; audit outputs are under
 
 ## Verified result
 
-The current audit covers **9,019 methods**, including **8,598 method bodies**. Every original
-**9,001-method / 8,588-body** root is preserved; 18 scale-context/adapter methods are added explicitly.
+The current audit covers **9,020 methods**, including **8,599 method bodies**. Every original
+**9,001-method / 8,588-body** root is preserved; 18 scale-context/adapter methods and the memory-book
+factory are added explicitly.
 With generic compatibility and the opt-in Worker/presentation substitutions enabled, diagnostics
 fall from **1,276 to 495** (781 fewer); unique messages fall from **336 to 204**.
 The stages are **1,276 → 789 → 702 → 609 → 545 → 544 → 525 → 524 → 495**. The 544/220 result is the
 generic compatibility layer alone; 525/217 is the initial Worker boundary, 524/216 is the
-stage-6 boundary and **495/204** is the current stage-7 Worker compatibility result.
+stage-6 boundary and **495/204** is the current stage-8 result (unchanged from stage 7, with one additional model-factory root).
 Remaining exclusion candidates are **76 classes / 242 used input methods inside those classes**,
 or **313 methods** when method-only exclusion rules are also included.
 There are no remaining missing-API messages for the generic layer's targeted APIs. The broad fast
@@ -428,7 +431,9 @@ Wasm build or proof that every selected method executes correctly.
   size estimate. No engine throughput claim is made from these tests.
 - The generic stage-5 snapshot used unchanged `app` and `buildSrc` sources from baseline
   `04697c74fae431ef8436a9429386957a5cb25993`. Headless stages 4–5 modify only `Constant.java`,
-  `ConstantSet.java` and `BookManager.java`; stage 6 also changes `ScaleBuilder.java`.
+  `ConstantSet.java` and `BookManager.java`; stage 6 also changes `ScaleBuilder.java`. Stage 8 adds
+  the model/configuration seams described below. All changed/added application Java sources are
+  discovered against the baseline and hashed in provenance.
   Their hashes are recorded in headless provenance. The capped runs recorded
   no OOM or hard memory-limit hits.
 
@@ -468,10 +473,45 @@ in `ordered-map-results`; archive stage 7 with `export_headless.py --stage 7 --o
   '-Pcompat=true', '-Pheadless=true', '--console=plain')
 ```
 
-`buildSheetModelProbe` separately investigates real `Book`/`SheetStub`/`Sheet` construction,
-before adding raster storage or staff detection. Its exploratory 1 GiB compiler heap was
-insufficient; it now uses a 5 GiB heap inside the same overall 8 GiB cgroup limit. That heap
-failure is separate from the archived stage-6 verification runs reported above.
+### Memory model and font-family configuration
+
+Stage 8 makes a few source-level seams instead of cloning model initialization in the compiler:
+
+- `FontFamilyDefaults` owns the existing `MusicFont.Constants` and `TextFont.Constants` instances.
+  Both font APIs keep aliases to the same parameter objects; original keys and typed constants
+  remain intact. `Params.BookParams` can now establish parent settings without initializing AWT
+  fonts. Only package access to the two existing constant sets/family fields is widened.
+- `Book.createMemoryBook(radix)` initializes the normal parameters and model identity without
+  input-file alias loading or archived-sheet migration. The existing file constructor is retained.
+- The existing `Sheet(SheetStub)` constructor is public, so a model can be constructed before pixels
+  are attached; its initialization body is unchanged.
+
+Two narrow compiler adaptations complete this startup path. `Picture.convertOldTables` preserves
+null/empty legacy-table cleanup but explicitly rejects actual old `.omr` table data; old-project
+migration is outside this Worker entrypoint. Book/SheetStub lock construction uses `SerialLock`,
+which preserves reentry, ownership and balanced release in one execution lane. Wrong-owner
+unlock fails; contended blocking and Condition waits are explicitly unsupported. No shared-memory
+Java locking is claimed. JVM checks compare reentry/interruption with the JDK and verify rejection
+of wrong-owner release and unsupported contention.
+
+`verifyFontDefaultsProbe` checks original namespaces, overrides, source reset, full book-parameter
+inheritance and separate module/Worker settings. JVM checks also verify identity of the old font
+API aliases. `verifySheetModelProbe` compares the memory book with the original file-backed model
+initialization, then runs the original Sheet/GlyphIndex/InterIndex/StaffManager/LagManager setup in
+Node and Chromium Workers. Its model component is **779,348 bytes**, and the font-configuration
+component is **521,679 bytes**. Neither is a full recognition engine or engine size estimate.
+
+```powershell
+.\dev\wsl\Manage-WasmDev.ps1 Build -GradleArgs @(
+  'verifyFontDefaultsProbe', 'verifySheetModelProbe',
+  '-I', 'dev/teavm-audit/audit.init.gradle', '-Pcompat=true', '-Pheadless=true', '--console=plain')
+```
+
+Small reports are in `model-results`; archive with `export_headless.py --stage 8 --models
+--allow-added-roots`. Pixels and staff detection are not yet attached to this model probe.
+The exploratory initial 1 GiB compiler heap was insufficient before separating initialization;
+`buildSheetModelProbe` uses a 5 GiB heap inside the same overall 8 GiB cgroup limit. That heap
+failure is separate from the archived stage-6 runs.
 
 ## Remaining work
 

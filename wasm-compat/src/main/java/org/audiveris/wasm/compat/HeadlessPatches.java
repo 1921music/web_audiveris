@@ -7,7 +7,7 @@ import org.teavm.model.instructions.*;
 import org.teavm.model.optimization.ConstantConditionElimination;
 import org.audiveris.wasm.compat.platform.*;
 
-/** Explicit application/platform substitutions. No root selection or original source is changed. */
+/** Explicit compiler-model substitutions; does not select roots or edit source files. */
 final class HeadlessPatches {
     private static ValueType obj(String name) { return ValueType.object(name); }
     private static final ValueType STRING = obj("java.lang.String");
@@ -20,6 +20,9 @@ final class HeadlessPatches {
         switch (cls.getName()) {
             case "org.audiveris.omr.WellKnowns": environment(cls); break;
             case "org.audiveris.omr.util.OmrExecutors": executors(cls); break;
+            case "org.audiveris.omr.sheet.Picture": archivedTables(cls); break;
+            case "org.audiveris.omr.sheet.Book": modelLocks(cls); break;
+            case "org.audiveris.omr.sheet.SheetStub": modelLocks(cls); break;
             case "org.slf4j.LoggerFactory":
                 emptyInitializer(cls);
                 delegate(cls, "getLogger", "logger", HeadlessLogging.class, STRING, obj("org.slf4j.Logger"));
@@ -230,6 +233,47 @@ final class HeadlessPatches {
             PutFieldInstruction put = new PutFieldInstruction(); put.setField(new FieldReference(cls.getName(), field.getName())); put.setFieldType(type); put.setValue(result); block.add(put);
         }
         block.add(new ExitInstruction()); initializer(cls).setProgram(program);
+    }
+    private static void archivedTables(ClassHolder cls) {
+        MethodHolder method = cls.getMethod(new MethodDescriptor("convertOldTables", ValueType.VOID));
+        FieldHolder field = cls.getField("oldTables"); ValueType type = obj("java.util.EnumMap");
+        if (method == null || method.getProgram() == null || field == null || !field.getType().equals(type)) {
+            throw new IllegalStateException("Review legacy picture-table migration");
+        }
+        Program program = new Program(); Variable self = program.createVariable(), tables = program.createVariable();
+        BasicBlock block = program.createBasicBlock();
+        GetFieldInstruction get = new GetFieldInstruction(); get.setField(field.getReference());
+        get.setFieldType(type); get.setInstance(self); get.setReceiver(tables); block.add(get);
+        InvokeInstruction check = new InvokeInstruction(); check.setType(InvocationType.SPECIAL);
+        check.setMethod(new MethodReference(HeadlessArchives.class.getName(), "requireNoLegacyTables", obj("java.util.Map"), ValueType.VOID));
+        check.setArguments(tables); block.add(check);
+        Variable nilValue = program.createVariable(); NullConstantInstruction nil = new NullConstantInstruction();
+        nil.setReceiver(nilValue); block.add(nil);
+        PutFieldInstruction clear = new PutFieldInstruction(); clear.setField(field.getReference());
+        clear.setFieldType(type); clear.setInstance(self); clear.setValue(nilValue); block.add(clear);
+        block.add(new ExitInstruction()); method.setProgram(program);
+    }
+    private static void modelLocks(ClassHolder cls) {
+        String original = "java.util.concurrent.locks.ReentrantLock", replacement = SerialLock.class.getName();
+        int constructions = 0, constructors = 0;
+        for (MethodHolder method : cls.getMethods()) {
+            Program program = method.getProgram(); if (program == null) { continue; }
+            int before = instructions(program); boolean changed = false;
+            for (BasicBlock block : program.getBasicBlocks()) { for (Instruction instruction : block) {
+                if (instruction instanceof ConstructInstruction && ((ConstructInstruction) instruction).getType().equals(original)) {
+                    ((ConstructInstruction) instruction).setType(replacement); constructions++; changed = true;
+                } else if (instruction instanceof InvokeInstruction && ((InvokeInstruction) instruction).getMethod().getClassName().equals(original)) {
+                    InvokeInstruction call = (InvokeInstruction) instruction;
+                    if (!call.getMethod().getDescriptor().equals(new MethodDescriptor("<init>", ValueType.VOID))) {
+                        throw new IllegalStateException("Review model lock operation " + call.getMethod());
+                    }
+                    call.setMethod(new MethodReference(replacement, call.getMethod().getDescriptor())); constructors++; changed = true;
+                }
+            } }
+            if (changed) { report(method, "single-lane-model-lock-ownership", program.basicBlockCount(), before); }
+        }
+        // Java field initializers occur in each constructor that does not delegate via this(...).
+        if (constructions == 0 || constructions != constructors) { throw new IllegalStateException("Review model lock construction"); }
     }
     private static void executors(ClassHolder cls) {
         initializeField(cls, "defaultParallelism", HeadlessExecution.class, "parallelism", obj("org.audiveris.omr.util.param.Param"));

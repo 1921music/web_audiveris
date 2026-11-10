@@ -332,6 +332,30 @@ public class Book
         initTransients(FileUtil.getNameSansExtension(inputPath).trim(), null);
     }
 
+    /**
+     * Create a book whose pages and pixels are supplied directly by the caller.
+     * No input-file alias lookup or archived-sheet migration is performed.
+     *
+     * @param radix logical book name
+     * @return an empty recognition model, with the normal parameter inheritance
+     */
+    public static Book createMemoryBook (String radix)
+    {
+        final String name = Objects.requireNonNull(radix, "Missing book name").trim();
+        if (name.isEmpty()) {
+            throw new IllegalArgumentException("Empty book name");
+        }
+
+        final Book book = new Book();
+        book.radix = name;
+        book.build = WellKnowns.TOOL_BUILD;
+        book.version = WellKnowns.TOOL_REF;
+        book.initParameters();
+        book.setParamParents();
+        book.stubsToUpgrade = new LinkedHashSet<>();
+        return book;
+    }
+
     //~ Methods ------------------------------------------------------------------------------------
 
     //---------//

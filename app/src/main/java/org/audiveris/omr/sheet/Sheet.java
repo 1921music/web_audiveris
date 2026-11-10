@@ -269,7 +269,7 @@ public class Sheet
      *
      * @param stub the related sheet stub
      */
-    private Sheet (SheetStub stub)
+    public Sheet (SheetStub stub)
     {
         Objects.requireNonNull(stub, "Cannot create a sheet in a null stub");
 

@@ -180,8 +180,35 @@ gradle.projectsEvaluated {
         commandLine 'node', '--max-old-space-size=256', new File(compat, 'tools/verify-headless.cjs').absolutePath, headlessProbeOutput.absolutePath
     }
     def pixelProbeOutput = new File(rootProject.projectDir, 'build/wasm-compat/pixel-probe')
+    def fontDefaultsOutput = new File(rootProject.projectDir, 'build/wasm-compat/font-defaults-probe')
+    rootProject.tasks.register('testFontDefaultsJvm', JavaExec) {
+        dependsOn 'compileWasmCompatibilityTests'
+        classpath = rootProject.files(compatTests, compatClasses) + auditDependencies + app.sourceSets.main.runtimeClasspath
+        mainClass = 'org.audiveris.wasm.compat.test.FontDefaultsOracle'
+        workingDir app.projectDir
+        maxHeapSize = '256m'
+        systemProperty 'java.awt.headless', 'true'
+        systemProperty 'logback.configurationFile', new File(harness, 'logback.xml').absolutePath
+        environment 'XDG_CONFIG_HOME', new File(fontDefaultsOutput, 'jvm-config').absolutePath
+        environment 'XDG_DATA_HOME', new File(fontDefaultsOutput, 'jvm-data').absolutePath
+        environment 'XDG_CACHE_HOME', new File(fontDefaultsOutput, 'jvm-cache').absolutePath
+        args new File(fontDefaultsOutput, 'jvm-reference.txt').absolutePath
+    }
+    rootProject.tasks.register('buildFontDefaultsProbe', JavaExec) {
+        dependsOn compile, 'testFontDefaultsJvm', 'patchKxmlCompatibility', 'selectWasmLibraryImplementations'
+        classpath = rootProject.files(compatTests) + compatRuntime
+        mainClass = 'audit.CompileCompatibilityProbe'
+        maxHeapSize = '1g'
+        systemProperty 'audiveris.compat.enabled', 'true'
+        systemProperty 'audiveris.compat.headless', 'true'
+        args fontDefaultsOutput.absolutePath, 'org.audiveris.wasm.compat.test.FontDefaultsProbe', 'font-defaults'
+    }
+    rootProject.tasks.register('verifyFontDefaultsProbe', Exec) {
+        dependsOn 'buildFontDefaultsProbe'
+        commandLine 'node', '--max-old-space-size=256', new File(compat, 'tools/verify-font-defaults.cjs').absolutePath, fontDefaultsOutput.absolutePath
+    }
     rootProject.tasks.register('buildSheetModelProbe', JavaExec) {
-        dependsOn compile, 'compileWasmCompatibilityTests', 'patchKxmlCompatibility', 'selectWasmLibraryImplementations'
+        dependsOn compile, 'testSheetModelJvm', 'patchKxmlCompatibility', 'selectWasmLibraryImplementations'
         classpath = rootProject.files(compatTests) + compatRuntime
         mainClass = 'audit.CompileCompatibilityProbe'
         maxHeapSize = '5g'
@@ -189,6 +216,31 @@ gradle.projectsEvaluated {
         systemProperty 'audiveris.compat.headless', 'true'
         args new File(rootProject.projectDir, 'build/wasm-compat/sheet-model-probe').absolutePath,
                 'org.audiveris.wasm.compat.test.SheetModelProbe', 'sheet-model'
+    }
+    rootProject.tasks.register('testSheetModelJvm', JavaExec) {
+        dependsOn 'compileWasmCompatibilityTests', 'testSerialLockJvm'
+        classpath = rootProject.files(compatTests, compatClasses) + auditDependencies + app.sourceSets.main.runtimeClasspath
+        mainClass = 'org.audiveris.wasm.compat.test.SheetModelOracle'
+        workingDir app.projectDir
+        maxHeapSize = '256m'
+        systemProperty 'java.awt.headless', 'true'
+        systemProperty 'logback.configurationFile', new File(harness, 'logback.xml').absolutePath
+        def modelOutput = new File(rootProject.projectDir, 'build/wasm-compat/sheet-model-probe')
+        environment 'XDG_CONFIG_HOME', new File(modelOutput, 'jvm-config').absolutePath
+        environment 'XDG_DATA_HOME', new File(modelOutput, 'jvm-data').absolutePath
+        environment 'XDG_CACHE_HOME', new File(modelOutput, 'jvm-cache').absolutePath
+        args new File(modelOutput, 'jvm-reference.txt').absolutePath
+    }
+    rootProject.tasks.register('testSerialLockJvm', JavaExec) {
+        dependsOn 'compileWasmCompatibilityTests'
+        classpath = rootProject.files(compatTests, compatClasses)
+        mainClass = 'org.audiveris.wasm.compat.test.SerialLockTest'
+        maxHeapSize = '128m'
+    }
+    rootProject.tasks.register('verifySheetModelProbe', Exec) {
+        dependsOn 'buildSheetModelProbe'
+        commandLine 'node', '--max-old-space-size=256', new File(compat, 'tools/verify-sheet-model.cjs').absolutePath,
+                new File(rootProject.projectDir, 'build/wasm-compat/sheet-model-probe').absolutePath
     }
     def orderedMapOutput = new File(rootProject.projectDir, 'build/wasm-compat/ordered-map-probe')
     rootProject.tasks.register('testOrderedMapJvm', JavaExec) {

@@ -30,7 +30,6 @@ import org.audiveris.omr.sheet.SheetStub;
 import org.audiveris.omr.sheet.ui.StubsController;
 import org.audiveris.omr.text.FontInfo;
 import org.audiveris.omr.ui.util.UIUtil;
-import org.audiveris.omr.util.param.ConstantBasedParam;
 import org.audiveris.omr.util.param.Param;
 
 import org.slf4j.Logger;
@@ -86,7 +85,7 @@ public class MusicFont
 {
     //~ Static fields/initializers -----------------------------------------------------------------
 
-    private static final Constants constants = new Constants();
+    private static final Constants constants = FontFamilyDefaults.musicConstants();
 
     private static final Logger logger = LoggerFactory.getLogger(MusicFont.class);
 
@@ -97,9 +96,7 @@ public class MusicFont
     public static final int TINY_INTERLINE = (int) Math.rint(DEFAULT_INTERLINE * RATIO_TINY);
 
     /** Default music font family. */
-    public static final Param<MusicFamily> defaultMusicParam = new ConstantBasedParam<>(
-            constants.defaultMusicFamily,
-            Param.GLOBAL_SCOPE);
+    public static final Param<MusicFamily> defaultMusicParam = FontFamilyDefaults.defaultMusicParam;
 
     //~ Instance fields ----------------------------------------------------------------------------
 
@@ -692,10 +689,10 @@ public class MusicFont
     //-----------//
     // Constants //
     //-----------//
-    private static class Constants
+    static class Constants
             extends ConstantSet
     {
-        private final Constant.Enum<MusicFamily> defaultMusicFamily = new Constant.Enum<>(
+        final Constant.Enum<MusicFamily> defaultMusicFamily = new Constant.Enum<>(
                 MusicFamily.class,
                 MusicFamily.Bravura,
                 "Default font family for music symbols");
