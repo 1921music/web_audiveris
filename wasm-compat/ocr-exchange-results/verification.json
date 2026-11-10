@@ -10,7 +10,7 @@
   "cancellationTerminal": true,
   "emptyAndFailureDistinct": true,
   "pixelSnapshotsOwned": true,
-  "wasmBytes": 39509,
-  "wasmSha256": "3b534a360ae298024d84dcbab224e11f169882b592d976c34dbb937cf08c49c5",
+  "wasmBytes": 39676,
+  "wasmSha256": "a7648aa8d6b323386e5d6b3ddca9674bd7a8c374510bc299362f9044a5ac34e7",
   "limitation": "OCR transport/lifecycle component only; TEXTS raster cleanup, backend OCR and result ingestion are not yet integrated"
 }

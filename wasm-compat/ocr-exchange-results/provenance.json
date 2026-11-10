@@ -1,11 +1,11 @@
 {
-  "sourceCommit": "98df70d0f7dd67f82a36c8707580993811a9b6b8",
+  "sourceCommit": "0538ad14fa06b837f2cfaa48748d72f4fde09569",
   "sourceSha256": {
-    "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/OcrExchange.java": "6cbcbebc241860266a56e9a0744acc2802a9f13edab3d24b8d339cba4d1f80f2",
+    "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/OcrExchange.java": "c2a0f75503efd702d4a54488a568f1371208e0bc75b331b5c61f77423c070348",
     "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/OcrExchangeProbe.java": "fae372fec700e6d4ce6a7739ffca0674e24d0dc8f26c21fda988d0cad4405a83",
     "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/OcrExchangeOracle.java": "5b44f076590f1e28837f8b8ec35bf9452370055002ad25f15d0cbd03e143378d",
     "wasm-compat/tools/verify-ocr-exchange.cjs": "6ee3b341a2b969cf2a6be4d3201f0b7a9c634dbd16b21b394cb8b9968dc9e437",
-    "dev/teavm-audit/audit.init.gradle": "a7ff155b7b0c93fac5db1bdb0f05ea0d0851bd3dd459fcbc27ec2a0c2088527c"
+    "dev/teavm-audit/audit.init.gradle": "f3f15db3b60da78d4f7eec3f54a25c74746a857b03578eaa09e375f9901732f1"
   },
   "rawArtifacts": "wsl-artifacts/wasm-components/ocr-exchange",
   "cpuMax": "800000 100000",
@@ -14,9 +14,9 @@
   "memorySwapMaxBytes": 0,
   "memoryEventsLocal": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0",
   "artifactSha256": {
-    "ocr-exchange.wasm": "3b534a360ae298024d84dcbab224e11f169882b592d976c34dbb937cf08c49c5",
+    "ocr-exchange.wasm": "a7648aa8d6b323386e5d6b3ddca9674bd7a8c374510bc299362f9044a5ac34e7",
     "ocr-exchange.wasm-runtime.js": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
-    "verification.json": "6e93ef49fc74f31c007cfc93e8a03f3c533fb84f35810b9fb038172600860dc3",
+    "verification.json": "47aa94efdce21399616e93529e010378fc3092e250a96e0fa67f74423f792ff4",
     "diagnostics.tsv": "fedeabd8a34aba0fa7d1aa2d80ccb94c378549c76c57c6942205c67c8f568b5d",
     "jvm-reference.txt": "56b590f45939ffe735e5956f5832f212c44d5413dc2e22e832af1bd210f51122"
   },

@@ -1,0 +1,18 @@
+{
+  "node": "v24.22.2",
+  "chromium": "158.0.8127.18",
+  "nodeInstances": 2,
+  "workers": 2,
+  "checks": 45,
+  "invalidCases": 25,
+  "pixelsTransferred": true,
+  "staleBeforeDecode": true,
+  "dom": "undefined",
+  "nativeModelRoundTrip": true,
+  "unicodeAndLineBaseline": true,
+  "inboundSnapshotsOwned": true,
+  "plainDataAndTransferablePixels": true,
+  "wasmBytes": 41736,
+  "wasmSha256": "9752825236c0c368212f66d1ede67e2dca4c6ebfaaec960dd079781ad5930a0e",
+  "limitation": "Host transport component only; no actual OCR backend, TEXTS cleanup or TextLine ingestion is claimed"
+}
