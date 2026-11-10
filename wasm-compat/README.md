@@ -211,8 +211,8 @@ Stages 1–5 analyze **9,001 roots / 8,588 bodies**. Stage 6 preserves every one
 adds the 18 methods of the scale-source API/adapter, giving **9,019 roots / 8,598 bodies**.
 `-PallowAddedRoots=true` explicitly permits/report additions; it never permits removal, changed
 body/native coverage or reclassification of existing roots. Generic compatibility has 544 diagnostics;
-the initial Worker boundary stage has 525 and the current presentation-boundary stage has **524**
-(216 unique messages). No diagnostics are located directly in selected engine sources.
+the initial Worker boundary stage has 525 and the current Worker compatibility stage has **495**
+(204 unique messages). No diagnostics are located directly in selected engine sources.
 
 | Residual exclusion candidates | Initial Worker boundary | Current presentation boundary |
 | --- | ---: | ---: |
@@ -281,6 +281,8 @@ and **524 diagnostics / 216 unique messages**; independently compiled numerical 
 execution paths rather than treating the broad fast graph as proof of runtime compatibility.
 Stage 6 separates scale input from `Sheet`, expands coverage to **9,019 roots / 8,598 bodies**,
 and retains the same exclusion/diagnostic totals. The original 9,001-root subset is preserved.
+Stage 7 adds single-lane ordered Map/Set replacements, reaching **495 diagnostics / 204 unique
+messages**, with the same **9,019 / 8,598** coverage and **76 / 242 / 313** exclusion totals.
 Use `dev/teavm-audit/export_headless.py` with the Windows checkout, Linux build directory and tool SHA
 to export the comparison against the archived stage-5 generic audit. Add `--stage 2` to compare
 against headless stage 1; `--stage 4` compares against headless stage 3. CPU usage remains capped at eight logical CPUs and memory at 8 GiB,
@@ -398,10 +400,10 @@ are under `build/wasm-compat/probe`; audit outputs are under
 The current audit covers **9,019 methods**, including **8,598 method bodies**. Every original
 **9,001-method / 8,588-body** root is preserved; 18 scale-context/adapter methods are added explicitly.
 With generic compatibility and the opt-in Worker/presentation substitutions enabled, diagnostics
-fall from **1,276 to 524** (752 fewer); unique messages fall from **336 to 216**.
-The stages are **1,276 → 789 → 702 → 609 → 545 → 544 → 525 → 524**. The 544/220 result is the
-generic compatibility layer alone; 525/217 is the initial Worker boundary and **524/216** is the
-current headless boundary (diagnostic totals remain unchanged through stage 6, with expanded roots).
+fall from **1,276 to 495** (781 fewer); unique messages fall from **336 to 204**.
+The stages are **1,276 → 789 → 702 → 609 → 545 → 544 → 525 → 524 → 495**. The 544/220 result is the
+generic compatibility layer alone; 525/217 is the initial Worker boundary, 524/216 is the
+stage-6 boundary and **495/204** is the current stage-7 Worker compatibility result.
 Remaining exclusion candidates are **76 classes / 242 used input methods inside those classes**,
 or **313 methods** when method-only exclusion rules are also included.
 There are no remaining missing-API messages for the generic layer's targeted APIs. The broad fast
@@ -436,6 +438,41 @@ in `wsl-artifacts/wasm-compat/audit` and `probe`; its comparison is retained in
 `results/stage1-comparison.json`. Each `results/stageN-comparison.json` compares that stage directly
 with its predecessor. `dev/teavm-audit/export_compat.py --stage N` packages reports and provenance.
 
+## Worker ordered indexes
+
+With `-Pheadless=true`, standard `ConcurrentSkipListMap` / `ConcurrentSkipListSet` references resolve to a
+TreeMap-backed implementation for the single Java execution lane in each module. This lets
+`BasicIndex` and `Picture` retain their original source and declared map types without linking
+the JDK skip-list's `VarHandle` implementation. Separate Workers still own separate maps;
+this does not implement shared-memory Java threads. Map and Set are replaced together because
+the original JDK Set calls private skip-list Map methods and nested implementation classes.
+
+Range and descending views remain live. The replacement manages bounds itself: delegating
+view operations to TeaVM 0.16.0's TreeMap did not match the JDK in the operation-stream oracle.
+Iterators use successive key lookups, permit changes during traversal and support removal
+without copying the whole map. Lookup/update is O(log n), and a full traversal is O(n log n).
+TODO: measure index traversal on recognition workloads before choosing a faster representation.
+
+`verifyOrderedMapProbe` compares 24,000 deterministic randomized Map operations, 10,000 Set
+operations, both comparator directions, 440 range-boundary cases, conditional updates, live
+views, Set streams and exception cases with the JDK.
+It also runs the unchanged `BasicIndex` registration, navigation, removal, reset and live-collection
+paths. The standard-API caller is checked in Node module instances and Chromium Workers.
+This is coverage of the exercised single-lane APIs, not a claim of complete concurrent-JDK behavior.
+The component probe is **117,991 bytes**; it is not a full-engine size estimate. Small reports are
+in `ordered-map-results`; archive stage 7 with `export_headless.py --stage 7 --ordered-maps`.
+
+```powershell
+.\dev\wsl\Manage-WasmDev.ps1 Build -GradleArgs @(
+  'verifyOrderedMapProbe', '-I', 'dev/teavm-audit/audit.init.gradle',
+  '-Pcompat=true', '-Pheadless=true', '--console=plain')
+```
+
+`buildSheetModelProbe` separately investigates real `Book`/`SheetStub`/`Sheet` construction,
+before adding raster storage or staff detection. Its exploratory 1 GiB compiler heap was
+insufficient; it now uses a 5 GiB heap inside the same overall 8 GiB cgroup limit. That heap
+failure is separate from the archived stage-6 verification runs reported above.
+
 ## Remaining work
 
 ### TODO: reconsider the XML properties parser
@@ -468,7 +505,7 @@ For the Worker comparison, use `node wasm-compat/tools/bench-xml-browser.cjs <jd
 <kxml2-directory>` through the same launcher. The reported component sizes above refer to the
 archived stage-3 modules, not a fresh build of later compatibility layers.
 
-The current headless audit has **524 diagnostics**, including reflection/classloading, thread APIs,
+The current headless audit has **495 diagnostics**, including reflection/classloading, thread APIs,
 file/XML operations and other dependency runtime paths. None are located directly in selected engine
 sources; this does not establish that OCR/native or other platform boundaries are implemented.
 The generic-only audit still has 544 diagnostics, including three directly in selected engine

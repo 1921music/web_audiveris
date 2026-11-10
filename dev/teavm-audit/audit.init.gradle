@@ -180,6 +180,39 @@ gradle.projectsEvaluated {
         commandLine 'node', '--max-old-space-size=256', new File(compat, 'tools/verify-headless.cjs').absolutePath, headlessProbeOutput.absolutePath
     }
     def pixelProbeOutput = new File(rootProject.projectDir, 'build/wasm-compat/pixel-probe')
+    rootProject.tasks.register('buildSheetModelProbe', JavaExec) {
+        dependsOn compile, 'compileWasmCompatibilityTests', 'patchKxmlCompatibility', 'selectWasmLibraryImplementations'
+        classpath = rootProject.files(compatTests) + compatRuntime
+        mainClass = 'audit.CompileCompatibilityProbe'
+        maxHeapSize = '5g'
+        systemProperty 'audiveris.compat.enabled', 'true'
+        systemProperty 'audiveris.compat.headless', 'true'
+        args new File(rootProject.projectDir, 'build/wasm-compat/sheet-model-probe').absolutePath,
+                'org.audiveris.wasm.compat.test.SheetModelProbe', 'sheet-model'
+    }
+    def orderedMapOutput = new File(rootProject.projectDir, 'build/wasm-compat/ordered-map-probe')
+    rootProject.tasks.register('testOrderedMapJvm', JavaExec) {
+        dependsOn 'compileWasmCompatibilityTests'
+        classpath = rootProject.files(compatTests, compatClasses) + auditDependencies + app.sourceSets.main.runtimeClasspath
+        mainClass = 'org.audiveris.wasm.compat.test.OrderedMapOracle'
+        maxHeapSize = '256m'
+        systemProperty 'java.awt.headless', 'true'
+        systemProperty 'logback.configurationFile', new File(harness, 'logback.xml').absolutePath
+        args new File(orderedMapOutput, 'jvm-reference.txt').absolutePath
+    }
+    rootProject.tasks.register('buildOrderedMapProbe', JavaExec) {
+        dependsOn compile, 'testOrderedMapJvm', 'patchKxmlCompatibility', 'selectWasmLibraryImplementations'
+        classpath = rootProject.files(compatTests) + compatRuntime
+        mainClass = 'audit.CompileCompatibilityProbe'
+        maxHeapSize = '1g'
+        systemProperty 'audiveris.compat.enabled', 'true'
+        systemProperty 'audiveris.compat.headless', 'true'
+        args orderedMapOutput.absolutePath, 'org.audiveris.wasm.compat.test.OrderedMapProbe', 'ordered-map'
+    }
+    rootProject.tasks.register('verifyOrderedMapProbe', Exec) {
+        dependsOn 'buildOrderedMapProbe'
+        commandLine 'node', '--max-old-space-size=256', new File(compat, 'tools/verify-ordered-map.cjs').absolutePath, orderedMapOutput.absolutePath
+    }
     rootProject.tasks.register('testPixelProbeJvm', JavaExec) {
         dependsOn 'compileWasmCompatibilityTests'
         classpath = rootProject.files(compatTests, compatClasses) + app.sourceSets.main.runtimeClasspath

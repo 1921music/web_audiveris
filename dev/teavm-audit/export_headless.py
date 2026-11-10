@@ -54,6 +54,7 @@ def main():
     parser.add_argument('tool_commit')
     parser.add_argument('--stage', type=int, default=1)
     parser.add_argument('--pixels', action='store_true')
+    parser.add_argument('--ordered-maps', action='store_true')
     parser.add_argument('--allow-added-roots', action='store_true')
     args = parser.parse_args()
     root, build = args.repository, args.build
@@ -173,6 +174,23 @@ def main():
         write(pixel_results / 'provenance.json', pixel_provenance)
         write(pixel_raw / 'provenance.json', pixel_provenance)
         provenance['pixelVerification'] = verification
+    if args.ordered_maps:
+        map_build = build / 'wasm-compat/ordered-map-probe'
+        map_raw = artifacts / 'ordered-map-probe'
+        map_results = root / 'wasm-compat/ordered-map-results'
+        map_raw.mkdir(parents=True, exist_ok=True); map_results.mkdir(parents=True, exist_ok=True)
+        for name in ['ordered-map.wasm', 'ordered-map.wasm-runtime.js', 'jvm-reference.txt', 'index-reference.txt', 'set-reference.txt', 'verification.json']:
+            shutil.copyfile(map_build / name, map_raw / name)
+        for name in ['jvm-reference.txt', 'index-reference.txt', 'set-reference.txt', 'verification.json']:
+            shutil.copyfile(map_build / name, map_results / name)
+        map_provenance = {key: provenance[key] for key in ['applicationBaseline', 'toolCommit', 'teaVM', 'target',
+            'cpuMax', 'allowedCpus', 'memoryMaxBytes', 'memorySwapMaxBytes', 'memoryEventsLocal', 'sourceSha256']}
+        map_provenance.update({'rawArtifacts': raw_path + '/ordered-map-probe',
+            'artifactSha256': {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(map_raw.iterdir()) if p.is_file()},
+            'limitation': 'Single Java execution lane per module; exercised ordered-map and original BasicIndex operations only, not shared-memory concurrency'})
+        for target in [map_results, map_raw]:
+            write(target / 'provenance.json', map_provenance)
+        provenance['orderedMapVerification'] = json.loads((map_build / 'verification.json').read_text())
     for target in [results, artifacts]:
         write(target / 'provenance.json', provenance)
     print(json.dumps({key: comparison[key] for key in ['rootCount', 'baselineDiagnostics', 'patchedDiagnostics', 'modifiedMethods',

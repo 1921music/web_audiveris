@@ -15,10 +15,18 @@ public final class CompileCompatibilityProbe {
         tool.setTargetFileName(name + ".wasm");
         tool.setStrict(true);
         tool.generate();
+        java.nio.file.Files.createDirectories(new File(args[0]).toPath());
+        var diagnostics = new StringBuilder("severity\tmethod\tmessage\n");
+        int printedProblems = 0;
         for (var problem : tool.getProblemProvider().getProblems()) {
             var text = new DefaultProblemTextConsumer(); problem.render(text);
-            System.out.println(problem.getSeverity() + ": " + text.getText() + " @ " + problem.getLocation());
+            if (printedProblems++ < 20) { System.out.println(problem.getSeverity() + ": " + text.getText() + " @ " + problem.getLocation()); }
+            var method = problem.getLocation() == null ? null : problem.getLocation().getMethod();
+            diagnostics.append(problem.getSeverity()).append('\t').append(method).append('\t')
+                    .append(text.getText().replace('\t', ' ').replace('\r', ' ').replace('\n', ' ')).append('\n');
         }
+        java.nio.file.Files.writeString(new File(args[0], "diagnostics.tsv").toPath(), diagnostics);
+        if (printedProblems > 20) { System.out.println(printedProblems + " diagnostics; full report: " + new File(args[0], "diagnostics.tsv")); }
         if (!tool.getProblemProvider().getSevereProblems().isEmpty()) {
             java.util.Map<org.teavm.model.MethodReference, java.util.Set<org.teavm.model.MethodReference>> reverse = new java.util.HashMap<>();
             var graph = tool.getDependencyInfo().getCallGraph();
@@ -28,21 +36,29 @@ public final class CompileCompatibilityProbe {
                     reverse.computeIfAbsent(callee.getMethod(), key -> new java.util.LinkedHashSet<>()).add(method);
                 } }
             }
+            var paths = new StringBuilder("method\tdependencyPath\n");
+            var explained = new java.util.HashSet<org.teavm.model.MethodReference>(); int printedPaths = 0;
             for (var problem : tool.getProblemProvider().getSevereProblems()) {
                 if (problem.getLocation() == null || problem.getLocation().getMethod() == null) { continue; }
-                var queue = new java.util.ArrayDeque<java.util.List<org.teavm.model.MethodReference>>();
+                if (!explained.add(problem.getLocation().getMethod())) { continue; }
+                var queue = new java.util.ArrayDeque<org.teavm.model.MethodReference>();
                 var seen = new java.util.HashSet<org.teavm.model.MethodReference>();
-                queue.add(java.util.List.of(problem.getLocation().getMethod()));
+                var child = new java.util.HashMap<org.teavm.model.MethodReference, org.teavm.model.MethodReference>();
+                var start = problem.getLocation().getMethod(); queue.add(start); seen.add(start);
                 while (!queue.isEmpty()) {
-                    var chain = queue.removeFirst(); var last = chain.get(chain.size() - 1); if (!seen.add(last)) { continue; }
+                    var last = queue.removeFirst();
                     if (last.getClassName().equals(args.length > 1 ? args[1] : "org.audiveris.wasm.compat.test.CompatibilityProbe")) {
-                        var path = new java.util.ArrayList<>(chain); java.util.Collections.reverse(path); System.out.println("Dependency path: " + path); break;
+                        var path = new java.util.ArrayList<org.teavm.model.MethodReference>();
+                        for (var current = last; current != null; current = child.get(current)) { path.add(current); }
+                        paths.append(start).append('\t').append(path).append('\n');
+                        if (printedPaths++ < 12) { System.out.println("Dependency path: " + path); } break;
                     }
                     for (var parent : reverse.getOrDefault(last, java.util.Set.of())) {
-                        var path = new java.util.ArrayList<>(chain); path.add(parent); queue.addLast(path);
+                        if (seen.add(parent)) { child.put(parent, last); queue.addLast(parent); }
                     }
                 }
             }
+            java.nio.file.Files.writeString(new File(args[0], "dependency-paths.tsv").toPath(), paths);
             throw new IllegalStateException("Compatibility probe compilation failed");
         }
         try (var runtime = CompileCompatibilityProbe.class.getResourceAsStream("/org/teavm/backend/wasm/wasm-gc-runtime.min.js")) {
