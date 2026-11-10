@@ -9,7 +9,7 @@ import org.audiveris.omr.sheet.*;
 
 /** Original GridBuilder algorithms with the pinned upstream scale class first on the JVM classpath. */
 public final class GridOracle {
-    private static boolean headers, stems, beams, ledgers, distances;
+    private static boolean headers, stems, beams, ledgers, distances, heads;
     private static final List<String> beamFailures = new ArrayList<>();
     public static void main(String[] args) throws Exception {
         Path scaleOrigin = Path.of(ScaleBuilder.class.getProtectionDomain().getCodeSource().getLocation().toURI()).toRealPath();
@@ -22,7 +22,8 @@ public final class GridOracle {
         JsonNode manifest = mapper.readTree(samples.resolve("manifest.json").toFile());
         List<Map<String, Object>> results = new ArrayList<>();
         RecordingSymbolGeometry geometry = null;
-        distances = args.length > 4 && args[4].equals("distances");
+        heads = args.length > 4 && args[4].equals("heads");
+        distances = heads || (args.length > 4 && args[4].equals("distances"));
         ledgers = distances || (args.length > 4 && args[4].equals("ledgers"));
         DistanceProbe.portableJvm = distances && args[9].equals("current");
         beams = ledgers || (args.length > 4 && args[4].equals("beams"));
@@ -73,6 +74,23 @@ public final class GridOracle {
             Path origin = Path.of(org.audiveris.omr.sheet.note.DistancesBuilder.class.getProtectionDomain().getCodeSource().getLocation().toURI()).toRealPath();
             if (!origin.equals(Path.of(args[9]).toRealPath())) { throw new AssertionError("Wrong original distance class"); }
         }
+        if (heads) {
+            org.audiveris.omr.ui.symbol.MusicFont.populateAllSymbols();
+            Path factoryOrigin=Path.of(org.audiveris.omr.image.TemplateFactory.class.getProtectionDomain().getCodeSource().getLocation().toURI()).toRealPath();
+            Path expectedOrigin=args[10].equals("current")?Path.of(Sheet.class.getProtectionDomain().getCodeSource().getLocation().toURI()).toRealPath():Path.of(args[10]).toRealPath();
+            if(!factoryOrigin.equals(expectedOrigin)) {throw new AssertionError("Wrong template factory origin");}
+            if(args[10].equals("current")) {
+                try(var paths=Files.list(Path.of(args[11]))) {
+                    for(Path path:paths.filter(p->p.toString().endsWith(".atpl")).sorted().toList()) {org.audiveris.wasm.compat.platform.WorkerTemplates.install(Files.readAllBytes(path));}
+                }
+                org.audiveris.omr.image.TemplateFactory.setSource(org.audiveris.wasm.compat.platform.WorkerTemplates.source());
+            }
+            for(Class<?> type:List.of(org.audiveris.omr.sheet.note.NoteHeadsBuilder.class,org.audiveris.omr.sheet.note.HeadSeedTally.class,
+                    org.audiveris.omr.sheet.note.HeadSeedScale.class,org.audiveris.omr.sheet.note.HeadSpotsBuilder.class,org.audiveris.omr.sheet.note.HeadsStep.class)) {
+                Path origin=Path.of(type.getProtectionDomain().getCodeSource().getLocation().toURI()).toRealPath();
+                if(!origin.equals(Path.of(args[12]).toRealPath())) {throw new AssertionError("Wrong head recognition class: "+type);}
+            }
+        }
         if (headers) {
             geometry = new RecordingSymbolGeometry(org.audiveris.omr.ui.symbol.SymbolGeometry.provider());
             org.audiveris.omr.ui.symbol.SymbolGeometry.setProvider(geometry);
@@ -115,18 +133,18 @@ public final class GridOracle {
     private static JsonNode compare(Path folder, String id, int width, int height, byte[] binary, ObjectMapper mapper, boolean complete, Path rasters) throws Exception {
         RunTable table = new RunTableFactory(Orientation.VERTICAL).createTable(new ByteProcessor(width, height, binary.clone(), null));
         Book book = new Book(folder.resolve("staff-" + id + ".png")); SheetStub stub = new SheetStub(book, 1); book.addStub(stub);
-        JsonNode expected = mapper.readTree(distances ? DistanceProbe.analyze(new Sheet(stub, table)) : ledgers ? LedgerProbe.analyze(new Sheet(stub, table)) : beams ? BeamProbe.analyze(new Sheet(stub, table)) : stems ? StemProbe.analyze(new Sheet(stub, table)) : headers ? HeaderProbe.analyze(new Sheet(stub, table)) : GridProbe.analyze(new Sheet(stub, table), complete));
+        JsonNode expected = mapper.readTree(heads ? HeadsProbe.analyze(new Sheet(stub, table)) : distances ? DistanceProbe.analyze(new Sheet(stub, table)) : ledgers ? LedgerProbe.analyze(new Sheet(stub, table)) : beams ? BeamProbe.analyze(new Sheet(stub, table)) : stems ? StemProbe.analyze(new Sheet(stub, table)) : headers ? HeaderProbe.analyze(new Sheet(stub, table)) : GridProbe.analyze(new Sheet(stub, table), complete));
         byte[] expectedPixels = complete && !expected.path("rejected").asBoolean() ? GridProbe.cleanedPixels().clone() : null;
         byte[] expectedDistances = distances && !expected.path("rejected").asBoolean() ? DistanceProbe.distancePixelsJava().clone() : null;
-        byte[] expectedHeads = beams && !expected.path("rejected").asBoolean() ? BeamProbe.headPixelsJava().clone() : null;
-        JsonNode actual = mapper.readTree(distances ? DistanceProbe.analyze(PixelSheetProbe.create(width, height, binary, id)) : ledgers ? LedgerProbe.analyze(PixelSheetProbe.create(width, height, binary, id)) : beams ? BeamProbe.analyze(PixelSheetProbe.create(width, height, binary, id)) : stems ? StemProbe.analyze(PixelSheetProbe.create(width, height, binary, id)) : headers ? HeaderProbe.analyze(PixelSheetProbe.create(width, height, binary, id)) : GridProbe.analyze(PixelSheetProbe.create(width, height, binary, id), complete));
+        byte[] expectedHeads = beams && !expected.path("rejected").asBoolean() ? (heads ? HeadsProbe.headPixelsJava() : BeamProbe.headPixelsJava()).clone() : null;
+        JsonNode actual = mapper.readTree(heads ? HeadsProbe.analyze(PixelSheetProbe.create(width, height, binary, id)) : distances ? DistanceProbe.analyze(PixelSheetProbe.create(width, height, binary, id)) : ledgers ? LedgerProbe.analyze(PixelSheetProbe.create(width, height, binary, id)) : beams ? BeamProbe.analyze(PixelSheetProbe.create(width, height, binary, id)) : stems ? StemProbe.analyze(PixelSheetProbe.create(width, height, binary, id)) : headers ? HeaderProbe.analyze(PixelSheetProbe.create(width, height, binary, id)) : GridProbe.analyze(PixelSheetProbe.create(width, height, binary, id), complete));
         if (expectedPixels != null) {
             if (!Arrays.equals(expectedPixels, GridProbe.cleanedPixels())) { throw new AssertionError("Staff-free pixels differ: " + id); }
             if (!stems && !GridProbe.verifyCleanCache()) { throw new AssertionError("Cache lifecycle"); }
             Files.write(rasters.resolve(id + ".binary"), expectedPixels);
         }
         if (expectedHeads != null) {
-            if (!Arrays.equals(expectedHeads, BeamProbe.headPixelsJava())) { throw new AssertionError("Raw head spots differ: " + id); }
+            if (!Arrays.equals(expectedHeads, heads ? HeadsProbe.headPixelsJava() : BeamProbe.headPixelsJava())) { throw new AssertionError("Raw head spots differ: " + id); }
             Path folderHeads = rasters.resolveSibling("head-pixels"); Files.createDirectories(folderHeads);
             Files.write(folderHeads.resolve(id + ".binary"), expectedHeads);
         }

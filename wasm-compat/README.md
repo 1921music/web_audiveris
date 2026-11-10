@@ -402,15 +402,15 @@ are under `build/wasm-compat/probe`; audit outputs are under
 
 ## Verified result
 
-The current audit covers **9,053 methods**, including **8,630 method bodies**. Every original
+The current audit covers **9,054 methods**, including **8,631 method bodies**. Every original
 **9,001-method / 8,588-body** root is preserved; 18 scale-context/adapter methods and the memory-book
 factory, nine initial pixel-model methods, one bracket-geometry seam, three staff-free raster methods,
-two model-construction methods, two shared run-raster methods and three raw-distance preparation methods and two drum configuration boundaries and eleven template-source methods are added explicitly.
+two model-construction methods, two shared run-raster methods and three raw-distance preparation methods and two drum configuration boundaries and eleven template-source methods and one head-spot cache lifecycle hook are added explicitly.
 With generic compatibility and the opt-in Worker/presentation substitutions enabled, diagnostics
 fall from **1,276 to 494** (782 fewer); unique messages fall from **336 to 203**.
 The stages are **1,276 → 789 → 702 → 609 → 545 → 544 → 525 → 524 → 495 → 494**. The 544/220 result is the
 generic compatibility layer alone; 525/217 is the initial Worker boundary, 524/216 is the
-stage-6 boundary, 495/204 is the stage-7–9 result, and **494/203** is the current stage-20 result (unchanged from stage 10).
+stage-6 boundary, 495/204 is the stage-7–9 result, and **494/203** is the current stage-21 result (unchanged from stage 10).
 Remaining exclusion candidates are **75 classes / 242 used input methods inside those classes**,
 or **310 methods** when method-only exclusion rules are also included.
 There are no remaining missing-API messages for the generic layer's targeted APIs. The broad fast
@@ -1020,6 +1020,51 @@ all exclusion rules**. Compiler success for this component does not establish fu
 Reproduce with `verifyTemplateProbe` and `buildHeadsBaselineProbe` through the capped launcher.
 Archive using `export_headless.py --stage 20 --templates --allow-added-roots`; small reports are in
 `template-results`, with complete catalogs, matching vectors and pinned classes in the raw archive.
+
+## Note-head recognition (stage 21)
+
+The HEADS probe runs the original distance/spot preparation, per-system `NoteHeadsBuilder`,
+`HeadSeedTally.analyze` and the image-discard epilog. The pinned JVM reference compiles five
+original note-head classes, the original template factory and preceding reference classes;
+the note-head classes use JDK 25 because the original source contains pattern switches.
+The portable JVM path uses raw raster preparation and installs the external template catalogs.
+Reference class origins are checked, and swallowed exceptions/ERROR logs reject a result.
+
+Comparison includes every head's staff, shape, pitch, bounds and grade, complete glyph run
+sequences, all post-HEADS graph relations and support ratios, and the derived head/seed offsets.
+The preceding grid, header, seed, beam, ledger, distance-table and head-spot pixel results remain
+in the same snapshot. Native and portable JVM results match for all eight input images: five
+accepted pages yield **2,273 heads** (380 / 319 / 517 / 524 / 533); three retain their upstream
+low-resolution rejection.
+
+Binary and adaptive GRAY8 inputs agree in Node and two independent Chromium Workers:
+**1,306,632 numeric comparisons**, maximum difference **7.2165e-16**. Full pre-discard head-spot
+rasters agree for **175,126,400 bytes**, and distance tables for **350,252,800 bytes**. Post-HEADS
+graphs contain **3,063 relations** across the accepted pages. Four Bravura catalogs at 48, 90,
+91 and 92 points are sufficient for these inputs; their total external size is **1,019,020 bytes**,
+alongside the external classifier and font measurements. The strict probe is **2,440,747 bytes**.
+These are component artifacts and do not establish full-engine size or throughput.
+
+HEADS discards the HEAD_SPOTS image for persistence while a still-live weak table cache remains
+usable. The raw backend now releases its strong table ownership at that point and retains a
+weak reference. A reachability fence checks live-cache identity in both backends; a separate
+pixel snapshot makes validation independent of later collection. This preserves cache behavior
+without requiring encoded images or retaining the table strongly for the rest of the job.
+
+The Node driver yields to a new event-loop task between input images, matching the Worker's
+message boundaries. A synchronous multi-image loop reached the separate **384 MiB Node heap**
+limit while dereferenced WeakRef targets remained alive for the JavaScript job. With task
+boundaries, all eight binary and GRAY8 Node inputs pass under that same heap limit; the capped
+WSL group records no OOM or memory-limit events. Hosts should likewise finish an image/step task
+before starting another rather than batching an unbounded number of synchronous calls.
+This agrees with the [ECMAScript WeakRef read-consistency rule](https://tc39.es/ecma262/multipage/managing-memory.html#sec-weakref.prototype.deref):
+a successfully dereferenced target remains available until the current execution completes.
+
+Reproduce with `verifyHeadsProbe -I dev/teavm-audit/audit.init.gradle` through the capped launcher.
+`-PheadsPages=1` is a smaller smoke run; its report is explicitly marked as a subset and the
+exporter rejects it as full verification. The host supplies only the family/point-size catalogs
+required by the input pages. Archive complete results using `export_headless.py --stage 21
+--heads --allow-added-roots`.
 
 ## Remaining work
 

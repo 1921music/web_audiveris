@@ -108,6 +108,13 @@ public final class BeamProbe {
                 }
             }
             result.append("],\"relations\":["); first = true;
+            appendRelations(result, sheet);
+            checkErrors();
+            return result.append("]}").toString();
+        } finally { HeadlessSheetContext.bind(previous); }
+    }
+    static void appendRelations(StringBuilder result, Sheet sheet) {
+        boolean first = true;
             for (SystemInfo system : sheet.getSystems()) {
                 var graph = system.getSig();
                 var edges = new ArrayList<>(graph.edgeSet());
@@ -125,9 +132,6 @@ public final class BeamProbe {
                     result.append('}');
                 }
             }
-            checkErrors();
-            return result.append("]}").toString();
-        } finally { HeadlessSheetContext.bind(previous); }
     }
     private static String interKey(Inter inter) {
         var box = inter.getBounds();

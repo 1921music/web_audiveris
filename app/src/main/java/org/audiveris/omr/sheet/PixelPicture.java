@@ -20,6 +20,7 @@ public final class PixelPicture extends Picture {
     private final ByteProcessor binary;
     private final RunTable binaryTable;
     private RunTable headSpots;
+    private java.lang.ref.WeakReference<RunTable> discardedHeadSpots;
 
     public PixelPicture(Sheet sheet, ByteProcessor gray, ByteProcessor binary) {
         super(sheet, Objects.requireNonNull(binary, "Missing binary pixels").getWidth(), binary.getHeight());
@@ -64,10 +65,18 @@ public final class PixelPicture extends Picture {
         org.audiveris.omr.image.RunTableRaster.erase(output, table, dx, dy);
     }
     @Override public RunTable getVerticalTable(TableKey key) {
-        return Objects.requireNonNull(key) == TableKey.BINARY ? binaryTable : headSpots;
+        if (Objects.requireNonNull(key) == TableKey.BINARY) { return binaryTable; }
+        return headSpots != null ? headSpots : discardedHeadSpots != null ? discardedHeadSpots.get() : null;
     }
     @Override public BufferedImage getImage(ImageKey key) {
         throw new UnsupportedOperationException("Raw pixels require an image-encoding backend");
+    }
+    @Override public void discardImage(ImageKey key) {
+        if (Objects.requireNonNull(key) == ImageKey.HEAD_SPOTS && headSpots != null) {
+            discardedHeadSpots = new java.lang.ref.WeakReference<>(headSpots);
+            headSpots = null;
+        }
+        super.discardImage(key);
     }
     @Override public void setTable(TableKey key, RunTable table, boolean modified) {
         if (table == null) { return; }
@@ -78,5 +87,6 @@ public final class PixelPicture extends Picture {
             throw new UnsupportedOperationException("Raw table dimensions must preserve the input geometry");
         }
         headSpots = table;
+        discardedHeadSpots = null;
     }
 }
