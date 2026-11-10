@@ -1,0 +1,16 @@
+{
+  "node": "v24.22.2",
+  "chromium": "158.0.8127.18",
+  "nodeInstances": 2,
+  "workers": 2,
+  "jvmChecks": 233556,
+  "exactEdgeCases": 25,
+  "randomWasmCasesPerInstance": 8192,
+  "f64NearestKernel": true,
+  "tiesToEven": true,
+  "negativeRoundTies": true,
+  "signedZero": true,
+  "nanAndInfinity": true,
+  "integerSaturation": true,
+  "wasmBytes": 19228
+}

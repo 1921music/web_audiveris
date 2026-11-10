@@ -1,0 +1,64 @@
+{
+  "node": "v24.22.2",
+  "chromium": "158.0.8127.18",
+  "nodeInstances": 1,
+  "workers": 2,
+  "realPages": 8,
+  "pixels": 48192656,
+  "horizontalStaffRetrieval": true,
+  "originalImageAndRawPixelParityJvm": true,
+  "pinnedScaleReference": true,
+  "comparedNumbers": 4181,
+  "maxCoordinateDifference": 0,
+  "pixelTolerance": 1e-8,
+  "slopeTolerance": 1e-12,
+  "sampleStaves": [
+    {
+      "id": "00",
+      "staves": 8,
+      "rejected": false
+    },
+    {
+      "id": "01",
+      "staves": 10,
+      "rejected": false
+    },
+    {
+      "id": "02",
+      "staves": 10,
+      "rejected": false
+    },
+    {
+      "id": "03",
+      "staves": 10,
+      "rejected": false
+    },
+    {
+      "id": "04",
+      "staves": 10,
+      "rejected": false
+    },
+    {
+      "id": "05",
+      "staves": 0,
+      "rejected": true
+    },
+    {
+      "id": "06",
+      "staves": 0,
+      "rejected": true
+    },
+    {
+      "id": "07",
+      "staves": 0,
+      "rejected": true
+    }
+  ],
+  "binaryInputSha256Verified": true,
+  "hostTransfer": true,
+  "jgraphtConstructorSuppliers": true,
+  "grayThroughAdaptiveScaleAndStaff": true,
+  "grayBufferOwnership": true,
+  "limitation": "Horizontal staff retrieval only; barline/system completion and later recognition remain unverified",
+  "wasmBytes": 1182981
+}

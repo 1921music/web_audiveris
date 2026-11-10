@@ -19,7 +19,6 @@ org.audiveris.omr.sheet.AliasPatterns$Strings	used-method	used-method	non-ui-bou
 org.audiveris.omr.sheet.SheetDiff	used-method	used-method	retained-rendering-output	6	org.audiveris.omr.step.DeltaStep.doit(Lorg/audiveris/omr/sheet/Sheet;)V	org.audiveris.omr.step.DeltaStep.doit(Lorg/audiveris/omr/sheet/Sheet;)V -> org.audiveris.omr.sheet.SheetDiff.<init>(Lorg/audiveris/omr/sheet/Sheet;)V	representative-declared-reference-path
 org.audiveris.omr.sheet.SheetDiff$Constants	used-method	used-method	non-ui-boundary-or-diagnostics	2	org.audiveris.omr.classifier.AbstractClassifier$Constants.<init>()V	org.audiveris.omr.classifier.AbstractClassifier$Constants.<init>()V -> org.audiveris.omr.constant.ConstantSet.<init>()V -> org.audiveris.omr.sheet.SheetDiff$Constants.getUnitName()Ljava/lang/String;	representative-fast-path-includes-inferred-edges; not proof of runtime reachability
 org.audiveris.omr.sheet.curve.Curves$CurveView	type-only	type-only	no-execution-path	0			type-link-only
-org.audiveris.omr.sheet.ui.BookBrowser	type-only	not-linked	cut-by-boundary-substitutions	0			type-link-only
 org.audiveris.omr.sheet.ui.ImageView	type-only	type-only	no-execution-path	0			type-link-only
 org.audiveris.omr.sheet.ui.ObjectUIModel	type-only	type-only	no-execution-path	0			type-link-only
 org.audiveris.omr.sheet.ui.SheetAssembly	type-only	type-only	no-execution-path	0			type-link-only

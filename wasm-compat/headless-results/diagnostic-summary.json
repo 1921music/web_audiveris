@@ -10,34 +10,34 @@
       "engine": 9029
     }
   },
-  "diagnostics": 495,
-  "uniqueMessages": 204,
+  "diagnostics": 494,
+  "uniqueMessages": 203,
   "bySeverity": {
-    "ERROR": 495
+    "ERROR": 494
   },
   "byOrigin": {
-    "engine-side": 493,
+    "engine-side": 492,
     "unattributed": 2
   },
   "byFamily": {
-    "Reflection and class loading": 182,
     "Other Java runtime": 167,
     "Threads and synchronization": 65,
     "Files and streams": 35,
+    "Reflection and class loading": 181,
     "Other libraries or compiler diagnostics": 20,
     "XML and JAXB": 26
   },
   "byDirectOwner": {
-    "dependency": 493,
+    "dependency": 492,
     "unattributed": 2
   },
   "byClassDecision": {
-    "external": 493,
+    "external": 492,
     "unattributed": 2
   },
   "callGraph": {
-    "callers": 73278,
-    "edges": 1564779
+    "callers": 73282,
+    "edges": 1564800
   },
   "apis": [
     {
@@ -108,11 +108,11 @@
         "engine-side"
       ],
       "examples": [
+        "java.nio.DirectByteBuffer.address()J @ java/nio/DirectByteBuffer.java:323",
         "java.nio.DirectByteBuffer.asCharBuffer()Ljava/nio/CharBuffer; @ java/nio/DirectByteBuffer.java:622",
         "java.nio.DirectByteBuffer.asCharBuffer()Ljava/nio/CharBuffer; @ java/nio/DirectByteBuffer.java:630",
         "java.nio.DirectByteBuffer.asCharBuffer()Ljava/nio/CharBuffer; @ java/nio/DirectByteBuffer.java:624",
-        "java.nio.DirectByteBuffer.asIntBuffer()Ljava/nio/IntBuffer; @ java/nio/DirectByteBuffer.java:818",
-        "java.nio.DirectByteBuffer.asIntBuffer()Ljava/nio/IntBuffer; @ java/nio/DirectByteBuffer.java:826"
+        "java.nio.DirectByteBuffer.asIntBuffer()Ljava/nio/IntBuffer; @ java/nio/DirectByteBuffer.java:818"
       ]
     },
     {
@@ -303,11 +303,11 @@
         "engine-side"
       ],
       "examples": [
+        "java.nio.DirectByteBuffer.address()J @ java/nio/DirectByteBuffer.java:316",
         "java.nio.DirectByteBuffer.get()B @ java/nio/DirectByteBuffer.java:332",
         "java.nio.DirectByteBuffer.get(I)B @ java/nio/DirectByteBuffer.java:340",
         "java.nio.DirectByteBuffer.put(B)Ljava/nio/ByteBuffer; @ java/nio/DirectByteBuffer.java:360",
-        "java.nio.DirectByteBuffer.compact()Ljava/nio/MappedByteBuffer; @ java/nio/DirectByteBuffer.java:391",
-        "java.nio.DirectByteBuffer.address()J @ java/nio/DirectByteBuffer.java:316"
+        "java.nio.DirectByteBuffer.compact()Ljava/nio/MappedByteBuffer; @ java/nio/DirectByteBuffer.java:391"
       ]
     },
     {
@@ -2261,17 +2261,6 @@
       ],
       "examples": [
         "java.lang.ref.PhantomReference.<init>(Ljava/lang/Object;Ljava/lang/ref/ReferenceQueue;)V @ java/lang/ref/PhantomReference.java:105"
-      ]
-    },
-    {
-      "family": "Reflection and class loading",
-      "message": "Method java.lang.reflect.Constructor.canAccess(Ljava/lang/Object;)Z was not found",
-      "count": 1,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "org.jgrapht.util.SupplierUtil.createSupplier(Ljava/lang/Class;)Ljava/util/function/Supplier; @ org/jgrapht/util/SupplierUtil.java:79"
       ]
     },
     {

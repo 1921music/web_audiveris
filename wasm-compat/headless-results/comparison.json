@@ -1,25 +1,17 @@
 {
-  "identicalOriginalRoots": false,
+  "identicalOriginalRoots": true,
   "originalRootSubsetPreserved": true,
   "rootCount": 9029,
-  "baselineRootCount": 9020,
-  "addedRoots": [
-    "org.audiveris.omr.sheet.Picture.<init>(Lorg/audiveris/omr/sheet/Sheet;II)V",
-    "org.audiveris.omr.sheet.PixelPicture$1.<clinit>()V",
-    "org.audiveris.omr.sheet.PixelPicture.<init>(Lorg/audiveris/omr/sheet/Sheet;Lij/process/ByteProcessor;Lij/process/ByteProcessor;)V",
-    "org.audiveris.omr.sheet.PixelPicture.getImage(Lorg/audiveris/omr/sheet/Picture$ImageKey;)Ljava/awt/image/BufferedImage;",
-    "org.audiveris.omr.sheet.PixelPicture.getSource(Lorg/audiveris/omr/sheet/Picture$SourceKey;)Lij/process/ByteProcessor;",
-    "org.audiveris.omr.sheet.PixelPicture.getVerticalTable(Lorg/audiveris/omr/sheet/Picture$TableKey;)Lorg/audiveris/omr/run/RunTable;",
-    "org.audiveris.omr.sheet.PixelPicture.setTable(Lorg/audiveris/omr/sheet/Picture$TableKey;Lorg/audiveris/omr/run/RunTable;Z)V",
-    "org.audiveris.omr.sheet.Sheet.<init>(Lorg/audiveris/omr/sheet/SheetStub;Lij/process/ByteProcessor;Lij/process/ByteProcessor;)V",
-    "org.audiveris.omr.sheet.SheetStub.createMemorySheet(Lij/process/ByteProcessor;Lij/process/ByteProcessor;)Lorg/audiveris/omr/sheet/Sheet;"
-  ],
+  "baselineRootCount": 9029,
+  "addedRoots": [],
   "baselineDiagnostics": 495,
-  "patchedDiagnostics": 495,
-  "diagnosticReduction": 0,
+  "patchedDiagnostics": 494,
+  "diagnosticReduction": 1,
   "baselineUniqueMessages": 204,
-  "patchedUniqueMessages": 204,
-  "removedMessages": [],
+  "patchedUniqueMessages": 203,
+  "removedMessages": [
+    "Method java.lang.reflect.Constructor.canAccess(Ljava/lang/Object;)Z was not found"
+  ],
   "newMessages": [],
   "newDiagnosticCount": 0,
   "remainingTargetedApiMessages": [],
@@ -32,10 +24,10 @@
     "XML and JAXB": 26
   },
   "patchedByFamily": {
-    "Reflection and class loading": 182,
     "Other Java runtime": 167,
     "Threads and synchronization": 65,
     "Files and streams": 35,
+    "Reflection and class loading": 181,
     "Other libraries or compiler diagnostics": 20,
     "XML and JAXB": 26
   },
@@ -44,19 +36,19 @@
     "unattributed": 2
   },
   "patchedByDirectOwner": {
-    "dependency": 493,
+    "dependency": 492,
     "unattributed": 2
   },
   "platformSubstitutionsEnabled": true,
-  "modifiedMethods": 495,
-  "removedDirectCallsFromModifiedMethods": 100,
-  "addedDirectCallsFromModifiedMethods": 14,
+  "modifiedMethods": 496,
+  "removedDirectCallsFromModifiedMethods": 2,
+  "addedDirectCallsFromModifiedMethods": 2,
   "excludedClassesLinked": {
-    "before": 76,
+    "before": 75,
     "after": 75
   },
   "excludedUsedMethods": {
-    "before": 313,
+    "before": 311,
     "after": 311
   },
   "usedMethodsInsideExcludedClasses": {

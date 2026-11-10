@@ -11,15 +11,15 @@
   "excludedTypeOnlyClasses": 20,
   "excludedUsedMethods": 311,
   "excludedUsedMethodsByRule": {
-    "book-host": 12,
     "class-excluded": 242,
     "ui-method": 21,
-    "network-training": 3,
-    "debug-charts": 21,
     "classifier-training": 3,
     "stub-host": 6,
-    "manual-symbol-edit": 1,
-    "sheet-host": 2
+    "debug-charts": 21,
+    "network-training": 3,
+    "book-host": 12,
+    "sheet-host": 2,
+    "manual-symbol-edit": 1
   },
   "usedExcludedMethodsWithoutRecordedPath": 3,
   "originalReferenceCrossings": 2284,
@@ -60,9 +60,9 @@
   "comparison": {
     "allMethodsRoots": 14390,
     "allMethodsDiagnostics": 1375,
-    "selectedDiagnostics": 495,
+    "selectedDiagnostics": 494,
     "allUniqueMessages": 351,
-    "selectedUniqueMessages": 204,
+    "selectedUniqueMessages": 203,
     "noLongerReportedMessages": [
       "Class org.jboss.vfs.VirtualFile was not found",
       "Field java.awt.Color.BLUE was not found",
@@ -183,6 +183,7 @@
       "Method java.lang.invoke.VarHandle.weakCompareAndSetRelease(Ljava/util/concurrent/atomic/Striped64$Cell;JJ)Z was not found",
       "Method java.lang.invoke.VarHandle.weakCompareAndSetRelease(Ljava/util/concurrent/atomic/Striped64;JJ)Z was not found",
       "Method java.lang.ref.Reference.reachabilityFence(Ljava/lang/Object;)V was not found",
+      "Method java.lang.reflect.Constructor.canAccess(Ljava/lang/Object;)Z was not found",
       "Method java.lang.reflect.Method.isDefault()Z was not found",
       "Method java.net.URLClassLoader.getResource(Ljava/lang/String;)Ljava/net/URL; was not found",
       "Method java.net.URLConnection.getContent()Ljava/lang/Object; was not found",

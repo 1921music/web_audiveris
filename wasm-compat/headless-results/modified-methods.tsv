@@ -494,4 +494,5 @@ org.audiveris.omr.util.AbstractNameHistory.add(Ljava/lang/Object;)V	headless-gui
 org.audiveris.omr.util.BrokenLine$Constants.getUnitName()Ljava/lang/String;	platform-method	0	1	0	2
 org.audiveris.omr.util.Dumper$Constants.getUnitName()Ljava/lang/String;	platform-method	0	1	0	2
 org.audiveris.omr.util.OmrExecutors$Constants.getUnitName()Ljava/lang/String;	platform-method	0	1	0	2
+org.jgrapht.util.SupplierUtil.createSupplier(Ljava/lang/Class;)Ljava/util/function/Supplier;	jgrapht-constructor-access-query	14	14	51	51
 org.slf4j.MDC.getMDCAdapter()Lorg/slf4j/spi/MDCAdapter;	platform-method	4	1	8	2

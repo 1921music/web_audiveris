@@ -1,0 +1,86 @@
+{
+  "deviationCoefficient" : 0.9,
+  "meanCoefficient" : 0.7,
+  "grayscale" : "JVM ImageIO + original Picture.adjustImageFormat/buildGraySource convention",
+  "pages" : [ {
+    "id" : "00",
+    "file" : "MerryGoRound_p1.tif",
+    "pageIndex" : 0,
+    "width" : 2480,
+    "height" : 3506,
+    "pixels" : 8694880,
+    "sourceSha256" : "d9c858ed69954166ca82c120837ca3ff10163e44c51c94f83614b6b3531cbb87",
+    "graySha256" : "3af4f2bd3ba1af1cb35bb41200891d1310637dd1fa758039a38706b6b5be3dd1",
+    "binarySha256" : "fa68b16d7d1a41dca21b80d56ab4c9b218f9e6819fcbdd37d781f7c8720f8150"
+  }, {
+    "id" : "01",
+    "file" : "MerryGoRound_p2.tif",
+    "pageIndex" : 0,
+    "width" : 2480,
+    "height" : 3506,
+    "pixels" : 8694880,
+    "sourceSha256" : "ec1767a1ee9750299658adc0853cc1be473f81dd57199133f617515c7c2cd066",
+    "graySha256" : "3c22f4ff1ee1ad6a305fd8391939c092edde7c625bc1d90622c3e7bb46ffca82",
+    "binarySha256" : "ad29f97436f864a6a003f8133b63462c7293a1485e19f6535a95fd5b5c48411f"
+  }, {
+    "id" : "02",
+    "file" : "MerryGoRound_p3.tif",
+    "pageIndex" : 0,
+    "width" : 2480,
+    "height" : 3506,
+    "pixels" : 8694880,
+    "sourceSha256" : "1a30a679fa6102847bb4d85b38b453c9c4ed3cbc558b9a379d98ef62f46bb9ef",
+    "graySha256" : "84a6efad2fdbc1250d163dd2bb6ed00c995071126284d31ecda8c7bf11d491b0",
+    "binarySha256" : "5b84baea8fcfb9335173f8decd02af0ce98a5e98b2883f05e5d16bd2c2fd656b"
+  }, {
+    "id" : "03",
+    "file" : "MerryGoRound_p4.tif",
+    "pageIndex" : 0,
+    "width" : 2480,
+    "height" : 3506,
+    "pixels" : 8694880,
+    "sourceSha256" : "1bd10314053991d0ca82bbe3624ac1bba7bd4e2a7132549a4cc3204b353f03ec",
+    "graySha256" : "f52ce8104cb04d1c1350839acb273401724977e6a2922873752f43f173a6dc88",
+    "binarySha256" : "19b8015b3765932003a0b6c09e4dd524c02be89019909c3c6e429beb7d106762"
+  }, {
+    "id" : "04",
+    "file" : "MerryGoRound_p5.tif",
+    "pageIndex" : 0,
+    "width" : 2480,
+    "height" : 3506,
+    "pixels" : 8694880,
+    "sourceSha256" : "e6e1a5c14aef7415aa2b186e06481b2084553f907137f44509d1c43c31abb1c6",
+    "graySha256" : "1a1c24e76bd082bcc7aceb05f47779bbf7a5f3394d59c316c405547ba3c509a8",
+    "binarySha256" : "8c6e44d97583e19ee8b03b0bce7490493314cc157941c553b6f3f19a42261ded"
+  }, {
+    "id" : "05",
+    "file" : "『ACTUAL PROOF』楽譜見開き.png",
+    "pageIndex" : 0,
+    "width" : 1448,
+    "height" : 1086,
+    "pixels" : 1572528,
+    "sourceSha256" : "d6bf6bdb27e3c42c673ec97f2987286cdc686577025b2a4df1345769429e9dee",
+    "graySha256" : "39b1c8585577e63ec9873832dccade209be0bbe88f2ef62ae0225d7a70eeb9b5",
+    "binarySha256" : "7d960d31d7839e697847dd66614da0982752388957ec947fb29ae95ce65c25dc"
+  }, {
+    "id" : "06",
+    "file" : "アファーメイション 楽譜ページ.png",
+    "pageIndex" : 0,
+    "width" : 1024,
+    "height" : 1536,
+    "pixels" : 1572864,
+    "sourceSha256" : "bb6deea45d53764754d1ed31a046604722a191423508ec8330cde8c1ea11d43a",
+    "graySha256" : "6c469c2c114a0114d5980405608bc4d3180e67fdccdc989b36720e27578a0906",
+    "binarySha256" : "e1d8a4e853079aee770bf168e8312663452280845ee5ffd6f9ea2578642e874b"
+  }, {
+    "id" : "07",
+    "file" : "ジャズ名曲集「おいしい水」と「浮気はやめた」.png",
+    "pageIndex" : 0,
+    "width" : 1536,
+    "height" : 1024,
+    "pixels" : 1572864,
+    "sourceSha256" : "d31766b92cd851fae54db9081d98cf201e6838db66a6dda333259d47ae8385bf",
+    "graySha256" : "35f4d878e9b11bc92a5f600a019077f00c3dfdebdf83ea24e51205ebf6959336",
+    "binarySha256" : "8a5b9c728931e2597d081177068046261d575d7b4d6336435e4811022a96f596"
+  } ]
+}

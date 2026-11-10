@@ -1,0 +1,94 @@
+{
+  "node": "v24.22.2",
+  "stockCompatibilityEnabled": false,
+  "currentCompatibilityEnabled": true,
+  "stockMismatchedEdgeCases": 16,
+  "currentMatchesJvm": true,
+  "differences": [
+    {
+      "index": 0,
+      "jvm": "c010000000000000:-3:-3",
+      "stockTeaVM": "c010000000000000:-4:-4"
+    },
+    {
+      "index": 1,
+      "jvm": "c000000000000000:-2:-2",
+      "stockTeaVM": "c008000000000000:-3:-3"
+    },
+    {
+      "index": 2,
+      "jvm": "c000000000000000:-1:-1",
+      "stockTeaVM": "c000000000000000:-2:-2"
+    },
+    {
+      "index": 3,
+      "jvm": "8000000000000000:0:0",
+      "stockTeaVM": "bff0000000000000:-1:-1"
+    },
+    {
+      "index": 4,
+      "jvm": "8000000000000000:0:0",
+      "stockTeaVM": "0:0:0"
+    },
+    {
+      "index": 6,
+      "jvm": "0:1:1",
+      "stockTeaVM": "3ff0000000000000:1:1"
+    },
+    {
+      "index": 8,
+      "jvm": "4000000000000000:3:3",
+      "stockTeaVM": "4008000000000000:3:3"
+    },
+    {
+      "index": 10,
+      "jvm": "8000000000000000:0:0",
+      "stockTeaVM": "bff0000000000000:-1:-1"
+    },
+    {
+      "index": 11,
+      "jvm": "0:0:1",
+      "stockTeaVM": "3ff0000000000000:1:1"
+    },
+    {
+      "index": 13,
+      "jvm": "bff0000000000000:-1:-1",
+      "stockTeaVM": "bff0000000000000:-1:-2"
+    },
+    {
+      "index": 15,
+      "jvm": "8000000000000000:0:0",
+      "stockTeaVM": "0:0:0"
+    },
+    {
+      "index": 16,
+      "jvm": "7fefffffffffffff:9223372036854775807:2147483647",
+      "stockTeaVM": "43e0000000000000:9223372036854775807:2147483647"
+    },
+    {
+      "index": 17,
+      "jvm": "ffefffffffffffff:-9223372036854775808:-2147483648",
+      "stockTeaVM": "c3e0000000000000:-9223372036854775808:-2147483648"
+    },
+    {
+      "index": 22,
+      "jvm": "7ff8000000000000:0:0",
+      "stockTeaVM": "0:0:0"
+    },
+    {
+      "index": 23,
+      "jvm": "7ff0000000000000:9223372036854775807:2147483647",
+      "stockTeaVM": "43e0000000000000:9223372036854775807:2147483647"
+    },
+    {
+      "index": 24,
+      "jvm": "fff0000000000000:-9223372036854775808:-2147483648",
+      "stockTeaVM": "c3e0000000000000:-9223372036854775808:-2147483648"
+    }
+  ],
+  "stockChecksum": "2966897817b2c9b3",
+  "jvmChecksum": "7f72b39b0e71b0e1",
+  "currentChecksum": "7f72b39b0e71b0e1",
+  "stockWasmBytes": 19155,
+  "currentWasmBytes": 19228
+}

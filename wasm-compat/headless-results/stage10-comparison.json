@@ -1,0 +1,63 @@
+{
+  "identicalOriginalRoots": true,
+  "originalRootSubsetPreserved": true,
+  "rootCount": 9029,
+  "baselineRootCount": 9029,
+  "addedRoots": [],
+  "baselineDiagnostics": 495,
+  "patchedDiagnostics": 494,
+  "diagnosticReduction": 1,
+  "baselineUniqueMessages": 204,
+  "patchedUniqueMessages": 203,
+  "removedMessages": [
+    "Method java.lang.reflect.Constructor.canAccess(Ljava/lang/Object;)Z was not found"
+  ],
+  "newMessages": [],
+  "newDiagnosticCount": 0,
+  "remainingTargetedApiMessages": [],
+  "baselineByFamily": {
+    "Reflection and class loading": 182,
+    "Other Java runtime": 167,
+    "Threads and synchronization": 65,
+    "Files and streams": 35,
+    "Other libraries or compiler diagnostics": 20,
+    "XML and JAXB": 26
+  },
+  "patchedByFamily": {
+    "Other Java runtime": 167,
+    "Threads and synchronization": 65,
+    "Files and streams": 35,
+    "Reflection and class loading": 181,
+    "Other libraries or compiler diagnostics": 20,
+    "XML and JAXB": 26
+  },
+  "baselineByDirectOwner": {
+    "dependency": 493,
+    "unattributed": 2
+  },
+  "patchedByDirectOwner": {
+    "dependency": 492,
+    "unattributed": 2
+  },
+  "platformSubstitutionsEnabled": true,
+  "modifiedMethods": 496,
+  "removedDirectCallsFromModifiedMethods": 2,
+  "addedDirectCallsFromModifiedMethods": 2,
+  "excludedClassesLinked": {
+    "before": 75,
+    "after": 75
+  },
+  "excludedUsedMethods": {
+    "before": 311,
+    "after": 311
+  },
+  "usedMethodsInsideExcludedClasses": {
+    "before": 242,
+    "after": 242
+  },
+  "remainingClassBreakdown": {
+    "withUsedMethods": 55,
+    "typeOnly": 20
+  },
+  "strictExclusionPass": false
+}
