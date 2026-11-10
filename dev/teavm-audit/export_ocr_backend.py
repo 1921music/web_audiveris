@@ -24,7 +24,8 @@ def main():
     report = read(source / 'verification.json')
     for key in ['workerResultsExact', 'queuedInputSnapshotsOwned', 'pngPixelsExact', 'nodeWorkerReused',
                 'allBrowserAssetsLocal', 'wasmRequestAndReplyIntegrated', 'wasmBlankAndModelFailureDistinct',
-                'nativeWordMetadata', 'wordBaselineAvailable', 'metadataAlignmentGuard', 'metadataIteratorReleasedOnFailure']:
+                'nativeWordMetadata', 'wordBaselineAvailable', 'metadataAlignmentGuard', 'metadataIteratorReleasedOnFailure',
+                'paddedFrameCoordinatesRestored']:
         if not report[key]:
             raise AssertionError('Incomplete OCR verification: ' + key)
     if report['workers'] != 2 or report['version'] != '7.0.0' or report['characters'] != 23 or report['oem'] != (0 if profile == 'legacy' else 1):
@@ -41,6 +42,7 @@ def main():
         'wasm-compat/src/test/java/org/audiveris/wasm/compat/test/OcrTransportProbe.java',
         'wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/OcrTransport.java',
         'wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/OcrExchange.java',
+        'wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/OcrImageFrame.java',
         'dev/teavm-audit/audit.init.gradle']
     if native_comparison:
         sources += ['wasm-compat/src/test/java/org/audiveris/wasm/compat/test/NativeOcrBackendOracle.java',

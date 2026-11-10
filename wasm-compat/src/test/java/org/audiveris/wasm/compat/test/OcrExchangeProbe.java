@@ -2,6 +2,7 @@ package org.audiveris.wasm.compat.test;
 
 import java.util.*;
 import org.audiveris.wasm.compat.platform.OcrExchange;
+import org.audiveris.wasm.compat.platform.OcrImageFrame;
 import org.audiveris.wasm.compat.platform.OcrExchange.*;
 import org.teavm.jso.JSExport;
 
@@ -87,7 +88,69 @@ public final class OcrExchangeProbe {
             check(ready.accept(new Reply(r.token(), empty(), null))); ready.cancel();
             rejects(ready::takeReply, true);
         }
-        return "OCR exchange contracts: " + checks;
+        long imageHash = frameContracts();
+        return "OCR exchange contracts: " + checks + "; GRAY8 frames: " + imageHash;
+    }
+    private static long frameContracts() {
+        long hash = 1;
+        for (int seed = 0; seed < 128; seed++) {
+            int width = 1 + seed % 31, height = 1 + seed % 17;
+            byte[] image = new byte[width * height];
+            for (int i = 0; i < image.length; i++) { image[i] = (byte)(i * 37 + seed * 11); }
+            for (int configured : new int[]{-3, 0, 1, 10, 31}) {
+                int margin = Math.max(0, configured);
+                OcrExchange session = new OcrExchange("frame", "page", seed);
+                var frame = OcrImageFrame.begin(session, width, height, image, configured, "eng", Layout.MULTI_BLOCK);
+                Request request = frame.request(); byte[] pixels = request.pixels();
+                check(request.width() == width + 2 * margin && request.height() == height + 2 * margin);
+                check(frame.originX() == -margin && frame.originY() == -margin);
+                for (byte pixel : pixels) { hash = hash * 31 + (pixel & 255); }
+                pixels[0] ^= 127; check(!Arrays.equals(pixels, request.pixels()));
+                var box = new Box(3 + margin, 5 + margin, 10, 8);
+                var baseline = new Baseline(3 + margin, 13 + margin, 13 + margin, 13 + margin);
+                var font = new Font(true, false, false, false, true, false, 12, null);
+                var word = new Word("A", box, 0.912345678, baseline, font, List.of(new OcrExchange.Character("A", box)));
+                Result input = new Result(new Capabilities(true, true, true), List.of(new Line(List.of(word), baseline)));
+                Reply reply = new Reply(request.token(), input, null);
+                check(!frame.accept(new Reply(new Token("frame", "page", seed + 1, request.token().request()), input, null)));
+                check(frame.accept(reply)); check(!frame.accept(reply));
+                Result output = session.takeReply().result(); Word restored = output.lines().get(0).words().get(0);
+                check(restored.bounds().equals(new Box(3, 5, 10, 8)) && restored.characters().get(0).bounds().equals(restored.bounds()));
+                check(restored.baseline().equals(new Baseline(3, 13, 13, 13)) && output.lines().get(0).baseline().equals(restored.baseline()));
+                check(restored.font() == font && restored.confidence() == word.confidence() && output.capabilities().equals(input.capabilities()));
+                check(word.bounds().x() == 3 + margin && !frame.accept(reply));
+                var failureFrame = OcrImageFrame.begin(session, width, height, image, configured, "eng", Layout.SINGLE_BLOCK);
+                Failure failure = new Failure(FailureCode.MODEL_MISSING, "missing");
+                check(failureFrame.accept(new Reply(failureFrame.request().token(), null, failure)));
+                check(session.takeReply().failure() == failure);
+                var cancelled = OcrImageFrame.begin(session, width, height, image, configured, "eng", Layout.SINGLE_BLOCK);
+                session.cancel(); check(!cancelled.accept(new Reply(cancelled.request().token(), empty(), null)));
+            }
+        }
+        OcrExchange session = new OcrExchange("invalid-frame", "page", 0);
+        rejects(() -> OcrImageFrame.begin(session, 1, 1, new byte[1], Integer.MAX_VALUE, "eng", Layout.MULTI_BLOCK), false);
+        rejects(() -> OcrImageFrame.begin(session, 2, 1, new byte[1], 10, "eng", Layout.MULTI_BLOCK), false);
+        check(session.state() == State.IDLE);
+        var frame = OcrImageFrame.begin(session, 1, 1, new byte[1], 10, "eng", Layout.MULTI_BLOCK);
+        var outside = new Box(8, 9, 1, 1);
+        Word unstyled = new Word("x", outside, 0.5, null, null, List.of(new OcrExchange.Character("x", outside)));
+        Result unstyledResult = new Result(REQUIRED, List.of(new Line(List.of(unstyled))));
+        check(frame.accept(new Reply(frame.request().token(), unstyledResult, null)));
+        Word restored = session.takeReply().result().lines().get(0).words().get(0);
+        check(restored.bounds().equals(new Box(-2, -1, 1, 1)) && restored.font() == null && restored.baseline() == null);
+        var blank = OcrImageFrame.begin(session, 1, 1, new byte[1], 10, "eng", Layout.MULTI_BLOCK);
+        check(blank.accept(new Reply(blank.request().token(), empty(), null)));
+        check(session.takeReply().result().lines().isEmpty());
+        var overflow = OcrImageFrame.begin(session, 1, 1, new byte[1], 10, "eng", Layout.MULTI_BLOCK);
+        var edge = new Box(Integer.MIN_VALUE, 0, 0, 0);
+        var edgeWord = new Word("x", edge, 0.5, null, null, List.of(new OcrExchange.Character("x", edge)));
+        boolean rejected = false;
+        try { overflow.accept(new Reply(overflow.request().token(), new Result(REQUIRED, List.of(new Line(List.of(edgeWord)))), null)); }
+        catch (ArithmeticException expected) { rejected = true; }
+        check(rejected && session.state() == State.WAITING);
+        check(overflow.accept(new Reply(overflow.request().token(), empty(), null)));
+        check(session.takeReply().result().lines().isEmpty());
+        return hash;
     }
     /** Separate JS calls exercise an actual asynchronous event-loop gap while waiting. */
     @JSExport public static int begin(int generation) {

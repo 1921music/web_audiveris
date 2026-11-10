@@ -1206,14 +1206,22 @@ This component is not yet connected to `TextsStep`: the page raster cleaner, fon
 and conversion into original `TextLine` objects remain separate work. The host adapter is described below.
 `verifyOcrExchangeProbe` checks its lifecycle in JVM, Node and independent Chromium Workers,
 including actual event-loop gaps between requesting, cancelling and responding.
-After the user restarted the WSL service, all **732 lifecycle/ownership checks** pass in the JVM,
+After adding image-frame coverage, all **9,062 lifecycle/ownership/frame checks** pass in the JVM,
 two Node module instances and two independent Chromium Workers. The Worker checks include separate
 message/event-loop turns, cancellation and late replies after replacing an execution generation.
-The standalone component is **39,676 bytes** after adding optional line baselines; this is not an OCR backend or engine size estimate.
+The standalone component is **47,912 bytes**, including image-frame test coverage; this is not an OCR backend or engine size estimate.
 Reports and source revision are in `ocr-exchange-results`, with runnable artifacts in
 `wsl-artifacts/wasm-components/ocr-exchange`. The shared **8 CPU / 8 GiB / no swap** limits remain
 in force, with no cgroup OOM or hard-limit events. TEXTS integration and recognition quality remain
 unverified by this lifecycle test.
+
+`OcrImageFrame` adds the white border used by `OcrUtil.scan` to packed GRAY8 pixels and retains
+the matching request's origin translation. Margin size is supplied by the caller; nonpositive
+values disable padding as in the original code. **640 cases / 890,694 bytes** match the native
+Java2D border operation exactly. Matching replies restore word/character boxes and optional line/
+word baselines once before resuming; font metadata and confidence are preserved. Coordinates are
+not clipped to the image, arithmetic overflow is rejected, and a failed translation leaves the
+request waiting. Stale, duplicate and cancelled replies cannot apply the translation again.
 
 Backend details must be checked rather than inferred from the library name. Tesseract.js requires
 explicit [`blocks` output](https://github.com/naptha/tesseract.js/blob/master/docs/api.md) for its
@@ -1236,9 +1244,9 @@ The native JVM model fixture round-trips through two Node instances and two Chro
 including supplementary Unicode characters and transferred/detached buffers. Each instance passes
 **45 checks**, including **25 malformed-data cases**, owned inbound snapshots, actual asynchronous
 Worker-to-host requests/replies, stale-before-decode rejection, empty results and all three failure
-codes. The standalone transport probe is **44,344 bytes**, including real-image request/resume test exports. Its fixture serializer uses reflection
+codes. The standalone transport probe is **47,586 bytes**, including padded real-image request/resume test exports. Its fixture serializer uses reflection
 only in the separate JVM test entry, which is not reachable from the Wasm entry. The lifecycle
-probe's **732 checks** still pass with the extended model.
+probe's **9,062 checks** still pass with the extended model.
 
 Run `verifyOcrTransportProbe` with the audit init script through the capped launcher. Reports are
 in `ocr-transport-results` and runnable artifacts in `wsl-artifacts/wasm-components/ocr-transport`.
@@ -1263,6 +1271,9 @@ Wasm emits the image request and consumes the real OCR reply through `OcrTranspo
 missing-model replies also resume with distinct outcomes. Inbound field validation still passes
 all **45 transport checks**. Recovery and language reinitialization contracts additionally use
 injected workers; actual recognition here covers English.
+Both profiles additionally run a Wasm-generated request with a configured 10-pixel white border.
+The actual OCR reply is restored to image coordinates inside Wasm, matching independently shifted
+host data in Node and both browser Workers; duplicate replies cannot shift coordinates twice.
 
 GRAY8 image encoding uses native `CompressionStream`. The **126,000-byte** fixture becomes a
 **4,529-byte** PNG and decodes back to identical gray pixels. Browser tests load every OCR script,
@@ -1272,8 +1283,8 @@ are:
 
 | Profile | OCR core Wasm bytes | English model gzip bytes | First request ms | Reused request ms |
 | --- | ---: | ---: | ---: | ---: |
-| Legacy, OEM 0 | 3,456,075 | 10,923,060 | 699.8–700.2 | 27.0–27.1 |
-| LSTM-only, OEM 1 | 2,862,266 | 2,952,873 | 447.2–447.7 | 39.0–39.5 |
+| Legacy, OEM 0 | 3,456,075 | 10,923,060 | 947.7–948.0 | 28.9–30.6 |
+| LSTM-only, OEM 1 | 2,862,266 | 2,952,873 | 766.8–766.9 | 41.3–41.6 |
 
 First-request timing includes initialization, local asset loading, PNG encoding and OCR. These
 single-fixture observations establish local request latency; score-image quality and full-engine

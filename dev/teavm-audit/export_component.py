@@ -47,7 +47,7 @@ def main():
     raw.mkdir(parents=True, exist_ok=True); tracked.mkdir(parents=True, exist_ok=True)
     files = [name + '.wasm', name + '.wasm-runtime.js', 'verification.json', 'diagnostics.tsv', 'jvm-reference.txt']
     files += [file for file in ['jdk-reference.json', 'jvm-pixels.binary', 'cbrt-reference.txt',
-        'strict-cbrt-reference.txt', 'acos-reference.txt', 'ulp-reference.txt'] if (source / file).exists()]
+        'strict-cbrt-reference.txt', 'acos-reference.txt', 'ulp-reference.txt', 'jvm-frame-reference.json'] if (source / file).exists()]
     for file in files:
         shutil.copyfile(source / file, raw / file)
     provenance = {'sourceCommit': args.revision, 'sourceSha256': sources, 'rawArtifacts': raw_relative,
@@ -56,7 +56,7 @@ def main():
         'memoryEventsLocal': (limits / 'memory.events.local').read_text().strip(),
         'artifactSha256': {file: sha(raw / file) for file in files}, 'limitation': report['limitation']}
     for destination in [tracked, raw]:
-        for file in ['verification.json', 'diagnostics.tsv'] + ([] if args.raw_reference else ['jvm-reference.txt']) + (['jdk-reference.json'] if 'jdk-reference.json' in files else []):
+        for file in ['verification.json', 'diagnostics.tsv'] + ([] if args.raw_reference else ['jvm-reference.txt']) + [file for file in ['jdk-reference.json', 'jvm-frame-reference.json'] if file in files]:
             if destination != raw:
                 shutil.copyfile(source / file, destination / file)
         (destination / 'provenance.json').write_text(json.dumps(provenance, indent=2) + '\n')

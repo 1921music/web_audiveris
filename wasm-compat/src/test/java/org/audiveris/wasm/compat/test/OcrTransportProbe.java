@@ -10,6 +10,7 @@ import org.teavm.jso.typedarrays.Int8Array;
 public final class OcrTransportProbe {
     private static OcrExchange session;
     private static Request pending;
+    private static OcrImageFrame frame;
     private static Result retained;
     public static void main(String[] args) { }
     public static Result fixture() {
@@ -32,14 +33,24 @@ public final class OcrTransportProbe {
         try { OcrTransport.result(value); return false; } catch (IllegalArgumentException expected) { return true; }
     }
     @JSExport public static JSObject begin(int generation) {
+        frame = null;
         session = new OcrExchange("transport-job", "page-1", generation);
         pending = session.request(3, 2, new byte[]{0, 10, 20, (byte)128, (byte)200, (byte)255}, "eng+deu", Layout.MULTI_BLOCK);
         return OcrTransport.request(pending);
     }
     @JSExport public static JSObject imageRequest(int width, int height, Int8Array pixels, String languages, String layout, int generation) {
+        frame = null;
         session = new OcrExchange("transport-job", "page-1", generation);
         pending = session.request(width, height, pixels.copyToJavaArray(), languages, Layout.valueOf(layout));
         return OcrTransport.request(pending);
+    }
+    @JSExport public static JSObject paddedImageRequest(int width, int height, Int8Array pixels, int margin, String languages, String layout, int generation) {
+        session = new OcrExchange("transport-job", "page-1", generation);
+        frame = OcrImageFrame.begin(session, width, height, pixels.copyToJavaArray(), margin, languages, Layout.valueOf(layout));
+        pending = frame.request(); return OcrTransport.request(pending);
+    }
+    @JSExport public static boolean resumeMatches(JSObject expected) {
+        return session.takeReply().result().equals(OcrTransport.result(expected));
     }
     @JSExport public static String resumeSummary() {
         Reply reply = session.takeReply();
@@ -57,7 +68,8 @@ public final class OcrTransportProbe {
     @JSExport public static boolean receive(JSObject envelope) {
         Token token = OcrTransport.token(envelope);
         if (!session.matches(token)) { return false; }
-        return session.accept(OcrTransport.reply(envelope));
+        Reply reply = OcrTransport.reply(envelope);
+        return frame == null ? session.accept(reply) : frame.accept(reply);
     }
     @JSExport public static String resume() {
         Reply reply = session.takeReply();

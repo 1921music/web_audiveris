@@ -4,6 +4,14 @@ const {chromium}=require('playwright');const {createWorker}=require('tesseract.j
 const features=require('wasm-feature-detect');const root=path.resolve(process.argv[2]),compat=path.resolve(__dirname,'..');
 const oem=Number(process.env.AUDIVERIS_OCR_OEM??0);assert.ok([0,1].includes(oem));
 const sha=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
+function withoutMargin(result,margin){
+    const restored=structuredClone(result);
+    const shiftBaseline=baseline=>{if(baseline){baseline.x1-=margin;baseline.x2-=margin;baseline.y1-=margin;baseline.y2-=margin;}};
+    for(const line of restored.lines){shiftBaseline(line.baseline);for(const word of line.words){
+        word.bounds.x-=margin;word.bounds.y-=margin;shiftBaseline(word.baseline);
+        for(const character of word.characters){character.bounds.x-=margin;character.bounds.y-=margin;}
+    }}return restored;
+}
 (async()=>{
     const {TesseractJsOcr,normalizeTesseractResult}=await import(pathToFileURL(path.join(compat,'host/tesseract-js-ocr.mjs')));
     const {encodeGray8Png}=await import(pathToFileURL(path.join(compat,'host/gray8-png.mjs')));
@@ -51,7 +59,7 @@ const sha=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
         for(const expected of fixture.expected){assert.ok(text.includes(expected),text);}
         assert.ok(words.every(word=>word.characters.length>0));return reply.result;
     }
-    let first,second,blank;
+    let first,second,blank,padded;
     try{
         const pixels=original.slice(),one=engineRequest(engine,1,'SINGLE_BLOCK',pixels),two=engineRequest(otherEngine,2,'MULTI_BLOCK',pixels);
         const a=adapter.recognize(one),b=adapter.recognize(two);one.pixels.fill(0);two.pixels.fill(0);pixels.fill(0);
@@ -67,9 +75,13 @@ const sha=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
         blank=await adapter.recognize(engineRequest(engine,3,'SINGLE_BLOCK',new Uint8Array(original.length).fill(255)));
         assert.ok(blank.result);assert.equal(blank.result.lines.flatMap(line=>line.words).length,0);
         assert.ok(engine.receive(blank));assert.equal(engine.resumeSummary(),'0/0/0');
+        const paddedRequest=engine.paddedImageRequest(fixture.width,fixture.height,new Int8Array(original.buffer,original.byteOffset,original.byteLength),10,'eng','SINGLE_BLOCK',5);
+        assert.equal(paddedRequest.width,fixture.width+20);assert.equal(paddedRequest.height,fixture.height+20);
+        padded=await adapter.recognize(paddedRequest);recognized(padded);
+        assert.ok(engine.receive(padded));assert.ok(!engine.receive(padded));assert.ok(engine.resumeMatches(withoutMargin(padded.result,10)));
         const missing=await adapter.recognize(engineRequest(engine,4,'SINGLE_BLOCK',original,'deu'));assert.equal(missing.failure.code,'MODEL_MISSING');
         assert.ok(engine.receive(missing));assert.equal(engine.resumeSummary(),'failure:MODEL_MISSING');
-        assert.equal(created,1);assert.deepEqual(modes,['6','3','6']);
+        assert.equal(created,1);assert.deepEqual(modes,['6','3','6','6']);
     }finally{await adapter.close();}
     assert.equal((await adapter.recognize(request(5))).failure.code,'EXECUTION_FAILED');
     assert.throws(()=>normalizeTesseractResult({text:'word',blocks:null}));
@@ -118,7 +130,10 @@ const sha=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
                     if(!api.receive(first)){throw new Error('First OCR reply token');}const summary=api.resumeSummary();
                     const warmStarted=performance.now(),second=await adapter.recognize(request(2)),warmRequestMs=performance.now()-warmStarted;
                     if(!api.receive(second)){throw new Error('Second OCR reply token');}const warmSummary=api.resumeSummary();
-                    await adapter.close();adapter=null;postMessage({first,second,created,versions,summary,warmSummary,firstRequestMs,warmRequestMs,dom:typeof document});
+                    const padded=await adapter.recognize(api.paddedImageRequest(input.width,input.height,new Int8Array(input.pixels.buffer),10,'eng','SINGLE_BLOCK',3));
+                    const withoutMargin=${withoutMargin.toString()};
+                    if(!padded.result||!api.receive(padded)||api.receive(padded)||!api.resumeMatches(withoutMargin(padded.result,10))){throw new Error('Padded OCR coordinate restoration');}
+                    await adapter.close();adapter=null;postMessage({first,second,padded,frameCoordinatesRestored:true,created,versions,summary,warmSummary,firstRequestMs,warmRequestMs,dom:typeof document});
                 }catch(error){postMessage({error:String(error.stack||error)});}finally{if(adapter){await adapter.close();}}
             };`);return;
         }
@@ -139,14 +154,14 @@ const sha=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
             const pixels=new Uint8Array(input.pixels);worker.postMessage({...input,pixels},[pixels.buffer]);
         }))),{width:fixture.width,height:fixture.height,pixels:Array.from(original)});
         assert.deepEqual(external,[]);
-        for(const row of workers){recognized(row.first);recognized(row.second);assert.deepEqual(row.first.result,first.result);assert.deepEqual(row.second.result,row.first.result);assert.equal(row.summary,'2/4/23');assert.equal(row.warmSummary,'2/4/23');assert.equal(row.created,1);assert.equal(row.dom,'undefined');}
+        for(const row of workers){recognized(row.first);recognized(row.second);recognized(row.padded);assert.ok(row.frameCoordinatesRestored);assert.deepEqual(row.padded.result,padded.result);assert.deepEqual(row.first.result,first.result);assert.deepEqual(row.second.result,row.first.result);assert.equal(row.summary,'2/4/23');assert.equal(row.warmSummary,'2/4/23');assert.equal(row.created,1);assert.equal(row.dom,'undefined');}
         const assets=Object.fromEntries(Object.entries(files).map(([url,file])=>{const bytes=fs.readFileSync(file);return[url,{bytes:bytes.length,sha256:sha(bytes)}];}));
         const result={backend:'tesseract.js',version:require('tesseract.js/package.json').version,coreVersion:require('tesseract.js-core/package.json').version,
             modelPackage:require('@tesseract.js-data/eng/package.json').version,oem,upstreamEngineMode:oem===0,coreFlavor,node:process.version,chromium:browser.version(),workers:2,
             engineVersions:[...new Set([...versions,...workers.flatMap(row=>row.versions)])],nativeInputBytes:original.length,pngBytes:png.length,pngPixelsExact:true,
             nodeWorkerReused:true,workerResultsExact:true,queuedInputSnapshotsOwned:true,layoutParametersHonored:true,blankSuccessDistinct:true,missingModelDistinct:true,
             simulatedFailureRecovery:true,simulatedLanguageReinitialization:true,
-            wasmRequestAndReplyIntegrated:true,wasmBlankAndModelFailureDistinct:true,
+            wasmRequestAndReplyIntegrated:true,wasmBlankAndModelFailureDistinct:true,paddedFrameCoordinatesRestored:true,configuredWhiteMargin:10,
             nativeWordMetadata:true,realCharacterBoxes:true,fontAttributesAvailable:first.result.lines.some(line=>line.words.some(word=>word.font!==null)),lineBaselineAvailable:first.result.lines.some(line=>line.baseline!==null),
             metadataAlignmentGuard:true,metadataIteratorReleasedOnFailure:true,metadataHookIdempotent:true,separateCoreAssetDirectory:true,
             wordBaselineAvailable:first.result.lines.some(line=>line.words.some(word=>word.baseline!==null)),
@@ -154,6 +169,6 @@ const sha=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
             words:first.result.lines.flatMap(line=>line.words).map(word=>word.text),characters:first.result.lines.flatMap(line=>line.words).reduce((sum,word)=>sum+word.characters.length,0),
             allBrowserAssetsLocal:true,assets,requested,limitation:'External OCR adapter fixture only; no upstream native OCR parity, font fallback, TEXTS cleanup or full recognition integration is claimed'};
         fs.writeFileSync(path.join(root,'verification.json'),JSON.stringify(result,null,2)+'\n');
-        fs.writeFileSync(path.join(root,'results.json'),JSON.stringify({first,second,blank,workers},null,2)+'\n');console.log(JSON.stringify(result));
+        fs.writeFileSync(path.join(root,'results.json'),JSON.stringify({first,second,blank,padded,workers},null,2)+'\n');console.log(JSON.stringify(result));
     }finally{if(browser){await browser.close();}await new Promise(resolve=>server.close(resolve));}
 })().catch(error=>{console.error(error);process.exitCode=1;});

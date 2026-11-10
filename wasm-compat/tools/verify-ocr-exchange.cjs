@@ -8,6 +8,8 @@ const {chromium} = require('playwright');
 const root = path.resolve(process.argv[2]);
 (async () => {
     const expected = fs.readFileSync(path.join(root, 'jvm-reference.txt'), 'utf8');
+    const frames = JSON.parse(fs.readFileSync(path.join(root, 'jvm-frame-reference.json'), 'utf8'));
+    assert.equal(frames.cases, 640); assert.equal(frames.gray8Bytes, 890694); assert.ok(frames.nativePixelsExact);
     vm.runInThisContext(fs.readFileSync(path.join(root, 'ocr-exchange.wasm-runtime.js'), 'utf8'), {
         importModuleDynamically: vm.constants.USE_MAIN_CONTEXT_DEFAULT_LOADER
     });
@@ -74,7 +76,8 @@ const root = path.resolve(process.argv[2]);
         const report = {node: process.version, chromium: browser.version(), nodeInstances: 2, workers: 2,
             contract: expected, workerIsolation: true, asynchronousRoundTrip: true,
             staleAndDuplicateRepliesRejected: true, cancellationTerminal: true, emptyAndFailureDistinct: true,
-            pixelSnapshotsOwned: true, wasmBytes: wasm.length,
+            pixelSnapshotsOwned: true, nativeGray8Margins: frames, frameCoordinatesRestored: true,
+            frameReplyAppliedOnce: true, wasmBytes: wasm.length,
             wasmSha256: crypto.createHash('sha256').update(wasm).digest('hex'),
             limitation: 'OCR transport/lifecycle component only; TEXTS raster cleanup, backend OCR and result ingestion are not yet integrated'};
         fs.writeFileSync(path.join(root, 'verification.json'), JSON.stringify(report, null, 2) + '\n');
