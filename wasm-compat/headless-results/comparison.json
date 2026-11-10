@@ -1,11 +1,9 @@
 {
-  "identicalOriginalRoots": false,
+  "identicalOriginalRoots": true,
   "originalRootSubsetPreserved": true,
   "rootCount": 9054,
-  "baselineRootCount": 9053,
-  "addedRoots": [
-    "org.audiveris.omr.sheet.PixelPicture.discardImage(Lorg/audiveris/omr/sheet/Picture$ImageKey;)V"
-  ],
+  "baselineRootCount": 9054,
+  "addedRoots": [],
   "baselineDiagnostics": 494,
   "patchedDiagnostics": 494,
   "diagnosticReduction": 0,
@@ -40,9 +38,9 @@
     "unattributed": 2
   },
   "platformSubstitutionsEnabled": true,
-  "modifiedMethods": 518,
-  "removedDirectCallsFromModifiedMethods": 0,
-  "addedDirectCallsFromModifiedMethods": 0,
+  "modifiedMethods": 519,
+  "removedDirectCallsFromModifiedMethods": 383,
+  "addedDirectCallsFromModifiedMethods": 5,
   "excludedClassesLinked": {
     "before": 75,
     "after": 75

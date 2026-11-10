@@ -1,0 +1,9 @@
+{
+  "compiled": true,
+  "diagnostics": 0,
+  "runtimeVerified": false,
+  "wasmBytes": 2716038,
+  "wasmSha256": "013bb717f197e7bc62260f5155714f8d36ab09c6b36fa72873cbe505fd08d16f",
+  "rawArtifacts": "wsl-artifacts/wasm-headless/stage22/reduction-baseline-probe",
+  "limitation": "Compilation only; REDUCTION runtime recognition has not been verified"
+}

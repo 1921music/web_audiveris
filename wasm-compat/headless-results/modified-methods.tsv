@@ -297,8 +297,9 @@ org.audiveris.omr.sheet.rhythm.MeasuresStep.isAddition(Lorg/audiveris/omr/sig/ui
 org.audiveris.omr.sheet.rhythm.SlotsRetriever$Constants.getUnitName()Ljava/lang/String;	platform-method	0	1	0	2
 org.audiveris.omr.sheet.rhythm.VoiceDistance$Constants.getUnitName()Ljava/lang/String;	platform-method	0	1	0	2
 org.audiveris.omr.sheet.stem.BeamLinker$Constants.getUnitName()Ljava/lang/String;	platform-method	0	1	0	2
-org.audiveris.omr.sheet.stem.StemBuilder.saveConnection(Lorg/audiveris/omr/sheet/stem/StemLinker;Lorg/audiveris/omr/glyph/Glyph;Ljava/util/List;)V	headless-gui-guard	8	8	198	198
-org.audiveris.omr.sheet.stem.HeadLinker$SLinker$CLinker.saveStump(Lorg/audiveris/omr/glyph/Glyph;)V	headless-gui-guard	2	2	172	172
+org.audiveris.omr.sheet.stem.StemBuilder.sortItems(Ljava/util/List;)V	pinned-jdk-timsort-for-mixed-stem-item-comparator	2	2	9	9
+org.audiveris.omr.sheet.stem.StemBuilder.saveConnection(Lorg/audiveris/omr/sheet/stem/StemLinker;Lorg/audiveris/omr/glyph/Glyph;Ljava/util/List;)V	platform-method	8	1	198	2
+org.audiveris.omr.sheet.stem.HeadLinker$SLinker$CLinker.saveStump(Lorg/audiveris/omr/glyph/Glyph;)V	platform-method	2	1	172	2
 org.audiveris.omr.sheet.stem.HeadStemsCleaner$Constants.getUnitName()Ljava/lang/String;	platform-method	0	1	0	2
 org.audiveris.omr.sheet.stem.StemChecker.addCheckBoard()V	platform-method	2	1	19	2
 org.audiveris.omr.sheet.stem.VerticalsBuilder.buildVerticals()V	headless-gui-guard	4	3	37	12
