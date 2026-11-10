@@ -1,0 +1,31 @@
+{
+  "wasmEngineVersions": [
+    "5.1.0-288-g2a9c1"
+  ],
+  "oem": 0,
+  "sourceDpi": 70,
+  "adapterResultsSha256": "e47a154ae99ed1f2baea8433b394f3dd1b7c111d56cd7daca31ba15ce6074484",
+  "sameModelBytes": true,
+  "traineddataSha256": "daa0c97d651c19fba3b25e81317cd697e9908c8208090c94c3905381c23fc047",
+  "inputGraySha256": "6f33d2835f9fe80b054b84dcce9523eabe4e17bf5f24edee5a37ec1d015ec938",
+  "modes": [
+    {
+      "psm": 6,
+      "nativeEngineVersion": "5.5.2",
+      "wordCount": 4,
+      "characterCount": 23,
+      "exact": true,
+      "differences": []
+    },
+    {
+      "psm": 3,
+      "nativeEngineVersion": "5.5.2",
+      "wordCount": 4,
+      "characterCount": 23,
+      "exact": true,
+      "differences": []
+    }
+  ],
+  "nodeAndTwoBrowserWorkersExact": true,
+  "limitation": "Raw OCR fixture only; not original TextWord font fitting, page cleanup or full TEXTS recognition"
+}

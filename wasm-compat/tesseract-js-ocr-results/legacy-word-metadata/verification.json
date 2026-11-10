@@ -36,12 +36,12 @@
   "wordBaselineAvailable": true,
   "workerTimings": [
     {
-      "firstRequestMs": 759.5,
-      "warmRequestMs": 27.30000000000291
+      "firstRequestMs": 699.8000000000175,
+      "warmRequestMs": 27
     },
     {
-      "firstRequestMs": 759,
-      "warmRequestMs": 26.30000000000291
+      "firstRequestMs": 700.2000000000116,
+      "warmRequestMs": 27.10000000000582
     }
   ],
   "words": [
@@ -70,8 +70,8 @@
       "sha256": "fab3b1da1e3f027ab38fc48eef5a5250988fd3a1a55720364e4ad94078b70bba"
     },
     "/host/tesseract-word-metadata.mjs": {
-      "bytes": 3500,
-      "sha256": "f71c5bf67f36ccdca715a709380b5cd37a58490ccafec3a017e046fdb7c565ae"
+      "bytes": 3721,
+      "sha256": "1468eb12906a12cc7eb5274a2f251e9c56b8437554df04e4e8e7570b705f4ccd"
     },
     "/host/tesseract-core-word-metadata.js": {
       "bytes": 859,
