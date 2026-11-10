@@ -1,0 +1,115 @@
+{
+  "backend": "tesseract.js",
+  "version": "7.0.0",
+  "coreVersion": "7.0.0",
+  "modelPackage": "1.0.0",
+  "oem": 0,
+  "upstreamEngineMode": true,
+  "coreFlavor": "relaxedsimd",
+  "node": "v24.22.2",
+  "chromium": "158.0.8127.18",
+  "workers": 2,
+  "engineVersions": [
+    "5.1.0-288-g2a9c1"
+  ],
+  "nativeInputBytes": 126000,
+  "pngBytes": 4529,
+  "pngPixelsExact": true,
+  "nodeWorkerReused": true,
+  "workerResultsExact": true,
+  "queuedInputSnapshotsOwned": true,
+  "layoutParametersHonored": true,
+  "blankSuccessDistinct": true,
+  "missingModelDistinct": true,
+  "simulatedFailureRecovery": true,
+  "simulatedLanguageReinitialization": true,
+  "wasmRequestAndReplyIntegrated": true,
+  "wasmBlankAndModelFailureDistinct": true,
+  "nativeWordMetadata": true,
+  "realCharacterBoxes": true,
+  "fontAttributesAvailable": true,
+  "lineBaselineAvailable": true,
+  "metadataAlignmentGuard": true,
+  "metadataIteratorReleasedOnFailure": true,
+  "metadataHookIdempotent": true,
+  "separateCoreAssetDirectory": true,
+  "wordBaselineAvailable": true,
+  "workerTimings": [
+    {
+      "firstRequestMs": 759.5,
+      "warmRequestMs": 27.30000000000291
+    },
+    {
+      "firstRequestMs": 759,
+      "warmRequestMs": 26.30000000000291
+    }
+  ],
+  "words": [
+    "Allegro",
+    "moderato",
+    "Music",
+    "123"
+  ],
+  "characters": 23,
+  "allBrowserAssetsLocal": true,
+  "assets": {
+    "/ocr-transport.wasm": {
+      "bytes": 44344,
+      "sha256": "108a9a844af12d86385d8c999cd9fa3754c77fbae3d83d2724820dd10bc492ec"
+    },
+    "/ocr-transport.wasm-runtime.js": {
+      "bytes": 17268,
+      "sha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b"
+    },
+    "/host/tesseract-js-ocr.mjs": {
+      "bytes": 7788,
+      "sha256": "861f92561bf914ba95248a677d4994e6d9a54a6b3c5fd4e49dd2f1ffc8bcb58e"
+    },
+    "/host/gray8-png.mjs": {
+      "bytes": 1759,
+      "sha256": "fab3b1da1e3f027ab38fc48eef5a5250988fd3a1a55720364e4ad94078b70bba"
+    },
+    "/host/tesseract-word-metadata.mjs": {
+      "bytes": 3500,
+      "sha256": "f71c5bf67f36ccdca715a709380b5cd37a58490ccafec3a017e046fdb7c565ae"
+    },
+    "/host/tesseract-core-word-metadata.js": {
+      "bytes": 859,
+      "sha256": "1bdf211ea32a326f535d9d24d012b92b9eb62b2978b85dae3eeee0fc268802de"
+    },
+    "/ocr-assets/tesseract.min.js": {
+      "bytes": 62961,
+      "sha256": "000c27d9cd0def655f77b36c72a389c0ab13793aa31cb4d7aab56d09c0afbc7e"
+    },
+    "/ocr-assets/worker.min.js": {
+      "bytes": 111307,
+      "sha256": "576b7df7e3393e137e51849357c9adb53fe7ac1bb69bfa06cf3d61520f182c6d"
+    },
+    "/core-assets/tesseract-core-relaxedsimd.js": {
+      "bytes": 89066,
+      "sha256": "716be037611f21b568347421f582f1e1a6456b6d5c3a7c2406c8a2a6c0136427"
+    },
+    "/core-assets/tesseract-core-relaxedsimd.wasm": {
+      "bytes": 3456075,
+      "sha256": "45f8c9b516df326b6ae6b493ed3a6289df5cbd10490e7b6ff8bf5b12ea42d1da"
+    },
+    "/models/eng.traineddata.gz": {
+      "bytes": 10923060,
+      "sha256": "ed350f3752f81ee8f38769edc14d92d997dababe23b565c59879372cc46a2468"
+    }
+  },
+  "requested": {
+    "/ocr-assets/tesseract.min.js": 2,
+    "/ocr-transport.wasm-runtime.js": 2,
+    "/host/tesseract-js-ocr.mjs": 2,
+    "/host/gray8-png.mjs": 2,
+    "/host/tesseract-word-metadata.mjs": 4,
+    "/ocr-transport.wasm": 2,
+    "/ocr-assets/worker.min.js": 2,
+    "/host/tesseract-core-word-metadata.js": 2,
+    "/core-assets/tesseract-core-relaxedsimd.js": 2,
+    "/core-assets/tesseract-core-relaxedsimd.wasm": 2,
+    "/models/eng.traineddata.gz": 2
+  },
+  "limitation": "External OCR adapter fixture only; no upstream native OCR parity, font fallback, TEXTS cleanup or full recognition integration is claimed"
+}
