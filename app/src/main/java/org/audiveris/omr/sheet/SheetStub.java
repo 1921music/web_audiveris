@@ -283,6 +283,20 @@ public class SheetStub
         pageRefs.addAll(oldStub.pageRefs); /// ??? TODO: To be checked
     }
 
+    /**
+     * Install caller-owned gray/binary buffers in a fresh stub. The caller must
+     * relinquish both buffers; gray may be null when only binary input is available.
+     */
+    public synchronized Sheet createMemorySheet (ij.process.ByteProcessor gray,
+                                                ij.process.ByteProcessor binary)
+    {
+        if (sheet != null || !doneSteps.isEmpty()) {
+            throw new IllegalStateException("Sheet stub is already initialized");
+        }
+        sheet = new Sheet(this, gray, binary);
+        return sheet;
+    }
+
     //~ Methods ------------------------------------------------------------------------------------
 
     //------------//

@@ -22,7 +22,10 @@ final class HeadlessPatches {
             case "org.audiveris.omr.util.OmrExecutors": executors(cls); break;
             case "org.audiveris.omr.sheet.Picture": archivedTables(cls); break;
             case "org.audiveris.omr.sheet.Book": modelLocks(cls); break;
-            case "org.audiveris.omr.sheet.SheetStub": modelLocks(cls); break;
+            case "org.audiveris.omr.sheet.SheetStub":
+                modelLocks(cls); installedField(cls, "sheet", "getSheet", "requireInstalledSheet", obj("org.audiveris.omr.sheet.Sheet")); break;
+            case "org.audiveris.omr.sheet.Sheet":
+                installedField(cls, "picture", "getPicture", "requireInstalledPicture", obj("org.audiveris.omr.sheet.Picture")); break;
             case "org.slf4j.LoggerFactory":
                 emptyInitializer(cls);
                 delegate(cls, "getLogger", "logger", HeadlessLogging.class, STRING, obj("org.slf4j.Logger"));
@@ -150,6 +153,8 @@ final class HeadlessPatches {
     }
     private static boolean gui(FieldReference field) { return field.getClassName().equals("org.audiveris.omr.OMR") && field.getFieldName().equals("gui"); }
     private static boolean presentationService(FieldReference field, ClassHolder current, ClassHolderTransformerContext context) {
+        if (field.getClassName().equals("org.audiveris.omr.sheet.Book")
+                && Set.of("parameterDialog", "bookBrowser").contains(field.getFieldName())) { return true; }
         if (field.getClassName().equals("org.audiveris.omr.glyph.GlyphIndex") && field.getFieldName().equals("glyphService")
                 || field.getClassName().equals("org.audiveris.omr.score.Score") && field.getFieldName().equals("logicalsEditor")) { return true; }
         if (!field.getFieldName().equals("entityService")) { return false; }
@@ -274,6 +279,18 @@ final class HeadlessPatches {
         }
         // Java field initializers occur in each constructor that does not delegate via this(...).
         if (constructions == 0 || constructions != constructors) { throw new IllegalStateException("Review model lock construction"); }
+    }
+    private static void installedField(ClassHolder cls, String fieldName, String getter, String helper, ValueType type) {
+        FieldHolder field = cls.getField(fieldName);
+        MethodHolder method = cls.getMethod(new MethodDescriptor(getter, type));
+        if (field == null || !field.getType().equals(type) || method == null) { throw new IllegalStateException("Review loaded sheet access"); }
+        Program program = new Program(); Variable self = program.createVariable(), sheet = program.createVariable(), result = program.createVariable();
+        BasicBlock block = program.createBasicBlock(); GetFieldInstruction get = new GetFieldInstruction();
+        get.setField(field.getReference()); get.setFieldType(type); get.setInstance(self); get.setReceiver(sheet); block.add(get);
+        InvokeInstruction require = new InvokeInstruction(); require.setType(InvocationType.SPECIAL);
+        require.setMethod(new MethodReference(HeadlessModels.class.getName(), helper, type, type));
+        require.setArguments(sheet); require.setReceiver(result); block.add(require);
+        ExitInstruction exit = new ExitInstruction(); exit.setValueToReturn(result); block.add(exit); method.setProgram(program);
     }
     private static void executors(ClassHolder cls) {
         initializeField(cls, "defaultParallelism", HeadlessExecution.class, "parallelism", obj("org.audiveris.omr.util.param.Param"));

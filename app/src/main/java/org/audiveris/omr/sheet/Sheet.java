@@ -317,6 +317,15 @@ public class Sheet
         }
     }
 
+    /** Take ownership of raw pixel buffers, without decoding an image file. */
+    Sheet (SheetStub stub, ij.process.ByteProcessor gray, ij.process.ByteProcessor binary)
+    {
+        this(stub);
+        picture = new PixelPicture(this, gray, binary);
+        done(OmrStep.LOAD);
+        done(OmrStep.BINARY);
+    }
+
     //~ Methods ------------------------------------------------------------------------------------
 
     //-----------------//

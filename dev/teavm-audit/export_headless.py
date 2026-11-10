@@ -67,6 +67,7 @@ def main():
     parser.add_argument('--pixels', action='store_true')
     parser.add_argument('--ordered-maps', action='store_true')
     parser.add_argument('--models', action='store_true')
+    parser.add_argument('--pixel-sheet', action='store_true')
     parser.add_argument('--allow-added-roots', action='store_true')
     args = parser.parse_args()
     root, build = args.repository, args.build
@@ -217,6 +218,34 @@ def main():
             for target in [model_results, model_raw]:
                 write(target / 'provenance.json', model_provenance)
             provenance[name + 'Verification'] = json.loads((model_build / 'verification.json').read_text())
+    if args.pixel_sheet:
+        sheet_build = build / 'wasm-compat/pixel-sheet-probe'
+        sheet_raw = artifacts / 'pixel-sheet-probe'
+        sheet_results = root / 'wasm-compat/pixel-sheet-results'
+        sheet_raw.mkdir(parents=True, exist_ok=True); sheet_results.mkdir(parents=True, exist_ok=True)
+        for filename in ['pixel-sheet.wasm', 'pixel-sheet.wasm-runtime.js', 'jvm-reference.json', 'verification.json', 'diagnostics.tsv']:
+            shutil.copyfile(sheet_build / filename, sheet_raw / filename)
+        for filename in ['jvm-reference.json', 'verification.json', 'diagnostics.tsv']:
+            shutil.copyfile(sheet_build / filename, sheet_results / filename)
+        sample_build = build / 'wasm-compat/pixel-probe/samples'
+        # Keep the same relative sample path used by the verification script.
+        shutil.copytree(sample_build, artifacts / 'pixel-probe/samples', dirs_exist_ok=True)
+        shutil.copyfile(sample_build / 'manifest.json', sheet_results / 'samples.json')
+        shutil.copyfile(sample_build / 'scale-upstream.json', sheet_results / 'scale-upstream.json')
+        original = build / 'wasm-compat/upstream-scale'
+        original_source = json.loads((original / 'source.json').read_text())
+        original_source['classSha256'] = {str(p.relative_to(original / 'classes')): hashlib.sha256(p.read_bytes()).hexdigest()
+                                        for p in sorted((original / 'classes').rglob('*.class'))}
+        write(sheet_results / 'scale-upstream-source.json', original_source)
+        write(sheet_raw / 'scale-upstream-source.json', original_source)
+        sheet_provenance = {key: provenance[key] for key in ['applicationBaseline', 'toolCommit', 'teaVM', 'target',
+            'cpuMax', 'allowedCpus', 'memoryMaxBytes', 'memorySwapMaxBytes', 'memoryEventsLocal', 'sourceSha256', 'applicationSourceChanges']}
+        sheet_provenance.update({'rawArtifacts': raw_path + '/pixel-sheet-probe',
+            'artifactSha256': {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(sheet_raw.iterdir()) if p.is_file()},
+            'limitation': 'Raw binary pixels through the original Sheet/ScaleBuilder path; derived sources, staff detection, full recognition and encoding remain unverified'})
+        for target in [sheet_results, sheet_raw]:
+            write(target / 'provenance.json', sheet_provenance)
+        provenance['pixelSheetVerification'] = json.loads((sheet_build / 'verification.json').read_text())
     for target in [results, artifacts]:
         write(target / 'provenance.json', provenance)
     print(json.dumps({key: comparison[key] for key in ['rootCount', 'baselineDiagnostics', 'patchedDiagnostics', 'modifiedMethods',

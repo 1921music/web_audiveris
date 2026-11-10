@@ -209,7 +209,7 @@ recognition or font settings with compiler literals.
 
 Stages 1–5 analyze **9,001 roots / 8,588 bodies**. Stage 6 preserves every one of those roots and
 adds 18 scale-source API/adapter methods. Stage 8 also roots `Book.createMemoryBook`, giving
-**9,020 roots / 8,599 bodies**.
+**9,020 roots / 8,599 bodies**. Stage 9 adds nine pixel-model methods, giving **9,029 roots / 8,608 bodies**.
 `-PallowAddedRoots=true` explicitly permits/report additions; it never permits removal, changed
 body/native coverage or reclassification of existing roots. Generic compatibility has 544 diagnostics;
 the initial Worker boundary stage has 525 and the current Worker compatibility stage has **495**
@@ -217,11 +217,11 @@ the initial Worker boundary stage has 525 and the current Worker compatibility s
 
 | Residual exclusion candidates | Initial Worker boundary | Current presentation boundary |
 | --- | ---: | ---: |
-| Linked classes | 441 | **76** |
+| Linked classes | 441 | **75** |
 | Used input methods inside excluded classes | 1,681 | **242** |
-| Used input methods under all exclusion rules, including method-only rules | 1,863 | **313** |
+| Used input methods under all exclusion rules, including method-only rules | 1,863 | **311** |
 
-Of the 76 classes, **55 have used methods and 21 are type-only**. These candidates include enums,
+Of the 75 classes, **55 have used methods and 20 are type-only**. These candidates include enums,
 rendering/output helpers and non-UI host dependencies, as well as remaining presentation paths;
 they are not all removable widgets. The exclusion guard still fails. Fast analysis is conservative,
 not a runtime trace. Some inferred witness paths can disagree with the transformed method model.
@@ -399,16 +399,16 @@ are under `build/wasm-compat/probe`; audit outputs are under
 
 ## Verified result
 
-The current audit covers **9,020 methods**, including **8,599 method bodies**. Every original
+The current audit covers **9,029 methods**, including **8,608 method bodies**. Every original
 **9,001-method / 8,588-body** root is preserved; 18 scale-context/adapter methods and the memory-book
-factory are added explicitly.
+factory and nine pixel-model methods are added explicitly.
 With generic compatibility and the opt-in Worker/presentation substitutions enabled, diagnostics
 fall from **1,276 to 495** (781 fewer); unique messages fall from **336 to 204**.
 The stages are **1,276 → 789 → 702 → 609 → 545 → 544 → 525 → 524 → 495**. The 544/220 result is the
 generic compatibility layer alone; 525/217 is the initial Worker boundary, 524/216 is the
-stage-6 boundary and **495/204** is the current stage-8 result (unchanged from stage 7, with one additional model-factory root).
-Remaining exclusion candidates are **76 classes / 242 used input methods inside those classes**,
-or **313 methods** when method-only exclusion rules are also included.
+stage-6 boundary and **495/204** is the current stage-9 result (unchanged from stage 7, with expanded model/pixel roots).
+Remaining exclusion candidates are **75 classes / 242 used input methods inside those classes**,
+or **311 methods** when method-only exclusion rules are also included.
 There are no remaining missing-API messages for the generic layer's targeted APIs. The broad fast
 analysis also exposes additional unsupported dependency paths; generic-layer new messages and their
 callers are recorded in `results/new-diagnostics.tsv`, and current headless results in
@@ -513,6 +513,44 @@ The exploratory initial 1 GiB compiler heap was insufficient before separating i
 `buildSheetModelProbe` uses a 5 GiB heap inside the same overall 8 GiB cgroup limit. That heap
 failure is separate from the archived stage-6 runs.
 
+### Raw pixels in the original Sheet
+
+Stage 9 adds `SheetStub.createMemorySheet(gray, binary)` and `PixelPicture`: the caller gives up
+ownership of its ImageJ buffers, an optional gray buffer must match binary dimensions, and binary
+pixels must be 0/255. The stub is installed only after successful initialization and is marked
+LOAD/BINARY done. A duplicate installation is rejected. The original Sheet indexes and managers
+remain in use. A protected Picture geometry constructor and a raw-pixel Sheet constructor support
+this path; the original image/file constructors remain available on the JVM.
+
+Worker `getSheet`/`getPicture` substitutions require already supplied data and reject an unbound
+page; they do not fall back to image decoding or `.omr` loading. Book's nullable parameter dialog
+and browser fields use the existing presentation-service cut. Page invalidation and score-model
+updates are preserved.
+
+`verifyPixelSheetProbe` runs the original `ScaleBuilder(Sheet)` path on all eight supplied samples,
+compares with the pinned unmodified upstream scale oracle, and checks Node and Chromium Workers.
+All **48,192,656 binary pixels** are supplied, with input hashes and transfer ownership checked.
+Five pages succeed and the same three low-resolution pages are rejected. The component probe is
+**870,360 bytes**. This verifies scale through the actual model, not staff detection or a full engine.
+
+`PixelPicture` currently supplies GRAY/BINARY sources and a vertical BINARY RunTable. Derived
+sources (NO_STAFF/MEDIAN/GAUSSIAN), replacing tables, and encoded images explicitly throw until
+their backend is implemented; the original Picture implementations remain in the codebase.
+`Picture.setTable` becomes overridable so the pixel backend can enforce this boundary. TODO:
+extend these capabilities as the corresponding recognition steps are exercised.
+
+```powershell
+.\dev\wsl\Manage-WasmDev.ps1 Build -GradleArgs @(
+  'verifyPixelSheetProbe', '-I', 'dev/teavm-audit/audit.init.gradle',
+  '-Pcompat=true', '-Pheadless=true',
+  '-PpixelSamples=/mnt/g/work/20261029/1921music/score_samples', '--console=plain')
+```
+
+Stage 9 preserves all previous roots and adds nine pixel-model methods (**9,029 roots / 8,608
+bodies**). Diagnostics remain **495 / 204 unique**. Residual candidates are **75 classes / 242
+class-excluded used input methods / 311 methods across all rules**. Small reports are in
+`pixel-sheet-results`; archive with `export_headless.py --stage 9 --pixel-sheet --allow-added-roots`.
+
 ## Remaining work
 
 ### TODO: reconsider the XML properties parser
@@ -551,5 +589,5 @@ sources; this does not establish that OCR/native or other platform boundaries ar
 The generic-only audit still has 544 diagnostics, including three directly in selected engine
 sources; the opt-in Worker substitutions address those three paths. Remaining work requires
 resource, execution and platform adapters that preserve recognition behavior. The current reentry
-report includes **76 classes / 242 class-excluded used input methods** (**313 methods across all exclusion
+report includes **75 classes / 242 class-excluded used input methods** (**311 methods across all exclusion
 rules**); choosing roots alone does not cut transitive dependencies.

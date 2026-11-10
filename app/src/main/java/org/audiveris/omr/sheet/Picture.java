@@ -162,6 +162,17 @@ public class Picture
         logger.debug("Picture unmarshalled by JAXB");
     }
 
+    /** Initialize geometry for a picture backed by caller-supplied pixels. */
+    protected Picture (Sheet sheet, int width, int height)
+    {
+        if (width <= 0 || height <= 0) {
+            throw new IllegalArgumentException("Invalid picture dimensions");
+        }
+        initTransients(java.util.Objects.requireNonNull(sheet, "Missing sheet"));
+        this.width = width;
+        this.height = height;
+    }
+
     /**
      * Build a picture instance from a given original image.
      *
@@ -1004,7 +1015,7 @@ public class Picture
      * @param table    table to register
      * @param modified true if not saved on disk
      */
-    public final void setTable (TableKey key,
+    public void setTable (TableKey key,
                                 RunTable table,
                                 boolean modified)
     {
