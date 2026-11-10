@@ -43,6 +43,7 @@
     57817,
     57831
   ],
+  "defaultStepTimeoutSeconds": 120,
   "templateComposite": {
     "rule": "SRC_OVER",
     "alpha": "0.25f"
@@ -53,6 +54,7 @@
     "ui/field/MusicPane.java": "fd6896715a0c3861dc76d95a1f1e82bffa367f31d71a6ff54479cfa9edae7f11",
     "ui/symbol/Symbols.java": "408303e6e100b33ab46f84c995d267028dced099348e069935bd3df65894525d",
     "sheet/ui/TemplateView.java": "dc2e5aed919f17cb20095d488933ae5580a3060cf61d9c45a7c303b4a38d2b5f",
-    "ui/util/UIUtil.java": "bf50789fe14866779bb5102e2e6b2e8a7c641dd6252efc53bef3d067fc530f46"
+    "ui/util/UIUtil.java": "bf50789fe14866779bb5102e2e6b2e8a7c641dd6252efc53bef3d067fc530f46",
+    "Main.java": "b13e37ef142a3de42119990057bb26b8e6d12b7816b917d6f2f4c57ae0b87ed3"
   }
 }

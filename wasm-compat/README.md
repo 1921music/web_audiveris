@@ -1,7 +1,8 @@
 # TeaVM API compatibility layer
 
-This module absorbs reusable platform API differences without editing the original Audiveris
-sources. It is opt-in (`-Pcompat=true`) in the audit harness and targets TeaVM 0.16.0 / Wasm GC.
+The generic layer absorbs reusable platform API differences without editing Audiveris sources.
+The opt-in headless layer also uses the small source boundaries documented below. Compatibility
+is opt-in (`-Pcompat=true`) in the audit harness and targets TeaVM 0.16.0 / Wasm GC.
 It does not yet make the complete recognition engine executable in a browser.
 
 ## Approach

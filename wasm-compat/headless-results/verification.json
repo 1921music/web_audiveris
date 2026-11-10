@@ -10,7 +10,15 @@
   "metronomeMusicDataAndRegex": true,
   "templateComposite": true,
   "unboundSheetContextRejected": true,
+  "configurationSnapshots": true,
+  "originalConstantLifecycle": true,
+  "configurationIsolation": true,
+  "constantSetMetadata": true,
+  "fontRatioOverride": 1.5,
+  "invalidConfigurationRejected": true,
+  "stepRunOptions": true,
+  "originalBookOutputPathOptions": true,
   "guiGuardPreservesEngineWork": true,
   "workerIsolation": true,
-  "wasmBytes": 383077
+  "wasmBytes": 481678
 }
