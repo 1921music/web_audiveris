@@ -886,6 +886,27 @@ gradle.projectsEvaluated {
                 ocrExchangeOutput.absolutePath
     }
     def grayPathOutput = new File(rootProject.projectDir, 'build/wasm-compat/gray-path-probe')
+    def ocrTransportOutput = new File(rootProject.projectDir, 'build/wasm-compat/ocr-transport-probe')
+    rootProject.tasks.register('testOcrTransportJvm', JavaExec) {
+        dependsOn 'compileWasmCompatibilityTests'
+        classpath = rootProject.files(compatTests, compatClasses) + auditDependencies
+        mainClass = 'org.audiveris.wasm.compat.test.OcrTransportOracle'
+        maxHeapSize = '256m'
+        args new File(ocrTransportOutput, 'jvm-reference.txt').absolutePath
+    }
+    rootProject.tasks.register('buildOcrTransportProbe', JavaExec) {
+        dependsOn compile, 'testOcrTransportJvm', 'patchKxmlCompatibility', 'selectWasmLibraryImplementations'
+        classpath = rootProject.files(compatTests) + compatRuntime
+        mainClass = 'audit.CompileCompatibilityProbe'
+        maxHeapSize = '1g'
+        systemProperty 'audiveris.compat.enabled', 'true'
+        args ocrTransportOutput.absolutePath, 'org.audiveris.wasm.compat.test.OcrTransportProbe', 'ocr-transport'
+    }
+    rootProject.tasks.register('verifyOcrTransportProbe', Exec) {
+        dependsOn 'buildOcrTransportProbe'
+        commandLine 'node', '--max-old-space-size=256', new File(compat, 'tools/verify-ocr-transport.cjs').absolutePath,
+                ocrTransportOutput.absolutePath
+    }
     rootProject.tasks.register('testGrayPathJvm', JavaExec) {
         dependsOn 'compileWasmCompatibilityTests'
         classpath = rootProject.files(compatTests, compatClasses, jdkRasterClasses)

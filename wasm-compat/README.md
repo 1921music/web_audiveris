@@ -1209,7 +1209,7 @@ including actual event-loop gaps between requesting, cancelling and responding.
 After the user restarted the WSL service, all **732 lifecycle/ownership checks** pass in the JVM,
 two Node module instances and two independent Chromium Workers. The Worker checks include separate
 message/event-loop turns, cancellation and late replies after replacing an execution generation.
-The standalone component is **39,509 bytes**; this is not an OCR backend or engine size estimate.
+The standalone component is **39,676 bytes** after adding optional line baselines; this is not an OCR backend or engine size estimate.
 Reports and source revision are in `ocr-exchange-results`, with runnable artifacts in
 `wsl-artifacts/wasm-components/ocr-exchange`. The shared **8 CPU / 8 GiB / no swap** limits remain
 in force, with no cgroup OOM or hard-limit events. TEXTS integration and recognition quality remain
@@ -1222,6 +1222,28 @@ structured hierarchy. The currently inspected tesseract-wasm
 exposes line/word units, so that API alone does not satisfy the required character-box capability.
 A backend lacking it must report unsupported capability; word boxes must not be split into invented
 character positions. Missing baseline/font fallback quality is still unverified.
+
+## OCR host transport
+
+`OcrTransport` converts requests to plain host data and imports results into the immutable
+`OcrExchange` model. The request uses a transferable packed `Uint8Array`; it owns a snapshot and
+cannot detach or modify the engine's working pixels. Results carry lines, words, actual character
+boxes, confidence and optional line/word baselines and font metadata. Field types, finite numbers,
+int32 coordinates and model constraints are checked. Java objects, reflection and a Java JSON
+parser are not part of the wire contract. Callers check the token before decoding a late result.
+
+The native JVM model fixture round-trips through two Node instances and two Chromium Workers,
+including supplementary Unicode characters and transferred/detached buffers. Each instance passes
+**45 checks**, including **25 malformed-data cases**, owned inbound snapshots, actual asynchronous
+Worker-to-host requests/replies, stale-before-decode rejection, empty results and all three failure
+codes. The standalone transport probe is **41,736 bytes**. Its fixture serializer uses reflection
+only in the separate JVM test entry, which is not reachable from the Wasm entry. The lifecycle
+probe's **732 checks** still pass with the extended model.
+
+Run `verifyOcrTransportProbe` with the audit init script through the capped launcher. Reports are
+in `ocr-transport-results` and runnable artifacts in `wsl-artifacts/wasm-components/ocr-transport`.
+This establishes the host data boundary; a real OCR backend, text-font fallback, TEXTS raster cleanup
+and conversion into original `TextLine` objects are still separate work.
 
 ## Pure Java path-fill component
 

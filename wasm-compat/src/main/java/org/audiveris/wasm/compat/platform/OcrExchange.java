@@ -43,8 +43,9 @@ public final class OcrExchange {
             if (characters.isEmpty()) { throw new IllegalArgumentException("Missing OCR character boxes"); }
         }
     }
-    public record Line(List<Word> words) {
+    public record Line(List<Word> words, Baseline baseline) {
         public Line { words = List.copyOf(words); }
+        public Line(List<Word> words) { this(words, null); }
     }
     /** Confidence is normalized to [0,1]; optional metadata remains null if unavailable. */
     public record Result(Capabilities capabilities, List<Line> lines) {
@@ -52,6 +53,7 @@ public final class OcrExchange {
             Objects.requireNonNull(capabilities); lines = List.copyOf(lines);
             if (!capabilities.characters) { throw new IllegalArgumentException("OCR requires character boxes"); }
             for (Line line : lines) {
+                if (!capabilities.baselines && line.baseline != null) { throw new IllegalArgumentException("Unexpected OCR line baseline"); }
                 for (Word word : line.words) {
                     if ((!capabilities.baselines && word.baseline != null)
                             || (!capabilities.fontAttributes && word.font != null)) {
@@ -100,6 +102,9 @@ public final class OcrExchange {
         this.job = job; this.page = page; this.generation = generation;
     }
     public State state() { return state; }
+    public boolean matches(Token candidate) {
+        return state == State.WAITING && pending.token.equals(Objects.requireNonNull(candidate));
+    }
     public Request request(int width, int height, byte[] pixels, String languages, Layout layout) {
         if (state != State.IDLE) { throw new IllegalStateException("OCR session is not idle"); }
         Objects.requireNonNull(pixels); requireName(languages); Objects.requireNonNull(layout);
@@ -113,7 +118,7 @@ public final class OcrExchange {
     /** False means stale, duplicate, cancelled, or belonging to another job/page/generation. */
     public boolean accept(Reply candidate) {
         Objects.requireNonNull(candidate);
-        if (state != State.WAITING || !pending.token.equals(candidate.token)) { return false; }
+        if (!matches(candidate.token)) { return false; }
         reply = candidate; pending = null; state = State.READY; return true;
     }
     public Reply takeReply() {
