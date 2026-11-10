@@ -950,6 +950,20 @@ gradle.projectsEvaluated {
                 ocrBackendOutput.absolutePath,
                 new File(compat, 'node_modules/@tesseract.js-data/eng/4.0.0/eng.traineddata.gz').absolutePath
     }
+    def textFontOutput = new File(rootProject.projectDir, 'build/wasm-compat/text-font-metrics')
+    rootProject.tasks.register('testTextFontMetricsJvm', JavaExec) {
+        dependsOn 'compileWasmCompatibilityTests'
+        classpath = rootProject.files(compatTests, compatClasses) + app.sourceSets.main.runtimeClasspath
+        mainClass = 'org.audiveris.wasm.compat.test.TextFontMetricsOracle'
+        maxHeapSize = '256m'
+        systemProperty 'java.awt.headless', 'true'
+        args (rootProject.findProperty('textFontDirectory') ?: '/usr/share/fonts/truetype/liberation').toString(), textFontOutput.absolutePath
+    }
+    rootProject.tasks.register('compareTextFontMetrics', Exec) {
+        dependsOn 'testTextFontMetricsJvm'
+        commandLine 'node', '--max-old-space-size=256', new File(compat, 'tools/compare-text-fonts.cjs').absolutePath,
+                textFontOutput.absolutePath
+    }
     rootProject.tasks.register('testGrayPathJvm', JavaExec) {
         dependsOn 'compileWasmCompatibilityTests'
         classpath = rootProject.files(compatTests, compatClasses, jdkRasterClasses)

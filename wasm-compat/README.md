@@ -1306,6 +1306,27 @@ The earlier `{legacy,lstm}` results retain the stock-output comparison. Export e
 with `export_ocr_backend.py <repository> <mirror> <source-commit> <legacy|lstm>`.
 For the legacy profile, append `--native` to archive the matching JVM comparison under `native/`.
 
+## Text font measurement investigation
+
+`compareTextFontMetrics` compares the original `OmrFont.computeSize` and glyph visual bounds with
+`OffscreenCanvas.measureText` in two independent Workers. Both sides load identical physical
+Liberation font files: Sans/Serif/Mono, four styles, four sizes and eight strings (**384 cases**).
+Browser kerning is disabled to match `createGlyphVector`; font and reference hashes are recorded.
+Ordinary Canvas advance widths agree exactly, but all visual bounds differ (maximum **1.9375 px**)
+and **236 fitted sizes differ**, by up to **2 points**. Measuring at 16× and 64× reduces the size
+differences to **55** and **67**, respectively; both still differ by up to one point. The 1024×
+experiment also changes advances at large sizes and is unsuitable for preserving these metrics.
+Two Workers agree exactly with each other in all modes.
+
+These are diagnostic results, not an engine replacement. Advance width cannot substitute for the
+visual bounds used by the original font fitting. Keep the font-measurement boundary explicit and
+investigate outline-based metrics or a compatible backend before integrating it into TEXTS.
+The default font directory is `/usr/share/fonts/truetype/liberation`; override it with
+`-PtextFontDirectory=...` containing the same named physical files. Summaries are in
+`text-font-metrics-results`; raw reference/Worker results, fonts and their notice are under
+`wsl-artifacts/wasm-components/text-font-metrics`. Archive a committed run with
+`export_text_font_metrics.py <repository> <mirror> <source-commit>`.
+
 ## Pure Java path-fill component
 
 `GrayPathRaster` calls the unchanged JDK `sun.java2d.loops.ProcessPath` scan converter, compiled
