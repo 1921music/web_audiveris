@@ -1,0 +1,13 @@
+{
+  "node": "v24.22.2",
+  "chromium": "158.0.8127.18",
+  "nodeInstances": 2,
+  "workers": 2,
+  "originalConstantNamespaces": true,
+  "originalDefaults": true,
+  "bookParameterInheritance": true,
+  "originalFontApiAliasesJvm": true,
+  "typedMutationAndSourceReset": true,
+  "workerIsolation": true,
+  "wasmBytes": 521679
+}

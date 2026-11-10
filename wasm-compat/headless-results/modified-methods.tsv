@@ -68,6 +68,9 @@ org.audiveris.omr.util.BasicIndex.setEntityService(Lorg/audiveris/omr/ui/selecti
 org.audiveris.omr.util.BasicIndex.lambda$publish$0(Lorg/audiveris/omr/ui/selection/EntityListEvent;)V	platform-method	2	1	7	2
 org.audiveris.omr.util.BasicIndex.getEntityService()Lorg/audiveris/omr/ui/selection/EntityService;	headless-gui-guard	2	2	5	6
 org.audiveris.omr.util.BasicIndex.publish(Lorg/audiveris/omr/util/Entity;Lorg/audiveris/omr/ui/selection/SelectionHint;)V	headless-gui-guard	7	6	39	18
+org.audiveris.omr.sheet.SheetStub.<init>()V	single-lane-model-lock-ownership	2	2	28	28
+org.audiveris.omr.sheet.SheetStub.<init>(Lorg/audiveris/omr/sheet/Book;I)V	single-lane-model-lock-ownership	2	2	31	31
+org.audiveris.omr.sheet.SheetStub.<init>(Lorg/audiveris/omr/sheet/Book;ILorg/audiveris/omr/sheet/SheetStub;)V	single-lane-model-lock-ownership	2	2	56	56
 org.audiveris.omr.sheet.SheetStub.doOneStep(Lorg/audiveris/omr/step/OmrStep;)V	worker-run-options-preserve-step-execution-and-save	13	13	90	89
 org.audiveris.omr.sheet.SheetStub.lambda$setUpgraded$0()V	platform-method	4	1	16	2
 org.audiveris.omr.sheet.SheetStub.decideOnRemoval(Ljava/lang/String;Z)V	headless-gui-guard	11	8	56	39
@@ -110,6 +113,7 @@ org.audiveris.omr.image.TemplateFactory$Constants.getUnitName()Ljava/lang/String
 org.audiveris.omr.lag.BasicSection.renderSelected(Ljava/awt/Graphics;)Z	headless-gui-guard	7	7	64	64
 org.audiveris.omr.lag.JunctionRatioPolicy$Constants.getUnitName()Ljava/lang/String;	platform-method	0	1	0	2
 org.audiveris.omr.lag.LagManager$Constants.getUnitName()Ljava/lang/String;	platform-method	0	1	0	2
+org.audiveris.omr.sheet.Picture.convertOldTables()V	platform-method	7	1	50	5
 org.audiveris.omr.sheet.Picture.onEvent(Lorg/audiveris/omr/ui/selection/LocationEvent;)V	platform-method	17	1	99	2
 org.audiveris.omr.sheet.Picture.onEvent(Ljava/lang/Object;)V	platform-method	2	1	7	2
 org.audiveris.omr.log.LogGuiAppender.append(Lch/qos/logback/classic/spi/ILoggingEvent;)V	headless-gui-guard	4	3	11	8
@@ -130,6 +134,8 @@ org.audiveris.omr.score.LogicalPart$Constants.getUnitName()Ljava/lang/String;	pl
 org.audiveris.omr.score.Score.close()V	headless-gui-guard	4	3	15	11
 org.audiveris.omr.score.Score.getLogicalsEditor()Lorg/audiveris/omr/score/ui/LogicalPartsEditor;	headless-gui-guard	2	2	5	6
 org.audiveris.omr.score.Score.setLogicalsEditor(Lorg/audiveris/omr/score/ui/LogicalPartsEditor;)V	headless-gui-guard	2	2	6	6
+org.audiveris.omr.sheet.Book.<init>()V	single-lane-model-lock-ownership	2	2	35	35
+org.audiveris.omr.sheet.Book.<init>(Ljava/nio/file/Path;)V	single-lane-model-lock-ownership	2	2	44	44
 org.audiveris.omr.sheet.Book.lambda$setModified$0()V	platform-method	6	1	22	2
 org.audiveris.omr.sheet.Book.checkRadixChange(Ljava/nio/file/Path;)V	headless-gui-guard	5	4	41	35
 org.audiveris.omr.sheet.Book.close(Ljava/lang/Integer;)V	headless-gui-guard	11	10	52	46

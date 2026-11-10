@@ -1,7 +1,7 @@
 {
   "profile": "headless-candidates-v2",
-  "totalApplicationMethods": 14409,
-  "selectedRoots": 9019,
+  "totalApplicationMethods": 14414,
+  "selectedRoots": 9020,
   "selectedRootClasses": 1163,
   "excludedClassesForcedAsRoots": 0,
   "excludedMethodsForcedAsRoots": 0,
@@ -11,15 +11,15 @@
   "excludedTypeOnlyClasses": 21,
   "excludedUsedMethods": 313,
   "excludedUsedMethodsByRule": {
-    "ui-method": 21,
-    "book-host": 12,
     "class-excluded": 242,
+    "book-host": 12,
+    "ui-method": 21,
     "debug-charts": 21,
-    "manual-symbol-edit": 1,
-    "sheet-host": 4,
     "stub-host": 6,
+    "classifier-training": 3,
+    "sheet-host": 4,
     "network-training": 3,
-    "classifier-training": 3
+    "manual-symbol-edit": 1
   },
   "usedExcludedMethodsWithoutRecordedPath": 3,
   "originalReferenceCrossings": 2285,

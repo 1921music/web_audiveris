@@ -1,35 +1,24 @@
 {
-  "identicalOriginalRoots": true,
+  "identicalOriginalRoots": false,
   "originalRootSubsetPreserved": true,
-  "rootCount": 9019,
+  "rootCount": 9020,
   "baselineRootCount": 9019,
-  "addedRoots": [],
-  "baselineDiagnostics": 524,
-  "patchedDiagnostics": 495,
-  "diagnosticReduction": 29,
-  "baselineUniqueMessages": 216,
-  "patchedUniqueMessages": 204,
-  "removedMessages": [
-    "Method java.lang.invoke.VarHandle.compareAndSet(Ljava/util/concurrent/ConcurrentSkipListMap$Index;Ljava/util/concurrent/ConcurrentSkipListMap$Index;Ljava/lang/Void;)Z was not found",
-    "Method java.lang.invoke.VarHandle.compareAndSet(Ljava/util/concurrent/ConcurrentSkipListMap$Index;Ljava/util/concurrent/ConcurrentSkipListMap$Index;Ljava/util/concurrent/ConcurrentSkipListMap$Index;)Z was not found",
-    "Method java.lang.invoke.VarHandle.compareAndSet(Ljava/util/concurrent/ConcurrentSkipListMap$Node;Ljava/lang/Object;Ljava/lang/Object;)Z was not found",
-    "Method java.lang.invoke.VarHandle.compareAndSet(Ljava/util/concurrent/ConcurrentSkipListMap$Node;Ljava/lang/Object;Ljava/lang/Void;)Z was not found",
-    "Method java.lang.invoke.VarHandle.compareAndSet(Ljava/util/concurrent/ConcurrentSkipListMap$Node;Ljava/util/concurrent/ConcurrentSkipListMap$Node;Ljava/util/concurrent/ConcurrentSkipListMap$Node;)Z was not found",
-    "Method java.lang.invoke.VarHandle.compareAndSet(Ljava/util/concurrent/ConcurrentSkipListMap;Ljava/lang/Void;Ljava/util/concurrent/ConcurrentSkipListMap$Index;)Z was not found",
-    "Method java.lang.invoke.VarHandle.compareAndSet(Ljava/util/concurrent/ConcurrentSkipListMap;Ljava/lang/Void;Ljava/util/concurrent/atomic/LongAdder;)Z was not found",
-    "Method java.lang.invoke.VarHandle.compareAndSet(Ljava/util/concurrent/ConcurrentSkipListMap;Ljava/util/concurrent/ConcurrentSkipListMap$Index;Ljava/util/concurrent/ConcurrentSkipListMap$Index;)Z was not found",
-    "Method java.lang.invoke.VarHandle.compareAndSet(Ljava/util/concurrent/atomic/Striped64;II)Z was not found",
-    "Method java.lang.invoke.VarHandle.weakCompareAndSetRelease(Ljava/util/concurrent/atomic/Striped64$Cell;JJ)Z was not found",
-    "Method java.lang.invoke.VarHandle.weakCompareAndSetRelease(Ljava/util/concurrent/atomic/Striped64;JJ)Z was not found",
-    "Method java.util.concurrent.ThreadLocalRandom.advanceProbe(I)I was not found"
+  "addedRoots": [
+    "org.audiveris.omr.sheet.Book.createMemoryBook(Ljava/lang/String;)Lorg/audiveris/omr/sheet/Book;"
   ],
+  "baselineDiagnostics": 495,
+  "patchedDiagnostics": 495,
+  "diagnosticReduction": 0,
+  "baselineUniqueMessages": 204,
+  "patchedUniqueMessages": 204,
+  "removedMessages": [],
   "newMessages": [],
   "newDiagnosticCount": 0,
   "remainingTargetedApiMessages": [],
   "baselineByFamily": {
-    "Reflection and class loading": 207,
+    "Reflection and class loading": 182,
     "Other Java runtime": 167,
-    "Threads and synchronization": 69,
+    "Threads and synchronization": 65,
     "Files and streams": 35,
     "Other libraries or compiler diagnostics": 20,
     "XML and JAXB": 26
@@ -43,7 +32,7 @@
     "XML and JAXB": 26
   },
   "baselineByDirectOwner": {
-    "dependency": 522,
+    "dependency": 493,
     "unattributed": 2
   },
   "patchedByDirectOwner": {
@@ -51,9 +40,9 @@
     "unattributed": 2
   },
   "platformSubstitutionsEnabled": true,
-  "modifiedMethods": 485,
-  "removedDirectCallsFromModifiedMethods": 176,
-  "addedDirectCallsFromModifiedMethods": 79,
+  "modifiedMethods": 491,
+  "removedDirectCallsFromModifiedMethods": 296,
+  "addedDirectCallsFromModifiedMethods": 11,
   "excludedClassesLinked": {
     "before": 76,
     "after": 76
