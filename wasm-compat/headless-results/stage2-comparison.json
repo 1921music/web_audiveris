@@ -1,0 +1,60 @@
+{
+  "identicalOriginalRoots": true,
+  "rootCount": 9001,
+  "baselineDiagnostics": 525,
+  "patchedDiagnostics": 524,
+  "diagnosticReduction": 1,
+  "baselineUniqueMessages": 217,
+  "patchedUniqueMessages": 216,
+  "removedMessages": [
+    "Method java.util.Locale.getDefault(Ljava/util/Locale$Category;)Ljava/util/Locale; was not found"
+  ],
+  "newMessages": [],
+  "newDiagnosticCount": 0,
+  "remainingTargetedApiMessages": [],
+  "baselineByFamily": {
+    "Reflection and class loading": 207,
+    "Other Java runtime": 168,
+    "Threads and synchronization": 69,
+    "Files and streams": 35,
+    "Other libraries or compiler diagnostics": 20,
+    "XML and JAXB": 26
+  },
+  "patchedByFamily": {
+    "Reflection and class loading": 207,
+    "Other Java runtime": 167,
+    "Threads and synchronization": 69,
+    "Files and streams": 35,
+    "Other libraries or compiler diagnostics": 20,
+    "XML and JAXB": 26
+  },
+  "baselineByDirectOwner": {
+    "dependency": 523,
+    "unattributed": 2
+  },
+  "patchedByDirectOwner": {
+    "dependency": 522,
+    "unattributed": 2
+  },
+  "platformSubstitutionsEnabled": true,
+  "modifiedMethods": 220,
+  "removedDirectCallsFromModifiedMethods": 6395,
+  "addedDirectCallsFromModifiedMethods": 83,
+  "excludedClassesLinked": {
+    "before": 441,
+    "after": 80
+  },
+  "excludedUsedMethods": {
+    "before": 1863,
+    "after": 320
+  },
+  "usedMethodsInsideExcludedClasses": {
+    "before": 1681,
+    "after": 249
+  },
+  "remainingClassBreakdown": {
+    "withUsedMethods": 58,
+    "typeOnly": 22
+  },
+  "strictExclusionPass": false
+}

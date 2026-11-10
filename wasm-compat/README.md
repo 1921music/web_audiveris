@@ -244,10 +244,16 @@ are under `build/wasm-compat/probe`; audit outputs are under
 ## Verified result
 
 The original root manifests match exactly: **9,001 methods**, including **8,588 method bodies**.
-Diagnostics fall from **1,276 to 544** (732 fewer); unique messages fall from **336 to 220**.
-The stages are **1,276 → 789 → 702 → 609 → 545 → 544**. There are no remaining missing-API messages for the
-targeted APIs. The broad fast analysis also exposes additional unsupported dependency paths;
-new messages and their callers are recorded in `results/new-diagnostics.tsv`. These are
+With generic compatibility and the opt-in Worker/presentation substitutions enabled, diagnostics
+fall from **1,276 to 524** (752 fewer); unique messages fall from **336 to 216**.
+The stages are **1,276 → 789 → 702 → 609 → 545 → 544 → 525 → 524**. The 544/220 result is the
+generic compatibility layer alone; 525/217 is the initial Worker boundary and **524/216** is the
+current presentation boundary. Remaining exclusion candidates are **80 classes / 249 used methods
+inside those classes**, or **320 methods** when method-only exclusion rules are also included.
+There are no remaining missing-API messages for the generic layer's targeted APIs. The broad fast
+analysis also exposes additional unsupported dependency paths; generic-layer new messages and their
+callers are recorded in `results/new-diagnostics.tsv`, and current headless results in
+`headless-results`. These are
 dependency-analysis results, not a successful full-engine
 Wasm build or proof that every selected method executes correctly.
 
@@ -305,10 +311,11 @@ For the Worker comparison, use `node wasm-compat/tools/bench-xml-browser.cjs <jd
 <kxml2-directory>` through the same launcher. The reported component sizes above refer to the
 archived stage-3 modules, not a fresh build of later compatibility layers.
 
-The remaining 544 diagnostics include reflection/classloading, thread APIs, file/XML operations,
-OCR/native dependencies and transitive UI code. The three diagnostics located directly in selected
-engine sources concern `Class.getProtectionDomain`, `Thread.getThreadGroup` and a `Thread`
-constructor taking a group.
-Those need decisions about resources, execution and platform boundaries; replacing them with
-successful no-ops would not preserve recognition behavior. The existing excluded-class reentry
-report still applies: choosing roots alone does not cut transitive dependencies.
+The current headless audit has **524 diagnostics**, including reflection/classloading, thread APIs,
+file/XML operations and other dependency runtime paths. None are located directly in selected engine
+sources; this does not establish that OCR/native or other platform boundaries are implemented.
+The generic-only audit still has 544 diagnostics, including three directly in selected engine
+sources; the opt-in Worker substitutions address those three paths. Remaining work requires
+resource, execution and platform adapters that preserve recognition behavior. The current reentry
+report includes **80 classes / 249 class-excluded used methods** (**320 methods across all exclusion
+rules**); choosing roots alone does not cut transitive dependencies.

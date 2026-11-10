@@ -1,0 +1,10 @@
+{
+  "source": "ui/util/UIUtil.java",
+  "sourceSha256": "bf50789fe14866779bb5102e2e6b2e8a7c641dd6252efc53bef3d067fc530f46",
+  "methodSourceSha256": {
+    "setAbsoluteStroke": "40115e07706714b5cad2d71d3a4b694d2722e3949826e4cba3b42c9684ad9b0e",
+    "setAbsoluteDashedStroke": "1adb59bdfcd73ea26ddc21688449c308e8092a347c371d41821867c98e28a85d"
+  },
+  "generatedSourceSha256": "20bbda3ec9b30684a3068a17d64900e864cd687bdb5bfcab5aac90708781b849",
+  "policy": "Verbatim source method extraction; no fields, class initializer or window listener"
+}

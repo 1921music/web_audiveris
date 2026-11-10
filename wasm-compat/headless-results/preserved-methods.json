@@ -1,0 +1,14 @@
+{
+  "rootedAndNotTransformed": [
+    "org.audiveris.omr.score.PartwiseBuilder.processLogicalPart(Lorg/audiveris/omr/score/LogicalPart;Lorg/audiveris/proxymusic/ScorePartwise$Part;)V",
+    "org.audiveris.omr.sheet.grid.GridStep.doit(Lorg/audiveris/omr/sheet/Sheet;)V",
+    "org.audiveris.omr.sheet.rhythm.RhythmsStep.impact(Ljava/util/Collection;)V",
+    "org.audiveris.omr.sig.inter.HeadInter.getNeededLedgerSegments(Ljava/awt/geom/Point2D;Lorg/audiveris/omr/sheet/Staff;)Ljava/util/List;",
+    "org.audiveris.omr.step.DeltaStep.doit(Lorg/audiveris/omr/sheet/Sheet;)V"
+  ],
+  "contextOnlyAdaptations": [
+    "OctaveShiftInter.setGlyph: sheet acquisition only; super setter and geometry kept",
+    "TemplateFactory.buildDecoratedImage: compiler verifies instruction identity/order except opacity/stroke references"
+  ],
+  "limitation": "Confirms root coverage and absence from the compiler transformation manifest; not an end-to-end recognition test"
+}

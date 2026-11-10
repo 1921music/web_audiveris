@@ -1,0 +1,58 @@
+{
+  "shapes": {
+    "METRO_DOTTED_HALF": [
+      57811,
+      32,
+      57831
+    ],
+    "METRO_DOTTED_QUARTER": [
+      57813,
+      32,
+      57831
+    ],
+    "METRO_DOTTED_EIGHTH": [
+      57815,
+      57831
+    ],
+    "METRO_DOTTED_SIXTEENTH": [
+      57817,
+      57831
+    ],
+    "METRO_EIGHTH": [
+      57815
+    ],
+    "METRO_HALF": [
+      57811
+    ],
+    "METRO_QUARTER": [
+      57813
+    ],
+    "METRO_SIXTEENTH": [
+      57817
+    ],
+    "METRO_WHOLE": [
+      57506
+    ]
+  },
+  "threshold": 57344,
+  "codes": [
+    57506,
+    57811,
+    57813,
+    57815,
+    57817,
+    57831
+  ],
+  "templateComposite": {
+    "rule": "SRC_OVER",
+    "alpha": "0.25f"
+  },
+  "sourcesSha256": {
+    "glyph/ShapeSet.java": "41cce38a2934b20ef50405f97d4e86416a1a3970be202ec308f4b6d606f14fcc",
+    "ui/symbol/BravuraSymbols.java": "880b47cf452952d3e55ab99724537394efa0e1f572b6c29ab72e4dacc995f012",
+    "ui/field/MusicPane.java": "fd6896715a0c3861dc76d95a1f1e82bffa367f31d71a6ff54479cfa9edae7f11",
+    "ui/symbol/Symbols.java": "408303e6e100b33ab46f84c995d267028dced099348e069935bd3df65894525d",
+    "sheet/ui/TemplateView.java": "dc2e5aed919f17cb20095d488933ae5580a3060cf61d9c45a7c303b4a38d2b5f",
+    "ui/util/UIUtil.java": "bf50789fe14866779bb5102e2e6b2e8a7c641dd6252efc53bef3d067fc530f46"
+  }
+}

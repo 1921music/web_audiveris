@@ -10,34 +10,34 @@
       "engine": 9001
     }
   },
-  "diagnostics": 525,
-  "uniqueMessages": 217,
+  "diagnostics": 524,
+  "uniqueMessages": 216,
   "bySeverity": {
-    "ERROR": 525
+    "ERROR": 524
   },
   "byOrigin": {
-    "engine-side": 523,
+    "engine-side": 522,
     "unattributed": 2
   },
   "byFamily": {
     "Reflection and class loading": 207,
-    "Other Java runtime": 168,
+    "Other Java runtime": 167,
     "Threads and synchronization": 69,
     "Files and streams": 35,
     "Other libraries or compiler diagnostics": 20,
     "XML and JAXB": 26
   },
   "byDirectOwner": {
-    "dependency": 523,
+    "dependency": 522,
     "unattributed": 2
   },
   "byClassDecision": {
-    "external": 523,
+    "external": 522,
     "unattributed": 2
   },
   "callGraph": {
-    "callers": 77573,
-    "edges": 1734181
+    "callers": 73148,
+    "edges": 1576596
   },
   "apis": [
     {
@@ -49,10 +49,10 @@
       ],
       "examples": [
         "java.util.concurrent.ConcurrentSkipListMap.<clinit>()V @ java/util/concurrent/ConcurrentSkipListMap.java:3435",
-        "sun.swing.SwingAccessor.ensureClassInitialized(Ljava/lang/Class;)V @ sun/swing/SwingAccessor.java:321",
         "jdk.internal.vm.SharedThreadContainer.<clinit>()V @ jdk/internal/vm/SharedThreadContainer.java:45",
-        "sun.awt.AWTAccessor.ensureClassInitialized(Ljava/lang/Class;)V @ sun/awt/AWTAccessor.java:1464",
-        "java.util.concurrent.ConcurrentLinkedQueue.<clinit>()V @ java/util/concurrent/ConcurrentLinkedQueue.java:1064"
+        "java.util.concurrent.ConcurrentLinkedQueue.<clinit>()V @ java/util/concurrent/ConcurrentLinkedQueue.java:1064",
+        "jdk.internal.foreign.Utils.<clinit>()V @ jdk/internal/foreign/Utils.java:64",
+        "java.util.concurrent.atomic.Striped64.<clinit>()V @ java/util/concurrent/atomic/Striped64.java:377"
       ]
     },
     {
@@ -108,11 +108,11 @@
         "engine-side"
       ],
       "examples": [
-        "java.nio.DirectByteBuffer.address()J @ java/nio/DirectByteBuffer.java:323",
         "java.nio.DirectByteBuffer.asCharBuffer()Ljava/nio/CharBuffer; @ java/nio/DirectByteBuffer.java:622",
         "java.nio.DirectByteBuffer.asCharBuffer()Ljava/nio/CharBuffer; @ java/nio/DirectByteBuffer.java:630",
         "java.nio.DirectByteBuffer.asCharBuffer()Ljava/nio/CharBuffer; @ java/nio/DirectByteBuffer.java:624",
-        "java.nio.DirectByteBuffer.asIntBuffer()Ljava/nio/IntBuffer; @ java/nio/DirectByteBuffer.java:818"
+        "java.nio.DirectByteBuffer.asIntBuffer()Ljava/nio/IntBuffer; @ java/nio/DirectByteBuffer.java:818",
+        "java.nio.DirectByteBuffer.asIntBuffer()Ljava/nio/IntBuffer; @ java/nio/DirectByteBuffer.java:826"
       ]
     },
     {
@@ -140,9 +140,9 @@
       "examples": [
         "java.beans.ThreadGroupContext.getContext()Ljava/beans/ThreadGroupContext; @ java/beans/ThreadGroupContext.java:57",
         "sun.awt.AppContext.getAppContext()Lsun/awt/AppContext; @ sun/awt/AppContext.java:284",
-        "sun.awt.util.ThreadGroupUtils.getRootThreadGroup()Ljava/lang/ThreadGroup; @ sun/awt/util/ThreadGroupUtils.java:46",
         "java.util.concurrent.Executors$DefaultThreadFactory.<init>()V @ java/util/concurrent/Executors.java:616",
-        "java.awt.EventQueue.<init>()V @ java/awt/EventQueue.java:142"
+        "sun.awt.util.ThreadGroupUtils.getRootThreadGroup()Ljava/lang/ThreadGroup; @ sun/awt/util/ThreadGroupUtils.java:46",
+        "jdk.internal.misc.InnocuousThread.<clinit>()V @ jdk/internal/misc/InnocuousThread.java:167"
       ]
     },
     {
@@ -303,11 +303,11 @@
         "engine-side"
       ],
       "examples": [
-        "java.nio.DirectByteBuffer.address()J @ java/nio/DirectByteBuffer.java:316",
         "java.nio.DirectByteBuffer.get()B @ java/nio/DirectByteBuffer.java:332",
         "java.nio.DirectByteBuffer.get(I)B @ java/nio/DirectByteBuffer.java:340",
         "java.nio.DirectByteBuffer.put(B)Ljava/nio/ByteBuffer; @ java/nio/DirectByteBuffer.java:360",
-        "java.nio.DirectByteBuffer.compact()Ljava/nio/MappedByteBuffer; @ java/nio/DirectByteBuffer.java:391"
+        "java.nio.DirectByteBuffer.compact()Ljava/nio/MappedByteBuffer; @ java/nio/DirectByteBuffer.java:391",
+        "java.nio.DirectByteBuffer.address()J @ java/nio/DirectByteBuffer.java:316"
       ]
     },
     {
@@ -404,8 +404,8 @@
       "examples": [
         "java.util.concurrent.ConcurrentLinkedDeque.pollFirst()Ljava/lang/Object; @ java/util/concurrent/ConcurrentLinkedDeque.java:920",
         "java.util.concurrent.ConcurrentLinkedDeque.bulkRemove(Ljava/util/function/Predicate;)Z @ java/util/concurrent/ConcurrentLinkedDeque.java:1634",
-        "java.util.concurrent.ConcurrentLinkedDeque.pollLast()Ljava/lang/Object; @ java/util/concurrent/ConcurrentLinkedDeque.java:941",
-        "java.util.concurrent.ConcurrentLinkedDeque.removeFirstOccurrence(Ljava/lang/Object;)Z @ java/util/concurrent/ConcurrentLinkedDeque.java:1035"
+        "java.util.concurrent.ConcurrentLinkedDeque.removeFirstOccurrence(Ljava/lang/Object;)Z @ java/util/concurrent/ConcurrentLinkedDeque.java:1035",
+        "java.util.concurrent.ConcurrentLinkedDeque.pollLast()Ljava/lang/Object; @ java/util/concurrent/ConcurrentLinkedDeque.java:941"
       ]
     },
     {
@@ -431,9 +431,9 @@
       ],
       "examples": [
         "java.util.concurrent.ConcurrentLinkedDeque.first()Ljava/util/concurrent/ConcurrentLinkedDeque$Node; @ java/util/concurrent/ConcurrentLinkedDeque.java:721",
-        "java.util.concurrent.ConcurrentLinkedDeque.last()Ljava/util/concurrent/ConcurrentLinkedDeque$Node; @ java/util/concurrent/ConcurrentLinkedDeque.java:746",
         "java.util.concurrent.ConcurrentLinkedDeque.updateHead()V @ java/util/concurrent/ConcurrentLinkedDeque.java:575",
-        "java.util.concurrent.ConcurrentLinkedDeque.updateTail()V @ java/util/concurrent/ConcurrentLinkedDeque.java:605"
+        "java.util.concurrent.ConcurrentLinkedDeque.updateTail()V @ java/util/concurrent/ConcurrentLinkedDeque.java:605",
+        "java.util.concurrent.ConcurrentLinkedDeque.last()Ljava/util/concurrent/ConcurrentLinkedDeque$Node; @ java/util/concurrent/ConcurrentLinkedDeque.java:746"
       ]
     },
     {
@@ -556,9 +556,9 @@
         "engine-side"
       ],
       "examples": [
-        "java.util.concurrent.ThreadLocalRandom$Access$1.getThreadLocalRandomProbe()I @ java/util/concurrent/ThreadLocalRandom.java:403",
         "java.util.concurrent.ForkJoinPool.poolSubmit(ZLjava/util/concurrent/ForkJoinTask;)Ljava/util/concurrent/ForkJoinTask; @ java/util/concurrent/ForkJoinPool.java:2623",
         "java.util.concurrent.ForkJoinPool.externalQueue(Ljava/util/concurrent/ForkJoinPool;)Ljava/util/concurrent/ForkJoinPool$WorkQueue; @ java/util/concurrent/ForkJoinPool.java:2648",
+        "java.util.concurrent.ThreadLocalRandom$Access$1.getThreadLocalRandomProbe()I @ java/util/concurrent/ThreadLocalRandom.java:403",
         "java.util.concurrent.ForkJoinPool.externalSubmissionQueue(Z)Ljava/util/concurrent/ForkJoinPool$WorkQueue; @ java/util/concurrent/ForkJoinPool.java:2635"
       ]
     },
@@ -662,8 +662,8 @@
       ],
       "examples": [
         "sun.security.util.Debug.Help()V @ sun/security/util/Debug.java:111",
-        "javax.swing.JFrame.processWindowEvent(Ljava/awt/event/WindowEvent;)V @ javax/swing/JFrame.java:311",
-        "ij.IJ.getImage()Lij/ImagePlus; @ ij/IJ.java:1811"
+        "ij.IJ.getImage()Lij/ImagePlus; @ ij/IJ.java:1811",
+        "javax.swing.JFrame.processWindowEvent(Ljava/awt/event/WindowEvent;)V @ javax/swing/JFrame.java:311"
       ]
     },
     {
@@ -2539,17 +2539,6 @@
       ],
       "examples": [
         "java.util.Locale$Builder.build()Ljava/util/Locale; @ java/util/Locale.java:3049"
-      ]
-    },
-    {
-      "family": "Other Java runtime",
-      "message": "Method java.util.Locale.getDefault(Ljava/util/Locale$Category;)Ljava/util/Locale; was not found",
-      "count": 1,
-      "origins": [
-        "engine-side"
-      ],
-      "examples": [
-        "java.util.Scanner.<init>(Ljava/lang/Readable;Ljava/util/regex/Pattern;)V @ java/util/Scanner.java:577"
       ]
     },
     {
