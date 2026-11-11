@@ -35,3 +35,18 @@ No OpenJDK source file or JAR is rewritten. The JDK code included by TeaVM remai
 GPL version 2 with the Classpath Exception; see the accompanying `LICENSE`.
 
 Reference: https://github.com/openjdk/jdk/tree/jdk-25%2B36/src/java.desktop/share/classes/sun/java2d/marlin
+
+The CURVES compiler profile links the installed JDK 25 pure Java
+`java.lang.FdLibm$Hypot.compute` implementation for `Math.hypot`. This retains the JDK's
+handling of mixed infinity/NaN, overflow, underflow and rounding; no reflection or JVM call
+occurs in the Worker. OpenJDK bytecode is compiled into Wasm without rewriting its source or
+JAR. Its GPL version 2 with Classpath Exception applies to the included code. The independent
+native reference records the exact JDK runtime and Hypot class SHA-256 alongside test vectors.
+
+`PortableTrig` similarly links the JDK `FdLibm.Sin`, `Cos`, `Atan` and `Atan2` methods,
+including the original argument reduction helpers. These supply deterministic StrictMath
+semantics instead of browser-dependent host math imports. Their original OpenJDK bytecode
+remains unchanged; the same GPL version 2 with Classpath Exception applies. The native
+reference records the six implementation class hashes and independent StrictMath vectors.
+
+Reference: https://github.com/openjdk/jdk/blob/jdk-25%2B36/src/java.base/share/classes/java/lang/FdLibm.java

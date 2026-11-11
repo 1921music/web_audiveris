@@ -30,7 +30,7 @@ public final class PostTextsSnapshot {
             for(var inter:chords){var chord=(AbstractChordInter)inter;var box=chord.getBounds();if(!first)out.append(',');first=false;
                 out.append("{\"system\":").append(system.getId()).append(",\"key\":\"").append(key(chord)).append("\",\"grade\":").append(chord.getGrade()).append(",\"bounds\":[")
                     .append(box.x).append(',').append(box.y).append(',').append(box.width).append(',').append(box.height).append("],\"stem\":\"").append(chord.getStem()==null?"":key(chord.getStem())).append('"')
-                    .append(",\"stemDir\":").append(chord.getStemDir()).append(",\"notes\":");ids(out,new ArrayList<Inter>(chord.getNotes()));out.append('}');
+                    .append(",\"stemDir\":").append(chord instanceof org.audiveris.omr.sig.inter.GraceChordInter&&members(chord).isEmpty()?"null":Integer.toString(chord.getStemDir())).append(",\"notes\":");ids(out,new ArrayList<Inter>(members(chord)));out.append('}');
             }
         }
         out.append("],\"edges\":[");appendEdges(out,sheet);return out.append("]}").toString();
@@ -38,13 +38,17 @@ public final class PostTextsSnapshot {
     private static String key(Inter inter){
         var box=inter.getBounds();String base=inter.getClass().getSimpleName()+":"+inter.getShape()+":"+box.x+":"+box.y+":"+box.width+":"+box.height+":staff"+(inter.getStaff()==null?0:inter.getStaff().getId());
         if(inter instanceof AbstractChordInter chord){
-            var notes=new ArrayList<String>();for(var note:chord.getNotes())notes.add(key(note));notes.sort(String::compareTo);
+            var notes=new ArrayList<String>();for(var note:members(chord))notes.add(key(note));notes.sort(String::compareTo);
             base+="["+String.join(";",notes)+"]stem="+(chord.getStem()==null?"":key(chord.getStem()));
         }return base;
     }
     private static void ids(StringBuilder out,List<Inter> items){
         var keys=new ArrayList<String>();for(Inter inter:items)keys.add(key(inter));keys.sort(String::compareTo);
         out.append('[');for(int i=0;i<keys.size();i++){if(i>0)out.append(',');out.append('"').append(keys.get(i)).append('"');}out.append(']');
+    }
+    /** Read graph membership without GraceChordInter's lazy creation of hidden notes/stems. */
+    public static List<Inter> members(AbstractChordInter chord){
+        return org.audiveris.omr.sig.inter.EnsembleHelper.getMembers(chord,org.audiveris.omr.sig.inter.Inters.byReverseCenterOrdinate);
     }
     private static void appendEdges(StringBuilder out,Sheet sheet){
         boolean first=true;for(var system:sheet.getSystems()){

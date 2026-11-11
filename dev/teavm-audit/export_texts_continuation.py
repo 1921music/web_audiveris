@@ -1,4 +1,4 @@
-"""Archive TEXTS recognition with explicitly supplied native cleanup/OCR/font fixtures."""
+"""Archive staged TEXTS/PAGE recognition proofs and independent native diagnostic references."""
 import hashlib
 import io
 import json
@@ -11,13 +11,15 @@ import tarfile
 
 def main():
     root, mirror = map(Path, sys.argv[1:3]); revision = sys.argv[3]
-    post = '--post' in sys.argv[4:]
+    page = '--page' in sys.argv[4:]
+    curves = page or '--curves' in sys.argv[4:]
+    post = curves or '--post' in sys.argv[4:]
     music = post or '--music' in sys.argv[4:]
     cleanup = music or '--cleanup' in sys.argv[4:]
     ttf = cleanup or '--ttf' in sys.argv[4:]
     live = ttf or '--live' in sys.argv[4:]
     source = mirror / 'build/wasm-compat/texts-continuation-probe'
-    module_name = 'post-texts' if post else 'texts-music-backed' if music else 'texts-cleanup' if cleanup else 'texts-font-backed' if ttf else 'texts-continuation'
+    module_name = 'page-recognition' if page else 'post-curves' if curves else 'post-texts' if post else 'texts-music-backed' if music else 'texts-cleanup' if cleanup else 'texts-font-backed' if ttf else 'texts-continuation'
     module = mirror / 'build/wasm-compat' / (module_name + '-probe') if ttf else source
     native = source / ('live-ocr/jvm' if live else 'native')
     verification = module / 'verification.json' if ttf else source / ('live-ocr/verification.json' if live else 'verification.json')
@@ -34,8 +36,17 @@ def main():
     assert report.get('ordinaryFontsFromFiles', False) == ttf
     assert report.get('originalCleanupInWasm', False) == cleanup
     if post:
-        assert report['originalPostTextsRecognition'] and report['postTextsStages'] == ['MEASURES','CHORDS']
-        assert report['postTextsChecks'] == report['pages'] * 4 * 2 and report['postTextsGuardCounts'] == [51]*4
+        stages=['MEASURES','CHORDS']+(['CURVES'] if curves else [])+(['SYMBOLS','LINKS','RHYTHMS','PAGE'] if page else [])
+        assert report['originalPostTextsRecognition'] and report['postTextsStages'] == stages
+        assert report['postTextsChecks'] == report['pages'] * 4 * len(stages) and report['postTextsGuardCounts'] == [111 if page else 66 if curves else 51]*4
+        if page:
+            assert report['symbolsChecks']==report['pages']*4 and report['suppliedSymbolsRasters']==0 and report['nativeSymbolsPixelsExact']
+            dimensions=read(mirror/'build/wasm-compat/page-recognition-native/symbol-layout-dimensions.json')
+            assert dimensions['exact'] and dimensions['cases']>=2304
+        if curves:
+            assert report['skeletonChecks']==report['pages']*4 and report['suppliedSkeletonRasters']==0 and report['nativeSkeletonPixelsExact']
+            assert report['hypotCases']>4000 and report['hypotChecks']==report['hypotCases']*4
+            assert report['trigChecks']==report['hypotChecks']*4 and len(report['jdkTrigClassSha256'])==6
     if cleanup:
         assert report['suppliedCleanupRasters'] == 0 and report['cleanupReferencePixelsExact']
         cleanup_comparison = mirror / 'build/wasm-compat/texts-cleanup-trace/verification.json'
@@ -115,6 +126,19 @@ def main():
         sources += ['wasm-compat/src/test/java/org/audiveris/wasm/compat/test/'+name+'.java' for name in ['PostTextsProbe','PostTextsSnapshot','PostTextsOracle']]
         sources += ['app/src/main/java/org/audiveris/omr/sheet/'+name+'.java' for name in ['rhythm/MeasuresStep','rhythm/MeasuresBuilder','note/ChordsStep','note/ChordsBuilder']]
         sources += ['app/src/main/java/org/audiveris/omr/score/Page.java','app/src/main/java/org/audiveris/omr/sheet/rhythm/Measure.java','app/src/main/java/org/audiveris/omr/sheet/rhythm/MeasureStack.java']
+    if curves:
+        sources += ['dev/teavm-audit/src/audit/CompileCompatibilityProbe.java']
+        sources += ['wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/PortableHypot.java','wasm-compat/src/test/java/org/audiveris/wasm/compat/test/HypotOracle.java']
+        sources += ['wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/PortableTrig.java']
+        sources += ['wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/PostCurvesRecognition.java','wasm-compat/src/main/java/org/audiveris/wasm/compat/BinarySkeletonPatches.java','wasm-compat/src/main/java/org/audiveris/omr/sheet/curve/WorkerSkeletonBridge.java','wasm-compat/src/main/java/org/audiveris/omr/sheet/curve/WorkerRehearsalsBridge.java']
+        sources += ['wasm-compat/src/test/java/org/audiveris/wasm/compat/test/'+name+'.java' for name in ['PostCurvesProbe','PostCurvesSnapshot','CurveSkeletonOracle']]
+        sources += subprocess.check_output(git+['ls-tree','-r','--name-only',revision,'--','app/src/main/java/org/audiveris/omr/sheet/curve']).decode().splitlines()
+    if page:
+        sources += ['dev/teavm-audit/page-recognition.init.gradle']
+        sources += ['wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/PageRecognitionContinuation.java','wasm-compat/src/main/java/org/audiveris/wasm/compat/SymbolsRasterPatches.java','wasm-compat/src/main/java/org/audiveris/omr/sheet/symbol/WorkerSymbolsBridge.java']
+        sources += ['wasm-compat/src/test/java/org/audiveris/wasm/compat/test/'+name+'.java' for name in ['PageRecognitionProbe','PageRecognitionOracle','PageRecognitionSnapshot','SymbolsRasterOracle']]
+        sources += subprocess.check_output(git+['ls-tree','-r','--name-only',revision,'--','app/src/main/java/org/audiveris/omr/sheet/symbol','app/src/main/java/org/audiveris/omr/sheet/rhythm']).decode().splitlines()
+        sources += ['app/src/main/java/org/audiveris/omr/step/PageStep.java']
     sources.append('dev/teavm-audit/export_texts_continuation.py')
     source_hashes = {}
     archive = subprocess.check_output(git + ['archive', revision] + sorted(set(sources)))
@@ -132,18 +156,47 @@ def main():
         assert backend_build['wasmSha256'] == report['musicFontAssets']['/music/module.wasm']['sha256']
         for name, digest in backend_build['sourceSha256'].items():
             assert source_hashes['dev/teavm-audit/' + name] == digest
+    if page:
+        page_native=mirror/'build/wasm-compat/page-recognition-native'
+        dot_order=read(page_native/'dot-order-comparison.json')
+        assert dot_order['pages']==report['pages'] and dot_order['prefixThroughCurvesExact']
+        assert dot_order['afterReferenceSha256']==sha(page_native/'jvm-reference.json')
+        assert dot_order['beforeReferenceSha256']==sha(page_native/'before-dot-order-jvm-reference.json')
+        assert dot_order['beforeDotSourceSha256']==sha(page_native/'before-dot-order-DotFactory.java')
+        assert dot_order['afterDotSourceSha256']==source_hashes['app/src/main/java/org/audiveris/omr/sheet/symbol/DotFactory.java']
+        assert len(dot_order['orderingSources'])==3
+        for ordering_source, info in dot_order['orderingSources'].items():
+            assert info['afterSourceSha256']==source_hashes[ordering_source]
+            assert info['beforeSourceSha256']==sha(page_native/info['beforeSourceArtifact'])
     limits = Path('/sys/fs/cgroup/wasm_audiveris_dev')
     cpu, memory, swap = [(limits / name).read_text().strip() for name in ['cpu.max', 'memory.max', 'memory.swap.max']]
     assert (cpu, memory, swap) == ('800000 100000', '8589934592', '0')
-    name = 'post-texts' if post else 'texts-music-backed' if music else 'texts-cleanup' if cleanup else 'texts-font-backed' if ttf else 'texts-live-ocr' if live else 'texts-continuation'
+    name = 'page-recognition' if page else 'post-curves' if curves else 'post-texts' if post else 'texts-music-backed' if music else 'texts-cleanup' if cleanup else 'texts-font-backed' if ttf else 'texts-live-ocr' if live else 'texts-continuation'
     relative = 'wsl-artifacts/wasm-components/' + name
     raw = root / relative; tracked = root / ('wasm-compat/' + name + '-results')
     raw.mkdir(parents=True, exist_ok=True); tracked.mkdir(parents=True, exist_ok=True)
     def copy(origin, name):
         destination = raw / name; destination.parent.mkdir(parents=True, exist_ok=True); shutil.copyfile(origin, destination)
     if post:
+        post_native=mirror/('build/wasm-compat/page-recognition-native' if page else 'build/wasm-compat/post-curves-native' if curves else 'build/wasm-compat/post-texts-native')
         for name in ['jvm-reference.json','symbol-geometry.json','point-widths.json']:
-            copy(mirror/'build/wasm-compat/post-texts-native'/name,'post-native/'+name)
+            copy(post_native/name,'post-native/'+name)
+        if curves:
+            copy(post_native/'hypot-reference.json','post-native/hypot-reference.json')
+            for row in read(post_native/'jvm-reference.json'):
+                comparison=read(post_native/row['id']/'skeleton-comparison.json')
+                assert comparison['differentPixels']==0 and comparison['erasureDecisionsExact']
+                assert sha(post_native/row['id']/'skeleton.gray')==comparison['nativeSha256']==comparison['packedSha256']
+                for name in ['skeleton.gray','skeleton-comparison.json']:copy(post_native/row['id']/name,'post-native/'+row['id']+'/'+name)
+        if page:
+            copy(post_native/'symbol-layout-dimensions.json','post-native/symbol-layout-dimensions.json')
+            for name in ['dot-order-comparison.json','before-dot-order-jvm-reference.json']+[info['beforeSourceArtifact'] for info in dot_order['orderingSources'].values()]:
+                copy(post_native/name,'post-native/'+name)
+            for row in read(post_native/'jvm-reference.json'):
+                comparison=read(post_native/row['id']/'symbols-comparison.json')
+                assert comparison['differentPixels']==0 and comparison['optionalGlyphSelectionExact']
+                assert sha(post_native/row['id']/'symbols.gray')==comparison['nativeSha256']==comparison['packedSha256']
+                for name in ['symbols.gray','symbols-comparison.json']:copy(post_native/row['id']/name,'post-native/'+row['id']+'/'+name)
     copy(verification, 'verification.json')
     if cleanup:
         copy(cleanup_comparison, 'native-cleanup-verification.json')

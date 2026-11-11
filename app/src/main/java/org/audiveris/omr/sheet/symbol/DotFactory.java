@@ -682,11 +682,16 @@ public class DotFactory
     private abstract static class Dot
     {
         /**
-         * Sorting dots by left abscissa.
+         * Sorting dots by left abscissa, then top down for vertically aligned dots.
          */
         public static final Comparator<Dot> byAbscissa = (Dot d1,
                                                           Dot d2) -> {
-            return Integer.compare(d1.getBounds().x, d2.getBounds().x);
+            final Rectangle b1 = d1.getBounds();
+            final Rectangle b2 = d2.getBounds();
+            final int dx = Integer.compare(b1.x, b2.x);
+            // lookupHeadLink assumes aligned dots are processed top down. Their
+            // component discovery order may differ between runtime backends.
+            return dx != 0 ? dx : Integer.compare(b1.y, b2.y);
         };
 
         public abstract int getAnnotationId ();

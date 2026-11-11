@@ -23,6 +23,12 @@ public final class SymbolGeometry {
     public static Provider provider() { return configured != null ? configured : DefaultHolder.INSTANCE; }
     public static void setProvider(Provider provider) { configured = provider; }
 
+    /** FontSymbol's dimension rounding for symbols whose rectangle is their layout bounds. */
+    public static Dimension roundedLayoutDimension(MusicFamily family, Shape shape, int interline) {
+        Rectangle2D bounds = provider().bounds(family, shape, interline);
+        return new Dimension((int)Math.rint(bounds.getWidth()), (int)Math.rint(bounds.getHeight()));
+    }
+
     /** The original MusicFont.computePointSize interpolation, with only the font measurements delegated. */
     public static org.audiveris.omr.sheet.Scale.MusicFontScale musicFontScale(MusicFamily family, double width) {
         Provider metrics = provider(); Shape shape = Shape.NOTEHEAD_BLACK;

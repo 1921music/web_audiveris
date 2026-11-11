@@ -13,6 +13,8 @@ final class HeadlessPatches {
     private static final ValueType STRING = obj("java.lang.String");
     static void apply(ClassHolder cls, ClassHolderTransformerContext context) {
         ImageJPatches.apply(cls);
+        if(Boolean.getBoolean("audiveris.compat.curvesRaster"))BinarySkeletonPatches.apply(cls);
+        if(Boolean.getBoolean("audiveris.compat.symbolsRaster"))SymbolsRasterPatches.apply(cls);
         GraphApiPatches.apply(cls);
         StemSortPatches.apply(cls);
         if (!cls.getName().startsWith("org.audiveris.omr.")
@@ -20,6 +22,9 @@ final class HeadlessPatches {
         Map<MethodDescriptor, Program> original = new HashMap<>();
         for (MethodHolder method : cls.getMethods()) { original.put(method.getDescriptor(), method.getProgram()); }
         switch (cls.getName()) {
+            case "org.audiveris.omr.sheet.curve.Skeleton":
+                if(Boolean.getBoolean("audiveris.compat.curvesRaster"))StandardApiPatches.delegate(cls,"buildSkeleton","build","org.audiveris.omr.sheet.curve.WorkerSkeletonBridge",false,true,obj("java.awt.image.BufferedImage"));
+                break;
             case "org.audiveris.omr.image.Template": templateDilation(cls); break;
             case "org.audiveris.omr.image.TemplateFactory": templateSource(cls); break;
             case "org.audiveris.omr.score.DrumSet":

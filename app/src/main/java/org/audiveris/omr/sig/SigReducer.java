@@ -502,7 +502,11 @@ public class SigReducer
                 for (Entry<Shape, List<Inter>> entry : artics.entrySet()) {
                     final List<Inter> list = entry.getValue();
                     if (list.size() > 1) {
-                        Collections.sort(list, Inters.byReverseGrade);
+                        // Equal classifier grades must not select a different symbol
+                        // merely because graph/component allocation order changed.
+                        Collections.sort(list, Inters.byReverseGrade
+                                .thenComparing(Inters.byCenterOrdinate)
+                                .thenComparing(Inters.byCenterAbscissa));
 
                         for (Inter artic : list.subList(1, list.size())) {
                             if (artic.isVip()) {

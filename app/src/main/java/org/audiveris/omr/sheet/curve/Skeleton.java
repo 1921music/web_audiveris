@@ -27,6 +27,7 @@ import org.audiveris.omr.glyph.Glyph;
 import org.audiveris.omr.glyph.Shape;
 import org.audiveris.omr.glyph.ShapeSet;
 import org.audiveris.omr.image.ImageUtil;
+import org.audiveris.omr.image.PageRaster;
 import static org.audiveris.omr.image.PixelSource.BACKGROUND;
 import org.audiveris.omr.sheet.PageCleaner;
 import org.audiveris.omr.sheet.Picture;
@@ -265,6 +266,46 @@ public class Skeleton
         Graphics2D g = img.createGraphics();
         CurvesCleaner cleaner = new CurvesCleaner(buffer, g, sheet);
 
+        eraseSkeleton(cleaner);
+
+        // Build buffer
+        buffer = new ByteProcessor(img);
+        buffer.threshold(127);
+
+        // Keep a copy on disk?
+        if (constants.saveSkeleton.isSet()) {
+            ImageUtil.saveOnDisk(img, sheet.getId(), "skeleton");
+        }
+
+        buf = buffer;
+
+        return img;
+    }
+
+    /** Sheet owning this skeleton and its recognition graph. */
+    public Sheet getSheet ()
+    {
+        return sheet;
+    }
+
+    /** Erase an already skeletonized binary buffer using an explicit raster backend. */
+    public void cleanBuffer (ByteProcessor buffer,
+                             PageRaster raster)
+    {
+        if (constants.saveSkeleton.isSet()) {
+            throw new UnsupportedOperationException("Use the image entry to save skeleton images");
+        }
+        if (buffer.getWidth() != sheet.getWidth() || buffer.getHeight() != sheet.getHeight()) {
+            throw new IllegalArgumentException("Skeleton dimensions differ from sheet");
+        }
+        eraseSkeleton(new CurvesCleaner(buffer, raster, sheet));
+        buffer.threshold(127);
+        buf = buffer;
+    }
+
+    private void eraseSkeleton (CurvesCleaner cleaner)
+    {
+
         // Non-crossable inters
         final Collection<Shape> nonCrossableShapes = EnumSet.noneOf(Shape.class);
         nonCrossableShapes.addAll(ShapeSet.Heads);
@@ -289,18 +330,6 @@ public class Skeleton
         // Erase regions too far from staves
         cleaner.eraseDistantRegions();
 
-        // Build buffer
-        buffer = new ByteProcessor(img);
-        buffer.threshold(127);
-
-        // Keep a copy on disk?
-        if (constants.saveSkeleton.isSet()) {
-            ImageUtil.saveOnDisk(img, sheet.getId(), "skeleton");
-        }
-
-        buf = buffer;
-
-        return img;
     }
 
     //-----------------//
@@ -549,6 +578,13 @@ public class Skeleton
             super(buffer, g, sheet);
         }
 
+        CurvesCleaner (ByteProcessor buffer,
+                       PageRaster raster,
+                       Sheet sheet)
+        {
+            super(buffer, raster, sheet);
+        }
+
         //---------------------//
         // eraseDistantRegions //
         //---------------------//
@@ -589,7 +625,7 @@ public class Skeleton
                 sheetArea.subtract(staffArea);
             }
 
-            g.fill(sheetArea);
+            raster.fill(sheetArea);
         }
 
         //-------------//

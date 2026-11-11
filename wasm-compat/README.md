@@ -3,11 +3,19 @@
 The generic layer absorbs reusable platform API differences without editing Audiveris sources.
 The opt-in headless layer also uses the small source boundaries documented below. Compatibility
 is opt-in (`-Pcompat=true`) in the audit harness and targets TeaVM 0.16.0 / Wasm GC.
-It does not yet make the complete recognition engine executable in a browser.
+The focused Worker entry accepts an owned binary page and runs recognition through PAGE,
+using the configured resources described below. Image decoding/binarization and score export
+remain separate integration work.
 
 The latest all-method analysis is **stage 26**: **9,091 roots / 8,653 bodies**, with all earlier
 roots retained. The original root set is still preserved; historical stage counts below describe
-their own runs. See the verified result and TEXTS continuation sections for current coverage.
+their own runs. See the verified result and recognition-after-TEXTS sections for current coverage.
+
+The latest focused PAGE entry has **zero strict dependency diagnostics**. Five accepted pages
+run in two independent Node instances and two independent Chromium Workers, through MEASURES,
+CHORDS, CURVES, SYMBOLS, LINKS, RHYTHMS and PAGE on the same sheet. Two other examined pages
+retain their earlier rejection before TEXTS. The JVM reference includes the deterministic
+ordering corrections documented below; original-order references are retained for review.
 
 The latest TEXTS entry performs original cleanup, actual external OCR and full TEXTS resume
 on five accepted pages in two Node instances and two Workers. Ordinary and music text-font
@@ -1768,7 +1776,8 @@ The comparison snapshots include stack numbering/bounds, part membership, chord 
 stems, grades, and graph relations/support ratios. Internal allocation IDs vary between runtimes;
 structural keys use class, shape, bounds, staff and chord membership, preserving duplicate entries.
 The harness compares two independent Node instances and two Workers, including ordering,
-duplicate-call and token guards. Later stages beginning with CURVES remain separate work.
+duplicate-call and token guards. This archived entry ends at CHORDS; the CURVES extension
+is described below.
 
 Verified on all five pages: **20 TEXTS comparisons + 40 post-TEXTS comparisons**, with **204
 transition/token guards**. All **2,485,364 numeric values** remain within the existing tolerances;
@@ -1780,6 +1789,125 @@ After preparing the existing font/OCR/template resources, run `verifyPostTextsPr
 audit init script through the capped launcher. Archive with
 `export_texts_continuation.py <repository> <mirror> <commit> --post` into `post-texts-results`
 and `wsl-artifacts/wasm-components/post-texts`.
+
+### CURVES continuation
+
+`PostCurvesRecognition` adds CURVES after the guarded MEASURES/CHORDS prefix. The original
+curve recognition retrieves arcs and builds slurs, wedges and endings. A small source boundary
+in `Curves` separates that geometric processing from rehearsal enclosure OCR. The JVM entry
+still runs both synchronously. The Worker visits rehearsal candidates lazily, submits one owned
+crop at a time through `OcrExchange` / `OcrImageFrame` in SINGLE_BLOCK mode, and resumes the
+original text construction after the matching reply. CURVES is marked complete only after all
+candidates finish; failures invalidate the continuation. The local OCR job namespace is distinct
+from full-page TEXTS, so its first request cannot admit a late full-page reply.
+
+`Skeleton` exposes the existing erasure decisions through `PageRaster`, retaining its original
+AWT entry for the JVM. The Worker uses an owned black-foreground byte buffer, ImageJ's original
+binary thinning algorithm, and the existing packed raster / FreeType symbol backend. Scoped
+TeaVM substitutions remove ImageJ's desktop debug movie and color-image conversion from this
+binary-only path, and replace its four one-pixel boundary lines with direct border writes. They
+check their expected call sites against the pinned ImageJ version. Rehearsal crop cleaning uses
+the same integer white rectangles through the packed raster backend.
+
+The profile also replaces TeaVM's naive `sqrt(x*x + y*y)` implementation of `Math.hypot`
+with the installed JDK's original pure Java `FdLibm.Hypot.compute`. In particular, mixed
+infinity/NaN must yield infinity: otherwise parallel-point circle candidates can survive as
+invalid circles rather than falling back to straight lines. The JDK code is compiled directly
+into Wasm. There is no runtime reflection or call back to a JVM. The native oracle records the
+implementation class hash and independent finite/extreme-value vectors for both runtimes.
+
+The four curve trigonometric operations (`sin`, `cos`, `atan`, `atan2`) also use the original
+JDK FdLibm Java implementations. Java Math permits small platform-dependent differences;
+different Node/Chromium host math implementations can put the same curve endpoint on opposite
+sides of an integer boundary, changing an external rectangle by one pixel. The Worker uses
+deterministic StrictMath semantics, with independent bit-level vectors and implementation hashes.
+The JVM recognition oracle keeps its original Math calls and comparison tolerances.
+The `atan2` entry also preserves the sign of a zero result using the input sign bit, including
+extreme ratios that underflow; the independent vectors check negative zero explicitly.
+
+`testPostCurvesJvm` compares original AWT erasure with packed primitives and native font
+painting before running the original CURVES step. `verifyPostCurvesProbe` additionally compares
+the Worker skeleton against that independent golden image, then compares curve geometry,
+grades, graph relations and preceding measure/chord state. Skeleton images are diagnostic
+outputs, never supplied to the Worker as recognition inputs. This boundary is also covered by
+the complete PAGE continuation verification below.
+
+For a diagnostic build, add `-PprobeDebug=true` to `buildPostCurvesProbe` and run the Node
+verifier with `AUDIVERIS_DEBUG_STACKS=1`. The matching TeaVM 0.16.0 deobfuscator and external
+debug information resolve runtime failures to Java methods and lines. These debug assets are
+excluded from production size comparisons; rebuild without the flag before archiving results.
+
+### SYMBOLS through PAGE
+
+`PageRecognitionContinuation` extends the same owned page through SYMBOLS, LINKS, RHYTHMS
+and PAGE, once and in order after CURVES. It keeps the original symbol classification/linking,
+rhythm inference and page reduction algorithms. System work runs serially inside the Worker;
+future parallelism can distribute separate page continuations to independent Workers.
+Each entry returns at a step boundary and rejects out-of-order or repeated execution. A logged
+recognition error or thrown execution failure invalidates that continuation.
+
+`SymbolsFilter` has a small explicit raster boundary for the same strong/weak inter erasure,
+thresholding and optional-glyph selection. Its original AWT JVM entry remains available. The
+Worker clones NO_STAFF bytes and uses packed raster / FreeType rendering before running the
+original glyph extraction. No native-cleaned symbols raster is supplied as an input.
+
+The additional init script `dev/teavm-audit/page-recognition.init.gradle`, applied after
+`audit.init.gradle`, registers `testPageRecognitionJvm`, `buildPageRecognitionProbe` and
+`verifyPageRecognitionProbe`. The native oracle invokes the original seven post-TEXTS steps.
+Comparisons cover the structural graph, pitches/numbers, chord membership, curve geometry,
+musical timing and voices after RHYTHMS, and logical part identity after PAGE. Allocated Inter
+IDs are excluded; musical voice/part IDs and multiplicities remain observable. Native AWT and
+packed-raster symbol erasure and optional-glyph selection are compared independently. The
+full continuation passes in **two Node instances and two independent Chromium Workers**:
+**20 TEXTS comparisons / 140 post-TEXTS stage comparisons**, with **3,258,060 numeric values**
+and a maximum difference of **6.821210263296962e-13**. The final five native PAGE graphs contain
+**120 measure stacks / 4,089 inters / 4,970 relations**. All **20 skeleton and 20 symbol-image
+hash comparisons** match the native references; each raster family covers **43,474,400 native
+pixels** across the five pages. There are **444 rejected invalid phase transitions** and
+**17,168 hypot / 68,672 trigonometric bit-level checks** across the four instances.
+
+The verification Wasm is **4,381,269 bytes** (SHA-256
+`bafbb10a5adc75f217ff0589045bcad29e9c18df1a932226b566e20cba4c2fe80`). The shared FreeType module
+is **497,135 bytes**, for **4,878,404 Wasm bytes** combined. Fonts, classifier/templates, OCR
+models/core and runtime JavaScript are separate assets. These sizes include diagnostic
+snapshots/math-test exports; production sizing remains future work. All development and
+verification processes share the **8 CPU / 8 GiB / no-swap** limit, with zero memory-limit/OOM events.
+
+Recognition font measurements for grace heads, implicit tuplets and octave shifts use the
+existing `SymbolGeometry` boundary. Grace/tuplet dimensions retain `FontSymbol`'s nearest-even
+rounding; the native oracle compares all three shapes at interlines 1–128 in all six music
+families (**2,304 cases**) against the original font implementation.
+
+This extension also resolves recognition choices that previously depended on allocation/hash
+iteration order. Symbol components are inserted and enumerated in geometry/content order;
+cluster truncation retains descending weight and the original part limit, with geometric ties.
+Vertically aligned augmentation dots are processed top down, as required by `lookupHeadLink`.
+Equal-grade competing articulations use ordinate/abscissa as a final tie-break. These are small
+source corrections, applied to both JVM and Wasm; classifier grades and recognition thresholds
+are unchanged. They can change results after SYMBOLS, including restoring previously skipped
+augmentation dots. Captured original-order and corrected-order JVM references are retained
+with source/input hashes; the current JVM reference includes these corrections and is not an
+assertion of identical output from unmodified upstream. The earlier prefix through CURVES
+is compared separately.
+
+Snapshots read existing chord membership directly rather than triggering grace-note lazy
+creation. They verify that observation does not add or remove graph vertices/edges. Candidates
+with the same type/shape/bounds retain their multiplicity and grades, with canonical comparison
+ordering independent of allocated IDs.
+
+The PAGE probe still installs the existing CUE prefix's template catalogs, serif measurements
+and non-TEXTS symbol-geometry/point-width tables. These are configuration resources rather than
+recognized results, but coverage of arbitrary page scales/families is not established by these
+five pages. Follow-up work must provide missing catalogs/geometry for new inputs without a
+page-specific JVM reference run. Image decoding/binarization, score export, general font
+shaping/fallback and native OCR parity remain separate integration/validation work. None of
+the current pages submits a local rehearsal OCR crop, so positive rehearsal suspension/resume
+coverage remains a TODO. Measure recognition, glyph rendering and OCR time separately before
+drawing throughput conclusions from the end-to-end validation runs.
+
+Archive a committed PAGE run with `export_texts_continuation.py <repository> <mirror> <commit>
+--page`; summaries go to `page-recognition-results`, with runnable Wasm, native references,
+input hashes and notices under `wsl-artifacts/wasm-components/page-recognition`.
 
 ## Pure Java path-fill component
 
@@ -1941,12 +2069,13 @@ For the Worker comparison, use `node wasm-compat/tools/bench-xml-browser.cjs <jd
 <kxml2-directory>` through the same launcher. The reported component sizes above refer to the
 archived stage-3 modules, not a fresh build of later compatibility layers.
 
-The current headless audit has **494 diagnostics**, including reflection/classloading, thread APIs,
+The archived stage-26 headless audit has **494 diagnostics**, including reflection/classloading, thread APIs,
 file/XML operations and other dependency runtime paths. None are located directly in selected engine
-sources; the focused TEXTS runtime checks above establish narrower coverage than the full engine.
-The generic-only audit still has 544 diagnostics, including three directly in selected engine
+sources; the focused PAGE runtime checks above cover the configured binary-page path. These
+historical broad audits include other entry points and runtime paths outside that focused proof.
+The archived generic-only audit has 544 diagnostics, including three directly in selected engine
 sources; the opt-in Worker substitutions address those three paths. Remaining work requires
 resource, execution and platform adapters that preserve recognition behavior. The current reentry
-report includes **76 classes / 251 class-excluded used input methods** (**320 methods across all exclusion
+report from stage 26 includes **76 classes / 251 class-excluded used input methods** (**320 methods across all exclusion
 rules**), including the separate JVM raster backend. Raw distance-painting methods remain retained
 for recognition. Choosing roots alone does not cut transitive dependencies.

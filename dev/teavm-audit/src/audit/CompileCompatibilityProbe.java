@@ -38,6 +38,13 @@ public final class CompileCompatibilityProbe {
                 } }
             }
             var paths = new StringBuilder("method\tdependencyPath\n");
+            if (Boolean.getBoolean("audiveris.compat.semanticPaths")) {
+                var edges = new StringBuilder("caller\tcallee\n");
+                for (var entry : reverse.entrySet()) for (var caller : entry.getValue()) {
+                    edges.append(caller).append('\t').append(entry.getKey()).append('\n');
+                }
+                java.nio.file.Files.writeString(new File(args[0], "call-edges.tsv").toPath(), edges);
+            }
             var explained = new java.util.HashSet<org.teavm.model.MethodReference>(); int printedPaths = 0;
             for (var problem : tool.getProblemProvider().getSevereProblems()) {
                 if (problem.getLocation() == null || problem.getLocation().getMethod() == null) { continue; }
@@ -55,6 +62,8 @@ public final class CompileCompatibilityProbe {
                         if (printedPaths++ < 12) { System.out.println("Dependency path: " + path); } break;
                     }
                     for (var parent : reverse.getOrDefault(last, java.util.Set.of())) {
+                        if (Boolean.getBoolean("audiveris.compat.semanticPaths") && (parent.getName().equals("toString")
+                                || (parent.getClassName().equals("java.lang.String") && parent.getName().equals("valueOf")))) { continue; }
                         if (seen.add(parent)) { child.put(parent, last); queue.addLast(parent); }
                     }
                 }

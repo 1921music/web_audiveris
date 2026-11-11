@@ -406,8 +406,8 @@ public class TupletGenerator
     {
         // Tuplet dimension
         final MusicFamily family = system.getSheet().getStub().getMusicFamily();
-        final FontSymbol fs = shape.getFontSymbolByInterline(family, scale.getInterline());
-        final Dimension dim = fs.getDimension();
+        final Dimension dim = org.audiveris.omr.ui.symbol.SymbolGeometry.roundedLayoutDimension(
+                family, shape, scale.getInterline());
 
         // Vertical direction from group to tuplet, based on group tails side
         final TreeMap<Integer, List<AbstractChordInter>> dirs = new TreeMap<>();

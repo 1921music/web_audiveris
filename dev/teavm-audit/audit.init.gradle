@@ -5,6 +5,7 @@ gradle.projectsEvaluated {
     def auditDependencies = rootProject.configurations.create('teavmAuditDependencies')
     def compatDependencies = rootProject.configurations.create('wasmCompatibilityDependencies')
     def patchToolDependencies = rootProject.configurations.create('wasmPatchToolDependencies')
+    def probeDebugDependencies = rootProject.configurations.create('wasmProbeDebugDependencies')
     rootProject.repositories { mavenCentral() }
     rootProject.dependencies {
         teavmAuditDependencies 'org.teavm:teavm-tooling:0.16.0'
@@ -13,6 +14,7 @@ gradle.projectsEvaluated {
         teavmAuditDependencies 'org.teavm:teavm-jso-impl:0.16.0'
         wasmCompatibilityDependencies 'net.sf.kxml:kxml2:2.3.0'
         wasmPatchToolDependencies 'org.ow2.asm:asm:9.9.1'
+        wasmProbeDebugDependencies 'org.teavm:teavm-wasm-gc-deobfuscator:0.16.0'
     }
     def harness = new File(rootProject.projectDir, 'dev/teavm-audit')
     def classes = rootProject.layout.buildDirectory.dir('teavm-audit/classes')
@@ -1198,6 +1200,51 @@ gradle.projectsEvaluated {
         environment 'AUDIVERIS_TEXTS_CLEANUP','1'
         environment 'AUDIVERIS_TEXTS_MUSIC_FT','1'
         environment 'AUDIVERIS_POST_TEXTS','1'
+        commandLine 'node','--max-old-space-size=768','--v8-pool-size=1',new File(compat,'tools/verify-texts-continuation.cjs').absolutePath,
+                new File(rootProject.projectDir,'build/wasm-compat/texts-continuation-probe').absolutePath,
+                new File(app.projectDir,'res/basic-classifier.zip').absolutePath
+    }
+    rootProject.tasks.register('testPostCurvesJvm', JavaExec) {
+        dependsOn compile,'compileWasmCompatibilityTests','patchKxmlCompatibility','selectWasmLibraryImplementations'
+        classpath = rootProject.files(compatTests) + compatRuntime
+        mainClass = 'org.audiveris.wasm.compat.test.PostTextsOracle'
+        maxHeapSize = '2g'
+        workingDir app.projectDir
+        systemProperty 'java.awt.headless','true'
+        systemProperty 'audiveris.probe.curves','true'
+        systemProperty 'logback.configurationFile',new File(harness,'logback.xml').absolutePath
+        jvmArgs '--add-exports=java.desktop/sun.java2d.loops=ALL-UNNAMED','--add-exports=java.desktop/sun.java2d.marlin=ALL-UNNAMED','--add-exports=java.desktop/sun.awt.geom=ALL-UNNAMED','--add-exports=java.desktop/sun.java2d.pipe=ALL-UNNAMED'
+        environment 'XDG_CONFIG_HOME',new File(rootProject.projectDir,'build/wasm-compat/texts-continuation-probe/config').absolutePath
+        environment 'XDG_DATA_HOME',new File(rootProject.projectDir,'build/wasm-compat/texts-continuation-probe/data').absolutePath
+        args new File(rootProject.projectDir,'build/wasm-compat/texts-continuation-probe').absolutePath,
+                new File(rootProject.projectDir,'build/wasm-compat/pixel-probe/samples').absolutePath,
+                new File(rootProject.projectDir,'build/wasm-compat/post-curves-native').absolutePath
+    }
+    rootProject.tasks.register('buildPostCurvesProbe', JavaExec) {
+        systemProperty 'audiveris.compat.debug', (rootProject.findProperty('probeDebug') ?: 'false').toString()
+        doLast {
+            if ((rootProject.findProperty('probeDebug') ?: 'false').toBoolean()) {
+                rootProject.copy {
+                    from rootProject.zipTree(probeDebugDependencies.singleFile)
+                    include 'org/teavm/backend/wasm/deobfuscator.wasm'
+                    eachFile { path = 'post-curves.wasm-deobfuscator.wasm' }
+                    includeEmptyDirs = false
+                    into new File(rootProject.projectDir,'build/wasm-compat/post-curves-probe')
+                }
+            }
+        }
+        dependsOn compile,'compileWasmCompatibilityTests','patchKxmlCompatibility','selectWasmLibraryImplementations'
+        classpath = rootProject.files(compatTests) + compatRuntime
+        mainClass = 'audit.CompileCompatibilityProbe'
+        maxHeapSize = '2g'
+        systemProperty 'audiveris.compat.semanticPaths','true'
+        for(name in ['enabled','headless','fontMetrics','strokePaths','alphaRaster','curvesRaster'])systemProperty 'audiveris.compat.'+name,'true'
+        args new File(rootProject.projectDir,'build/wasm-compat/post-curves-probe').absolutePath,
+                'org.audiveris.wasm.compat.test.PostCurvesProbe','post-curves'
+    }
+    rootProject.tasks.register('verifyPostCurvesProbe', Exec) {
+        dependsOn 'testPostCurvesJvm','buildPostCurvesProbe'
+        for(name in ['LIVE_TEXTS','TEXTS_TTF','TEXTS_CLEANUP','TEXTS_MUSIC_FT','POST_CURVES'])environment 'AUDIVERIS_'+name,'1'
         commandLine 'node','--max-old-space-size=768','--v8-pool-size=1',new File(compat,'tools/verify-texts-continuation.cjs').absolutePath,
                 new File(rootProject.projectDir,'build/wasm-compat/texts-continuation-probe').absolutePath,
                 new File(app.projectDir,'res/basic-classifier.zip').absolutePath

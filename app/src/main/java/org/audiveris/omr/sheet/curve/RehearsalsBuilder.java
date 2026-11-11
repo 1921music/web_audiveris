@@ -127,6 +127,34 @@ public class RehearsalsBuilder
                                         SegmentInter bottom,
                                         Staff staff)
     {
+        final Scan scan = prepare(top, bottom, staff);
+        if (scan == null) {
+            return null;
+        }
+        return complete(scan, new BlockScanner(sheet).scanBuffer(
+                scan.buffer, sheet.getStub().getOcrLanguages(), scan.id));
+    }
+
+    /** Candidate state retained while an external OCR backend reads the owned crop. */
+    public static final class Scan
+    {
+        public final ByteProcessor buffer;
+        public final int id;
+        private final Rectangle scene, enclosure;
+        private final Staff staff;
+
+        private Scan (ByteProcessor buffer, Rectangle scene, Rectangle enclosure, Staff staff, int id)
+        {
+            this.buffer = buffer;
+            this.scene = scene;
+            this.enclosure = enclosure;
+            this.staff = staff;
+            this.id = id;
+        }
+    }
+
+    private Scan prepare (SegmentInter top, SegmentInter bottom, Staff staff)
+    {
         final SystemInfo system = staff.getSystem();
 
         // Look for the left leg
@@ -169,7 +197,13 @@ public class RehearsalsBuilder
 
         final ByteProcessor src = sheet.getPicture().getSource(Picture.SourceKey.BINARY);
         src.setRoi(scene);
-        ByteProcessor buffer = (ByteProcessor) src.crop();
+        ByteProcessor buffer = cleanScene((ByteProcessor) src.crop(), scene, allRects, topRect.y);
+        return new Scan(buffer, scene, enclosure, staff, topRect.y);
+    }
+
+    private ByteProcessor cleanScene (ByteProcessor buffer, Rectangle scene,
+                                     List<Rectangle> allRects, int id)
+    {
         final BufferedImage imgBuffer = buffer.getBufferedImage();
 
         // Erase the foreground pixels that compose the enclosure rectangle
@@ -178,15 +212,18 @@ public class RehearsalsBuilder
         g.translate(-scene.x, -scene.y);
         allRects.forEach(r -> g.fill(r));
         if (logger.isDebugEnabled()) {
-            ImageUtil.saveOnDisk(imgBuffer, sheet.getId(), "rehearsal-" + topRect.y);
+            ImageUtil.saveOnDisk(imgBuffer, sheet.getId(), "rehearsal-" + id);
         }
+        return new ByteProcessor(imgBuffer);
+    }
 
-        // Look for contained text
-        buffer = new ByteProcessor(imgBuffer);
-        final List<TextLine> relativeLines = new BlockScanner(sheet).scanBuffer(
-                buffer,
-                sheet.getStub().getOcrLanguages(),
-                topRect.y); // Not relevant
+    private RehearsalInter complete (Scan scan, List<TextLine> relativeLines)
+    {
+        final Staff staff = scan.staff;
+        final SystemInfo system = staff.getSystem();
+        final Rectangle enclosure = scan.enclosure;
+        final Rectangle scene = scan.scene;
+        final ByteProcessor buffer = scan.buffer;
         relativeLines.forEach(rl -> logger.debug("relativeLine: {}", rl));
 
         // Convert to absolute lines (and the underlying word glyphs)
@@ -245,42 +282,14 @@ public class RehearsalsBuilder
      */
     private void processSegment (SegmentInter top)
     {
-        final SegmentInfo topSeg = top.getInfo();
-
-        // Maximum segment length
-        if (topSeg.getLength() > params.maxLength) {
+        final Staff staff = staffFor(top);
+        if (staff == null) {
             return;
         }
-
+        final SegmentInfo topSeg = top.getInfo();
         final Point topLeftEnd = topSeg.getEnd(true);
         final Point topRightEnd = topSeg.getEnd(false);
-
-        // Slope
-        final Line2D line = new Line2D.Double(topLeftEnd, topRightEnd);
-        final double slope = Math.abs(LineUtil.getSlope(line) - sheet.getSkew().getSlope());
-
-        if (slope > params.maxSlope) {
-            return;
-        }
-
-        // The relevant system is located just below the segments couple
-        final List<SystemInfo> systems = sheet.getSystemManager().getSystemsOf(topLeftEnd, null);
-        systems.retainAll(sheet.getSystemManager().getSystemsOf(topRightEnd, null));
-        Collections.sort(systems, SystemInfo.byId);
-
-        if (systems.isEmpty()) {
-            return;
-        }
-
-        final SystemInfo system = systems.get(systems.size() - 1);
-
-        // Located above the first staff
-        final Staff staff = system.getFirstStaff();
         final int staffY = staff.getFirstLine().yAt(topLeftEnd.x);
-
-        if (topLeftEnd.y > staffY) {
-            return;
-        }
 
         // Look for a partnering segment below
         final int index = segments.indexOf(top);
@@ -291,26 +300,135 @@ public class RehearsalsBuilder
             final Point bottomRightEnd = bottomSeg.getEnd(false);
 
             if (bottomLeftEnd.y > staffY) {
-                break; // Since list is sorted on system id (more or less equivalent to ordinate)
+                break;
             }
-
-            // Check abscissa & length compatibility
-            if (Math.abs(bottomLeftEnd.x - topLeftEnd.x) <= params.maxShift //
-                    && (Math.abs(bottomRightEnd.x - topRightEnd.x) <= params.maxShift)) {
-                logger.debug("Rehearsal candidate {} {}", topSeg, bottomSeg);
+            if (Math.abs(bottomLeftEnd.x - topLeftEnd.x) <= params.maxShift
+                    && Math.abs(bottomRightEnd.x - topRightEnd.x) <= params.maxShift) {
                 final RehearsalInter rehearsal = createInter(top, bottom, staff);
                 if (rehearsal != null) {
-                    final Measure measure = staff.getPart().getMeasureAt(rehearsal.getCenter());
-                    if (measure != null) {
-                        measure.addInter(rehearsal);
-                    } else {
-                        logger.info("No containing measure for {}", rehearsal);
-                    }
-
+                    addToMeasure(rehearsal, staff);
                     break;
                 }
             }
         }
+    }
+
+    private Staff staffFor (SegmentInter top)
+    {
+        final SegmentInfo topSeg = top.getInfo();
+
+        // Maximum segment length
+        if (topSeg.getLength() > params.maxLength) {
+            return null;
+        }
+
+        final Point topLeftEnd = topSeg.getEnd(true);
+        final Point topRightEnd = topSeg.getEnd(false);
+
+        // Slope
+        final Line2D line = new Line2D.Double(topLeftEnd, topRightEnd);
+        final double slope = Math.abs(LineUtil.getSlope(line) - sheet.getSkew().getSlope());
+
+        if (slope > params.maxSlope) {
+            return null;
+        }
+
+        // The relevant system is located just below the segments couple
+        final List<SystemInfo> systems = sheet.getSystemManager().getSystemsOf(topLeftEnd, null);
+        systems.retainAll(sheet.getSystemManager().getSystemsOf(topRightEnd, null));
+        Collections.sort(systems, SystemInfo.byId);
+
+        if (systems.isEmpty()) {
+            return null;
+        }
+
+        final SystemInfo system = systems.get(systems.size() - 1);
+
+        // Located above the first staff
+        final Staff staff = system.getFirstStaff();
+        final int staffY = staff.getFirstLine().yAt(topLeftEnd.x);
+
+        if (topLeftEnd.y > staffY) {
+            return null;
+        }
+        return staff;
+    }
+
+    private void addToMeasure (RehearsalInter rehearsal, Staff staff)
+    {
+        final Measure measure = staff.getPart().getMeasureAt(rehearsal.getCenter());
+        if (measure != null) {
+            measure.addInter(rehearsal);
+        } else {
+            logger.info("No containing measure for {}", rehearsal);
+        }
+    }
+
+    /** Ordered lazy traversal; at most one candidate is outstanding and no Java stack is parked. */
+    public final class Continuation
+    {
+        private final List<SegmentInter> ordered;
+        private int topIndex, bottomIndex = 1;
+        private Scan pending;
+
+        private Continuation ()
+        {
+            ordered = new ArrayList<>(curves.getSegments());
+            Collections.sort(ordered, Inters.byOrdinate);
+        }
+
+        public Scan next ()
+        {
+            if (pending != null) {
+                throw new IllegalStateException("Consume the pending rehearsal OCR first");
+            }
+            while (topIndex < ordered.size()) {
+                final SegmentInter top = ordered.get(topIndex);
+                final Staff staff = staffFor(top);
+                if (staff != null) {
+                    final Point left = top.getInfo().getEnd(true);
+                    final Point right = top.getInfo().getEnd(false);
+                    final int staffY = staff.getFirstLine().yAt(left.x);
+                    while (bottomIndex < ordered.size()) {
+                        final SegmentInter bottom = ordered.get(bottomIndex++);
+                        final Point bottomLeft = bottom.getInfo().getEnd(true);
+                        final Point bottomRight = bottom.getInfo().getEnd(false);
+                        if (bottomLeft.y > staffY) {
+                            break;
+                        }
+                        if (Math.abs(bottomLeft.x - left.x) <= params.maxShift
+                                && Math.abs(bottomRight.x - right.x) <= params.maxShift) {
+                            pending = prepare(top, bottom, staff);
+                            if (pending != null) {
+                                return pending;
+                            }
+                        }
+                    }
+                }
+                topIndex++;
+                bottomIndex = topIndex + 1;
+            }
+            return null;
+        }
+
+        public void accept (List<TextLine> lines)
+        {
+            if (pending == null) {
+                throw new IllegalStateException("No pending rehearsal OCR");
+            }
+            final RehearsalInter inter = complete(pending, lines);
+            if (inter != null) {
+                addToMeasure(inter, pending.staff);
+                topIndex++;
+                bottomIndex = topIndex + 1;
+            }
+            pending = null;
+        }
+    }
+
+    public Continuation beginContinuation ()
+    {
+        return new Continuation();
     }
 
     //~ Inner Classes ------------------------------------------------------------------------------

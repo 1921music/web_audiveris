@@ -24,6 +24,8 @@ public final class PostTextsOracle {
         if(org.audiveris.omr.ui.action.AdvancedTopics.processSystemsInParallel())throw new IllegalStateException("Reference requires serial system processing");
         MusicFont.populateAllSymbols();var geometry=new RecordingSymbolGeometry(SymbolGeometry.provider());SymbolGeometry.setProvider(geometry);geometry.recordPitchOffsets();
         var results=new ArrayList<Object>();
+        boolean curves=Boolean.getBoolean("audiveris.probe.curves");
+        if(curves)HypotOracle.write(output.resolve("hypot-reference.json"));
         for(var row:json.readTree(nativeTexts.resolve("jvm-reference.json").toFile())){
             String id=row.get("id").asText();var meta=json.readTree(nativeTexts.resolve(id+"/metadata.json").toFile());int w=meta.get("width").asInt(),h=meta.get("height").asInt();
             Sheet sheet=PixelSheetProbe.create(w,h,Files.readAllBytes(samples.resolve(id+".binary")),id);String prefix=CueBeamsProbe.analyze(sheet);
@@ -36,9 +38,14 @@ public final class PostTextsOracle {
             var texts=json.readTree(TextsContinuationProbe.summary(prefix,sheet));
             if(!texts.equals(row.get("result"))){json.writeValue(output.resolve("failed-texts.json").toFile(),Map.of("actual",texts,"expected",row.get("result")));throw new AssertionError("Native TEXTS prefix changed: "+id);}
             var phases=new ArrayList<Object>();new MeasuresStep().doit(sheet);sheet.getStub().done(OmrStep.MEASURES);
-            phases.add(json.readTree(PostTextsSnapshot.summary(sheet,"MEASURES")));
+            phases.add(json.readTree(curves?PostCurvesSnapshot.summary(sheet,"MEASURES"):PostTextsSnapshot.summary(sheet,"MEASURES")));
             new ChordsStep().doit(sheet);sheet.getStub().done(OmrStep.CHORDS);
-            phases.add(json.readTree(PostTextsSnapshot.summary(sheet,"CHORDS")));
+            phases.add(json.readTree(curves?PostCurvesSnapshot.summary(sheet,"CHORDS"):PostTextsSnapshot.summary(sheet,"CHORDS")));
+            if(curves){
+                CurveSkeletonOracle.compare(sheet,output.resolve(id));
+                new org.audiveris.omr.sheet.curve.CurvesStep().doit(sheet);sheet.getStub().done(OmrStep.CURVES);
+                phases.add(json.readTree(PostCurvesSnapshot.summary(sheet,"CURVES")));
+            }
             results.add(Map.of("id",id,"phases",phases));System.out.println("Original post-TEXTS recognition: "+id+"; stacks "+sheet.getSystems().stream().mapToInt(s->s.getStacks().size()).sum());
         }
         json.writeValue(output.resolve("jvm-reference.json").toFile(),results);

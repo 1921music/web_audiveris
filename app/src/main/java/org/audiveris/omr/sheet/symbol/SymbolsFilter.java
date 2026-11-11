@@ -30,6 +30,7 @@ import org.audiveris.omr.glyph.GlyphGroup;
 import static org.audiveris.omr.glyph.GlyphGroup.SYMBOL;
 import org.audiveris.omr.glyph.GlyphIndex;
 import org.audiveris.omr.image.ImageUtil;
+import org.audiveris.omr.image.PageRaster;
 import static org.audiveris.omr.image.PixelSource.BACKGROUND;
 import static org.audiveris.omr.image.PixelSource.FOREGROUND;
 import org.audiveris.omr.image.Template;
@@ -207,6 +208,34 @@ public class SymbolsFilter
         buildSymbolsGlyphs(buffer);
     }
 
+    /** Sheet whose strong and weak recognition objects are being filtered. */
+    public Sheet getSheet ()
+    {
+        return sheet;
+    }
+
+    /** Original erasure and optional-glyph selection with an explicit raster backend. */
+    public void eraseBuffer (ByteProcessor buffer, PageRaster raster,
+                             Map<SystemInfo, List<Glyph>> optionalsMap)
+    {
+        if (buffer.getWidth() != sheet.getWidth() || buffer.getHeight() != sheet.getHeight()) {
+            throw new IllegalArgumentException("Symbols dimensions differ from sheet");
+        }
+        new SymbolsCleaner(buffer, raster, sheet).eraseInters(optionalsMap);
+        buffer.threshold(127);
+    }
+
+    /** Headless entry; glyph extraction follows the same erasure and thresholding decisions. */
+    public void processBuffer (ByteProcessor buffer, PageRaster raster,
+                               Map<SystemInfo, List<Glyph>> optionalsMap)
+    {
+        if (constants.saveSymbolsBuffer.isSet()) {
+            throw new UnsupportedOperationException("Use the image entry to save symbols images");
+        }
+        eraseBuffer(buffer, raster, optionalsMap);
+        buildSymbolsGlyphs(buffer);
+    }
+
     //~ Inner Classes ------------------------------------------------------------------------------
 
     //-----------//
@@ -280,6 +309,13 @@ public class SymbolsFilter
                         Sheet sheet)
         {
             super(buffer, g, sheet);
+        }
+
+        SymbolsCleaner (ByteProcessor buffer,
+                        PageRaster raster,
+                        Sheet sheet)
+        {
+            super(buffer, raster, sheet);
         }
 
         //---------//
@@ -480,7 +516,7 @@ public class SymbolsFilter
             final List<Point> fores = tpl.getForegroundPixels(tplBox, buffer, systemWeaks == null);
 
             // Erase foreground pixels
-            fores.forEach(p -> g.fillRect(tplBox.x + p.x, tplBox.y + p.y, 1, 1));
+            fores.forEach(p -> raster.fillRect(tplBox.x + p.x, tplBox.y + p.y, 1, 1));
 
             // Save foreground pixels for optional (weak) glyphs
             if (systemWeaks != null) {

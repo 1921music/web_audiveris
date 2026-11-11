@@ -251,7 +251,7 @@ public class SymbolsBuilder
      */
     private List<Glyph> getSymbolsGlyphs (Map<SystemInfo, List<Glyph>> optionalsMap)
     {
-        // Sorted by abscissa, ordinate, id
+        // Sorted by geometry/content before graph insertion below
         List<Glyph> glyphs = new ArrayList<>();
 
         for (Glyph glyph : system.getGroupedGlyphs(GlyphGroup.SYMBOL)) {
@@ -279,7 +279,33 @@ public class SymbolsBuilder
             }
         }
 
+        // Graph insertion order must not depend on allocated glyph IDs or hash iteration.
+        glyphs.sort(SymbolsBuilder::compareGlyphGeometry);
         return glyphs;
+    }
+
+    /** Stable geometry/content order for otherwise equal-priority recognition parts. */
+    private static int compareGlyphGeometry (Glyph a, Glyph b)
+    {
+        if (a == b) {
+            return 0;
+        }
+        int order = Integer.compare(a.getLeft(), b.getLeft());
+        if (order == 0) order = Integer.compare(a.getTop(), b.getTop());
+        if (order == 0) order = Integer.compare(a.getWidth(), b.getWidth());
+        if (order == 0) order = Integer.compare(a.getHeight(), b.getHeight());
+        if (order != 0) {
+            return order;
+        }
+        final var left = a.getRunTable();
+        final var right = b.getRunTable();
+        for (int y = 0; y < a.getHeight(); y++) {
+            for (int x = 0; x < a.getWidth(); x++) {
+                order = Integer.compare(left.get(x, y), right.get(x, y));
+                if (order != 0) return order;
+            }
+        }
+        return 0;
     }
 
     //------------//
@@ -328,17 +354,14 @@ public class SymbolsBuilder
             logger.debug("set size: {}", setSize);
 
             if (setSize > 1) {
-                final Set<Glyph> subSet; // Use an upper limit for set size
-
-                if (setSize <= maxPartCount) {
-                    subSet = set;
-                } else {
-                    List<Glyph> list = new ArrayList<>(set);
-                    Collections.sort(list, Glyphs.byReverseWeight);
+                // Retain the existing weight priority and part limit, with stable ties.
+                List<Glyph> list = new ArrayList<>(set);
+                list.sort(Glyphs.byReverseWeight.thenComparing(SymbolsBuilder::compareGlyphGeometry));
+                if (setSize > maxPartCount) {
                     list = list.subList(0, Math.min(list.size(), maxPartCount));
-                    subSet = new LinkedHashSet<>(list);
                     logger.debug("Symbol parts shrunk from {} to {}", setSize, maxPartCount);
                 }
+                final Set<Glyph> subSet = new LinkedHashSet<>(list);
 
                 // Use just the subgraph for this (sub)set
                 final SimpleGraph<Glyph, GlyphLink> subGraph;

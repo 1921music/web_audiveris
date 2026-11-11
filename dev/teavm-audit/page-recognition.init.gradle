@@ -1,0 +1,54 @@
+// Apply after audit.init.gradle; reuse its pinned dependencies and capped task settings.
+gradle.projectsEvaluated {
+    def app = rootProject.findProject(':app')
+    if (app == null) { return }
+    def nativeBase = rootProject.tasks.named('testPostCurvesJvm', JavaExec).get()
+    def compileBase = rootProject.tasks.named('buildPostCurvesProbe', JavaExec).get()
+    def common = ['compileTeaVMAudit','compileWasmCompatibilityTests','patchKxmlCompatibility','selectWasmLibraryImplementations']
+    rootProject.tasks.register('testPageRecognitionJvm', JavaExec) {
+        dependsOn common
+        classpath = nativeBase.classpath
+        mainClass = 'org.audiveris.wasm.compat.test.PageRecognitionOracle'
+        maxHeapSize = '2g'
+        jvmArgs nativeBase.jvmArgs
+        systemProperties nativeBase.systemProperties
+        workingDir nativeBase.workingDir
+        for (name in ['XDG_CONFIG_HOME','XDG_DATA_HOME']) {
+            if (nativeBase.environment[name] != null) { environment name, nativeBase.environment[name] }
+        }
+        def inherited = new ArrayList(nativeBase.args)
+        inherited[2] = new File(rootProject.projectDir,'build/wasm-compat/page-recognition-native').absolutePath
+        args inherited
+    }
+    rootProject.tasks.register('buildPageRecognitionProbe', JavaExec) {
+        dependsOn common
+        classpath = compileBase.classpath
+        mainClass = 'audit.CompileCompatibilityProbe'
+        maxHeapSize = '2g'
+        systemProperties compileBase.systemProperties
+        systemProperty 'audiveris.compat.symbolsRaster','true'
+        args new File(rootProject.projectDir,'build/wasm-compat/page-recognition-probe').absolutePath,
+                'org.audiveris.wasm.compat.test.PageRecognitionProbe','page-recognition'
+        doLast {
+            if ((rootProject.findProperty('probeDebug') ?: 'false').toBoolean()) {
+                rootProject.copy {
+                    from rootProject.zipTree(rootProject.configurations.getByName('wasmProbeDebugDependencies').singleFile)
+                    include 'org/teavm/backend/wasm/deobfuscator.wasm'
+                    eachFile { path = 'page-recognition.wasm-deobfuscator.wasm' }
+                    includeEmptyDirs = false
+                    into new File(rootProject.projectDir,'build/wasm-compat/page-recognition-probe')
+                }
+            }
+        }
+    }
+    rootProject.tasks.register('verifyPageRecognitionProbe', Exec) {
+        dependsOn 'testPageRecognitionJvm','buildPageRecognitionProbe'
+        for (name in ['LIVE_TEXTS','TEXTS_TTF','TEXTS_CLEANUP','TEXTS_MUSIC_FT','POST_PAGE']) {
+            environment 'AUDIVERIS_'+name,'1'
+        }
+        commandLine 'node','--max-old-space-size=768','--v8-pool-size=1',
+                new File(rootProject.projectDir,'wasm-compat/tools/verify-texts-continuation.cjs').absolutePath,
+                new File(rootProject.projectDir,'build/wasm-compat/texts-continuation-probe').absolutePath,
+                new File(app.projectDir,'res/basic-classifier.zip').absolutePath
+    }
+}

@@ -290,9 +290,8 @@ public class OctaveShiftInter
     {
         final Scale scale = sheet.getScale();
         final MusicFamily family = sheet.getStub().getMusicFamily();
-        final FontSymbol fs = shape.getFontSymbolByInterline(family, scale.getInterline());
-        final TextLayout layout = fs.getLayout();
-        final Rectangle2D symBounds = layout.getBounds();
+        final Rectangle2D symBounds = org.audiveris.omr.ui.symbol.SymbolGeometry.provider().bounds(
+                family, shape, scale.getInterline());
         valueWidth = symBounds.getWidth();
         valueHeight = symBounds.getHeight();
     }

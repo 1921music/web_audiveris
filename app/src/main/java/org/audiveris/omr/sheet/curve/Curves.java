@@ -125,6 +125,12 @@ public class Curves
      */
     public void buildCurves ()
     {
+        buildCurvesUntilRehearsals().buildRehearsals();
+    }
+
+    /** Build the geometric curves, leaving local rehearsal OCR to an explicit continuation. */
+    public RehearsalsBuilder buildCurvesUntilRehearsals ()
+    {
         // Retrieve junctions.
         final StopWatch watch = new StopWatch("Curves");
         watch.start("Junctions retrieval");
@@ -159,11 +165,11 @@ public class Curves
         // Build rehearsals out of segments
         RehearsalsBuilder rehearsalsBuilder = new RehearsalsBuilder(this);
         watch.start("buildRehearsals");
-        rehearsalsBuilder.buildRehearsals();
 
         if (constants.printWatch.isSet()) {
             watch.print();
         }
+        return rehearsalsBuilder;
     }
 
     //------------//
