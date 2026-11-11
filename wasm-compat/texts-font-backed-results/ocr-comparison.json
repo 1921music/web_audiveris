@@ -1,0 +1,876 @@
+{
+  "node": "v24.22.2",
+  "chromium": "158.0.8127.18",
+  "workers": 2,
+  "workerResultsExact": true,
+  "allBrowserAssetsLocal": true,
+  "assets": {
+    "/ocr-assets/tesseract.min.js": {
+      "bytes": 62961,
+      "sha256": "000c27d9cd0def655f77b36c72a389c0ab13793aa31cb4d7aab56d09c0afbc7e"
+    },
+    "/ocr-assets/worker.min.js": {
+      "bytes": 111307,
+      "sha256": "576b7df7e3393e137e51849357c9adb53fe7ac1bb69bfa06cf3d61520f182c6d"
+    },
+    "/core-assets/tesseract-core-relaxedsimd.js": {
+      "bytes": 89066,
+      "sha256": "716be037611f21b568347421f582f1e1a6456b6d5c3a7c2406c8a2a6c0136427"
+    },
+    "/core-assets/tesseract-core-relaxedsimd.wasm": {
+      "bytes": 3456075,
+      "sha256": "45f8c9b516df326b6ae6b493ed3a6289df5cbd10490e7b6ff8bf5b12ea42d1da"
+    },
+    "/models/eng.traineddata.gz": {
+      "bytes": 10923060,
+      "sha256": "ed350f3752f81ee8f38769edc14d92d997dababe23b565c59879372cc46a2468"
+    },
+    "/host/tesseract-js-ocr.mjs": {
+      "bytes": 8510,
+      "sha256": "3216824bb919d2d515eb354222e6076438737da22f98a8d5f8fa8a8d6af432c6"
+    },
+    "/host/gray8-png.mjs": {
+      "bytes": 1759,
+      "sha256": "fab3b1da1e3f027ab38fc48eef5a5250988fd3a1a55720364e4ad94078b70bba"
+    },
+    "/host/tesseract-word-metadata.mjs": {
+      "bytes": 5446,
+      "sha256": "f65724fedd53bf89e629e20bdaaa646a76e8961d64331e6976d36d7445f7379b"
+    },
+    "/host/tesseract-core-word-metadata.js": {
+      "bytes": 859,
+      "sha256": "1bdf211ea32a326f535d9d24d012b92b9eb62b2978b85dae3eeee0fc268802de"
+    }
+  },
+  "requested": [
+    "/ocr-assets/tesseract.min.js",
+    "/host/tesseract-js-ocr.mjs",
+    "/host/gray8-png.mjs",
+    "/host/tesseract-word-metadata.mjs",
+    "/ocr-assets/worker.min.js",
+    "/host/tesseract-core-word-metadata.js",
+    "/core-assets/tesseract-core-relaxedsimd.js",
+    "/core-assets/tesseract-core-relaxedsimd.wasm",
+    "/models/eng.traineddata.gz"
+  ],
+  "backend": "tesseract.js",
+  "version": "7.0.0",
+  "oem": 0,
+  "engineVersions": [
+    "5.1.0-288-g2a9c1"
+  ],
+  "pages": [
+    {
+      "id": "00",
+      "width": 2500,
+      "height": 3526,
+      "elapsedMs": 2335.0848779999997,
+      "words": 88,
+      "comparison": {
+        "exact": false,
+        "count": 595,
+        "maxNumericDifference": 1284,
+        "examples": [
+          {
+            "key": "$.lines.0.words.0.font.serif",
+            "actual": false,
+            "expected": true
+          },
+          {
+            "key": "$.lines.1.words.0.font.serif",
+            "actual": false,
+            "expected": true
+          },
+          {
+            "key": "$.lines.1.words.2.font.serif",
+            "actual": false,
+            "expected": true
+          },
+          {
+            "key": "$.lines.1.words.3.font.serif",
+            "actual": false,
+            "expected": true
+          },
+          {
+            "key": "$.lines.2.words.1.font.serif",
+            "actual": false,
+            "expected": true
+          },
+          {
+            "key": "$.lines.3.words.0.font.serif",
+            "actual": false,
+            "expected": true
+          },
+          {
+            "key": "$.lines.5.words.1.font.serif",
+            "actual": false,
+            "expected": true
+          },
+          {
+            "key": "$.lines.5.words.2.font.serif",
+            "actual": false,
+            "expected": true
+          },
+          {
+            "key": "$.lines.5.words.3.font.serif",
+            "actual": false,
+            "expected": true
+          },
+          {
+            "key": "$.lines.5.words.4.font.serif",
+            "actual": false,
+            "expected": true
+          },
+          {
+            "key": "$.lines.5.words.4.font.smallcaps",
+            "actual": false,
+            "expected": true
+          },
+          {
+            "key": "$.lines.6.words.0.text",
+            "actual": "\"",
+            "expected": "_"
+          },
+          {
+            "key": "$.lines.6.words.0.bounds.x",
+            "actual": 274,
+            "expected": 186
+          },
+          {
+            "key": "$.lines.6.words.0.bounds.y",
+            "actual": 830,
+            "expected": 1019
+          },
+          {
+            "key": "$.lines.6.words.0.bounds.width",
+            "actual": 8,
+            "expected": 2
+          },
+          {
+            "key": "$.lines.6.words.0.bounds.height",
+            "actual": 4,
+            "expected": 2
+          },
+          {
+            "key": "$.lines.6.words.0.confidence",
+            "actual": 0.8609449768066406,
+            "expected": 0.94598388671875
+          },
+          {
+            "key": "$.lines.6.words.0.baseline.x1",
+            "actual": 274,
+            "expected": 186
+          },
+          {
+            "key": "$.lines.6.words.0.baseline.y1",
+            "actual": 844,
+            "expected": 1018
+          },
+          {
+            "key": "$.lines.6.words.0.baseline.x2",
+            "actual": 282,
+            "expected": 188
+          }
+        ]
+      }
+    },
+    {
+      "id": "01",
+      "width": 2500,
+      "height": 3526,
+      "elapsedMs": 505.71243300000015,
+      "words": 47,
+      "comparison": {
+        "exact": false,
+        "count": 613,
+        "maxNumericDifference": 1506,
+        "examples": [
+          {
+            "key": "$.lines.1.words.0.confidence",
+            "actual": 0.507835464477539,
+            "expected": 0.5043839263916016
+          },
+          {
+            "key": "$.lines.1.words.0.baseline.y1",
+            "actual": 209,
+            "expected": 208
+          },
+          {
+            "key": "$.lines.1.words.0.baseline.y2",
+            "actual": 208,
+            "expected": 209
+          },
+          {
+            "key": "$.lines.1.words.0.font.pointSize",
+            "actual": 39,
+            "expected": 45
+          },
+          {
+            "key": "$.lines.1.words.1",
+            "actual": {
+              "text": "Ebmaj7",
+              "bounds": {
+                "x": 774,
+                "y": 170,
+                "width": 110,
+                "height": 44
+              },
+              "confidence": 0.54669677734375,
+              "baseline": {
+                "x1": 774,
+                "y1": 207,
+                "x2": 884,
+                "y2": 208
+              },
+              "font": {
+                "bold": false,
+                "italic": false,
+                "underlined": false,
+                "monospace": false,
+                "serif": false,
+                "smallcaps": false,
+                "pointSize": 39,
+                "name": null
+              },
+              "characters": [
+                {
+                  "text": "E",
+                  "bounds": {
+                    "x": 774,
+                    "y": 177,
+                    "width": 23,
+                    "height": 30
+                  }
+                },
+                {
+                  "text": "b",
+                  "bounds": {
+                    "x": 800,
+                    "y": 170,
+                    "width": 10,
+                    "height": 28
+                  }
+                },
+                {
+                  "text": "m",
+                  "bounds": {
+                    "x": 813,
+                    "y": 188,
+                    "width": 25,
+                    "height": 19
+                  }
+                },
+                {
+                  "text": "a",
+                  "bounds": {
+                    "x": 840,
+                    "y": 188,
+                    "width": 18,
+                    "height": 19
+                  }
+                },
+                {
+                  "text": "j",
+                  "bounds": {
+                    "x": 856,
+                    "y": 181,
+                    "width": 7,
+                    "height": 33
+                  }
+                },
+                {
+                  "text": "7",
+                  "bounds": {
+                    "x": 867,
+                    "y": 184,
+                    "width": 17,
+                    "height": 25
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "key": "$.lines.1.words.2",
+            "actual": {
+              "text": "Ab?",
+              "bounds": {
+                "x": 1184,
+                "y": 171,
+                "width": 58,
+                "height": 38
+              },
+              "confidence": 0.6196084594726563,
+              "baseline": {
+                "x1": 1184,
+                "y1": 208,
+                "x2": 1242,
+                "y2": 209
+              },
+              "font": {
+                "bold": false,
+                "italic": false,
+                "underlined": false,
+                "monospace": false,
+                "serif": false,
+                "smallcaps": false,
+                "pointSize": 39,
+                "name": null
+              },
+              "characters": [
+                {
+                  "text": "A",
+                  "bounds": {
+                    "x": 1184,
+                    "y": 177,
+                    "width": 26,
+                    "height": 30
+                  }
+                },
+                {
+                  "text": "b",
+                  "bounds": {
+                    "x": 1214,
+                    "y": 171,
+                    "width": 9,
+                    "height": 26
+                  }
+                },
+                {
+                  "text": "?",
+                  "bounds": {
+                    "x": 1225,
+                    "y": 184,
+                    "width": 17,
+                    "height": 25
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "key": "$.lines.1.words.3",
+            "actual": {
+              "text": "46",
+              "bounds": {
+                "x": 1461,
+                "y": 173,
+                "width": 64,
+                "height": 82
+              },
+              "confidence": 0.4364203643798828,
+              "baseline": {
+                "x1": 1461,
+                "y1": 209,
+                "x2": 1525,
+                "y2": 209
+              },
+              "font": {
+                "bold": false,
+                "italic": false,
+                "underlined": false,
+                "monospace": false,
+                "serif": false,
+                "smallcaps": false,
+                "pointSize": 39,
+                "name": null
+              },
+              "characters": [
+                {
+                  "text": "4",
+                  "bounds": {
+                    "x": 1461,
+                    "y": 213,
+                    "width": 31,
+                    "height": 42
+                  }
+                },
+                {
+                  "text": "6",
+                  "bounds": {
+                    "x": 1481,
+                    "y": 173,
+                    "width": 44,
+                    "height": 74
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "key": "$.lines.1.words.4",
+            "actual": {
+              "text": "ﬂ",
+              "bounds": {
+                "x": 1856,
+                "y": 172,
+                "width": 65,
+                "height": 83
+              },
+              "confidence": 0.5285157775878906,
+              "baseline": {
+                "x1": 1856,
+                "y1": 208,
+                "x2": 1921,
+                "y2": 208
+              },
+              "font": {
+                "bold": true,
+                "italic": true,
+                "underlined": false,
+                "monospace": false,
+                "serif": true,
+                "smallcaps": false,
+                "pointSize": 39,
+                "name": null
+              },
+              "characters": [
+                {
+                  "text": "ﬂ",
+                  "bounds": {
+                    "x": 1856,
+                    "y": 172,
+                    "width": 65,
+                    "height": 83
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "key": "$.lines.1.baseline.y1",
+            "actual": 209,
+            "expected": 208
+          },
+          {
+            "key": "$.lines.1.baseline.x2",
+            "actual": 1921,
+            "expected": 415
+          },
+          {
+            "key": "$.lines.1.baseline.y2",
+            "actual": 208,
+            "expected": 209
+          },
+          {
+            "key": "$.lines.2.words.0.text",
+            "actual": "Swing",
+            "expected": "Al’7"
+          },
+          {
+            "key": "$.lines.2.words.0.bounds.x",
+            "actual": 728,
+            "expected": 335
+          },
+          {
+            "key": "$.lines.2.words.0.bounds.y",
+            "actual": 785,
+            "expected": 844
+          },
+          {
+            "key": "$.lines.2.words.0.bounds.width",
+            "actual": 140,
+            "expected": 59
+          },
+          {
+            "key": "$.lines.2.words.0.bounds.height",
+            "actual": 50,
+            "expected": 40
+          },
+          {
+            "key": "$.lines.2.words.0.confidence",
+            "actual": 0.8848876953125,
+            "expected": 0.6674202728271484
+          },
+          {
+            "key": "$.lines.2.words.0.baseline.x1",
+            "actual": 728,
+            "expected": 335
+          },
+          {
+            "key": "$.lines.2.words.0.baseline.y1",
+            "actual": 825,
+            "expected": 882
+          },
+          {
+            "key": "$.lines.2.words.0.baseline.x2",
+            "actual": 868,
+            "expected": 394
+          }
+        ]
+      }
+    },
+    {
+      "id": "02",
+      "width": 2500,
+      "height": 3526,
+      "elapsedMs": 784.298581,
+      "words": 43,
+      "comparison": {
+        "exact": false,
+        "count": 336,
+        "maxNumericDifference": 2118,
+        "examples": [
+          {
+            "key": "$.lines.0.words.0.font.bold",
+            "actual": true,
+            "expected": false
+          },
+          {
+            "key": "$.lines.1.words.0.font.bold",
+            "actual": true,
+            "expected": false
+          },
+          {
+            "key": "$.lines.1.words.3.font.bold",
+            "actual": true,
+            "expected": false
+          },
+          {
+            "key": "$.lines.2.words.0.text",
+            "actual": "L.",
+            "expected": "L"
+          },
+          {
+            "key": "$.lines.2.words.0.confidence",
+            "actual": 0.7458547210693359,
+            "expected": 0.7532706451416016
+          },
+          {
+            "key": "$.lines.2.words.0.characters.0.bounds.width",
+            "actual": 10,
+            "expected": 18
+          },
+          {
+            "key": "$.lines.2.words.0.characters.1",
+            "actual": {
+              "text": ".",
+              "bounds": {
+                "x": 430,
+                "y": 539,
+                "width": 10,
+                "height": 12
+              }
+            }
+          },
+          {
+            "key": "$.lines.3.words.0.confidence",
+            "actual": 0.8805391693115234,
+            "expected": 0.8785724639892578
+          },
+          {
+            "key": "$.lines.4.words.2.font.bold",
+            "actual": true,
+            "expected": false
+          },
+          {
+            "key": "$.lines.5.words.0.font.bold",
+            "actual": true,
+            "expected": false
+          },
+          {
+            "key": "$.lines.6.words.0.text",
+            "actual": "‘-—-—._______~_____",
+            "expected": "‘-—-—\\_____-~_____"
+          },
+          {
+            "key": "$.lines.6.words.0.confidence",
+            "actual": 0.43966835021972656,
+            "expected": 0.4467250061035156
+          },
+          {
+            "key": "$.lines.6.words.0.characters.5.text",
+            "actual": ".",
+            "expected": "\\"
+          },
+          {
+            "key": "$.lines.6.words.0.characters.8.bounds.width",
+            "actual": 6,
+            "expected": 16
+          },
+          {
+            "key": "$.lines.6.words.0.characters.8.bounds.height",
+            "actual": 4,
+            "expected": 6
+          },
+          {
+            "key": "$.lines.6.words.0.characters.9.bounds.x",
+            "actual": 340,
+            "expected": 350
+          },
+          {
+            "key": "$.lines.6.words.0.characters.9.bounds.y",
+            "actual": 1407,
+            "expected": 1409
+          },
+          {
+            "key": "$.lines.6.words.0.characters.9.bounds.width",
+            "actual": 12,
+            "expected": 8
+          },
+          {
+            "key": "$.lines.6.words.0.characters.9.bounds.height",
+            "actual": 6,
+            "expected": 4
+          },
+          {
+            "key": "$.lines.6.words.0.characters.10.bounds.x",
+            "actual": 350,
+            "expected": 356
+          }
+        ]
+      }
+    },
+    {
+      "id": "03",
+      "width": 2500,
+      "height": 3526,
+      "elapsedMs": 487.04491099999996,
+      "words": 42,
+      "comparison": {
+        "exact": false,
+        "count": 615,
+        "maxNumericDifference": 2932,
+        "examples": [
+          {
+            "key": "$.lines.6.words.0.text",
+            "actual": ",.",
+            "expected": "Dm"
+          },
+          {
+            "key": "$.lines.6.words.0.bounds.x",
+            "actual": 1133,
+            "expected": 725
+          },
+          {
+            "key": "$.lines.6.words.0.bounds.y",
+            "actual": 163,
+            "expected": 774
+          },
+          {
+            "key": "$.lines.6.words.0.bounds.width",
+            "actual": 8,
+            "expected": 57
+          },
+          {
+            "key": "$.lines.6.words.0.bounds.height",
+            "actual": 43,
+            "expected": 32
+          },
+          {
+            "key": "$.lines.6.words.0.confidence",
+            "actual": 0.32919815063476565,
+            "expected": 0.9252211761474609
+          },
+          {
+            "key": "$.lines.6.words.0.baseline.x1",
+            "actual": 1133,
+            "expected": 725
+          },
+          {
+            "key": "$.lines.6.words.0.baseline.y1",
+            "actual": 206,
+            "expected": 805
+          },
+          {
+            "key": "$.lines.6.words.0.baseline.x2",
+            "actual": 1141,
+            "expected": 782
+          },
+          {
+            "key": "$.lines.6.words.0.baseline.y2",
+            "actual": 206,
+            "expected": 805
+          },
+          {
+            "key": "$.lines.6.words.0.font.pointSize",
+            "actual": 32,
+            "expected": 45
+          },
+          {
+            "key": "$.lines.6.words.0.characters.0.text",
+            "actual": ",",
+            "expected": "D"
+          },
+          {
+            "key": "$.lines.6.words.0.characters.0.bounds.x",
+            "actual": 1133,
+            "expected": 725
+          },
+          {
+            "key": "$.lines.6.words.0.characters.0.bounds.y",
+            "actual": 205,
+            "expected": 774
+          },
+          {
+            "key": "$.lines.6.words.0.characters.0.bounds.width",
+            "actual": 3,
+            "expected": 25
+          },
+          {
+            "key": "$.lines.6.words.0.characters.0.bounds.height",
+            "actual": 1,
+            "expected": 31
+          },
+          {
+            "key": "$.lines.6.words.0.characters.1.text",
+            "actual": ".",
+            "expected": "m"
+          },
+          {
+            "key": "$.lines.6.words.0.characters.1.bounds.x",
+            "actual": 1139,
+            "expected": 757
+          },
+          {
+            "key": "$.lines.6.words.0.characters.1.bounds.y",
+            "actual": 163,
+            "expected": 786
+          },
+          {
+            "key": "$.lines.6.words.0.characters.1.bounds.width",
+            "actual": 2,
+            "expected": 25
+          }
+        ]
+      }
+    },
+    {
+      "id": "04",
+      "width": 2500,
+      "height": 3526,
+      "elapsedMs": 1871.5012130000005,
+      "words": 62,
+      "comparison": {
+        "exact": false,
+        "count": 778,
+        "maxNumericDifference": 1946,
+        "examples": [
+          {
+            "key": "$.lines.0.words.0.baseline.y1",
+            "actual": 273,
+            "expected": 274
+          },
+          {
+            "key": "$.lines.0.baseline.y1",
+            "actual": 273,
+            "expected": 274
+          },
+          {
+            "key": "$.lines.3.words.1.baseline.x2",
+            "actual": 335,
+            "expected": 334
+          },
+          {
+            "key": "$.lines.3.baseline.x2",
+            "actual": 335,
+            "expected": 334
+          },
+          {
+            "key": "$.lines.4.words.0.confidence",
+            "actual": 0.5970396423339843,
+            "expected": 0.5805093765258789
+          },
+          {
+            "key": "$.lines.4.words.0.baseline.x1",
+            "actual": 349,
+            "expected": 350
+          },
+          {
+            "key": "$.lines.4.words.0.baseline.x2",
+            "actual": 352,
+            "expected": 349
+          },
+          {
+            "key": "$.lines.4.words.0.font.pointSize",
+            "actual": 61,
+            "expected": 60
+          },
+          {
+            "key": "$.lines.4.baseline.x1",
+            "actual": 349,
+            "expected": 350
+          },
+          {
+            "key": "$.lines.4.baseline.x2",
+            "actual": 352,
+            "expected": 349
+          },
+          {
+            "key": "$.lines.5.words.0.baseline.y1",
+            "actual": 2938,
+            "expected": 2939
+          },
+          {
+            "key": "$.lines.5.baseline.y1",
+            "actual": 2938,
+            "expected": 2939
+          },
+          {
+            "key": "$.lines.6.words.0.text",
+            "actual": "G7",
+            "expected": "@Cm7"
+          },
+          {
+            "key": "$.lines.6.words.0.bounds.x",
+            "actual": 555,
+            "expected": 1914
+          },
+          {
+            "key": "$.lines.6.words.0.bounds.y",
+            "actual": 1596,
+            "expected": 216
+          },
+          {
+            "key": "$.lines.6.words.0.bounds.width",
+            "actual": 52,
+            "expected": 138
+          },
+          {
+            "key": "$.lines.6.words.0.bounds.height",
+            "actual": 33,
+            "expected": 61
+          },
+          {
+            "key": "$.lines.6.words.0.confidence",
+            "actual": 0.8902713775634765,
+            "expected": 0.6120079803466797
+          },
+          {
+            "key": "$.lines.6.words.0.baseline.x1",
+            "actual": 555,
+            "expected": 1914
+          },
+          {
+            "key": "$.lines.6.words.0.baseline.y1",
+            "actual": 1626,
+            "expected": 277
+          }
+        ]
+      }
+    }
+  ],
+  "nodeWorkerReused": true,
+  "inputSha256": {
+    "native/jvm-reference.json": "b30637d9ae7137468fa3b5918fe7d4377ae6c1824f9a288ab237d49522f98ffb",
+    "native/coverage.json": "b3a9467ad7ef81fa3a5faf0b33f0744243b89622aeeaa0734400ee54eaf923ee",
+    "../../../wasm-compat/node_modules/@tesseract.js-data/eng/4.0.0/eng.traineddata.gz": "ed350f3752f81ee8f38769edc14d92d997dababe23b565c59879372cc46a2468",
+    "native/00/metadata.json": "afbccc54d8d8a12f638849cf639fc113d160e5e9db7d6a55f51e3e05ba13439b",
+    "native/00/cleaned.gray": "f9483bf00b89a982188c405cb78826038ab1fac24593aba43440dcc1a9c43ad7",
+    "native/00/ocr-result.json": "0e6006376b75fba51664cecd9872414da826e167395908aef1b068fcb377869e",
+    "native/01/metadata.json": "3ad802555bc06a48bc0de286048167b36aeadd8ae0a777beb8b2aa5bf5951926",
+    "native/01/cleaned.gray": "777cec0547124381c4355761d979c25e9321fb931e9371a43e22256307b7c7ad",
+    "native/01/ocr-result.json": "fc9386119ddcabc0f846ead9e6954932c24c60e2c5429d157951db045f9b6aaf",
+    "native/02/metadata.json": "24b858bddd0ed0cf7b85a0433d29cef36b22a085dba4ec51dd0079ede78a1fb2",
+    "native/02/cleaned.gray": "24a4b292f870188b44c20be65190485220ffef5983aaab71a1ae1aa5f705caba",
+    "native/02/ocr-result.json": "af01c2f5668f3bb3868fec08b5eddf0a5974a34ccbbbf277bfc5eb3a392beac8",
+    "native/03/metadata.json": "e5d8ae0331d248e924fe39a3ea0eceb719344054d4dbc3e9b012f89872b34485",
+    "native/03/cleaned.gray": "b927e5eae3850434d57ded2ec6eedbb28389360ab09672a4d85e013f6d520b4b",
+    "native/03/ocr-result.json": "8383fecf661a869bbcaeeb490423f3ee1d56d1e530929808081ca568f2e4eda9",
+    "native/04/metadata.json": "f90cffd2a19054f0aa6ddbf319be7951745bc4a9c94f2d3c55779158a5bba4c5",
+    "native/04/cleaned.gray": "31013e845668db300018e6e06334eb357e9e85d769702e5e6ae4c13e0b6a8e0d",
+    "native/04/ocr-result.json": "003e9c7a39486fc0760e5bed0a3dbc916ef567d85342ce874d12a85d1b3034ae"
+  },
+  "exactPages": 0,
+  "limitation": "Live Node and Worker OCR on native-cleaned score images; native OCR parity is diagnostic; TEXTS resume and general font measurement are not established by this run"
+}

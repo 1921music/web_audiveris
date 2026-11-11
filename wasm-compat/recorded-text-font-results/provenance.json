@@ -1,23 +1,24 @@
 {
-  "sourceCommit": "04e316ebfcea9e84d2231f29443699f1e5262636",
+  "sourceCommit": "17c1daf859845f42aa97b85e8cbe822c3546e4e8",
   "sourceSha256": {
-    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/RecordedTextFontsOracle.java": "5b25e49b767976e84f2fc6812bdaf2264e2647c6ed75b23d4fd0de048986aa8b",
-    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/QuadraticGlyphBounds.java": "078e81a2018b2faa5df963fb3a6432887b3cbc0cde54dde8790b4a4888a07bf7",
-    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/FontBoxMetricsExperiment.java": "6ef3b49f9517d8c5cb45eb104a9c517cb03dcb705d5dd6a810410ad740cb7b17",
-    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/FontBoxMetricsProbe.java": "0d757dbeee3f6029bc596634f909aeb4b9b158270ebedc4265a231be1a6d4c31",
+    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/RecordedTextFontsOracle.java": "e0351d49a50d14a46b95bbc1923ee6da86b35af811971d30c5cd5bf61e6a1aed",
+    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/FontBoxMetricsExperiment.java": "bea9ab7132375cf774e8f04b14e1308a08cf0533af5cc26f1b9861ff41b4230a",
+    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/FontBoxMetricsProbe.java": "55b38e91843b4c4cd1afce56432274fea1a7986b7b326e198f4a5561a5a0d588",
     "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/TextFontMetricsOracle.java": "a4265f14baadfe607d5274ba3a613969591573f8178e6d1dd48196d5c440d099",
     "wasm-compat/src/main/java/org/audiveris/wasm/compat/CompilerPatches.java": "f1fc4a12acbe07265bd00f9aaaa5449820ed2dcf480a58e8e99a077c966526ae",
     "wasm-compat/src/main/java/org/audiveris/wasm/compat/FontMetricsPatches.java": "c94aaf0a3f2c24a1d6c72f73d599bc750a659533c44cd89ccff345c2f6ec18b7",
     "wasm-compat/src/main/java/org/audiveris/wasm/compat/HeadlessPatches.java": "c790416d9110e3c97a387d282c2e2b46b73baa4d487cf6b0e4756a7cd3785f28",
     "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/FontMetricsRuntime.java": "502cc2f66a543e8e912589fdc1e6f3b6f2413db9e7529e3c3d033c2f203ab7ab",
     "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/HeadlessLogging.java": "fc7025efbeef581a56762e152b0d004aaa1a6bfb658c4175aba4382f8f980a41",
+    "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/TrueTypeFaceMetrics.java": "4b6f9aa0f4aab4d12d65e33d9b9ffed3e6cc704e51acc4ecc3d1c79ed712c9d6",
+    "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/TrueTypeGlyphBounds.java": "93041a37f3092f897384c7ec0fb3e3ac42b6dbed9336e9beb900ca1a245fe739",
     "app/src/main/java/org/audiveris/omr/text/FontAttributes.java": "2d5401e8b8749f41195767dd396b1aec0324db93a2a8608ee6c677a4076a1a3c",
     "app/src/main/java/org/audiveris/omr/text/FontInfo.java": "c091b03cf6dbfad940e7a6ad363bc48e522b0678a0860bd2c3b52f58b19a3699",
     "app/src/main/java/org/audiveris/omr/ui/symbol/OmrFont.java": "c6024ae6dd277ad0c04154000c8737fd2614ce3cf1a94811b1c5607c86a488b2",
     "app/src/main/java/org/audiveris/omr/ui/symbol/TextFont.java": "2c14abc1c20a4d19ea470c9a3ae4d705b79199d532dacadf7c173df34f45eea8",
     "app/build.gradle": "d285490b165a0d77769bfdaeb8b7a1b4725826d0cb49ebc6a09e025f9a7910f3",
     "wasm-compat/tools/verify-fontbox-metrics.cjs": "5b42616cd36c8fabfe54bb35c7d572717d75905b98dbcfaac4d44c2bc01ecfbb",
-    "dev/teavm-audit/audit.init.gradle": "5529bfa3f4a4c35ef1cf5090b10fdce60835d02541712715f8697cc1dcd70cdc"
+    "dev/teavm-audit/audit.init.gradle": "b7aa918eb924b05d97d17a52d07b613b041d7d44826de3beeba71a4232c60f85"
   },
   "rawArtifacts": "wsl-artifacts/wasm-components/recorded-text-fonts",
   "cpuMax": "800000 100000",
@@ -25,10 +26,10 @@
   "memorySwapMaxBytes": 0,
   "memoryEventsLocal": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0",
   "artifactSha256": {
-    "bindings.json": "0da91020407f7bae203c1a08e265957db82c91a57c750d26fb93ee0bf537c527",
-    "comparison.json": "bf36d525a00c03e4d8f168044179f44cb3b6812baedfa8f684c7e560f82e9d66",
+    "bindings.json": "4869f65c9715ae210ab1aae47f0c43bdb51940696d9b4b3f3c814da8316727c1",
+    "comparison.json": "7037c0aae8327f2182f3bf703979876368058be6d37b14035ee7d50083143788",
     "diagnostics.tsv": "fedeabd8a34aba0fa7d1aa2d80ccb94c378549c76c57c6942205c67c8f568b5d",
-    "fontbox-metrics.wasm": "138b57dee59991dc92c769250050ef829592b9d36d3a386f5cc53fca048ce3cb",
+    "fontbox-metrics.wasm": "221360eafde4e9900a8f565fbbfadf114e1c68762b7e39c5187f20d5d7916228",
     "fontbox-metrics.wasm-runtime.js": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
     "fonts/5c1247acef7f-DejaVuSans-Bold.ttf": "5c1247acef7f2b8522a31742c76d6adcb5569bacc0be7ceaa4dc39dd252ce895",
     "fonts/847b33e13925-DejaVuSerif-Bold.ttf": "847b33e13925f19ff87e4d934d6b3cf7cac35ce16424f6f670e40c2f377cf2df",
@@ -37,7 +38,7 @@
     "fonts/copyright": "63d3ba759d12804c5b31a9d5940d855c1820d1f5999e6b0872eb1c7ff045fbc9",
     "jvm-reference.json": "9cb05e1936ac742822851b8d2fe1a1f9c68b934b99cf048f71fecd487e9f5206",
     "recorded-geometry.json": "4729c6b37e334b45e3c5b17cb6646ea3dbde583fa8205ec3bd77b94f1154d3a4",
-    "recorded-verification.json": "b2992b2f974bf76bab91eb4974a9a415c342b52b9fd37ab214085bd6bd0d7e2b"
+    "recorded-verification.json": "929b3668490643ad97f83e86abace799941345309db178f1180a9bbeb4e9adef"
   },
   "limitation": "Exact recorded normal-text queries from four physical TTF files, including synthetic italic; no full TEXTS integration, music-font measurement or raster cleanup is established by this component"
 }

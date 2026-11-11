@@ -7,9 +7,9 @@
   "checks": 2068,
   "syntheticItalicCases": 88,
   "exactPhysicalMetrics": true,
-  "wasmBytes": 749207,
-  "gzipBytes": 265472,
-  "wasmSha256": "138b57dee59991dc92c769250050ef829592b9d36d3a386f5cc53fca048ce3cb",
+  "wasmBytes": 734565,
+  "gzipBytes": 260051,
+  "wasmSha256": "221360eafde4e9900a8f565fbbfadf114e1c68762b7e39c5187f20d5d7916228",
   "referenceSha256": "9cb05e1936ac742822851b8d2fe1a1f9c68b934b99cf048f71fecd487e9f5206",
   "faces": [
     {

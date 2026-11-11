@@ -1500,6 +1500,15 @@ No real-page speed advantage is inferred from these sizes. The existing supplied
 is retained as a comparison. The new profile is opt-in and does not change the stage-25 audit's
 root policy or the ordinary headless compiler profile.
 
+Two Node instances and two independent Chromium Workers now pass all five accepted pages
+(**20 page comparisons / 130 recognized words**). All **2,382,096 numeric values** match the
+same-OCR JVM reference within the existing tolerances; maximum difference is
+**1.7763568394002505e-15**. Each instance performs **1,139 physical-font measurements** with
+**zero supplied ordinary-text measurements**. Late font installation is rejected in every
+instance. Three of the eight examined inputs are rejected before TEXTS, as in the JVM reference.
+This still uses native-cleaned rasters and the two supplied music-font measurements; it does
+not establish parity with the separate native Tesseract backend or general text shaping.
+
 Run `verifyFontBackedTextsProbe` after generating all-page native/live references. Archive a
 committed verification with `export_texts_continuation.py <repository> <mirror> <source-commit> --ttf`;
 summaries go to `texts-font-backed-results` and assets to
