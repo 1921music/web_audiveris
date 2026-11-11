@@ -51,6 +51,18 @@ duplicate job rejection pass. A separate two-enclosure fixture makes two actual 
 resumes CURVES twice and exports rehearsal elements; stale and completed-request replies are rejected.
 The focused entry has zero strict dependency diagnostics.
 
+The standalone engine Wasm is **4,735,744 bytes**; the separate FreeType Wasm is **497,135 bytes**.
+The complete core distribution (including fonts, classifier, runtime and notices) is about **10.9 MB**
+or **5.1 MB** summed per-file gzip. The optional English OCR assets add about **14.7 MB**. These
+are separate downloads. In the capped Node run, five 2,480 × 3,506 grayscale pages took **33.7–45.2 s
+per page**, including OCR and MusicXML generation, excluding engine initialization. This records a
+functional baseline; it is not a controlled JVM/Wasm speed comparison.
+
+Compact verification and source provenance are in `engine-results/`; the compiled sources match
+implementation commit `f753fdaa7894669cd7c36897f4d6b841f9f195c3`. The ready-to-serve distribution is
+archived on Windows at `wsl-artifacts/wasm-engine/`, and full XML/reference artifacts are under
+`wsl-artifacts/wasm-components/engine/` (both intentionally outside Git).
+
 Build with the dedicated WSL launcher (Emscripten 4.0.20 must be installed):
 
 ```powershell
@@ -107,6 +119,8 @@ and physical font fallback remain future work: unsupported text raises an error 
 approximate Canvas widths. The optional packaged OCR model is English. Native recognition warnings
 (including uncertain rhythm/key interpretation) can still occur; successful export does not imply
 perfect music recognition.
+The current output is plain MusicXML; zipped MXL and the desktop marshalling utility's optional
+signature/date insertion are separate from this serializer.
 
 TeaVM 0.16.0 drops some outer named regex captures when a nested named group immediately follows.
 `PortableRegexGroups` repairs the `RegexUtil.getGroup` boundary by resolving numeric capture indices;

@@ -1,0 +1,153 @@
+{
+  "node": "v24.22.2",
+  "grayscaleInput": true,
+  "pageSpecificResources": 0,
+  "results": [
+    {
+      "id": "00",
+      "stages": [
+        "BINARY",
+        "SCALE",
+        "GRID",
+        "HEADERS",
+        "STEM_SEEDS",
+        "BEAMS",
+        "LEDGERS",
+        "HEADS",
+        "STEMS",
+        "REDUCTION",
+        "CUE_BEAMS",
+        "TEXTS",
+        "MEASURES",
+        "CHORDS",
+        "CURVES",
+        "SYMBOLS",
+        "LINKS",
+        "RHYTHMS",
+        "PAGE"
+      ],
+      "ocrRequests": 1,
+      "milliseconds": 45224.154712999996
+    },
+    {
+      "id": "01",
+      "stages": [
+        "BINARY",
+        "SCALE",
+        "GRID",
+        "HEADERS",
+        "STEM_SEEDS",
+        "BEAMS",
+        "LEDGERS",
+        "HEADS",
+        "STEMS",
+        "REDUCTION",
+        "CUE_BEAMS",
+        "TEXTS",
+        "MEASURES",
+        "CHORDS",
+        "CURVES",
+        "SYMBOLS",
+        "LINKS",
+        "RHYTHMS",
+        "PAGE"
+      ],
+      "ocrRequests": 1,
+      "milliseconds": 33733.245386
+    },
+    {
+      "id": "02",
+      "stages": [
+        "BINARY",
+        "SCALE",
+        "GRID",
+        "HEADERS",
+        "STEM_SEEDS",
+        "BEAMS",
+        "LEDGERS",
+        "HEADS",
+        "STEMS",
+        "REDUCTION",
+        "CUE_BEAMS",
+        "TEXTS",
+        "MEASURES",
+        "CHORDS",
+        "CURVES",
+        "SYMBOLS",
+        "LINKS",
+        "RHYTHMS",
+        "PAGE"
+      ],
+      "ocrRequests": 1,
+      "milliseconds": 39898.011063
+    },
+    {
+      "id": "03",
+      "stages": [
+        "BINARY",
+        "SCALE",
+        "GRID",
+        "HEADERS",
+        "STEM_SEEDS",
+        "BEAMS",
+        "LEDGERS",
+        "HEADS",
+        "STEMS",
+        "REDUCTION",
+        "CUE_BEAMS",
+        "TEXTS",
+        "MEASURES",
+        "CHORDS",
+        "CURVES",
+        "SYMBOLS",
+        "LINKS",
+        "RHYTHMS",
+        "PAGE"
+      ],
+      "ocrRequests": 1,
+      "milliseconds": 38864.64644699999
+    },
+    {
+      "id": "04",
+      "stages": [
+        "BINARY",
+        "SCALE",
+        "GRID",
+        "HEADERS",
+        "STEM_SEEDS",
+        "BEAMS",
+        "LEDGERS",
+        "HEADS",
+        "STEMS",
+        "REDUCTION",
+        "CUE_BEAMS",
+        "TEXTS",
+        "MEASURES",
+        "CHORDS",
+        "CURVES",
+        "SYMBOLS",
+        "LINKS",
+        "RHYTHMS",
+        "PAGE"
+      ],
+      "ocrRequests": 1,
+      "milliseconds": 44825.684327999974
+    }
+  ],
+  "stats": {
+    "music": {
+      "requests": 2,
+      "cacheLimit": 4096,
+      "cachedMeasurements": 2,
+      "cachedGlyphMetrics": 2,
+      "linearMemoryBytes": 16777216
+    },
+    "symbols": {
+      "calls": 903,
+      "cachedMasks": 78,
+      "cacheLimit": 4096,
+      "cachedMaskBytes": 57890,
+      "maskCacheBudgetBytes": 16777216
+    }
+  }
+}

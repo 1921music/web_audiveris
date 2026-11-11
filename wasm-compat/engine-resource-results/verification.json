@@ -1,0 +1,35 @@
+{
+  "node": "v24.22.2",
+  "chromium": "158.0.8127.18",
+  "nodeInstances": 2,
+  "workers": 2,
+  "geometryCases": 3900,
+  "geometryChecks": 15600,
+  "templateCatalogs": 72,
+  "catalogChecks": 288,
+  "matchingChecks": 288,
+  "maxDifference": 0,
+  "pageSpecificMeasurements": 0,
+  "suppliedTemplateCatalogs": 0,
+  "originalCatalogRegression": 30,
+  "instances": [
+    {
+      "renders": 3915,
+      "measurements": 3900
+    },
+    {
+      "renders": 3915,
+      "measurements": 3900
+    },
+    {
+      "renders": 3915,
+      "measurements": 3900
+    },
+    {
+      "renders": 3915,
+      "measurements": 3900
+    }
+  ],
+  "wasmBytes": 609347,
+  "wasmSha256": "fc5274d8da271596ae2e717f7e4914a40e9ffa068bcf68bf5208ae2091729377"
+}

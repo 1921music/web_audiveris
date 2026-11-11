@@ -1,0 +1,65 @@
+{
+  "chromium": "158.0.8127.18",
+  "concurrentWorkers": 2,
+  "decodedPng": true,
+  "bundledOcr": true,
+  "abortDuringInit": true,
+  "abortDuringRecognition": true,
+  "rejectedBusy": true,
+  "results": [
+    {
+      "id": "00",
+      "stage": "PAGE",
+      "stages": [
+        "BINARY",
+        "SCALE",
+        "GRID",
+        "HEADERS",
+        "STEM_SEEDS",
+        "BEAMS",
+        "LEDGERS",
+        "HEADS",
+        "STEMS",
+        "REDUCTION",
+        "CUE_BEAMS",
+        "TEXTS",
+        "MEASURES",
+        "CHORDS",
+        "CURVES",
+        "SYMBOLS",
+        "LINKS",
+        "RHYTHMS",
+        "PAGE"
+      ],
+      "ocrRequests": 1,
+      "scores": 1
+    },
+    {
+      "id": "04",
+      "stage": "PAGE",
+      "stages": [
+        "BINARY",
+        "SCALE",
+        "GRID",
+        "HEADERS",
+        "STEM_SEEDS",
+        "BEAMS",
+        "LEDGERS",
+        "HEADS",
+        "STEMS",
+        "REDUCTION",
+        "CUE_BEAMS",
+        "TEXTS",
+        "MEASURES",
+        "CHORDS",
+        "CURVES",
+        "SYMBOLS",
+        "LINKS",
+        "RHYTHMS",
+        "PAGE"
+      ],
+      "ocrRequests": 1,
+      "scores": 1
+    }
+  ]
+}

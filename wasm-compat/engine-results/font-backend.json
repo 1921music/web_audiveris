@@ -1,0 +1,7 @@
+{
+  "freeTypeSourceSha256": "36bc4f1cc413335368ee656c42afca65c5a3987e8768cc28cf11ba775e785a5f",
+  "wasmBytes": 497135,
+  "wasmSha256": "e6560a23de9a677ca49f5215fe0676fee3132ffbb3df72af0a08f5603a81a750",
+  "maximumLinearMemoryBytes": 134217728,
+  "pageSpecificResources": 0
+}
