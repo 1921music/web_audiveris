@@ -1,0 +1,59 @@
+{
+  "node": "v24.22.2",
+  "chromium": "158.0.8127.18",
+  "nodeInstances": 2,
+  "workers": 2,
+  "cases": 2280,
+  "nativeComparedPixels": 58368000,
+  "nodePixelsExact": true,
+  "workerPixelSha256Exact": true,
+  "inputGuardsPerInstance": 4,
+  "pixelSha256": "abb6f7755e36ef83376c0c6e96f2b724920b6e8071df194dcff2daa1df88848f",
+  "wasmBytes": 492353,
+  "wasmGzipBytes": 231003,
+  "glueBytes": 13051,
+  "glueGzipBytes": 4482,
+  "wasmSha256": "f6ad92f7922cef5fcc06a3b37527899c2d04c227edc6a9344913f19dc3f235e7",
+  "glueSha256": "105f59d56a8a36d3379dd081cd69a3d7d2d1c94d923998d32f159448283f6b93",
+  "glyphProgramsSha256": "73c601f373d2050593b870c43c0765082358abe724ef1d35564f3af7d4976ccd",
+  "fontSha256": {
+    "Bravura.otf": "dca2d90c88437a701b1c2e71fa54e76f9fa41d7deee935d74dc871ea66ecfdd2",
+    "FinaleJazz.otf": "a8ea0408ef7628ca38ae29eaa1b4357d2b0bf11747f6eee3c5f9ed5cca358e08",
+    "JazzPerc.ttf": "310ef24d859055f1ba026fe3a86359eb3be1e3ebbcac6cb9029281952e958538",
+    "Leland.otf": "cacca69cb750d851023d52a8e41d3373904aa82afc7247085f37d4ee6823506c",
+    "MusicalSymbols.ttf": "07fb37d9fd2c6ccceb1124d0e9e7aa8a4ffe03ae2f0a3bff5e620b241b59d5cc",
+    "Primus.ttf": "25f73922f6462d50a250e98cbb3b69909a7546eae8167e99592c3d641b80facd"
+  },
+  "runnerSha256": "35c6d65369e803bb24d937a7621ba861da92a15c1379a1acb1f44520580fd866",
+  "nodeRows": [
+    {
+      "guards": 4,
+      "cachedMasks": 480,
+      "linearMemoryBytes": 16777216
+    },
+    {
+      "guards": 4,
+      "cachedMasks": 480,
+      "linearMemoryBytes": 16777216
+    }
+  ],
+  "workerRows": [
+    {
+      "bytes": 58368000,
+      "guards": 4,
+      "cachedMasks": 480,
+      "linearMemoryBytes": 16777216,
+      "pixelSha256": "abb6f7755e36ef83376c0c6e96f2b724920b6e8071df194dcff2daa1df88848f",
+      "dom": "undefined"
+    },
+    {
+      "bytes": 58368000,
+      "guards": 4,
+      "cachedMasks": 480,
+      "linearMemoryBytes": 16777216,
+      "pixelSha256": "abb6f7755e36ef83376c0c6e96f2b724920b6e8071df194dcff2daa1df88848f",
+      "dom": "undefined"
+    }
+  ],
+  "limitation": "Standalone FreeType mask component with native AWT glyph IDs and positions; no TeaVM engine integration, portable symbol layout or recognition-speed improvement is established."
+}

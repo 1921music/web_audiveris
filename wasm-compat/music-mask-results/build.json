@@ -1,0 +1,13 @@
+{
+  "freeTypeSourceSha256": "36bc4f1cc413335368ee656c42afca65c5a3987e8768cc28cf11ba775e785a5f",
+  "compiler": "emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 4.0.20 (6913738ec5371a88c4af5a80db0ab42bad3de681)\nCopyright (C) 2025 the Emscripten authors (see AUTHORS.txt)\nThis is free and open source software under the MIT license.\nThere is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "sourceSha256": {
+    "dev/teavm-audit/music-mask-native.c": "22c00cf9acee2b4b577fbf5f528fec582f418afd7310ede40e81c716188d431e",
+    "dev/teavm-audit/music-mask-wasm.c": "ed1d6fe2ca04879087d5c7791c7d69e5f3df98ac13f5fafab1c334f44d150742",
+    "dev/teavm-audit/build_music_mask_wasm.py": "26a8d98a2dc5968fb77a7768657d3e56079010d5000d359077ba7ce64cf9598f"
+  },
+  "wasmBytes": 492353,
+  "wasmSha256": "f6ad92f7922cef5fcc06a3b37527899c2d04c227edc6a9344913f19dc3f235e7",
+  "maximumLinearMemoryBytes": 134217728,
+  "limitation": "Standalone glyph-mask candidate; no TeaVM engine integration or portable music layout is established."
+}

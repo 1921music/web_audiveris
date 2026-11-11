@@ -1,0 +1,16 @@
+{
+  "sourceUrl": "https://download.savannah.gnu.org/releases/freetype/freetype-2.14.3.tar.xz",
+  "sourceArchiveSha256": "36bc4f1cc413335368ee656c42afca65c5a3987e8768cc28cf11ba775e785a5f",
+  "freeTypeVersion": [
+    2,
+    14,
+    3
+  ],
+  "library": "/home/dev/work/web_audiveris/build/wasm-compat/freetype-native/native-build/libfreetype.a",
+  "librarySha256": "9daab2d66da77dc0b15301cf989bd1b4d93fe32fb63acb2a16d9f733a0d9a045",
+  "helperSha256": "a8af8864ecdab7953871911aadbc0d33b8856196a9a7609e3716061ba4c79ec7",
+  "jdkLibrarySha256": "65d7116d7751e43c1152f791c63b3e61ad0800398ed3b00e8bf028203b1b25b5",
+  "isolatedStaticFreeType": true,
+  "helperSourceSha256": "22c00cf9acee2b4b577fbf5f528fec582f418afd7310ede40e81c716188d431e",
+  "limitation": "Native JVM comparison only; no Wasm library is built."
+}

@@ -1,0 +1,189 @@
+{
+  "cases" : 2280,
+  "candidates" : [ {
+    "noHinting" : false,
+    "differentPixels" : 261031,
+    "differentCases" : 2280,
+    "roundOrigin" : false,
+    "examples" : [ {
+      "size" : 12,
+      "pixels" : 13,
+      "family" : "Bravura",
+      "fraction" : 0.0,
+      "shape" : "NOTEHEAD_BLACK"
+    }, {
+      "size" : 12,
+      "pixels" : 13,
+      "family" : "Bravura",
+      "fraction" : 0.25,
+      "shape" : "NOTEHEAD_BLACK"
+    }, {
+      "size" : 12,
+      "pixels" : 21,
+      "family" : "Bravura",
+      "fraction" : 0.5,
+      "shape" : "NOTEHEAD_BLACK"
+    }, {
+      "size" : 12,
+      "pixels" : 21,
+      "family" : "Bravura",
+      "fraction" : 0.75,
+      "shape" : "NOTEHEAD_BLACK"
+    }, {
+      "size" : 19,
+      "pixels" : 22,
+      "family" : "Bravura",
+      "fraction" : 0.0,
+      "shape" : "NOTEHEAD_BLACK"
+    }, {
+      "size" : 19,
+      "pixels" : 22,
+      "family" : "Bravura",
+      "fraction" : 0.25,
+      "shape" : "NOTEHEAD_BLACK"
+    }, {
+      "size" : 19,
+      "pixels" : 37,
+      "family" : "Bravura",
+      "fraction" : 0.5,
+      "shape" : "NOTEHEAD_BLACK"
+    }, {
+      "size" : 19,
+      "pixels" : 37,
+      "family" : "Bravura",
+      "fraction" : 0.75,
+      "shape" : "NOTEHEAD_BLACK"
+    } ]
+  }, {
+    "noHinting" : false,
+    "differentPixels" : 192304,
+    "differentCases" : 2280,
+    "roundOrigin" : true,
+    "examples" : [ {
+      "size" : 12,
+      "pixels" : 13,
+      "family" : "Bravura",
+      "fraction" : 0.0,
+      "shape" : "NOTEHEAD_BLACK"
+    }, {
+      "size" : 12,
+      "pixels" : 13,
+      "family" : "Bravura",
+      "fraction" : 0.25,
+      "shape" : "NOTEHEAD_BLACK"
+    }, {
+      "size" : 12,
+      "pixels" : 13,
+      "family" : "Bravura",
+      "fraction" : 0.5,
+      "shape" : "NOTEHEAD_BLACK"
+    }, {
+      "size" : 12,
+      "pixels" : 13,
+      "family" : "Bravura",
+      "fraction" : 0.75,
+      "shape" : "NOTEHEAD_BLACK"
+    }, {
+      "size" : 19,
+      "pixels" : 22,
+      "family" : "Bravura",
+      "fraction" : 0.0,
+      "shape" : "NOTEHEAD_BLACK"
+    }, {
+      "size" : 19,
+      "pixels" : 22,
+      "family" : "Bravura",
+      "fraction" : 0.25,
+      "shape" : "NOTEHEAD_BLACK"
+    }, {
+      "size" : 19,
+      "pixels" : 22,
+      "family" : "Bravura",
+      "fraction" : 0.5,
+      "shape" : "NOTEHEAD_BLACK"
+    }, {
+      "size" : 19,
+      "pixels" : 22,
+      "family" : "Bravura",
+      "fraction" : 0.75,
+      "shape" : "NOTEHEAD_BLACK"
+    } ]
+  }, {
+    "noHinting" : true,
+    "differentPixels" : 211234,
+    "differentCases" : 1714,
+    "roundOrigin" : false,
+    "examples" : [ {
+      "size" : 12,
+      "pixels" : 21,
+      "family" : "Bravura",
+      "fraction" : 0.5,
+      "shape" : "NOTEHEAD_BLACK"
+    }, {
+      "size" : 12,
+      "pixels" : 21,
+      "family" : "Bravura",
+      "fraction" : 0.75,
+      "shape" : "NOTEHEAD_BLACK"
+    }, {
+      "size" : 19,
+      "pixels" : 35,
+      "family" : "Bravura",
+      "fraction" : 0.5,
+      "shape" : "NOTEHEAD_BLACK"
+    }, {
+      "size" : 19,
+      "pixels" : 35,
+      "family" : "Bravura",
+      "fraction" : 0.75,
+      "shape" : "NOTEHEAD_BLACK"
+    }, {
+      "size" : 24,
+      "pixels" : 33,
+      "family" : "Bravura",
+      "fraction" : 0.25,
+      "shape" : "NOTEHEAD_BLACK"
+    }, {
+      "size" : 24,
+      "pixels" : 43,
+      "family" : "Bravura",
+      "fraction" : 0.5,
+      "shape" : "NOTEHEAD_BLACK"
+    }, {
+      "size" : 24,
+      "pixels" : 36,
+      "family" : "Bravura",
+      "fraction" : 0.75,
+      "shape" : "NOTEHEAD_BLACK"
+    }, {
+      "size" : 37,
+      "pixels" : 54,
+      "family" : "Bravura",
+      "fraction" : 0.0,
+      "shape" : "NOTEHEAD_BLACK"
+    } ]
+  }, {
+    "noHinting" : true,
+    "differentPixels" : 0,
+    "differentCases" : 0,
+    "roundOrigin" : true,
+    "examples" : [ ]
+  } ],
+  "cachedMasks" : 960,
+  "nativeIntermediatePixels" : 189620,
+  "fontSha256" : {
+    "Bravura.otf" : "dca2d90c88437a701b1c2e71fa54e76f9fa41d7deee935d74dc871ea66ecfdd2",
+    "FinaleJazz.otf" : "a8ea0408ef7628ca38ae29eaa1b4357d2b0bf11747f6eee3c5f9ed5cca358e08",
+    "JazzPerc.ttf" : "310ef24d859055f1ba026fe3a86359eb3be1e3ebbcac6cb9029281952e958538",
+    "Leland.otf" : "cacca69cb750d851023d52a8e41d3373904aa82afc7247085f37d4ee6823506c",
+    "MusicalSymbols.ttf" : "07fb37d9fd2c6ccceb1124d0e9e7aa8a4ffe03ae2f0a3bff5e620b241b59d5cc",
+    "Primus.ttf" : "25f73922f6462d50a250e98cbb3b69909a7546eae8167e99592c3d641b80facd"
+  },
+  "linkedFreeTypeVersion" : [ 2, 14, 3 ],
+  "javaRuntime" : "25.0.5+8-LTS",
+  "width" : 160,
+  "height" : 160,
+  "nativePixelsSha256" : "abb6f7755e36ef83376c0c6e96f2b724920b6e8071df194dcff2daa1df88848f",
+  "glyphProgramsSha256" : "73c601f373d2050593b870c43c0765082358abe724ef1d35564f3af7d4976ccd",
+  "limitation" : "Native-only candidate: actual AWT glyph IDs, positions and font selection are still required. No portable font backend or Wasm result is established."
+}
