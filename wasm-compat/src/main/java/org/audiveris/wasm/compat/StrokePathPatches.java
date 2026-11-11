@@ -54,7 +54,7 @@ final class StrokePathPatches {
                 }
             }
             if (constructions != 1 || operations != 3) { throw new IllegalStateException("Review Marlin queue sites: " + constructions + "/" + operations); }
-        } else if (cls.getName().equals("sun.java2d.marlin.RendererContext")) {
+        } else if (cls.getName().equals("sun.java2d.marlin.RendererContext") && !Boolean.getBoolean("audiveris.compat.alphaRaster")) {
             MethodHolder constructor = cls.getMethod(new MethodDescriptor("<init>", ValueType.object("java.lang.String"), ValueType.VOID));
             if (constructor == null) { throw new IllegalStateException("Review stroke renderer context"); }
             Set<String> rasterOnly = Set.of("sun.java2d.marlin.MarlinCache", "sun.java2d.marlin.Renderer", "sun.java2d.marlin.MarlinTileGenerator");
@@ -74,7 +74,7 @@ final class StrokePathPatches {
         } else if (cls.getName().equals(ENGINE)) {
             for (MethodHolder method : cls.getMethods()) {
                 if (method.getName().equals("logSettings")) { log(method, "settings"); }
-                if (method.getName().equals("getAATileGenerator")) { reject(method); }
+                if (method.getName().equals("getAATileGenerator") && !Boolean.getBoolean("audiveris.compat.alphaRaster")) { reject(method); }
                 if (method.getName().equals("strokeTo") && method.getProgram() != null) {
                     for (BasicBlock block : method.getProgram().getBasicBlocks()) {
                         for (Instruction instruction : block) {

@@ -1,11 +1,11 @@
 /** Optional memory-only music metrics. Initialize once before starting synchronous recognition. */
-export async function createFreeTypeMusicMetrics(factory, wasm, fonts, options = {}) {
+export async function createFreeTypeMusicMetrics(factory, wasm, fonts, options = {}, extensionFactory = null) {
     const cacheLimit = options.maxCacheEntries ?? 4096;
     if (!Number.isInteger(cacheLimit) || cacheLimit < 1 || cacheLimit > 65536) throw new RangeError('Invalid music cache limit');
     const api = await factory({wasmBinary: wasm});
     const allocate = size => {const pointer = api._malloc(size); if (!pointer) throw new Error('Font allocation failed'); return pointer;};
     const values = allocate(1024), faces = new Map(), glyphs = new Map(), metrics = new Map(), strings = new Map();
-    const owned = []; let closed = false, requests = 0;
+    const owned = []; let closed = false, requests = 0, extension = null;
     const normalize = name => name == null || String(name).toLowerCase() === 'generic' ? 'bravura' : String(name).replaceAll(' ', '').toLowerCase();
     function put(cache, key, value) {
         if (!cache.has(key) && cache.size >= cacheLimit) cache.delete(cache.keys().next().value);
@@ -14,6 +14,7 @@ export async function createFreeTypeMusicMetrics(factory, wasm, fonts, options =
     function dispose() {
         if (closed) return;
         closed = true;
+        if (extension) extension.dispose();
         for (const {face, pointer} of owned) {api._music_mask_close(face); api._free(pointer);}
         api._free(values); faces.clear(); glyphs.clear(); metrics.clear(); strings.clear();
     }
@@ -38,6 +39,7 @@ export async function createFreeTypeMusicMetrics(factory, wasm, fonts, options =
             faces.set(fullKey, record);
         }
         if (!faces.size) throw new Error('Configure a physical music font');
+        if (extensionFactory) extension = extensionFactory(api, faces, cacheLimit);
     } catch (error) {dispose(); throw error;}
     function measure(family, size, value) {
         if (closed) throw new Error('Music font backend is closed');
@@ -77,5 +79,5 @@ export async function createFreeTypeMusicMetrics(factory, wasm, fonts, options =
             : {fontName: font.name, x: minX, y: minY, width: Math.fround(maxX - minX), height: Math.fround(maxY - minY), advance: position});
         put(strings, stringKey, result); return result;
     }
-    return Object.freeze({measure, dispose, stats: () => ({requests, cacheLimit, cachedMeasurements: strings.size, cachedGlyphMetrics: metrics.size, linearMemoryBytes: api.HEAPU8.byteLength})});
+    return Object.freeze({...extension?.methods, measure, dispose, stats: () => ({requests, cacheLimit, cachedMeasurements: strings.size, cachedGlyphMetrics: metrics.size, linearMemoryBytes: api.HEAPU8.byteLength})});
 }

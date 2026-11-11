@@ -26,3 +26,12 @@ Copyright (c) 2005, 2018, Oracle and/or its affiliates. All rights reserved.
 Their license/copyright notices are retained in the adaptation. Native endpoint
 clipping is performed before integer line stepping; the packed sink writes only
 opaque white pixels. Native memory and general color/composite handling are absent.
+
+`GrayAlphaRaster.java` calls the installed JDK 25 Marlin AA tile generator. The opt-in
+`MarlinAlphaPatches` compiler profile retains its Java edge, coverage and tile algorithms,
+replacing Marlin's `OffHeapArray`/`Unsafe` buffer operations with checked, module-local
+`MarlinMemory` byte arrays. Rectangular `Region` construction omits JNI ID registration.
+No OpenJDK source file or JAR is rewritten. The JDK code included by TeaVM remains under
+GPL version 2 with the Classpath Exception; see the accompanying `LICENSE`.
+
+Reference: https://github.com/openjdk/jdk/tree/jdk-25%2B36/src/java.desktop/share/classes/sun/java2d/marlin

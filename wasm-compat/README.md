@@ -13,7 +13,9 @@ The latest TEXTS entry performs original cleanup, actual external OCR and full T
 on five accepted pages in two Node instances and two Workers. Ordinary and music text-font
 measurements are computed from physical font files; **zero TEXTS font measurements and zero
 cleaned rasters are supplied to the engine**. The earlier fixture-backed entries remain
-comparison profiles. Music-symbol painting and general shaping/fallback remain separate work.
+comparison profiles. Music-symbol painting now uses a module-local shared FreeType backend:
+**1,194 family/shape definitions / 47,760 cases** match native pixel hashes in two Node
+instances and two Workers. General shaping/fallback remains outside this backend.
 
 ## Approach
 
@@ -1619,7 +1621,9 @@ The component is **492,353 bytes** (**231,003 gzip**) plus **13,051 bytes of JS 
 (**4,482 gzip**). Font files are separate. The native fixture still supplies glyph IDs,
 physical-font selection and positioned glyph commands, so this proves rasterization rather
 than portable symbol layout or full TEXTS integration. No recognition-speed claim follows.
-TODO: connect an explicit module-local font backend, port the required music layout/metrics,
+The logical-symbol backend described below now connects these masks to `PackedPageRaster`.
+The fixture-backed experiment remains useful as an independent raster-only comparison.
+TODO: expand validated layout/metrics where additional recognition callers require it,
 and measure incremental engine size, throughput, peak memory and buffer copies. Unused font
 drivers and hinting support are additional size candidates after that behavior is verified.
 
@@ -1665,23 +1669,83 @@ point is introduced inside recognition; OCR remains the external request/reply b
 with exact OCR input pixels and **zero supplied ordinary/music TEXTS font measurements**.
 All **2,382,096 numeric values** match within the existing tolerances; maximum difference is
 **1.7763568394002505e-15**. Each instance performs **1,139 ordinary-font measurements** and
-**two external music measurements**, with separate module resources and caches. Duplicate/stale
+**two external music measurements**, with resources and caches isolated per engine instance. Duplicate/stale
 OCR replies and invalid/repeated font configuration are rejected. Strict compilation has zero
 diagnostics. Header geometry, note templates and classifier resources remain explicit inputs.
 
-The TeaVM entry is **3,449,826 bytes**, **8,059 bytes** above the prior cleanup entry. Together
-with the music-metrics Wasm, the two Wasm binaries total **3,944,325 bytes**. Generated JS,
-the host adapter, the **512,924-byte Bravura font**, four ordinary font files, templates,
-classifier and OCR assets are additional resources. These checks establish compatibility for
-the accepted sample inputs, not a recognition-throughput improvement or native OCR parity.
-Music-symbol painting, dashed thin strokes and general shaping/fallback remain unsupported.
-TODO: evaluate a shared rendering/metrics module, remove unused font drivers where verified,
-and measure end-to-end download size, startup time, peak memory, allocations and throughput.
+The TeaVM entry is **3,525,070 bytes**, **75,244 bytes** above the earlier physical-metrics entry.
+Together with the shared music-rendering/metrics Wasm, the two binaries total **4,022,205 bytes**.
+Generated JS, the host adapter, six music fonts, the explicit text-symbol font, four ordinary
+font files, templates, classifier and OCR assets are additional resources. Five independent
+native-hash symbol smoke cases run in each full engine instance, covering ordinary, sub-point,
+large-AA, layered-repeat and text-role rendering. The five score pages themselves make **zero
+symbol paint calls**; their font-symbol coverage comes from the separate full rendering grid.
+These checks establish compatibility for the accepted inputs, without a throughput or native
+OCR parity claim. Dashed thin strokes and general shaping/fallback remain unsupported.
+TODO: remove unused font drivers where verified, deduplicate font downloads, and measure
+end-to-end transfer size, startup time, peak memory, allocations and throughput.
 
-After the component/resources are built, run `verifyMusicBackedTextsProbe` with the audit init
-script through the capped launcher. Archive a committed run with
+After the component/resources are built, run `verifyMusicBackedTextsProbe` with both audit and
+music-paint init scripts through the capped launcher. Archive a committed run with
 `export_texts_continuation.py <repository> <mirror> <source-commit> --music` into
 `texts-music-backed-results` and `wsl-artifacts/wasm-components/texts-music-backed`.
+
+### Logical music-symbol painting
+
+`WorkerMusicSymbols` connects `PackedPageRaster.symbol` to a sealed, synchronous host callback.
+The host receives only family, shape, integer point size and center coordinates. A generated
+resource extracts character codes, family fallback, scale operations and reviewed composite
+definitions from the original symbol objects. It supplies **no glyph IDs, positioned glyphs,
+measured bounds or pre-rendered masks**. The original Audiveris sources remain unchanged by
+this rendering work. Reflection is confined to the JVM build-time definition extractor.
+
+`createFreeTypeMusicSymbols` shares one FreeType Wasm instance and font collection with music
+measurements. It resolves glyphs, true bounds, advances and masks from the supplied font bytes.
+Legacy Microsoft symbol charmaps are selected explicitly and restored after lookup. Cue/metro
+scales preserve float rounding and integer fallback-font sizes. Sub-point derived sizes use
+the JDK scaler's one-point base plus 16.16 transform. Fonts above the JDK's 100-pixel threshold
+use their outlines and the original JDK Marlin AA tile algorithms, compiled into Wasm.
+`MarlinAlphaPatches` replaces only Marlin buffer storage with checked module-local byte arrays;
+there is no runtime JVM, reflection, native pointer or general `Unsafe` implementation.
+
+Centered repeat-bar definitions retain two ordered paint operations, including the barline.
+ASCII `TextSymbol` definitions, including fingering, fret and plucking labels, use an explicit
+logical-role-to-physical-font binding. The verified binding resolves SansSerif to a supplied
+DejaVu Sans file, with its hash and license archived. Missing bindings fail explicitly.
+This does not provide general text shaping, arbitrary logical-font discovery or fallback.
+
+The independent JVM oracle paints the original symbols onto patterned byte-gray backgrounds.
+**47,760 cases / 1,222,656,000 pixels per instance** match in two fresh Node modules and two
+Workers without DOM access. The grid covers all **1,194 reviewed family/shape definitions**,
+sizes **1, 12, 19, 24, 37, 48, 88, 100, 101 and 128**, fractional centers and clipping.
+Each instance checks eight protocol/configuration guards. Invalid mask/outline batches are
+validated and copied before destination mutation; async replies are rejected. Another 20 cases
+verify identical results with a one-entry, 128-byte mask cache and unchanged fresh music
+measurements after tiny, large and layered rendering on the shared font face. Strict compilation has zero
+diagnostics. The API currently accepts integer point sizes 1–128; larger sizes need validation.
+
+The standalone TeaVM probe is **500,613 bytes**; the shared rendering/metrics FreeType module
+is **497,135 bytes** (**233,464 gzip**), only **2,636 bytes** above the earlier metrics-only
+binary. JavaScript, definition resources and fonts are additional. The mask cache has explicit
+`maxCacheEntries` and `maxMaskCacheBytes` options: defaults **4,096 entries / 16 MiB coverage
+bytes**, with JavaScript metadata additional. The grid retains **5,494,380 coverage bytes**.
+Marlin's managed-buffer budget defaults to **64 MiB**, configurable before first allocation;
+these tests retain **135,168 bytes**. FreeType linear memory starts at **16 MiB** and is capped
+at **128 MiB**. Each Wasm/Worker instance owns its provider, caches and raster buffers.
+
+The remaining **378 family/shape entries** comprise **132 without symbol definitions** and
+**246 compound/line/UI definitions**. At this cleanup boundary, the latter are handled by
+existing glyph, area, line or member visitors, or are UI-only prototypes. They are not silently
+approximated by the font backend. `music-symbol-results/inventory.json` preserves each reason;
+`routing.json` records the reviewed cleanup routes. These classifications do not authorize
+engine-wide exclusion of their classes.
+
+Run `verifyMusicSymbolsWasm` with both audit and music-paint init scripts through the capped
+launcher. Archive a committed run with `export_music_symbols.py <repository> <mirror> <commit>`
+into `music-symbol-results` and `wsl-artifacts/wasm-components/music-symbols`.
+TODO: measure recognition throughput, FFI overhead, startup, complete transfer size and peak
+memory; consider caching outlines, avoiding unused bitmap rendering for large glyphs, sharing
+downloaded font buffers and removing unused FreeType drivers after equivalent validation.
 
 ## Pure Java path-fill component
 

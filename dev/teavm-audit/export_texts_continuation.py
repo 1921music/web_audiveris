@@ -1,10 +1,12 @@
 """Archive TEXTS recognition with explicitly supplied native cleanup/OCR/font fixtures."""
 import hashlib
+import io
 import json
 from pathlib import Path
 import shutil
 import subprocess
 import sys
+import tarfile
 
 
 def main():
@@ -44,6 +46,9 @@ def main():
         assert len(report['musicFontStats']) == 4
         for calls, stats in zip(report['musicFontMeasurementCalls'], report['musicFontStats']):
             assert calls == stats['requests'] and stats['cachedMeasurements'] <= stats['cacheLimit'] == 256
+            assert stats['symbols']['calls'] == report['symbolSmokeChecksPerInstance'] + stats['pageSymbolCalls']
+            assert stats['symbols']['cachedMaskBytes'] <= stats['symbols']['maskCacheBudgetBytes']
+        assert report['sharedMusicMetricsAndRendering'] and report['symbolSmokeChecksPerInstance'] == 5
     assert report['workers'] == report['nodeInstances'] == 2
     assert report['checks'] == report['pages'] * 4 and report['originalTextWords'] > 0
     assert report['originalSystemProcessing'] and report['asynchronousReplyBoundary'] and report['duplicateAndLateRepliesRejected']
@@ -88,19 +93,33 @@ def main():
     if music:
         sources += ['wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/WorkerMusicFontGeometry.java',
             'wasm-compat/src/test/java/org/audiveris/wasm/compat/test/MusicBackedTextsProbe.java',
-            'wasm-compat/host/freetype-music-metrics.mjs', 'wasm-compat/third-party/freetype/NOTICE.md', 'app/res/Bravura.otf']
+            'wasm-compat/src/test/java/org/audiveris/wasm/compat/test/MusicSymbolProbe.java',
+            'wasm-compat/src/test/java/org/audiveris/wasm/compat/test/MusicSymbolOracle.java',
+            'wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/WorkerMusicSymbols.java',
+            'wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/MarlinMemory.java',
+            'wasm-compat/src/jdk/java/org/audiveris/wasm/compat/platform/GrayAlphaRaster.java',
+            'wasm-compat/src/main/java/org/audiveris/wasm/compat/MarlinAlphaPatches.java',
+            'wasm-compat/host/freetype-music-metrics.mjs', 'wasm-compat/host/freetype-music-symbols.mjs',
+            'wasm-compat/third-party/freetype/NOTICE.md', 'dev/teavm-audit/music-paint.init.gradle']
+        inventory = read(mirror / 'build/wasm-compat/music-symbols-wasm/inventory.json')
+        sources += ['app/res/' + name for name in inventory['musicFontSha256']]
+        sources += subprocess.check_output(git + ['ls-tree', '-r', '--name-only', revision, '--', 'app/src/main/java/org/audiveris/omr/ui/symbol']).decode().splitlines()
         sources += ['dev/teavm-audit/' + name for name in ['music-mask-native.c', 'music-mask-wasm.c',
-            'music-metrics-functions.h', 'music-metrics-wasm.c', 'build_music_mask_wasm.py', 'build_music_metrics_wasm.py']]
+            'music-metrics-functions.h', 'music-metrics-wasm.c', 'music-symbols-wasm.c', 'build_music_symbols_wasm.py']]
+    sources.append('dev/teavm-audit/export_texts_continuation.py')
     source_hashes = {}
-    for name in sorted(set(sources)):
-        directory = root if name == 'wasm-compat/third-party/freetype/NOTICE.md' else mirror
-        data = (directory / name).read_bytes(); committed = subprocess.check_output(git + ['show', revision + ':' + name])
-        if not name.endswith(('.otf', '.ttf')):
-            data = data.replace(b'\r\n', b'\n'); committed = committed.replace(b'\r\n', b'\n')
-        assert data == committed, name
-        source_hashes[name] = hashlib.sha256(data).hexdigest()
+    archive = subprocess.check_output(git + ['archive', revision] + sorted(set(sources)))
+    with tarfile.open(fileobj=io.BytesIO(archive)) as files:
+        for entry in files:
+            if not entry.isfile(): continue
+            name=entry.name;directory=root if name in ['wasm-compat/third-party/freetype/NOTICE.md','dev/teavm-audit/export_texts_continuation.py'] else mirror
+            data=(directory/name).read_bytes();committed=files.extractfile(entry).read()
+            if not name.endswith(('.otf','.ttf')):
+                data=data.replace(b'\r\n',b'\n');committed=committed.replace(b'\r\n',b'\n')
+            assert data==committed,name
+            source_hashes[name]=hashlib.sha256(data).hexdigest()
     if music:
-        backend_build = read(mirror / 'build/wasm-compat/music-metrics-wasm/build.json')
+        backend_build = read(mirror / 'build/wasm-compat/music-symbols-wasm/build.json')
         assert backend_build['wasmSha256'] == report['musicFontAssets']['/music/module.wasm']['sha256']
         for name, digest in backend_build['sourceSha256'].items():
             assert source_hashes['dev/teavm-audit/' + name] == digest
@@ -167,7 +186,7 @@ def main():
             copy(path, 'text-fonts/fonts/' + face['file'])
         copy(Path('/usr/share/doc/fonts-dejavu-core/copyright'), 'text-fonts/fonts/copyright')
     if music:
-        backend = mirror / 'build/wasm-compat/music-metrics-wasm'
+        backend = mirror / 'build/wasm-compat/music-symbols-wasm'
         for url, info in report['musicFontAssets'].items():
             assert url.startswith('/music/') and '..' not in Path(url).parts
             matches = [source / name for name, digest in report['inputSha256'].items() if digest == info['sha256']]
@@ -178,6 +197,10 @@ def main():
         copy(root / 'wasm-compat/third-party/freetype/NOTICE.md', 'licenses/freetype/NOTICE.md')
         copy(mirror / 'build/wasm-compat/freetype-native/freetype-2.14.3.tar.xz', 'licenses/freetype/freetype-2.14.3.tar.xz')
         copy(backend / 'build.json', 'font-backend/build.json')
+        copy(backend / 'jvm-reference.json', 'font-backend/jvm-reference.json')
+        copy(backend / 'inventory.json', 'font-backend/inventory.json')
+        copy(backend / 'font-resources.json', 'font-backend/font-resources.json')
+        copy(backend / 'text-font-COPYRIGHT', 'licenses/text-symbol-font/COPYRIGHT')
         sdk = Path('/home/dev/tools/emsdk/upstream/emscripten')
         copy(sdk / 'LICENSE', 'licenses/emscripten/LICENSE')
         copy(sdk / 'system/lib/libc/musl/COPYRIGHT', 'licenses/emscripten/musl-COPYRIGHT')

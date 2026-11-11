@@ -12,7 +12,7 @@ import org.audiveris.omr.image.RunTableRaster;
 import org.audiveris.omr.sig.inter.Inter;
 import org.audiveris.omr.ui.symbol.MusicFamily;
 
-/** White non-AA drawing directly into the cleaner's packed byte buffer. */
+/** White primitives and font coverage masks directly into the cleaner's packed byte buffer. */
 public final class PackedPageRaster implements PageRaster {
     private final ByteProcessor buffer;
     private final byte[] pixels;
@@ -50,6 +50,7 @@ public final class PackedPageRaster implements PageRaster {
         var origin = glyph.getTopLeft(); RunTableRaster.erase(buffer, glyph.getRunTable(), origin.x, origin.y);
     }
     @Override public void symbol(Inter inter, MusicFamily family, int pointSize) {
-        throw new UnsupportedOperationException("Cleanup music-symbol painting is not configured: " + inter.getShape());
+        var glyph=inter.getGlyph();var center=glyph!=null?glyph.getCenter2D():inter.getCenter2D();
+        WorkerMusicSymbols.paint(pixels,width,height,family.name(),inter.getShape().name(),pointSize,center.getX(),center.getY());
     }
 }

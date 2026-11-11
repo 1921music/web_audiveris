@@ -3,6 +3,7 @@ package org.audiveris.wasm.compat.test;
 
 import org.audiveris.wasm.compat.platform.PortableTextGeometry;
 import org.audiveris.wasm.compat.platform.WorkerMusicFontGeometry;
+import org.audiveris.wasm.compat.platform.WorkerMusicSymbols;
 import org.teavm.jso.*;
 import org.teavm.jso.typedarrays.Int8Array;
 
@@ -21,6 +22,10 @@ public final class MusicBackedTextsProbe {
     @JSExport public static int textMeasurements(){return CleanupTextsProbe.textMeasurements();}
     @JSExport public static void installMusicMetrics(WorkerMusicFontGeometry.Backend backend,int cacheLimit){WorkerMusicFontGeometry.install(backend,cacheLimit);}
     @JSExport public static int musicMeasurements(){return WorkerMusicFontGeometry.measurements();}
+    @JSExport public static void installMusicSymbols(WorkerMusicSymbols.Backend backend){WorkerMusicSymbols.install(backend);}
+    @JSExport public static int musicSymbolPaints(){return WorkerMusicSymbols.calls();}
+    /** Independent font-mask smoke cases, outside the score-page recognition input. */
+    @JSExport public static Int8Array verifyMusicSymbol(String family,String shape,int size,double x,double y,int background){return MusicSymbolProbe.paint(family,shape,size,x,y,background);}
     @JSExport public static JSObject beginPage(int width,int height,Int8Array pixels,String id,int margin,String languages,int generation)throws Exception{
         PortableTextGeometry.activate();WorkerMusicFontGeometry.activate();
         return TextsContinuationProbe.beginPageWithCleanup(width,height,pixels,id,margin,languages,generation);

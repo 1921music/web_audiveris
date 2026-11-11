@@ -13,3 +13,8 @@ in the build/provenance files.
 Emscripten 4.0.20 runtime and musl notices are included alongside these artifacts.
 Music font files are the upstream Audiveris resources and retain their original
 font metadata and licensing.
+
+The logical-symbol component also accepts explicit physical fonts for ASCII text-symbol
+roles. Its verification bundle includes the JVM-resolved DejaVu Sans file, its SHA-256
+and the distribution's DejaVu copyright/license file (`text-font-COPYRIGHT`). Runtime
+font selection uses the supplied role bindings and bytes, with no OS font discovery.
