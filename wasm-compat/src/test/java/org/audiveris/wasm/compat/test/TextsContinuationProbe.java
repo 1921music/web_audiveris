@@ -24,6 +24,12 @@ public final class TextsContinuationProbe {
     }
     @JSExport public static void defaultTextFont(String name) { HeadlessTextFontGeometry.defaultName(name); }
     @JSExport public static JSObject beginPage(int width,int height,Int8Array pixels,Int8Array cleaned,String id,int margin,String languages,int generation) throws Exception {
+        return begin(width,height,pixels,cleaned,id,margin,languages,generation);
+    }
+    public static JSObject beginPageWithCleanup(int width,int height,Int8Array pixels,String id,int margin,String languages,int generation) throws Exception {
+        return begin(width,height,pixels,null,id,margin,languages,generation);
+    }
+    private static JSObject begin(int width,int height,Int8Array pixels,Int8Array cleaned,String id,int margin,String languages,int generation) throws Exception {
         if(pending!=null){
             if(pending.state()==OcrExchange.State.WAITING||pending.state()==OcrExchange.State.READY){throw new IllegalStateException("Finish or cancel the pending TEXTS operation");}
             if(generation<=pending.request().token().generation()){throw new IllegalArgumentException("Use a new TEXTS generation");}
@@ -32,7 +38,8 @@ public final class TextsContinuationProbe {
         prefix = CueBeamsProbe.analyze(sheet);
         if (prefix.contains("\"rejected\":true")) { throw new IllegalArgumentException("Page rejected before TEXTS"); }
         sheet.getStub().done(OmrStep.CUE_BEAMS);
-        pending = new WorkerTextsBridge(sheet, new ij.process.ByteProcessor(width,height,cleaned.copyToJavaArray(),null),
+        var buffer = cleaned == null ? PortableTextsCleanup.clean(sheet) : new ij.process.ByteProcessor(width,height,cleaned.copyToJavaArray(),null);
+        pending = new WorkerTextsBridge(sheet, buffer,
                 "texts-job",generation,margin,languages);
         return OcrTransport.request(pending.request());
     }

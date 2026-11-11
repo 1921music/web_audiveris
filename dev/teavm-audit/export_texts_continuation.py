@@ -9,11 +9,12 @@ import sys
 
 def main():
     root, mirror = map(Path, sys.argv[1:3]); revision = sys.argv[3]
-    ttf = '--ttf' in sys.argv[4:]
+    cleanup = '--cleanup' in sys.argv[4:]
+    ttf = cleanup or '--ttf' in sys.argv[4:]
     live = ttf or '--live' in sys.argv[4:]
     source = mirror / 'build/wasm-compat/texts-continuation-probe'
-    module = mirror / 'build/wasm-compat/texts-font-backed-probe' if ttf else source
-    module_name = 'texts-font-backed' if ttf else 'texts-continuation'
+    module = mirror / 'build/wasm-compat/texts-cleanup-probe' if cleanup else mirror / 'build/wasm-compat/texts-font-backed-probe' if ttf else source
+    module_name = 'texts-cleanup' if cleanup else 'texts-font-backed' if ttf else 'texts-continuation'
     native = source / ('live-ocr/jvm' if live else 'native')
     verification = module / 'verification.json' if ttf else source / ('live-ocr/verification.json' if live else 'verification.json')
     read = lambda path: json.loads(path.read_text())
@@ -27,6 +28,11 @@ def main():
         assert saved['checks'] == report['pages'] * 2
     assert report.get('liveOcr', False) == live
     assert report.get('ordinaryFontsFromFiles', False) == ttf
+    assert report.get('originalCleanupInWasm', False) == cleanup
+    if cleanup:
+        assert report['suppliedCleanupRasters'] == 0 and report['cleanupReferencePixelsExact']
+        cleanup_comparison = mirror / 'build/wasm-compat/texts-cleanup-trace/verification.json'
+        assert read(cleanup_comparison)['portableCleanupTraversalExact']
     if ttf:
         assert report['suppliedOrdinaryFontMeasurements'] == 0 and report['fontMeasurements'] == 2
         assert report['fontResourcesSealed'] and len(report['textFontMeasurementCalls']) == 4
@@ -65,6 +71,13 @@ def main():
         sources += ['wasm-compat/src/test/java/org/audiveris/wasm/compat/test/' + name + '.java' for name in ['FontBackedTextsProbe', 'RecordedTextFontsOracle']]
         sources += ['wasm-compat/src/main/java/org/audiveris/wasm/compat/' + name + '.java' for name in ['CompilerPatches', 'FontMetricsPatches']]
         sources += ['wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/' + name + '.java' for name in ['TrueTypeFaceMetrics', 'TrueTypeGlyphBounds', 'PortableTextGeometry', 'FontMetricsRuntime', 'HeadlessLogging']]
+    if cleanup:
+        sources += ['wasm-compat/src/test/java/org/audiveris/wasm/compat/test/CleanupTextsProbe.java']
+        sources += ['wasm-compat/src/test/java/org/audiveris/wasm/compat/test/' + name + '.java' for name in ['TextsCleanupTrace', 'GraphicsDelegate']]
+        sources += ['wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/' + name + '.java' for name in ['PackedPageRaster', 'PortableTextsCleanup', 'GraySpanRaster', 'StrokeRuntime']]
+        sources += ['wasm-compat/src/main/java/org/audiveris/wasm/compat/StrokePathPatches.java']
+        sources += ['wasm-compat/src/jdk/java/org/audiveris/wasm/compat/platform/' + name + '.java' for name in ['GrayPathRaster', 'StrokePaths']]
+        sources += ['wasm-compat/third-party/openjdk/LICENSE', 'wasm-compat/third-party/openjdk/NOTICE.md']
     source_hashes = {}
     for name in sorted(set(sources)):
         data = (mirror / name).read_bytes().replace(b'\r\n', b'\n')
@@ -73,13 +86,17 @@ def main():
     limits = Path('/sys/fs/cgroup/wasm_audiveris_dev')
     cpu, memory, swap = [(limits / name).read_text().strip() for name in ['cpu.max', 'memory.max', 'memory.swap.max']]
     assert (cpu, memory, swap) == ('800000 100000', '8589934592', '0')
-    name = 'texts-font-backed' if ttf else 'texts-live-ocr' if live else 'texts-continuation'
+    name = 'texts-cleanup' if cleanup else 'texts-font-backed' if ttf else 'texts-live-ocr' if live else 'texts-continuation'
     relative = 'wsl-artifacts/wasm-components/' + name
     raw = root / relative; tracked = root / ('wasm-compat/' + name + '-results')
     raw.mkdir(parents=True, exist_ok=True); tracked.mkdir(parents=True, exist_ok=True)
     def copy(origin, name):
         destination = raw / name; destination.parent.mkdir(parents=True, exist_ok=True); shutil.copyfile(origin, destination)
     copy(verification, 'verification.json')
+    if cleanup:
+        copy(cleanup_comparison, 'native-cleanup-verification.json')
+        for name in ['LICENSE', 'NOTICE.md']:
+            copy(mirror / 'wasm-compat/third-party/openjdk' / name, 'licenses/openjdk/' + name)
     if 'nodeCheckpointSha256' in report:
         copy(checkpoint, 'node-verification.json')
     for name in ['diagnostics.tsv', module_name + '.wasm', module_name + '.wasm-runtime.js']:
@@ -157,6 +174,8 @@ def main():
         'limitation': report['limitation']}
     shutil.copyfile(verification, tracked / 'verification.json')
     shutil.copyfile(module / 'diagnostics.tsv', tracked / 'diagnostics.tsv')
+    if cleanup:
+        shutil.copyfile(cleanup_comparison, tracked / 'cleanup-comparison.json')
     if live:
         shutil.copyfile(source / 'live-ocr/comparison.json', tracked / 'ocr-comparison.json')
     for destination in [raw, tracked]:

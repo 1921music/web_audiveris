@@ -18,6 +18,7 @@ import org.audiveris.omr.ui.symbol.MusicFont;
 import org.audiveris.wasm.compat.platform.GrayPathRaster;
 import org.audiveris.wasm.compat.platform.GraySpanRaster;
 import org.audiveris.wasm.compat.platform.StrokePaths;
+import org.audiveris.wasm.compat.platform.PortableTextsCleanup;
 
 /** JVM-only observation of the unchanged cleaner, checked against saved native pixels. */
 public final class TextsCleanupTrace {
@@ -40,7 +41,8 @@ public final class TextsCleanupTrace {
         var pages = new ArrayList<Object>(); var rejected = new ArrayList<String>(); long comparedPixels = 0;
         for (JsonNode page : json.readTree(read(samples.resolve("manifest.json"), "samples/manifest.json", inputs)).get("pages")) {
             String id = page.get("id").asText(); int width = page.get("width").asInt(), height = page.get("height").asInt();
-            Sheet sheet = PixelSheetProbe.create(width, height, read(samples.resolve(id + ".binary"), "samples/" + id + ".binary", inputs), id);
+            byte[] input = read(samples.resolve(id + ".binary"), "samples/" + id + ".binary", inputs);
+            Sheet sheet = PixelSheetProbe.create(width, height, input.clone(), id);
             JsonNode prefix = json.readTree(CueBeamsProbe.analyze(sheet)), original = expected.get(id);
             if (original == null) { throw new AssertionError("Missing native reference: " + id); }
             for (var fields = prefix.fields(); fields.hasNext();) {
@@ -74,6 +76,12 @@ public final class TextsCleanupTrace {
             // The original cleaner thresholds before its final glyph pass; replay the same threshold once here.
             ByteProcessor replayed = new ByteProcessor(replay); replayed.threshold(127);
             if (!Arrays.equals(actual, (byte[]) replayed.getPixels())) { throw new AssertionError("Unrecorded cleanup drawing: " + id); }
+            Sheet portable = PixelSheetProbe.create(width, height, input.clone(), id);
+            if (!json.readTree(CueBeamsProbe.analyze(portable)).equals(prefix)) { throw new AssertionError("Changed portable cleanup prefix: " + id); }
+            portable.getStub().done(OmrStep.CUE_BEAMS);
+            if (!Arrays.equals(actual, (byte[]) PortableTextsCleanup.clean(portable).getPixels())) {
+                throw new AssertionError("Portable cleanup traversal changed pixels: " + id);
+            }
             comparedPixels += actual.length;
             pages.add(Map.of("id", id, "width", width, "height", height, "pixels", actual.length,
                     "cleanedSha256", HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(actual)),
@@ -82,7 +90,7 @@ public final class TextsCleanupTrace {
                             "finalDifferentPixels", differences(actual, trace.raster)), "quarterSnappedFill", Map.of(
                             "beforeGlyphPassDifferentPixels", trace.normalizedThresholdDifferences, "finalDifferentPixels", differences(actual, trace.normalizedRaster)),
                             "spanFill", Map.of("beforeGlyphPassDifferentPixels", trace.spanThresholdDifferences, "finalDifferentPixels", differences(actual, trace.spanRaster)),
-                            "unsupportedOperations", trace.unsupported)));
+                            "unsupportedOperations", trace.unsupported, "traversalPixelsExact", true)));
             System.out.println("Original TEXTS cleanup and recorded operations match native pixels: " + id + "; " + trace.counts
                     + "; thin-fill candidate differences before glyph pass/final: " + trace.thresholdDifferences + "/" + differences(actual, trace.raster)
                     + "; quarter-snapped fill: " + trace.normalizedThresholdDifferences + "/" + differences(actual, trace.normalizedRaster)
@@ -92,9 +100,10 @@ public final class TextsCleanupTrace {
         json.writerWithDefaultPrettyPrinter().writeValue(output.resolve("verification.json").toFile(), Map.of(
                 "pages", pages, "rejectedBeforeTexts", rejected, "comparedPixels", comparedPixels,
                 "originalCleanupPixelsExact", true, "recordedOperationsReplayExact", true,
+                "portableCleanupTraversalExact", true,
                 "inputSha256", inputs,
                 "javaRuntime", System.getProperty("java.runtime.version"),
-                "limitation", "JVM observation and native replay; the thin-fill candidate replays native drawing decisions and is diagnostic, not a portable cleaner"));
+                "limitation", "JVM original and portable cleanup traversal compared; Wasm cleanup integration and music-symbol painting remain separate"));
     }
 
     private static byte[] read(Path path, String key, Map<String, String> inputs) throws Exception {

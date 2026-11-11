@@ -1521,6 +1521,43 @@ after the two Node instances pass. If browser startup fails, rerun the same veri
 with `AUDIVERIS_RESUME_TEXTS_NODE=1` to reuse that phase. Reuse requires the same verifier,
 Node version, module and input hashes; it does not skip either browser Worker.
 
+## TEXTS with engine image cleanup
+
+`PageRaster` separates the cleaner's drawing operations from its recognition traversal.
+The original `PageCleaner` constructor keeps its Graphics2D backend, including glyph and
+music-symbol painting. The new constructor and `SheetScanner.cleanBuffer` use the same
+inter selection, staff-core areas, template pixels, ledger widths, threshold and connected
+glyph decisions with an explicit raster backend. `PackedPageRaster` combines integer
+rectangles/run erasure, the thin-fill converter, normalized Marlin stroke outlines and the
+new span converter. `PortableTextsCleanup` owns its byte buffer and binds the current sheet
+while the original cleaner runs. Desktop subclasses retain their original graphics field.
+
+`verifyCleanupTextsProbe` installs physical text fonts and runs that cleanup before the
+external OCR suspension. Its page entry has **no cleaned-image parameter**. Native-cleaned
+rasters are read by the verifier only to compare every OCR input pixel, including the white
+margin; they are not passed to the engine. OCR, reply admission and full TEXTS system
+processing then use the same reference as the live-OCR test.
+
+The original and portable JVM traversals match all **43,474,400 pixels / five accepted pages**.
+Two Node instances and two independent Chromium Workers pass all five pages (**20 comparisons**),
+including exact OCR input pixels and TEXTS results. All **2,382,096 numeric values** match within
+the existing tolerances; maximum difference is **1.7763568394002505e-15**. Each instance makes
+**1,139 physical-font measurements**. Strict compilation has zero diagnostics.
+The module is **3,432,669 bytes**, an increase
+of **161,312 bytes** over the physical-font entry without cleanup. These sizes do not establish
+actual recognition speed or total download size; fonts, classifier/templates and OCR assets
+are separate resources.
+
+Thin-stroke drawing and music-symbol painting remain explicit unsupported paths in the packed
+backend; neither occurs in the five accepted cleanup fixtures. The two music-font measurement
+resources remain supplied. General text shaping/fallback, other score inputs and parity with
+the separate native OCR backend are not established. TODO: measure cleanup time, peak memory,
+allocations and buffer copies before choosing further size/speed changes.
+
+Run after generating the all-page native/live reference and physical font resources. Archive
+a committed verification with `export_texts_continuation.py <repository> <mirror> <source-commit> --cleanup`;
+summaries go to `texts-cleanup-results` and assets to `wsl-artifacts/wasm-components/texts-cleanup`.
+
 ## Pure Java path-fill component
 
 `GrayPathRaster` calls the unchanged JDK `sun.java2d.loops.ProcessPath` scan converter, compiled
@@ -1572,7 +1609,8 @@ pass and in the final image, on all five pages.
 For comparison, routing everything through the thin-fill converter leaves **6,535 pixels**
 different before the glyph pass and **6,074** in the final images. Endpoint snapping alone
 does not solve this. These are observations of drawing decisions from the original cleaner;
-the new raster backend is not yet wired into the engine's cleanup traversal. Glyph/symbol
+the drawing replay alone does not establish the engine's cleanup traversal. The separate
+integration above now runs the original traversal with the packed backend. Glyph/symbol
 painting, other inputs and actual cleanup throughput remain separate checks.
 
 Archive a committed run with `export_span_cleanup.py <repository> <mirror> <source-commit>`.

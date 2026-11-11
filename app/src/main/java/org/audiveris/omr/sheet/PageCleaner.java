@@ -24,6 +24,7 @@ package org.audiveris.omr.sheet;
 import org.audiveris.omr.constant.Constant;
 import org.audiveris.omr.constant.ConstantSet;
 import org.audiveris.omr.glyph.Glyph;
+import org.audiveris.omr.image.PageRaster;
 import org.audiveris.omr.sheet.Scale.InterlineScale;
 import org.audiveris.omr.sig.inter.AbstractBeamInter;
 import org.audiveris.omr.sig.inter.AbstractChordInter;
@@ -107,8 +108,11 @@ public abstract class PageCleaner
     /** Sheet buffer. */
     protected final ByteProcessor buffer;
 
-    /** Graphic context. */
+    /** Desktop graphics context; null when an explicit raster backend is supplied. */
     protected final Graphics2D g;
+
+    /** Drawing backend used by the shared cleaning traversal. */
+    protected final PageRaster raster;
 
     /** Related sheet. */
     protected final Sheet sheet;
@@ -147,8 +151,24 @@ public abstract class PageCleaner
                         Graphics2D g,
                         Sheet sheet)
     {
+        this(buffer, g, new AwtRaster(g), sheet);
+    }
+
+    protected PageCleaner (ByteProcessor buffer,
+                           PageRaster raster,
+                           Sheet sheet)
+    {
+        this(buffer, null, raster, sheet);
+    }
+
+    private PageCleaner (ByteProcessor buffer,
+                         Graphics2D g,
+                         PageRaster raster,
+                         Sheet sheet)
+    {
         this.buffer = buffer;
         this.g = g;
+        this.raster = java.util.Objects.requireNonNull(raster);
         this.sheet = sheet;
 
         final Scale scale = sheet.getScale();
@@ -173,11 +193,7 @@ public abstract class PageCleaner
         float lineThickness = scale.getFore() + (2 * marginThickness);
         lineStroke = new BasicStroke(lineThickness, CAP_SQUARE, JOIN_MITER);
 
-        // No anti-aliasing
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-
-        // Paint in background color
-        g.setColor(Color.WHITE);
+        raster.initialize();
     }
 
     //~ Methods ------------------------------------------------------------------------------------
@@ -235,7 +251,7 @@ public abstract class PageCleaner
             final int right = staff.getHeaderStop();
             final int top = staff.getFirstLine().yAt(right) - dy;
             final int bot = staff.getLastLine().yAt(right) + dy;
-            g.fillRect(left, top, right - left + 1, bot - top + 1);
+            raster.fillRect(left, top, right - left + 1, bot - top + 1);
         }
     }
 
@@ -264,7 +280,7 @@ public abstract class PageCleaner
                 final int dmzEnd = staff.getHeaderStop();
                 final int top = firstStaff.getFirstLine().yAt(dmzEnd) - dy;
                 final int bot = lastStaff.getLastLine().yAt(dmzEnd) + dy;
-                g.fillRect(system.getBounds().x, top, dmzEnd, bot - top + 1);
+                raster.fillRect(system.getBounds().x, top, dmzEnd, bot - top + 1);
 
                 return;
             }
@@ -300,7 +316,7 @@ public abstract class PageCleaner
             if (staff.isTablature()) {
                 final int dy = InterlineScale.toPixels(staff.getSpecificInterline(), yMargin);
                 final Area core = StaffManager.getCoreArea(staff, 0, dy);
-                g.fill(core);
+                raster.fill(core);
             }
         }
     }
@@ -318,11 +334,11 @@ public abstract class PageCleaner
     protected void processArea (Area area)
     {
         // Erase area
-        g.fill(area);
+        raster.fill(area);
 
         // Erase contour of area
-        g.setStroke(marginStroke);
-        g.draw(area);
+        raster.setStroke(marginStroke);
+        raster.draw(area);
     }
 
     //--------------//
@@ -338,7 +354,7 @@ public abstract class PageCleaner
     {
         if (glyph != null) {
             // Use pixels of underlying glyph
-            glyph.getRunTable().render(g, glyph.getTopLeft());
+            raster.glyph(glyph);
         }
     }
 
@@ -419,15 +435,15 @@ public abstract class PageCleaner
     @Override
     public void visit (EndingInter ending)
     {
-        g.setStroke(lineStroke);
-        g.draw(ending.getLine());
+        raster.setStroke(lineStroke);
+        raster.draw(ending.getLine());
 
         if (ending.getLeftLeg() != null) {
-            g.draw(ending.getLeftLeg());
+            raster.draw(ending.getLeftLeg());
         }
 
         if (ending.getRightLeg() != null) {
-            g.draw(ending.getRightLeg());
+            raster.draw(ending.getRightLeg());
         }
     }
 
@@ -436,16 +452,7 @@ public abstract class PageCleaner
     {
         // We now check small size for head directly (regardless of the containing staff size)
         final int size = head.getShape().isSmallHead() ? smallHeadSize : enlargedHeadSize;
-        final FontSymbol fs = head.getShape().getFontSymbolBySize(family, size);
-
-        if (fs.symbol == null) {
-            logger.warn("No symbol for head {}", head);
-            return;
-        }
-
-        final Glyph glyph = head.getGlyph();
-        final Point2D center = (glyph != null) ? glyph.getCenter2D() : head.getCenter2D();
-        fs.symbol.paintSymbol(g, fs.font, center, Alignment.AREA_CENTER);
+        raster.symbol(head, family, size);
     }
 
     /**
@@ -468,15 +475,7 @@ public abstract class PageCleaner
         } else {
             final boolean isSmall = (inter.getStaff() != null) && inter.getStaff().isSmall();
             final int size = isSmall ? smallPointSize : enlargedSize;
-            final FontSymbol fs = inter.getShape().getFontSymbolBySize(family, size);
-
-            if (fs.symbol == null) {
-                logger.warn("No symbol for inter {}", inter);
-                return;
-            }
-
-            final Point2D center = (glyph != null) ? glyph.getCenter2D() : inter.getCenter2D();
-            fs.symbol.paintSymbol(g, fs.font, center, Alignment.AREA_CENTER);
+            raster.symbol(inter, family, size);
         }
     }
 
@@ -578,9 +577,9 @@ public abstract class PageCleaner
     @Override
     public void visit (WedgeInter wedge)
     {
-        g.setStroke(lineStroke);
-        g.draw(wedge.getLine1());
-        g.draw(wedge.getLine2());
+        raster.setStroke(lineStroke);
+        raster.draw(wedge.getLine1());
+        raster.draw(wedge.getLine2());
     }
 
     @Override
@@ -594,6 +593,34 @@ public abstract class PageCleaner
     //-----------//
     // Constants //
     //-----------//
+    /** Original desktop drawing, isolated from the shared recognition traversal. */
+    private static final class AwtRaster implements PageRaster
+    {
+        private final Graphics2D graphics;
+        AwtRaster(Graphics2D graphics) { this.graphics = graphics; }
+        @Override public void initialize() {
+            graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+            graphics.setColor(Color.WHITE);
+        }
+        @Override public Stroke getStroke() { return graphics.getStroke(); }
+        @Override public void setStroke(Stroke stroke) { graphics.setStroke(stroke); }
+        @Override public void fill(java.awt.Shape shape) { graphics.fill(shape); }
+        @Override public void draw(java.awt.Shape shape) { graphics.draw(shape); }
+        @Override public void fillRect(int x, int y, int width, int height) { graphics.fillRect(x, y, width, height); }
+        @Override public void glyph(Glyph glyph) { glyph.getRunTable().render(graphics, glyph.getTopLeft()); }
+        @Override public void symbol(Inter inter, MusicFamily family, int size) {
+            final FontSymbol fs = inter.getShape().getFontSymbolBySize(family, size);
+            if (fs.symbol == null) {
+                if (inter instanceof HeadInter) { logger.warn("No symbol for head {}", inter); }
+                else { logger.warn("No symbol for inter {}", inter); }
+                return;
+            }
+            final Glyph glyph = inter.getGlyph();
+            final Point2D center = glyph != null ? glyph.getCenter2D() : inter.getCenter2D();
+            fs.symbol.paintSymbol(graphics, fs.font, center, Alignment.AREA_CENTER);
+        }
+    }
+
     private static class Constants
             extends ConstantSet
     {

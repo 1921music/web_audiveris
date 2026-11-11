@@ -27,6 +27,7 @@ import org.audiveris.omr.constant.ConstantSet;
 import org.audiveris.omr.glyph.Glyph;
 import org.audiveris.omr.glyph.GlyphFactory;
 import org.audiveris.omr.image.ImageUtil;
+import org.audiveris.omr.image.PageRaster;
 import org.audiveris.omr.image.Template;
 import org.audiveris.omr.run.Orientation;
 import org.audiveris.omr.run.RunTable;
@@ -113,6 +114,14 @@ public class SheetScanner
     public ByteProcessor getBuffer ()
     {
         return buffer;
+    }
+
+    /** Run the original TEXTS cleaning traversal on an owned raster with an explicit drawing backend. */
+    public static void cleanBuffer (ByteProcessor buffer,
+                                    PageRaster raster,
+                                    Sheet sheet)
+    {
+        new TextsCleaner(buffer, raster, sheet).eraseInters();
     }
 
     //---------------//
@@ -238,6 +247,14 @@ public class SheetScanner
             params = new Parameters(sheet.getScale());
         }
 
+        TextsCleaner (ByteProcessor buffer,
+                      PageRaster raster,
+                      Sheet sheet)
+        {
+            super(buffer, raster, sheet);
+            params = new Parameters(sheet.getScale());
+        }
+
         //-------------------//
         // eraseBorderGlyphs //
         //-------------------//
@@ -259,7 +276,7 @@ public class SheetScanner
 
                 for (Area core : cores) {
                     if (core.intersects(glyphBox)) {
-                        glyph.getRunTable().render(g, glyph.getTopLeft());
+                        raster.glyph(glyph);
 
                         break;
                     }
@@ -299,7 +316,7 @@ public class SheetScanner
                     Area core = StaffManager.getCoreArea(staff, params.hMargin, params.vMargin);
                     cores.add(core);
                     ///staff.addAttachment("core", core); // Just for visual check
-                    g.fill(core);
+                    raster.fill(core);
                 }
             }
 
@@ -326,7 +343,7 @@ public class SheetScanner
 
             // Erase foreground pixels
             for (final Point p : fores) {
-                g.fillRect(tplBox.x + p.x, tplBox.y + p.y, 1, 1);
+                raster.fillRect(tplBox.x + p.x, tplBox.y + p.y, 1, 1);
             }
         }
 
@@ -337,12 +354,12 @@ public class SheetScanner
         public void visit (LedgerInter ledger)
         {
             // Thicken the ledgerline 1 pixel above & 1 pixel below
-            final Stroke oldStroke = g.getStroke();
+            final Stroke oldStroke = raster.getStroke();
             float thickness = (float) ledger.getThickness();
             thickness += 2;
-            g.setStroke(new BasicStroke(thickness, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
-            g.draw(ledger.getMedian());
-            g.setStroke(oldStroke);
+            raster.setStroke(new BasicStroke(thickness, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
+            raster.draw(ledger.getMedian());
+            raster.setStroke(oldStroke);
         }
 
         //------------//
