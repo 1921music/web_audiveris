@@ -1,0 +1,273 @@
+{
+  "sourceCommit": "c026b6500d459c2c265296156bd40fd5e9df8303",
+  "sourceSha256": {
+    "app/src/main/java/org/audiveris/omr/constant/Constant.java": "98c45eeceea576f6444faedbcabf408554e671d124cac8882f6c007b3f86f7ac",
+    "app/src/main/java/org/audiveris/omr/constant/ConstantSet.java": "6881238f5e4116f11cf5621b02f4be50a7fced463e685a78634194ecc66c4053",
+    "app/src/main/java/org/audiveris/omr/image/RunTableRaster.java": "b4289d4a4ce9d451c34dc349db0cf4b03d9c0abeb060e1ebbbf4fc889714226e",
+    "app/src/main/java/org/audiveris/omr/image/TemplateFactory.java": "4d6aa44661db2226d98b826edab6b2cdb24f8db87e8ccd907363b982b693418e",
+    "app/src/main/java/org/audiveris/omr/math/NeuralNetwork.java": "29a036091fc9a0b36c51a126926982a58f252cc617d9f088a9bebb3cdd96aaad",
+    "app/src/main/java/org/audiveris/omr/score/DrumSet.java": "aeb42e04d7db1b935a5296d41c3e39d4c16139bd8db588233145f082fc8596a6",
+    "app/src/main/java/org/audiveris/omr/sheet/Book.java": "2e937c57f4157e567b00401afff1c2bdb4fab7d4ec21cfce2a6f86939d858176",
+    "app/src/main/java/org/audiveris/omr/sheet/BookManager.java": "19bc78189f1c222284b1380e002a74578450193b06d1f85cad3eab4d807003b9",
+    "app/src/main/java/org/audiveris/omr/sheet/Params.java": "37385a3c53cab11ef7d977aa72bc303c8500f192217a477a6f558baded4d81ff",
+    "app/src/main/java/org/audiveris/omr/sheet/Picture.java": "b495c6fe1270d3f577bc9fd08fe196b7150bc25b67a2defa6befb9d10eb4d494",
+    "app/src/main/java/org/audiveris/omr/sheet/PixelPicture.java": "c41c1934f37a61ee0262a8f34980588c519c187d6649499afb071d38482d5b3a",
+    "app/src/main/java/org/audiveris/omr/sheet/ScaleBuilder.java": "79673e422834baf11d03fd2474ee4d6a1ce9a391aa4fbeb7362cdd5ac6a33e03",
+    "app/src/main/java/org/audiveris/omr/sheet/Sheet.java": "89a5ddcf1ee5f3413a357e2c5f5427712408ca0534d5e9b86e8c674f9034e3d4",
+    "app/src/main/java/org/audiveris/omr/sheet/SheetStub.java": "a4c4e40f031fd4d78983b3219ad5fbeaebd50c90def6ebe748c430bd72e7f695",
+    "app/src/main/java/org/audiveris/omr/sheet/Staff.java": "dd4f27173a64802be0694a02839464b210072c16417dbec63b45a5515ac32dea",
+    "app/src/main/java/org/audiveris/omr/sheet/beam/BlackHeadSizer.java": "a314a2aebf2cbed34e0314f8473effed6fb7ff2ab816464cc97b8eae8d613bf0",
+    "app/src/main/java/org/audiveris/omr/sheet/clef/ClefBuilder.java": "dbe03412caa569b00122c1cd4d468e468402fe8a4cab393e8d8a10efaf349ce3",
+    "app/src/main/java/org/audiveris/omr/sheet/key/KeyRoi.java": "64b027c85005435ec32064698c5173e8bef64bea88d432179eae773f78165b39",
+    "app/src/main/java/org/audiveris/omr/sheet/ledger/LedgersPostAnalysis.java": "79691c2d54f56f855bd4630e1a92146bfe171ba1c9a74cc336c04f60032bd193",
+    "app/src/main/java/org/audiveris/omr/sheet/note/DistancesBuilder.java": "ef09cff54934edeab51560d2f7180bbb337d8a700644ab66a3fa0a9662d06829",
+    "app/src/main/java/org/audiveris/omr/sig/inter/AbstractInter.java": "bec6c611e9d6da76b2efe20faafe21555dd2b08bb6d51396e6f1d6eecb4c79c9",
+    "app/src/main/java/org/audiveris/omr/sig/inter/BeatUnitInter.java": "6229ef96f8b413423c20b3a1340cf83eaff4693c484132de0a30b112c399a928",
+    "app/src/main/java/org/audiveris/omr/sig/inter/BracketInter.java": "d66a0c6aacb3aed0e457c1241176073137449345b5f787cd0bf6dca70b91549d",
+    "app/src/main/java/org/audiveris/omr/sig/inter/MetronomeInter.java": "a34df1e0110137e60cb060131761fcfd15bb46b72d0ddf0e429b7a61816733e5",
+    "app/src/main/java/org/audiveris/omr/sig/inter/MusicWordInter.java": "76749f52047a3f092384df768d0e2cbeff64a7603215a6254f4af1e1c2110501",
+    "app/src/main/java/org/audiveris/omr/sig/inter/TimeCustomInter.java": "9fdbfcc522032d28f90667c0b8927e7ffc6cf152c9b6c86552a847ff438fbab4",
+    "app/src/main/java/org/audiveris/omr/sig/inter/TimeWholeInter.java": "722d815499ab5a411d97412b009025d8945633b058be5a2ab5d58bb86ce6c7e3",
+    "app/src/main/java/org/audiveris/omr/sig/inter/WordInter.java": "5348a2d9d83129914cf43bf69774e7a66165e9ad8c408bee7083b70b140e0bae",
+    "app/src/main/java/org/audiveris/omr/text/FontInfo.java": "c091b03cf6dbfad940e7a6ad363bc48e522b0678a0860bd2c3b52f58b19a3699",
+    "app/src/main/java/org/audiveris/omr/text/TextBuilder.java": "78d03536cbebeb3b1c04dbfe82205d79f3927be8de20f8cf68e97d2a9926f9ac",
+    "app/src/main/java/org/audiveris/omr/text/TextFontGeometry.java": "595433683ac9b985a3f06bbd17c023ae38837ea30c862b2b1d923867cde2d1ac",
+    "app/src/main/java/org/audiveris/omr/text/TextWord.java": "0f11b330cb662716573518f49a1ede5820720211c5cac58d5ee94e4edf5d6268",
+    "app/src/main/java/org/audiveris/omr/text/tesseract/TesseractOCR.java": "4103463752484cfe7f059b63ae4030211a2eb2ec1d812ad7f63223eb7e3edde2",
+    "app/src/main/java/org/audiveris/omr/ui/symbol/FontFamilyDefaults.java": "5f07045ab7bf440729bd845f43717a2930b4f175a2d8aea362deabc65e521b48",
+    "app/src/main/java/org/audiveris/omr/ui/symbol/MusicFont.java": "3f57260e324069f5bb7073bc2d6715c533ce5bae52422a8e3813d4fc956c77e4",
+    "app/src/main/java/org/audiveris/omr/ui/symbol/OmrFont.java": "c6024ae6dd277ad0c04154000c8737fd2614ce3cf1a94811b1c5607c86a488b2",
+    "app/src/main/java/org/audiveris/omr/ui/symbol/SymbolGeometry.java": "aa9187da94549fbd4cead26d70c6564ce48ae9afa8892f727d88390a79090f5b",
+    "app/src/main/java/org/audiveris/omr/ui/symbol/TextFont.java": "2c14abc1c20a4d19ea470c9a3ae4d705b79199d532dacadf7c173df34f45eea8",
+    "dev/teavm-audit/audit.init.gradle": "98b9489cf65280433742729c522e135808b4643475bcbde0bba3a2102e066e93",
+    "wasm-compat/src/main/java/org/audiveris/omr/text/WorkerTextsBridge.java": "683432538006bf87a532eedcc8c89290e4dce5d3100323734d57e89d1c7ff4bb",
+    "wasm-compat/src/main/java/org/audiveris/wasm/compat/HeadlessPatches.java": "c790416d9110e3c97a387d282c2e2b46b73baa4d487cf6b0e4756a7cd3785f28",
+    "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/HeadlessTextFontGeometry.java": "f2f91113896337b5726ee09b8a9550cf3ae7aba4995f60319040a7c1b041e322",
+    "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/OcrExchange.java": "c2a0f75503efd702d4a54488a568f1371208e0bc75b331b5c61f77423c070348",
+    "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/OcrImageFrame.java": "57fd92a512b8e125c3052c1a887d816038f649f43b6b9cdfb2e11b6023f3aff0",
+    "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/OcrTransport.java": "dec38983fc15bbee8f543dc0cd7bda20c718e18ce482e43b9f8f519939b09938",
+    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/NativeOcrBackendOracle.java": "7f3c867ea72e91e42fb19a0168900f9707f6a40b75c05a401277e8ade1b4322a",
+    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/RecordingTextFontGeometry.java": "56d7bf5824b57552581f422ff4c14acf0b2d1b4a6402154fb56486f14c38bd13",
+    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/TextsContinuationOracle.java": "99c8e121b83785e3883be8fa9d0dfc96e316d5305c3e737bb05535736ffd5f89",
+    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/TextsContinuationProbe.java": "96138c7f0300e4f717c293321a402ee5871eee667de89e96695ce945f7b751b5",
+    "wasm-compat/tools/verify-texts-continuation.cjs": "0d3248bbd633e4e4bf68ceaebaf02e3f30ad00c245c1c0bc16e039241a5ff49d"
+  },
+  "rawArtifacts": "wsl-artifacts/wasm-components/texts-continuation",
+  "priorCuePrefixRegression": {
+    "pages": 8,
+    "exact": true,
+    "referenceSha256": "c731e3352cbdc8319e0d804a47795f400f7f7e81f86ea0102263a57e30879427"
+  },
+  "cpuMax": "800000 100000",
+  "memoryMaxBytes": 8589934592,
+  "memorySwapMaxBytes": 0,
+  "memoryEventsLocal": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0",
+  "artifactSha256": {
+    "diagnostics.tsv": "fedeabd8a34aba0fa7d1aa2d80ccb94c378549c76c57c6942205c67c8f568b5d",
+    "inputs/00.binary": "fa68b16d7d1a41dca21b80d56ab4c9b218f9e6819fcbdd37d781f7c8720f8150",
+    "inputs/01.binary": "ad29f97436f864a6a003f8133b63462c7293a1485e19f6535a95fd5b5c48411f",
+    "inputs/02.binary": "5b84baea8fcfb9335173f8decd02af0ce98a5e98b2883f05e5d16bd2c2fd656b",
+    "inputs/03.binary": "19b8015b3765932003a0b6c09e4dd524c02be89019909c3c6e429beb7d106762",
+    "inputs/04.binary": "8c6e44d97583e19ee8b03b0bce7490493314cc157941c553b6f3f19a42261ded",
+    "model.zip": "327194c47116a8ebf5771d04cea08a4e563ec93d2955e1efd990a54a9245f29e",
+    "native/00/cleaned.gray": "f9483bf00b89a982188c405cb78826038ab1fac24593aba43440dcc1a9c43ad7",
+    "native/00/expected.json": "5e47bf0a2a1d967d1eb1498279519d7dbb2533b9e4eec6a49745340c273267b5",
+    "native/00/imported-lines.json": "5793eb1b5d9602678a84d07a58f07334344c6aeaee87247921bd7c679331af4a",
+    "native/00/metadata.json": "afbccc54d8d8a12f638849cf639fc113d160e5e9db7d6a55f51e3e05ba13439b",
+    "native/00/ocr-result.json": "0e6006376b75fba51664cecd9872414da826e167395908aef1b068fcb377869e",
+    "native/00/original-lines.json": "5793eb1b5d9602678a84d07a58f07334344c6aeaee87247921bd7c679331af4a",
+    "native/00/padded.png": "b54af503083f5d62ccbb24be2ee69e96cc76855b0479bb2cc00ceca9b2a38e5a",
+    "native/01/cleaned.gray": "777cec0547124381c4355761d979c25e9321fb931e9371a43e22256307b7c7ad",
+    "native/01/expected.json": "4b16061432839035280ca6453cee0928b2100589fd071f435ea899ffc6dfe1f4",
+    "native/01/imported-lines.json": "4150b053483e8db45393b5e6314bc11bcbd292b80d726ddad6d2aa64c38c44bf",
+    "native/01/metadata.json": "3ad802555bc06a48bc0de286048167b36aeadd8ae0a777beb8b2aa5bf5951926",
+    "native/01/ocr-result.json": "fc9386119ddcabc0f846ead9e6954932c24c60e2c5429d157951db045f9b6aaf",
+    "native/01/original-lines.json": "4150b053483e8db45393b5e6314bc11bcbd292b80d726ddad6d2aa64c38c44bf",
+    "native/01/padded.png": "9274576aeb665ba971b4bafaaf45b17a4d855131cb54020f50797a2fd0cec01e",
+    "native/02/cleaned.gray": "24a4b292f870188b44c20be65190485220ffef5983aaab71a1ae1aa5f705caba",
+    "native/02/expected.json": "b866dd9c877a9c97fbf6acd9f8e9aa1d8b0bf22de930ce148af649d916d91399",
+    "native/02/imported-lines.json": "4f91302090407929ead6c35bfd81dd313f534df057aeb92ae4061135e0b5e20d",
+    "native/02/metadata.json": "24b858bddd0ed0cf7b85a0433d29cef36b22a085dba4ec51dd0079ede78a1fb2",
+    "native/02/ocr-result.json": "af01c2f5668f3bb3868fec08b5eddf0a5974a34ccbbbf277bfc5eb3a392beac8",
+    "native/02/original-lines.json": "4f91302090407929ead6c35bfd81dd313f534df057aeb92ae4061135e0b5e20d",
+    "native/02/padded.png": "7dd7495c47d5b66900d1df14f8e6c8e2fbe8b0f589b3eebdc1cdc0bebdd51774",
+    "native/03/cleaned.gray": "b927e5eae3850434d57ded2ec6eedbb28389360ab09672a4d85e013f6d520b4b",
+    "native/03/expected.json": "c3ceeb265e4321e80897d2ceca6305127515858c9fad8654de7af94038c5c812",
+    "native/03/imported-lines.json": "2adfd07f183068171539c843de4ab5014929c6c51c2786c8bb1e031bd51c4e98",
+    "native/03/metadata.json": "e5d8ae0331d248e924fe39a3ea0eceb719344054d4dbc3e9b012f89872b34485",
+    "native/03/ocr-result.json": "8383fecf661a869bbcaeeb490423f3ee1d56d1e530929808081ca568f2e4eda9",
+    "native/03/original-lines.json": "2adfd07f183068171539c843de4ab5014929c6c51c2786c8bb1e031bd51c4e98",
+    "native/03/padded.png": "9184854dee6fad7b67cd0d2fc4743f3a2701e6c6c38128fc98d1bc34ef5081c4",
+    "native/04/cleaned.gray": "31013e845668db300018e6e06334eb357e9e85d769702e5e6ae4c13e0b6a8e0d",
+    "native/04/expected.json": "6cdcfebccf3a5a2cd9d1f9507ae8146a55d4f27b4be1bec2c49f3f4c90e654a1",
+    "native/04/imported-lines.json": "bbe245edc153bbc87de2054f5e7386dedf3dc3ce06388ef5f7e9c55ebdc0f0b3",
+    "native/04/metadata.json": "f90cffd2a19054f0aa6ddbf319be7951745bc4a9c94f2d3c55779158a5bba4c5",
+    "native/04/ocr-result.json": "003e9c7a39486fc0760e5bed0a3dbc916ef567d85342ce874d12a85d1b3034ae",
+    "native/04/original-lines.json": "bbe245edc153bbc87de2054f5e7386dedf3dc3ce06388ef5f7e9c55ebdc0f0b3",
+    "native/04/padded.png": "2ea96da06f75d652a718a4b266343a0b876a1d6bcd6eb778e694b44129b7519d",
+    "native/coverage.json": "b3a9467ad7ef81fa3a5faf0b33f0744243b89622aeeaa0734400ee54eaf923ee",
+    "native/cue-baseline.json": "c731e3352cbdc8319e0d804a47795f400f7f7e81f86ea0102263a57e30879427",
+    "native/default-font.txt": "465b0dc8595e31facf4d6b4d7cb5d89a7e1fae4dbcfd226ed242902d604ddb3d",
+    "native/font-measurements.json": "69055a1523072c826f8ac9f85ebac116c0711c3ac3b6b5b5daecb9171cbafb07",
+    "native/jvm-reference.json": "b30637d9ae7137468fa3b5918fe7d4377ae6c1824f9a288ab237d49522f98ffb",
+    "native/jvm-rejections.json": "b1d154ac418624e8460ca1ae4be70af814778c180f13c5f4225de102e28c7e72",
+    "native/point-widths.json": "f1602177966cf0295949f7e12bf6244a01ddbc9d7cb9d07eafdd830bdd4f6631",
+    "native/symbol-geometry.json": "d0ae91a890dafff611cfe0803a372347167cb96a2bb2abc8cb9c25a644178af4",
+    "serifs.json": "54a1891e54afcfb363d3cc65707ef56800f03848a2caa77850d3631415d2b6dc",
+    "templates/Bravura-90.atpl": "5441ad6f53bd633e2cffc7b017365baf83ef07d1bbdad44af20bde69bc537a28",
+    "templates/Bravura-91.atpl": "4471a1770f6b3960c16d984f47679c1ef7aaefaab406a3b15a9021da63546fdf",
+    "templates/Bravura-92.atpl": "31f852332ad1f5b494651c7d7226e8ffff03678a671b37a81fadec1b23f69f14",
+    "templates/reference.json": "135d7e84d09a6c4608b4456b4133e222c7f2b7aae304820866c5c248999f4d46",
+    "texts-continuation.wasm": "0e249b2c7dc8ff05a1e55d42576989ab6183c57b316bd94e1ae3b7a45f6cc4ec",
+    "texts-continuation.wasm-runtime.js": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "verification.json": "a10490636b811693a43ec67293a1e4c241491e69d9380ea508fde99f8dcc4862"
+  },
+  "verifiedInputArtifacts": {
+    "native/jvm-reference.json": [
+      "native/jvm-reference.json"
+    ],
+    "native/coverage.json": [
+      "native/coverage.json"
+    ],
+    "native/jvm-rejections.json": [
+      "native/jvm-rejections.json"
+    ],
+    "../../../app/res/basic-classifier.zip": [
+      "model.zip"
+    ],
+    "../cue-beams-default-portable-probe/font-measurements.json": [
+      "serifs.json"
+    ],
+    "native/symbol-geometry.json": [
+      "native/symbol-geometry.json"
+    ],
+    "native/point-widths.json": [
+      "native/point-widths.json"
+    ],
+    "native/font-measurements.json": [
+      "native/font-measurements.json"
+    ],
+    "native/default-font.txt": [
+      "native/default-font.txt"
+    ],
+    "../template-original-probe/reference.json": [
+      "templates/reference.json"
+    ],
+    "../template-original-probe/Bravura-90.atpl": [
+      "templates/Bravura-90.atpl"
+    ],
+    "../template-original-probe/Bravura-91.atpl": [
+      "templates/Bravura-91.atpl"
+    ],
+    "../template-original-probe/Bravura-92.atpl": [
+      "templates/Bravura-92.atpl"
+    ],
+    "texts-continuation.wasm-runtime.js": [
+      "texts-continuation.wasm-runtime.js"
+    ],
+    "native/00/metadata.json": [
+      "native/00/metadata.json"
+    ],
+    "../pixel-probe/samples/00.binary": [
+      "inputs/00.binary"
+    ],
+    "native/00/cleaned.gray": [
+      "native/00/cleaned.gray"
+    ],
+    "native/00/original-lines.json": [
+      "native/00/imported-lines.json",
+      "native/00/original-lines.json"
+    ],
+    "native/00/imported-lines.json": [
+      "native/00/imported-lines.json",
+      "native/00/original-lines.json"
+    ],
+    "native/00/ocr-result.json": [
+      "native/00/ocr-result.json"
+    ],
+    "native/01/metadata.json": [
+      "native/01/metadata.json"
+    ],
+    "../pixel-probe/samples/01.binary": [
+      "inputs/01.binary"
+    ],
+    "native/01/cleaned.gray": [
+      "native/01/cleaned.gray"
+    ],
+    "native/01/original-lines.json": [
+      "native/01/imported-lines.json",
+      "native/01/original-lines.json"
+    ],
+    "native/01/imported-lines.json": [
+      "native/01/imported-lines.json",
+      "native/01/original-lines.json"
+    ],
+    "native/01/ocr-result.json": [
+      "native/01/ocr-result.json"
+    ],
+    "native/02/metadata.json": [
+      "native/02/metadata.json"
+    ],
+    "../pixel-probe/samples/02.binary": [
+      "inputs/02.binary"
+    ],
+    "native/02/cleaned.gray": [
+      "native/02/cleaned.gray"
+    ],
+    "native/02/original-lines.json": [
+      "native/02/imported-lines.json",
+      "native/02/original-lines.json"
+    ],
+    "native/02/imported-lines.json": [
+      "native/02/imported-lines.json",
+      "native/02/original-lines.json"
+    ],
+    "native/02/ocr-result.json": [
+      "native/02/ocr-result.json"
+    ],
+    "native/03/metadata.json": [
+      "native/03/metadata.json"
+    ],
+    "../pixel-probe/samples/03.binary": [
+      "inputs/03.binary"
+    ],
+    "native/03/cleaned.gray": [
+      "native/03/cleaned.gray"
+    ],
+    "native/03/original-lines.json": [
+      "native/03/imported-lines.json",
+      "native/03/original-lines.json"
+    ],
+    "native/03/imported-lines.json": [
+      "native/03/imported-lines.json",
+      "native/03/original-lines.json"
+    ],
+    "native/03/ocr-result.json": [
+      "native/03/ocr-result.json"
+    ],
+    "native/04/metadata.json": [
+      "native/04/metadata.json"
+    ],
+    "../pixel-probe/samples/04.binary": [
+      "inputs/04.binary"
+    ],
+    "native/04/cleaned.gray": [
+      "native/04/cleaned.gray"
+    ],
+    "native/04/original-lines.json": [
+      "native/04/imported-lines.json",
+      "native/04/original-lines.json"
+    ],
+    "native/04/imported-lines.json": [
+      "native/04/imported-lines.json",
+      "native/04/original-lines.json"
+    ],
+    "native/04/ocr-result.json": [
+      "native/04/ocr-result.json"
+    ],
+    "texts-continuation.wasm": [
+      "texts-continuation.wasm"
+    ]
+  },
+  "limitation": "Original native-cleaned rasters, OCR replies and exact font measurements are supplied as fixtures; browser-native cleanup/fonts and live OCR on score pages are not yet established"
+}

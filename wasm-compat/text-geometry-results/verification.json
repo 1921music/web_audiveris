@@ -1,0 +1,12 @@
+{
+  "node": "v24.22.2",
+  "chromium": "158.0.8127.18",
+  "nodeInstances": 2,
+  "workers": 2,
+  "cases": 2048,
+  "exactOriginalFontFitting": true,
+  "missingMeasurementsRejected": true,
+  "wasmBytes": 167763,
+  "wasmSha256": "6e981c7ed3e95e42763be8d331f8b0d19d10b67edf742082af8ea78d81039d1d",
+  "limitation": "Exact supplied metrics only; portable font outline measurement and TEXTS cleanup remain separate boundaries"
+}

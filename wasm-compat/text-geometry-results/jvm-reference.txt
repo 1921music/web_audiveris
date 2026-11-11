@@ -1,0 +1,1 @@
+Text font geometry checks: 4096

@@ -390,6 +390,7 @@ org.audiveris.omr.sig.inter.KeyInter$Constants.getUnitName()Ljava/lang/String;	p
 org.audiveris.omr.sig.inter.LedgerInter$Constants.getUnitName()Ljava/lang/String;	platform-method	0	1	0	2
 org.audiveris.omr.sig.inter.LyricItemInter$Constants.getUnitName()Ljava/lang/String;	platform-method	0	1	0	2
 org.audiveris.omr.sig.inter.MeasureCountInter$Constants.getUnitName()Ljava/lang/String;	platform-method	0	1	0	2
+org.audiveris.omr.text.TextFontGeometry.provider()Lorg/audiveris/omr/text/TextFontGeometry$Provider;	text-geometry-default-provider	5	5	8	8
 org.audiveris.omr.sig.inter.MetronomeInter$Constants.getUnitName()Ljava/lang/String;	platform-method	0	1	0	2
 org.audiveris.omr.sig.inter.NumberInter$Constants.getUnitName()Ljava/lang/String;	platform-method	0	1	0	2
 org.audiveris.omr.sig.inter.OctaveShiftInter$Constants.getUnitName()Ljava/lang/String;	platform-method	0	1	0	2

@@ -1,20 +1,20 @@
 {
-  "sourceCommit": "89817d6b2a67b274550fb8fa1e3b9f89af05a645",
+  "sourceCommit": "c026b6500d459c2c265296156bd40fd5e9df8303",
   "sourceSha256": {
     "wasm-compat/host/gray8-png.mjs": "fab3b1da1e3f027ab38fc48eef5a5250988fd3a1a55720364e4ad94078b70bba",
-    "wasm-compat/host/tesseract-js-ocr.mjs": "861f92561bf914ba95248a677d4994e6d9a54a6b3c5fd4e49dd2f1ffc8bcb58e",
+    "wasm-compat/host/tesseract-js-ocr.mjs": "e829d4250e4eacfb14ffb1b17809fe9fb902689aebf910bda4d3e11429e23de6",
     "wasm-compat/host/tesseract-word-metadata.mjs": "1468eb12906a12cc7eb5274a2f251e9c56b8437554df04e4e8e7570b705f4ccd",
     "wasm-compat/host/tesseract-core-word-metadata.js": "1bdf211ea32a326f535d9d24d012b92b9eb62b2978b85dae3eeee0fc268802de",
     "wasm-compat/host/tesseract-word-metadata-node.cjs": "b17efb04d34f1f7c641b96b01642c2405472653b94f15752bc556367e190df95",
     "wasm-compat/package.json": "160bc5321d93ce92b3ac7edf746db502195eae34cf289fcb58ea1786950e9e3d",
     "wasm-compat/package-lock.json": "e9ee4b3a127b77b423ae5efcdc6d15f5784f0b19a9cb6ccfbc49447e42be5ca2",
-    "wasm-compat/tools/verify-tesseract-js-ocr.cjs": "aa13f228bf0d601010cc20f1fc920fdbd35ca8929edf595136419d417ab4645b",
+    "wasm-compat/tools/verify-tesseract-js-ocr.cjs": "e5576c0f67e10e783acc48c856d528f08eb5c2706a5b69aa4d6000bcdd9e5fc5",
     "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/OcrBackendFixtureOracle.java": "8c747d884fa8ff472ea2772895b87babc0f6dba67497128228d7583448e378a8",
     "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/OcrTransportProbe.java": "ba62b55599138380044880c421f7209c8f3ea30a645ec73337f4d5ea0bda5272",
     "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/OcrTransport.java": "dec38983fc15bbee8f543dc0cd7bda20c718e18ce482e43b9f8f519939b09938",
     "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/OcrExchange.java": "c2a0f75503efd702d4a54488a568f1371208e0bc75b331b5c61f77423c070348",
     "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/OcrImageFrame.java": "57fd92a512b8e125c3052c1a887d816038f649f43b6b9cdfb2e11b6023f3aff0",
-    "dev/teavm-audit/audit.init.gradle": "bd7b611dbb2d0251db304881dd4abeee2a91589906b333efba07195b3e54ed63"
+    "dev/teavm-audit/audit.init.gradle": "98b9489cf65280433742729c522e135808b4643475bcbde0bba3a2102e066e93"
   },
   "rawArtifacts": "wsl-artifacts/wasm-components/tesseract-js-ocr/lstm-word-metadata",
   "cpuMax": "800000 100000",
@@ -41,7 +41,7 @@
     "assets/core-assets/tesseract-core-relaxedsimd-lstm.wasm": "7985c92d4c64e7267d24cadffe1b2a1da6bf8aa55fdcaf953fe94fe122a24545",
     "assets/host/gray8-png.mjs": "fab3b1da1e3f027ab38fc48eef5a5250988fd3a1a55720364e4ad94078b70bba",
     "assets/host/tesseract-core-word-metadata.js": "1bdf211ea32a326f535d9d24d012b92b9eb62b2978b85dae3eeee0fc268802de",
-    "assets/host/tesseract-js-ocr.mjs": "861f92561bf914ba95248a677d4994e6d9a54a6b3c5fd4e49dd2f1ffc8bcb58e",
+    "assets/host/tesseract-js-ocr.mjs": "e829d4250e4eacfb14ffb1b17809fe9fb902689aebf910bda4d3e11429e23de6",
     "assets/host/tesseract-word-metadata-node.cjs": "b17efb04d34f1f7c641b96b01642c2405472653b94f15752bc556367e190df95",
     "assets/host/tesseract-word-metadata.mjs": "1468eb12906a12cc7eb5274a2f251e9c56b8437554df04e4e8e7570b705f4ccd",
     "assets/models/eng.traineddata.gz": "45b4cb346724ac1774f1c36f42f182b887bcdb28ebe63e6fff90ac41f3fcff91",
@@ -58,8 +58,8 @@
     "packages/tesseract.js/package.json": "fa342f37afd665595eca66ee867197c47c9ac35a7967123d1132c39a40b3dfbd",
     "packages/tesseract.js-core/LICENSE": "c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08",
     "packages/tesseract.js-core/package.json": "554b867684677c81aa3ffab61f31e83618445fa09adee99e8fff3515cee6ca54",
-    "results.json": "f8346e74120f0a42efb304d5317a749d91d1a3bf2ba7f9933d9eaa94c32a7dc6",
-    "verification.json": "f601e61fec3f9abfaec0c0d650222a44ebfb408ef1b2b8a9a6174cfcc4ed181c"
+    "results.json": "1feee219b84de69ec10df5bf83e94141f46a8a8eeffc57a81a7f62aa5c74d2cc",
+    "verification.json": "4e4037b7dced120dbb67b6d4b7ce2c1516ef40205b9ecf19f93a39cf4ff2c2b1"
   },
   "limitation": "External OCR adapter fixture only; no upstream native OCR parity, font fallback, TEXTS cleanup or full recognition integration is claimed"
 }

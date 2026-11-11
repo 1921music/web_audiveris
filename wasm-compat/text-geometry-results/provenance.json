@@ -1,0 +1,35 @@
+{
+  "sourceCommit": "c026b6500d459c2c265296156bd40fd5e9df8303",
+  "sourceSha256": {
+    "app/src/main/java/org/audiveris/omr/text/TextFontGeometry.java": "595433683ac9b985a3f06bbd17c023ae38837ea30c862b2b1d923867cde2d1ac",
+    "app/src/main/java/org/audiveris/omr/text/FontInfo.java": "c091b03cf6dbfad940e7a6ad363bc48e522b0678a0860bd2c3b52f58b19a3699",
+    "app/src/main/java/org/audiveris/omr/text/FontAttributes.java": "2d5401e8b8749f41195767dd396b1aec0324db93a2a8608ee6c677a4076a1a3c",
+    "app/src/main/java/org/audiveris/omr/ui/symbol/TextFont.java": "2c14abc1c20a4d19ea470c9a3ae4d705b79199d532dacadf7c173df34f45eea8",
+    "app/src/main/java/org/audiveris/omr/ui/symbol/OmrFont.java": "c6024ae6dd277ad0c04154000c8737fd2614ce3cf1a94811b1c5607c86a488b2",
+    "app/src/main/java/org/audiveris/omr/ui/symbol/FontFamilyDefaults.java": "5f07045ab7bf440729bd845f43717a2930b4f175a2d8aea362deabc65e521b48",
+    "wasm-compat/src/main/java/org/audiveris/wasm/compat/HeadlessPatches.java": "c790416d9110e3c97a387d282c2e2b46b73baa4d487cf6b0e4756a7cd3785f28",
+    "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/HeadlessTextFontGeometry.java": "f2f91113896337b5726ee09b8a9550cf3ae7aba4995f60319040a7c1b041e322",
+    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/TextGeometryProbe.java": "e901cc0472e00b21d0708f23bbeca95c150a186fc6b0fe636dde59596de3be3f",
+    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/TextGeometryOracle.java": "c247100e01779d1d58127e01190a3d09fd14a9a93e8610711e25e4254e40429d",
+    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/RecordingTextFontGeometry.java": "56d7bf5824b57552581f422ff4c14acf0b2d1b4a6402154fb56486f14c38bd13",
+    "wasm-compat/tools/verify-text-geometry.cjs": "d28c914fc4dabd675801279da08b64f7d66b7436e226eb1c8bd834c78764c95e",
+    "dev/teavm-audit/audit.init.gradle": "98b9489cf65280433742729c522e135808b4643475bcbde0bba3a2102e066e93"
+  },
+  "rawArtifacts": "wsl-artifacts/wasm-components/text-geometry",
+  "cpuMax": "800000 100000",
+  "allowedCpus": "0-7",
+  "memoryMaxBytes": 8589934592,
+  "memorySwapMaxBytes": 0,
+  "memoryEventsLocal": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0",
+  "artifactSha256": {
+    "text-geometry.wasm": "6e981c7ed3e95e42763be8d331f8b0d19d10b67edf742082af8ea78d81039d1d",
+    "text-geometry.wasm-runtime.js": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "verification.json": "2936df178b40257960c30ae309aa954cd59873b325ff9487235b82b28d129fb5",
+    "diagnostics.tsv": "fedeabd8a34aba0fa7d1aa2d80ccb94c378549c76c57c6942205c67c8f568b5d",
+    "jvm-reference.txt": "a24c7be147bb5dc90b56f82a8872b033c361ebb2c6af55a3e83d1307558b5b21",
+    "font-measurements.json": "b0eb9882251a5d0af2e41cc4d84419cf16be1703adca18d345657ef400faeeb5",
+    "cases.json": "824290e5c4dd6536de0498aa93520a3ec2ad0673cb47f421c7b70fa7cb982a61",
+    "default-font.txt": "465b0dc8595e31facf4d6b4d7cb5d89a7e1fae4dbcfd226ed242902d604ddb3d"
+  },
+  "limitation": "Exact supplied metrics only; portable font outline measurement and TEXTS cleanup remain separate boundaries"
+}
