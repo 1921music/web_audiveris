@@ -79,6 +79,10 @@ public final class FontBoxMetricsExperiment {
 
     static double[] measure(TrueTypeFont font, int size, String text,
                                     boolean pathBounds, int roundingMode) throws Exception {
+        return measure(font, size, text, pathBounds, roundingMode, false);
+    }
+    static double[] measure(TrueTypeFont font, int size, String text,
+                            boolean pathBounds, int roundingMode, boolean syntheticItalic) throws Exception {
         var cmap = unicodeCmap(font);
         double scale = (double) size / font.getUnitsPerEm();
         float advance = 0;
@@ -88,7 +92,8 @@ public final class FontBoxMetricsExperiment {
             int gid = cmap.getGlyphId(codepoint);
             var glyph = font.getGlyph().getGlyph(gid);
             if (glyph != null && glyph.getNumberOfContours() != 0) {
-                Rectangle2D box = glyphBounds(font, gid, scale, pathBounds, roundingMode, 0);
+                Rectangle2D box = syntheticItalic ? QuadraticGlyphBounds.measure(font, gid, scale)
+                        : glyphBounds(font, gid, scale, pathBounds, roundingMode, 0);
                 double x1 = box.getMinX(), x2 = box.getMaxX();
                 double y1 = -box.getMaxY(), y2 = -box.getMinY();
                 var placed = new Rectangle2D.Double(advance + x1, y1, x2 - x1, y2 - y1);

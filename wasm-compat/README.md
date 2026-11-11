@@ -1443,7 +1443,7 @@ exactly. This candidate explicitly rejects transformed or point-matched composit
 The opt-in `verifyFontBoxMetricsProbe` also loads the actual physical TTF bytes in Wasm:
 **384 cases each in two Node instances and two browser Workers / 1,536 checks**, with exact
 bounds, advances and original fitted sizes. Strict compilation has zero diagnostics; the standalone
-module is **742,573 bytes / 263,314 gzip bytes**, with font data supplied separately. This does not
+module with synthetic-italic support is **749,207 bytes / 265,472 gzip bytes**, with font data supplied separately. This does not
 measure its incremental size inside the recognition engine or establish a speed advantage.
 The profile `audiveris.compat.fontMetrics` avoids the unused GSUB cmap wrapper, disables native
 mapped-file cleaning with an explicit unsupported handler, and delegates Commons Logging directly
@@ -1454,6 +1454,24 @@ Archive a committed run with `export_fontbox_metrics.py <repository> <mirror> <s
 append `--probe` to include the matching Wasm/Worker verification.
 summaries go to `fontbox-metrics-results` and raw cases/fonts/notices to
 `wsl-artifacts/wasm-components/fontbox-metrics`.
+
+`verifyRecordedTextFontProbe` additionally reproduces all **517 ordinary-text queries** recorded
+by the five-page live TEXTS run (**516 visual bounds / one text layout**). The JVM resolves its
+actual physical fonts once; four DejaVu TTF files suffice for these queries. The original
+comparison differed on **88 synthetic-italic queries**, by up to **9.703125 px**. Applying the
+[JDK 25 synthetic-italic matrix](https://github.com/openjdk/jdk/blob/jdk-25%2B36/src/java.desktop/share/native/libfontmanager/freetypeScaler.c)
+to scaled outline points and evaluating quadratic extrema with fixed-point rounding removes
+all differences. The bounding calculation follows the mathematical extrema and rounding used
+by [FreeType](https://github.com/freetype/freetype/blob/VER-2-13-3/src/base/ftbbox.c).
+Native comparison has zero differing/unsupported queries; two Node instances and two browser
+Workers pass **2,068 checks** exactly, including bounds, advances and fitted sizes. The test also
+keeps Java's saturated integer conversion for zero-ink strings, rather than treating infinity
+as a fitted integer. JVM font discovery/reflection stays in the reference generator, outside Wasm.
+These are still component results: normal-text measurements have not yet replaced the supplied
+tables in the full TEXTS entry, and the **two music-font queries** remain separate.
+Archive a committed run with `export_recorded_text_fonts.py <repository> <mirror> <source-commit>`;
+summaries go to `recorded-text-font-results`, while fonts, their notice, bindings and runnable
+artifacts go to `wsl-artifacts/wasm-components/recorded-text-fonts`.
 
 ## Pure Java path-fill component
 

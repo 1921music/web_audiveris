@@ -2,15 +2,17 @@
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict'),http=require('node:http'),crypto=require('node:crypto'),zlib=require('node:zlib');
 const {chromium}=require('playwright');
 const root=path.resolve(process.argv[2]),fixtures=path.resolve(process.argv[3]);
+const resultName=process.argv[4]||'verification.json';assert.equal(path.basename(resultName),resultName);
 const fixture=JSON.parse(fs.readFileSync(path.join(fixtures,'jvm-reference.json'))),sha=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
 const fonts=fixture.faces.map(face=>{const bytes=fs.readFileSync(path.join(fixtures,'fonts',face.file));assert.equal(sha(bytes),face.sha256);return bytes;});
 const rint=value=>{const floor=Math.floor(value),part=value-floor;return part===0.5?(floor%2===0?floor:floor+1):Math.round(value);};
+const javaInt=value=>Number.isNaN(value)||value===0?0:Math.min(2147483647,Math.max(-2147483648,value));
 function collect(api,fixture,fonts){
     const values=[];
     for(let i=0;i<fixture.faces.length;i++){
         api.face(new Int8Array(fonts[i]));
         for(const item of fixture.measurements.filter(item=>item.face===fixture.faces[i].id)){
-            values.push([0,1,2,3,4].map(field=>api.measure(item.size,item.text,field)));
+            values.push([0,1,2,3,4].map(field=>item.syntheticItalic?api.measureOblique(item.size,item.text,field):api.measure(item.size,item.text,field)));
         }
     }return values;
 }
@@ -21,7 +23,7 @@ function verify(values){
         const item=fixture.measurements[index],bounds=item.bounds;
         assert.deepEqual(actual,[bounds.x,bounds.y,bounds.width,bounds.height,item.advance],item.face+'/'+item.size+'/'+item.text);
         const ratio=Math.fround((item.targetWidth>=item.targetHeight?item.targetWidth:item.targetHeight)/Math.fround(item.targetWidth>=item.targetHeight?actual[2]:actual[3]));
-        assert.equal(rint(Math.fround(ratio*item.size)),item.fittedSize);checks++;
+        assert.equal(javaInt(rint(Math.fround(ratio*item.size))),item.fittedSize);checks++;
     });
 }
 (async()=>{
@@ -56,9 +58,9 @@ function verify(values){
             }));assert.equal(result.dom,'undefined');verify(result.values);
         }
         const bytes=fs.readFileSync(path.join(root,'fontbox-metrics.wasm')),report={node:process.version,chromium:browser.version(),nodeInstances:2,workers:2,
-            cases:fixture.measurements.length,checks,exactPhysicalMetrics:true,wasmBytes:bytes.length,gzipBytes:zlib.gzipSync(bytes).length,wasmSha256:sha(bytes),
+            cases:fixture.measurements.length,checks,syntheticItalicCases:fixture.measurements.filter(item=>item.syntheticItalic).length,exactPhysicalMetrics:true,wasmBytes:bytes.length,gzipBytes:zlib.gzipSync(bytes).length,wasmSha256:sha(bytes),
             referenceSha256:sha(fs.readFileSync(path.join(fixtures,'jvm-reference.json'))),faces:fixture.faces,
             limitation:'Physical TTF glyph metrics and translated composites only; not general font selection, shaping, music fonts, rasterization or engine integration'};
-        fs.writeFileSync(path.join(root,'verification.json'),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report));
+        fs.writeFileSync(path.join(root,resultName),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report));
     }finally{if(browser){await browser.close();}await new Promise(resolve=>server.close(resolve));}
 })().catch(error=>{console.error(error);process.exitCode=1;});

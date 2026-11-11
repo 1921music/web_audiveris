@@ -19,4 +19,8 @@ public final class FontBoxMetricsProbe {
         if (font == null || field < 0 || field > 4 || size <= 0) { throw new IllegalArgumentException("Font/measurement required"); }
         return FontBoxMetricsExperiment.measure(font, size, text, false, 2)[field];
     }
+    @JSExport public static double measureOblique(int size, String text, int field) throws Exception {
+        if (font == null || field < 0 || field > 4 || size <= 0) { throw new IllegalArgumentException("Font/measurement required"); }
+        return FontBoxMetricsExperiment.measure(font, size, text, false, 2, true)[field];
+    }
 }

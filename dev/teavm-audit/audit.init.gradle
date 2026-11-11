@@ -1046,6 +1046,27 @@ gradle.projectsEvaluated {
         commandLine 'node', '--max-old-space-size=384', new File(compat, 'tools/verify-fontbox-metrics.cjs').absolutePath,
                 new File(rootProject.projectDir, 'build/wasm-compat/fontbox-metrics-probe').absolutePath, textFontOutput.absolutePath
     }
+    rootProject.tasks.register('compareRecordedTextFonts', JavaExec) {
+        dependsOn 'compileWasmCompatibilityTests'
+        classpath = rootProject.files(compatTests, compatClasses) + app.sourceSets.main.runtimeClasspath
+        mainClass = 'org.audiveris.wasm.compat.test.RecordedTextFontsOracle'
+        maxHeapSize = '1g'
+        jvmArgs '--add-opens=java.desktop/sun.font=ALL-UNNAMED'
+        workingDir app.projectDir
+        systemProperty 'java.awt.headless', 'true'
+        systemProperty 'logback.configurationFile', new File(harness, 'logback.xml').absolutePath
+        environment 'XDG_CONFIG_HOME', new File(rootProject.projectDir, 'build/wasm-compat/texts-continuation-probe/config').absolutePath
+        environment 'XDG_DATA_HOME', new File(rootProject.projectDir, 'build/wasm-compat/texts-continuation-probe/data').absolutePath
+        environment 'XDG_CACHE_HOME', new File(rootProject.projectDir, 'build/wasm-compat/texts-continuation-probe/cache').absolutePath
+        args new File(rootProject.projectDir, 'build/wasm-compat/texts-continuation-probe/live-ocr/jvm/font-measurements.json').absolutePath,
+                new File(rootProject.projectDir, 'build/wasm-compat/recorded-text-fonts').absolutePath
+    }
+    rootProject.tasks.register('verifyRecordedTextFontProbe', Exec) {
+        dependsOn 'compareRecordedTextFonts', 'verifyFontBoxMetricsProbe'
+        commandLine 'node', '--max-old-space-size=384', new File(compat, 'tools/verify-fontbox-metrics.cjs').absolutePath,
+                new File(rootProject.projectDir, 'build/wasm-compat/fontbox-metrics-probe').absolutePath,
+                new File(rootProject.projectDir, 'build/wasm-compat/recorded-text-fonts').absolutePath, 'recorded-verification.json'
+    }
     // Reuse a completed TEXTS oracle run; do not silently replace all-page inputs with a one-page run.
     rootProject.tasks.register('compareScoreOcr', Exec) {
         commandLine 'node', '--max-old-space-size=384', new File(compat, 'tools/compare-score-ocr.cjs').absolutePath,
