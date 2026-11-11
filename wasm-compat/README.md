@@ -3,9 +3,10 @@
 The generic layer absorbs reusable platform API differences without editing Audiveris sources.
 The opt-in headless layer also uses the small source boundaries documented below. Compatibility
 is opt-in (`-Pcompat=true`) in the audit harness and targets TeaVM 0.16.0 / Wasm GC.
-The focused Worker entry accepts an owned binary page and runs recognition through PAGE,
-using the configured resources described below. Image decoding/binarization and score export
-remain separate integration work.
+The standalone Worker entry now accepts GRAY8 or a browser-decodable image, binarizes it,
+runs recognition through PAGE with external OCR, and exports MusicXML 4.0. Its runtime assets
+are independent of the input page; no JVM, captured templates or page-specific geometry tables
+are needed at runtime. The earlier focused entries below remain regression profiles.
 
 The latest all-method analysis is **stage 26**: **9,091 roots / 8,653 bodies**, with all earlier
 roots retained. The original root set is still preserved; historical stage counts below describe
@@ -26,6 +27,113 @@ comparison profiles. Music-symbol painting now uses a module-local shared FreeTy
 instances and two Workers. General shaping/fallback remains outside this backend.
 
 ## Approach
+
+### Standalone engine integration
+
+`WorkerEngine` / `RecognitionSession` provide the production entry, separate from test probes.
+The host advances one original recognition stage at a time. Full-page TEXTS and local CURVES
+OCR return owned image requests with job/page/generation/request tokens; no Java stack is parked.
+Stale tokens are rejected before parsing their payload. Resource installation is sealed before
+recognition. `host/worker-client.mjs` runs a single owned instance; independent clients can run
+concurrently. Aborting terminates that Worker, including synchronous work; the next job creates
+a fresh instance. Within an instance, original system steps run serially and propagate failures.
+
+The original `PartwiseBuilder` constructs the score model. Its JAXB initialization is now separate
+from model construction; typed attribute setters replace its reflective calls. A build-time generator
+reads the pinned proxymusic annotations and emits direct model field access in schema order. Runtime
+serialization requires neither reflection nor JAXB context discovery. Native reference exports and
+the generated writer agree exactly after parsing, including note, position and textual data.
+
+Standalone verification: **five grayscale pages / 948 notes**, each MusicXML tree exactly matching
+native JAXB output. Two concurrent Chromium Workers independently decode grayscale PNG images,
+binarize them and export the same native results on two pages. Initialization cancellation and
+duplicate job rejection pass. A separate two-enclosure fixture makes two actual local OCR requests,
+resumes CURVES twice and exports rehearsal elements; stale and completed-request replies are rejected.
+The focused entry has zero strict dependency diagnostics.
+
+Build with the dedicated WSL launcher (Emscripten 4.0.20 must be installed):
+
+```powershell
+.\dev\wsl\Manage-WasmDev.ps1 Build -GradleArgs @(
+  '-I', 'dev/teavm-audit/audit.init.gradle',
+  '-I', 'dev/teavm-audit/page-recognition.init.gradle',
+  '-I', 'dev/teavm-audit/engine.init.gradle', 'packageWorkerEngine')
+```
+
+The output is `/home/dev/work/web_audiveris/build/wasm-engine/package/` in WSL. Build-time Java
+extracts font definitions/intrinsics and generates the XML writer; it does not inspect input pages.
+The production build downloads/verifies the pinned FreeType source if absent and compiles it with
+at most eight build jobs. It does not require earlier test/probe artifacts. The capped launcher keeps
+all build/test descendants within eight CPUs and 8 GiB, with swap disabled.
+
+OCR is an injected transport, so another backend can replace Tesseract.js. For a self-hosted English
+Tesseract.js configuration, first run `npm ci --prefix wasm-compat` inside the capped WSL environment,
+then use the same build command with task `packageWorkerOcr`. This adds optional `ocr/` assets
+(library, SIMD core, English model and notices). The core package works with other OCR adapters
+without downloading this optional bundle. Serve the package over HTTP with Wasm MIME support.
+
+Example caller, with an image `Blob` supplied by the application:
+
+```javascript
+import {EngineWorker} from './host/worker-client.mjs';
+import {createBrowserOcr} from './host/create-browser-ocr.mjs';
+const ocr = await createBrowserOcr();
+const engine = new EngineWorker();
+const controller = new AbortController();
+try {
+  const result = await engine.recognize(imageBlob, {
+    id: 'page-1', signal: controller.signal,
+    ocr: (request, {signal}) => ocr.recognize(request, {signal}),
+    onProgress: ({stage, waitingForOcr}) => console.log(stage, waitingForOcr)
+  });
+  const xml = result.scores[0].musicXml;
+} finally {
+  engine.close();
+  await ocr.close();
+}
+```
+
+`recognize` also accepts `{width, height, pixels: Uint8Array}` containing packed GRAY8, independently
+of the input codec. Browser Blob decoding uses `createImageBitmap` and `OffscreenCanvas`, composites
+transparency onto white and converts RGB to grayscale. PNG is covered end to end; other formats depend
+on the browser decoder. TIFF/PDF decoding can be supplied externally via GRAY8. Inputs are limited to
+32 Mi pixels and 32,768 pixels per dimension. Jobs own a single image; each result can contain multiple
+scores. Cross-image book assembly, project-file persistence and an editor are outside this entry.
+
+Recognition options include `family` (default Bravura), `smallHeads`, `languages`, OCR `margin`,
+`adaptiveMean` and `adaptiveDeviation`; their defaults are the original recognition defaults. Text
+fonts are explicit physical resources for twelve standard styles. General complex-script shaping
+and physical font fallback remain future work: unsupported text raises an error rather than using
+approximate Canvas widths. The optional packaged OCR model is English. Native recognition warnings
+(including uncertain rhythm/key interpretation) can still occur; successful export does not imply
+perfect music recognition.
+
+TeaVM 0.16.0 drops some outer named regex captures when a nested named group immediately follows.
+`PortableRegexGroups` repairs the `RegexUtil.getGroup` boundary by resolving numeric capture indices;
+the original regex engine still performs matching and backtracking. This restores chord-kind display
+text in MusicXML. The minimal nested-capture probe now matches the JVM result exactly.
+
+### Page-independent font and template resources
+
+The engine resource backend now computes symbol geometry and notehead template rasters from
+physical font assets. No page-specific measurements, serif tables or template catalogs are
+required by this backend. The earlier profiles retain their fixture installation APIs for regression.
+Fixed clef centroids and pitch offsets are font-only intrinsic assets generated without score input.
+
+Verified in two Node instances and two Chromium Workers: **3,900 geometry cases per instance**
+have maximum difference **0**, and **72 catalogs per instance** match both serialized template
+data and matching/foreground results exactly. The native image-access boundary also reproduces
+all **30 archived pre-boundary catalogs byte for byte**. The focused resource module has zero
+strict dependency diagnostics; its Wasm is **609,347 bytes**. These checks cover all six music
+families, tiny noteheads, holes, and bitmap/outline paths including point sizes 129 and 256.
+Reports are in `engine-resource-results/verification.json`. This is a resource-backend milestone;
+standalone image recognition, host lifecycle and score export are being integrated separately.
+
+`ColorImage` isolates the original template algorithm's pixel access from desktop `BufferedImage`.
+The desktop adapter retains the original mutable image; the Worker raster source supplies owned
+ARGB pixels from the shared FreeType/Marlin backend. Template thresholding, holes, distance maps,
+anchors and foreground decisions remain in the original `TemplateFactory`. Flood filling now uses
+a bounded explicit stack so that large connected holes do not exhaust the Wasm call stack.
 
 - `CompilerSubstitutions` uses TeaVM's substitution SPI to replace `java.awt.Point`,
   `java.awt.Dimension` and `java.awt.Color` with compatible implementations. Call sites keep their

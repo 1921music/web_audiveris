@@ -232,14 +232,11 @@ import org.slf4j.LoggerFactory;
 import jakarta.xml.bind.JAXBElement;
 import jakarta.xml.bind.JAXBException;
 
-import java.awt.Font;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.CubicCurve2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -271,7 +268,8 @@ public class PartwiseBuilder
 
     private static final Logger logger = LoggerFactory.getLogger(PartwiseBuilder.class);
 
-    /** A future which reflects whether JAXB has been initialized. */
+    /** JAXB initialization is separate from construction of the MusicXML data model. */
+    private static final class XmlContext {
     private static final Future<Void> loading = OmrExecutors.getCachedLowExecutor().submit( () -> {
         try {
             Marshalling.getContext(ScorePartwise.class);
@@ -282,6 +280,7 @@ public class PartwiseBuilder
 
         return null;
     });
+    }
 
     /** Default page horizontal margin. */
     private static final BigDecimal pageHorizontalMargin = new BigDecimal(
@@ -335,9 +334,6 @@ public class PartwiseBuilder
     private PartwiseBuilder (Score score)
             throws InterruptedException, ExecutionException
     {
-        // Make sure the JAXB context is ready
-        loading.get();
-
         this.score = score;
     }
 
@@ -1041,15 +1037,11 @@ public class PartwiseBuilder
                                 Staff staff)
     {
         if (current.logicalPart.isMultiStaff()) {
-            Class<?> classe = obj.getClass();
-
             try {
-                Method method = classe.getMethod("setStaff", BigInteger.class);
-                method.invoke(obj, new BigInteger("" + (1 + staff.getIndexInPart())));
-            } catch (IllegalAccessException | IllegalArgumentException | NoSuchMethodException
-                    | SecurityException | InvocationTargetException ex) {
+                MusicXmlAttributes.staff(obj, new BigInteger("" + (1 + staff.getIndexInPart())));
+            } catch (IllegalArgumentException ex) {
                 ex.printStackTrace();
-                logger.error("Could not setStaff for element {}", classe);
+                logger.error("Could not setStaff for element {}", obj.getClass());
             }
         }
     }
@@ -1142,22 +1134,17 @@ public class PartwiseBuilder
             Staff staff = current.note.getStaff();
 
             // Placement
-            Class<?> classe = element.getDeclaredType();
-
-            Method method = classe.getMethod("setPlacement", AboveBelow.class);
-            method.invoke(
+            MusicXmlAttributes.placement(
                     element.getValue(),
                     (articulation.getCenter().y < current.note.getCenter().y) ? AboveBelow.ABOVE
                             : AboveBelow.BELOW);
 
             // Default-Y
-            method = classe.getMethod("setDefaultY", BigDecimal.class);
-            method.invoke(element.getValue(), yOf(articulation.getCenter(), staff));
+            MusicXmlAttributes.defaultY(element.getValue(), yOf(articulation.getCenter(), staff));
 
             // Include in Articulations
             getArticulations().getAccentOrStrongAccentOrStaccato().add(element);
-        } catch (IllegalAccessException | IllegalArgumentException | NoSuchMethodException
-                | SecurityException | InvocationTargetException ex) {
+        } catch (IllegalArgumentException ex) {
             logger.warn("Error visiting " + articulation, ex);
         }
     }
@@ -2645,9 +2632,7 @@ public class PartwiseBuilder
             // For tremolo we use defaultY, while for other ornaments we use relative placement
             if (!(ornament instanceof TremoloInter)) {
                 // Placement
-                Class<?> classe = element.getDeclaredType();
-                Method method = classe.getMethod("setPlacement", AboveBelow.class);
-                method.invoke(
+                MusicXmlAttributes.placement(
                         element.getValue(),
                         (ornament.getCenter().y < current.note.getCenter().y) ? AboveBelow.ABOVE
                                 : AboveBelow.BELOW);
@@ -2655,8 +2640,7 @@ public class PartwiseBuilder
 
             // Include in ornaments collection
             getOrnaments().getTrillMarkOrTurnOrDelayedTurn().add(element);
-        } catch (IllegalAccessException | IllegalArgumentException | NoSuchMethodException
-                | SecurityException | InvocationTargetException ex) {
+        } catch (IllegalArgumentException ex) {
             logger.warn("Error visiting " + ornament, ex);
         }
     }
@@ -2725,27 +2709,21 @@ public class PartwiseBuilder
             final JAXBElement<?> element = getPauseObject(pause.getShape());
 
             // Placement
-            final Class<?> classe = element.getDeclaredType();
-
-            Method method = classe.getMethod("setPlacement", AboveBelow.class);
-            method.invoke(
+            MusicXmlAttributes.placement(
                     element.getValue(),
                     (center.y < current.note.getCenter().y) ? AboveBelow.ABOVE : AboveBelow.BELOW);
 
             // Default-X
-            method = classe.getMethod("setDefaultX", BigDecimal.class);
-            method.invoke(
+            MusicXmlAttributes.defaultX(
                     element.getValue(),
                     toTenths(center.x - current.measure.getAbscissa(LEFT, staff)));
 
             // Default-Y
-            method = classe.getMethod("setDefaultY", BigDecimal.class);
-            method.invoke(element.getValue(), yOf(center, staff));
+            MusicXmlAttributes.defaultY(element.getValue(), yOf(center, staff));
 
             // Include in Articulations
             getArticulations().getAccentOrStrongAccentOrStaccato().add(element);
-        } catch (IllegalAccessException | IllegalArgumentException | NoSuchMethodException
-                | SecurityException | InvocationTargetException ex) {
+        } catch (IllegalArgumentException ex) {
             logger.warn("Error visiting " + pause, ex);
         }
     }
@@ -2963,21 +2941,18 @@ public class PartwiseBuilder
                 }
 
                 // [Defaults]/LyricFont
-                Font lyricFont = TextFont.TEXT_FONT_BASE;
                 LyricFont pmLyricFont = factory.createLyricFont();
-                pmLyricFont.setFontFamily(lyricFont.getName());
-                pmLyricFont.setFontSize("" + TextFont.TEXT_FONT_BASE.getSize());
-
-                if (lyricFont.isItalic()) {
-                    pmLyricFont.setFontStyle(FontStyle.ITALIC);
-                }
+                pmLyricFont.setFontFamily(org.audiveris.omr.text.TextFontGeometry.provider().defaultFontName());
+                pmLyricFont.setFontSize("" + org.audiveris.omr.ui.symbol.FontFamilyDefaults.defaultTextPointSize());
 
                 defaults.getLyricFont().add(pmLyricFont);
                 scorePartwise.setDefaults(defaults);
             }
 
             // Score source
-            source.setFile(book.getSomeInputPath().toAbsolutePath().toString());
+            if (book.getSomeInputPath() != null) {
+                source.setFile(book.getSomeInputPath().toAbsolutePath().toString());
+            }
             source.encodeScore(scorePartwise);
 
             // PartList & sequence of parts
@@ -3536,6 +3511,19 @@ public class PartwiseBuilder
     public static ScorePartwise build (Score score)
         throws InterruptedException, ExecutionException
     {
+        XmlContext.loading.get();
+        return buildModel(score);
+    }
+
+    /** Build the original MusicXML model without selecting or initializing an XML serializer.
+     * @param score score to export
+     * @return populated model
+     * @throws InterruptedException if processing is interrupted
+     * @throws ExecutionException if processing fails
+     */
+    public static ScorePartwise buildModel (Score score)
+        throws InterruptedException, ExecutionException
+    {
         Objects.requireNonNull(score, "Trying to export a null score");
 
         final PartwiseBuilder builder = new PartwiseBuilder(score);
@@ -3553,6 +3541,7 @@ public class PartwiseBuilder
      */
     public static void preload ()
     {
+        XmlContext.loading.isDone();
     }
 
     //~ Inner Classes ------------------------------------------------------------------------------

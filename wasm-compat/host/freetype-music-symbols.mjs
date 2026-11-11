@@ -11,6 +11,32 @@ export async function createFreeTypeMusicSymbols(factory, wasm, fonts, recipes, 
         if (!info || !output) {if (info) api._free(info); if (output) api._free(output); throw new Error('Symbol allocation failed');}
         const cache = new Map(); let closed = false, calls = 0, cachedBytes = 0;
         const normalize = value => String(value).replaceAll(' ', '').toLowerCase();
+        function measureRecipe(recipe,pointSize) {
+            if(closed)throw new Error('Symbol backend is closed');
+            if(!Number.isInteger(pointSize)||pointSize<0||pointSize>4096)throw new RangeError('Invalid symbol measurement size');
+            if(!recipe||recipe.layers||recipe.textFamily)throw new Error('Symbol has no simple music layout');
+            const font=faces.get(normalize(recipe.family));if(!font)throw new Error('Symbol font is not installed: '+recipe.family);
+            let size=pointSize;
+            for(const op of recipe.sizeOps)size=op===0?Math.floor(size+.5):Math.fround(Math.fround(op)*size);
+            if(size===0)return {fontName:font.name,x:0,y:0,width:0,height:0,advance:0};
+            let position=0,minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
+            for(const character of recipe.text){
+                const id=api._music_symbol_glyph(font.face,character.codePointAt(0));
+                if(id<0||api._music_symbol_metrics(font.face,id,size,info))throw new Error('Symbol layout measurement failed');
+                const box=api.HEAPF64.slice(info>>3,(info>>3)+5);
+                if(box[2]>0&&box[3]>0){const x=Math.fround(position+box[0]);minX=Math.min(minX,x);minY=Math.min(minY,box[1]);maxX=Math.max(maxX,Math.fround(x+box[2]));maxY=Math.max(maxY,Math.fround(box[1]+box[3]));}
+                position=Math.fround(position+box[4]);
+            }
+            return minX===Infinity?{fontName:font.name,x:0,y:0,width:0,height:0,advance:position}
+                :{fontName:font.name,x:minX,y:minY,width:Math.fround(maxX-minX),height:Math.fround(maxY-minY),advance:position};
+        }
+        function measureSymbol(family,shape,size){return measureRecipe(definitions[family+':'+shape],size);}
+        function measureNumber(family,number,size){
+            if(!Number.isInteger(number)||number<0||number>999)throw new RangeError('Music number must be in [0,999]');
+            const zero=definitions[family+':TIME_ZERO'];if(!zero||zero.layers||[...zero.text].length!==1)throw new Error('Missing music numeral font');
+            const base=zero.text.codePointAt(0),text=[...String(number)].map(n=>String.fromCodePoint(base+Number(n))).join('');
+            return measureRecipe({...zero,text},size);
+        }
         function glyph(font, size, codepoint) {
             const key = JSON.stringify([font.name, size, codepoint]); let value = cache.get(key);
             if (value) return value;
@@ -18,8 +44,9 @@ export async function createFreeTypeMusicSymbols(factory, wasm, fonts, recipes, 
             if (id < 0) throw new Error('Symbol glyph lookup failed');
             if (api._music_symbol_metrics(font.face, id, size, info)) throw new Error('Symbol metrics failed');
             const box = Array.from(api.HEAPF64.slice(info >> 3, (info >> 3) + 5));
-            if (api._music_mask_render(font.face, id, size, 1, info, output, 512 * 512)) throw new Error('Symbol mask failed');
-            const [left, top, width, height] = api.HEAP32.slice(info >> 2, (info >> 2) + 4);
+            const outlineOnly=Math.floor(size+.5)>100;
+            if (!outlineOnly&&api._music_mask_render(font.face, id, size, 1, info, output, 512 * 512)) throw new Error('Symbol mask failed');
+            const [left, top, width, height] = outlineOnly?[0,0,0,0]:api.HEAP32.slice(info >> 2, (info >> 2) + 4);
             if (width < 0 || height < 0 || width > 512 || height > 512) throw new Error('Symbol mask dimensions');
             value = {id, box, left, top, width, height, pixels: new Int8Array(api.HEAPU8.slice(output, output + width * height).buffer)};
             if (value.pixels.byteLength <= maskBudget) {
@@ -32,7 +59,7 @@ export async function createFreeTypeMusicSymbols(factory, wasm, fonts, recipes, 
         }
         function paintSymbol(family, shape, pointSize, centerX, centerY) {
             if (closed) throw new Error('Symbol backend is closed');
-            if (!Number.isInteger(pointSize) || pointSize < 1 || pointSize > 128 || !Number.isFinite(centerX) || !Number.isFinite(centerY) || Math.abs(centerX) > 4194304 || Math.abs(centerY) > 4194304) throw new RangeError('Symbol request outside verified bounds');
+            if (!Number.isInteger(pointSize) || pointSize < 1 || pointSize > 4096 || !Number.isFinite(centerX) || !Number.isFinite(centerY) || Math.abs(centerX) > 4194304 || Math.abs(centerY) > 4194304) throw new RangeError('Symbol request outside supported bounds');
             const recipe = definitions[family + ':' + shape]; if (!recipe) throw new Error('Unsupported symbol definition: ' + family + ':' + shape);
             const result = render(recipe, pointSize, centerX, centerY, 0); calls++; return result;
         }
@@ -50,7 +77,7 @@ export async function createFreeTypeMusicSymbols(factory, wasm, fonts, recipes, 
                 size = scaled - floor === .5 ? floor + (floor % 2) : Math.floor(scaled + .5);
                 if (size === 0) return [];
             }
-            if (!Number.isFinite(size) || size <= 0 || size > 128) throw new RangeError('Derived symbol size');
+            if (!Number.isFinite(size) || size <= 0 || size > 4096) throw new RangeError('Derived symbol size');
             const positioned = []; let position = 0, minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
             for (const character of recipe.text) {
                 const mask = glyph(font, size, character.codePointAt(0)), box = mask.box;
@@ -80,7 +107,18 @@ export async function createFreeTypeMusicSymbols(factory, wasm, fonts, recipes, 
             return positioned.map(({position, mask}) => ({x: Math.floor(x + position + .5) + mask.left, y: Math.floor(y + .5) + mask.top,
                 width: mask.width, height: mask.height, pixels: new Int8Array(mask.pixels)}));
         }
-        return {methods: {paintSymbol, symbolStats: () => ({calls, cachedMasks: cache.size, cacheLimit: limit, cachedMaskBytes: cachedBytes, maskCacheBudgetBytes: maskBudget})},
+        function renderTemplate(family,shape,pointSize,small,maxDistance){
+            const recipe=definitions[family+':'+shape];if(!recipe)return null;
+            if(!Number.isFinite(maxDistance)||maxDistance<0||maxDistance>4096)throw new RangeError('Invalid template padding');
+            const box=measureRecipe(recipe,pointSize),room=2*Math.ceil(maxDistance);
+            const fw=Math.ceil(box.x+box.width)-Math.floor(box.x),fh=Math.ceil(box.y+box.height)-Math.floor(box.y);
+            const rw=room+(small?fw:box.width),rh=room+(small?fh:box.height),width=Math.ceil(rw),height=Math.ceil(rh);
+            if(width<1||height<1||width*height>16*1024*1024)throw new RangeError('Template raster exceeds pixel budget');
+            const x=(rw-box.width)/2,y=(rh-box.height)/2,fx=Math.floor(x),fy=Math.floor(y);
+            return {width,height,fatX:fx,fatY:fy,fatWidth:Math.ceil(x+box.width)-fx,fatHeight:Math.ceil(y+box.height)-fy,
+                masks:render(recipe,pointSize,rw/2,rh/2,0)};
+        }
+        return {methods: {paintSymbol,measureSymbol,measureNumber,renderTemplate, symbolStats: () => ({calls, cachedMasks: cache.size, cacheLimit: limit, cachedMaskBytes: cachedBytes, maskCacheBudgetBytes: maskBudget})},
             dispose() {closed = true; cache.clear(); cachedBytes = 0; api._free(info); api._free(output);}};
     });
 }

@@ -37,7 +37,7 @@ int music_symbol_glyph(void *handle,int codepoint) {
 
 int music_symbol_metrics(void *handle,int glyph,double size,double *values) {
     struct MaskFace *ctx=handle;
-    if(!ctx||glyph<0||!isfinite(size)||size<=0||size>128||!values)return -1;
+    if(!ctx||glyph<0||!isfinite(size)||size<=0||size>4096||!values)return -1;
     float scale=symbol_transform(ctx,size);
     FT_Error error=FT_Set_Char_Size(ctx->face,0,(FT_F26Dot6)((size<1?1:size)*64),72,72);
     FT_Set_Transform(ctx->face,NULL,NULL);
@@ -74,7 +74,7 @@ static int symbol_cubic(const FT_Vector *a,const FT_Vector *b,const FT_Vector *c
 /* Result is a bounded segment stream, generated from font bytes, never JVM-supplied geometry. */
 int music_symbol_outline(void *handle,int glyph,double size,double x,double y,int *info,double *data,int capacity) {
     struct MaskFace *ctx=handle;
-    if(!ctx||glyph<0||!isfinite(size)||size<=0||size>128||!isfinite(x)||!isfinite(y)||fabs(x)>4194304||fabs(y)>4194304||!info||!data||capacity<0)return -1;
+    if(!ctx||glyph<0||!isfinite(size)||size<=0||size>4096||!isfinite(x)||!isfinite(y)||fabs(x)>4194304||fabs(y)>4194304||!info||!data||capacity<0)return -1;
     symbol_transform(ctx,size);
     int error=FT_Set_Char_Size(ctx->face,0,(FT_F26Dot6)((size<1?1:size)*64),72,72);
     if(!error)error=FT_Load_Glyph(ctx->face,(FT_UInt)glyph,FT_LOAD_NO_HINTING|FT_LOAD_NO_BITMAP);

@@ -22,6 +22,9 @@ final class HeadlessPatches {
         Map<MethodDescriptor, Program> original = new HashMap<>();
         for (MethodHolder method : cls.getMethods()) { original.put(method.getDescriptor(), method.getProgram()); }
         switch (cls.getName()) {
+            case "org.audiveris.omr.util.RegexUtil":
+                StandardApiPatches.delegate(cls,"getGroup","getGroup",PortableRegexGroups.class.getName(),true,true,
+                        obj("java.util.regex.Matcher"),STRING,STRING);break;
             case "org.audiveris.omr.sheet.curve.Skeleton":
                 if(Boolean.getBoolean("audiveris.compat.curvesRaster"))StandardApiPatches.delegate(cls,"buildSkeleton","build","org.audiveris.omr.sheet.curve.WorkerSkeletonBridge",false,true,obj("java.awt.image.BufferedImage"));
                 break;

@@ -133,6 +133,23 @@ public class TemplateFactory
         }
     }
 
+    /** Renderer supplies pixels only; matching distances, holes and anchors stay in this factory. */
+    public interface RasterSource {
+        Raster render(Shape shape,MusicFamily family,int pointSize);
+        default void save(Template template,MusicFamily family,int pointSize){throw new UnsupportedOperationException("Template previews are unavailable");}
+    }
+    public record Raster(ColorImage image,Rectangle fatBounds){ }
+    private static final class NativeRasterSource implements RasterSource {
+        public Raster render(Shape shape,MusicFamily family,int pointSize){
+            MusicFont font=MusicFont.getMusicFont(family,pointSize);TemplateSymbol symbol=new TemplateSymbol(shape,family);
+            if(symbol.getDimension(font)==null)return null;
+            return new Raster(ColorImage.of(symbol.buildImage(font)),symbol.getFatBounds(font));
+        }
+        public void save(Template template,MusicFamily family,int pointSize){ImageUtil.saveOnDisk(buildDecoratedImage(template),"templates-"+family+"-"+pointSize,template.getShape().name());}
+    }
+    public static Template buildFromRaster(Shape shape,MusicFamily family,int pointSize,RasterSource raster){return new Builder(shape,family,pointSize,raster).buildTemplate();}
+    public static List<PixelDistance> keyPointsFromRaster(Shape shape,MusicFamily family,int pointSize,RasterSource raster){return new Builder(shape,family,pointSize,raster).processSymbol(1);}
+
     /** All shapes with hole(s). */
     private static final EnumSet shapesWithHoles = EnumSet.of(
             // 2
@@ -181,6 +198,16 @@ public class TemplateFactory
     private TemplateFactory ()
     {
         catalogs = new EnumMap<>(MusicFamily.class);
+    }
+
+    /** Release cached catalogs between independent page jobs. Call only when no recognition
+     * task is using this factory; templates retained by a sheet remain valid.
+     */
+    public void clearCache ()
+    {
+        synchronized (catalogs) {
+            catalogs.clear();
+        }
     }
 
     //~ Methods ------------------------------------------------------------------------------------
@@ -437,7 +464,7 @@ public class TemplateFactory
      * @param fatBox fat symbol bounds
      * @return slim symbol bounds
      */
-    private static Rectangle getSlimBounds (BufferedImage img,
+    private static Rectangle getSlimBounds (ColorImage img,
                                             Rectangle fatBox)
     {
         final int imgWidth = img.getWidth();
@@ -662,6 +689,7 @@ public class TemplateFactory
         private final MusicFamily family;
 
         private final int pointSize;
+        private final RasterSource raster;
 
         /**
          * @param shape     shape of the template
@@ -672,9 +700,15 @@ public class TemplateFactory
                         MusicFamily family,
                         int pointSize)
         {
+            this(shape,family,pointSize,new NativeRasterSource());
+        }
+
+        private Builder (Shape shape,MusicFamily family,int pointSize,RasterSource raster)
+        {
             this.shape = shape;
             this.family = family;
             this.pointSize = pointSize;
+            this.raster = java.util.Objects.requireNonNull(raster);
         }
 
         /**
@@ -686,7 +720,7 @@ public class TemplateFactory
          * @param img the source image
          * @param box bounds of symbol relative to image
          */
-        private void addHoles (BufferedImage img,
+        private void addHoles (ColorImage img,
                                Rectangle box)
         {
             // Identify holes
@@ -745,7 +779,7 @@ public class TemplateFactory
          * @param img the source image
          * @param box bounds of symbol relative to image
          */
-        private void adjustHoles (BufferedImage img,
+        private void adjustHoles (ColorImage img,
                                   Rectangle box)
         {
             final FloodFiller floodFiller = new FloodFiller(img);
@@ -765,7 +799,7 @@ public class TemplateFactory
          * @param img       (input/output) the source image
          * @param threshold the minimum alpha/color level
          */
-        private void binarize (BufferedImage img,
+        private void binarize (ColorImage img,
                                int threshold)
         {
             for (int y = 0, h = img.getHeight(); y < h; y++) {
@@ -794,7 +828,7 @@ public class TemplateFactory
          * @param fatBounds the template fat bounds
          * @return the resulting table of pixel distances
          */
-        private DistanceTable buildDistances (BufferedImage img,
+        private DistanceTable buildDistances (ColorImage img,
                                               Rectangle fatBounds)
         {
             // Compute all distances to foreground
@@ -857,18 +891,17 @@ public class TemplateFactory
         {
             logger.debug("Building template for {} {} {}", shape, family, pointSize);
 
-            final MusicFont font = MusicFont.getMusicFont(family, pointSize);
-            final TemplateSymbol symbol = new TemplateSymbol(shape, family);
+            final Raster rendered = raster.render(shape,family,pointSize);
 
             // Check whether we have a usable template symbol
-            if (symbol.getDimension(font) == null) {
+            if (rendered == null) {
                 logger.info("{} No template for {}", family, shape);
 
                 return null;
             }
 
-            final Rectangle fatBounds = symbol.getFatBounds(font);
-            final BufferedImage img = symbol.buildImage(font); // Gray pixels
+            final Rectangle fatBounds = rendered.fatBounds();
+            final ColorImage img = rendered.image();
             binarize(img, constants.binarizationThreshold.getValue()); // BACK & FORE pixels
             final Rectangle slimBounds = getSlimBounds(img, fatBounds);
 
@@ -891,8 +924,7 @@ public class TemplateFactory
 
             // Store a copy on disk for visual check?
             if (constants.saveTemplates.isSet()) {
-                final BufferedImage output = buildDecoratedImage(tpl);
-                ImageUtil.saveOnDisk(output, "templates-" + family + "-" + pointSize, shape.name());
+                raster.save(tpl,family,pointSize);
             }
 
             logger.debug("{} size:{} \n{}", shape, pointSize, tpl);
@@ -906,7 +938,7 @@ public class TemplateFactory
          * @param img the source image
          * @return the table of distances to foreground
          */
-        private DistanceTable computeDistances (BufferedImage img)
+        private DistanceTable computeDistances (ColorImage img)
         {
             // Retrieve foreground pixels
             final int width = img.getWidth();
@@ -939,7 +971,7 @@ public class TemplateFactory
          * @param y   provided ordinate
          * @return true if so
          */
-        private boolean isBackground (BufferedImage img,
+        private boolean isBackground (ColorImage img,
                                       int x,
                                       int y)
         {
@@ -960,10 +992,10 @@ public class TemplateFactory
         {
             final int ps = ratio * pointSize;
 
-            final MusicFont font = MusicFont.getMusicFont(family, ps);
-            final TemplateSymbol symbol = new TemplateSymbol(shape, family);
-            final Rectangle fatBounds = symbol.getFatBounds(font);
-            final BufferedImage img = symbol.buildImage(font); // Gray pixels
+            final Raster rendered = raster.render(shape,family,ps);
+            if(rendered==null)throw new IllegalArgumentException("No template raster for "+shape+"/"+family);
+            final Rectangle fatBounds = rendered.fatBounds();
+            final ColorImage img = rendered.image();
             binarize(img, constants.binarizationThreshold.getValue()); // BACK & FORE pixels
 
             DistanceTable distances = buildDistances(img, fatBounds);
@@ -1048,7 +1080,7 @@ public class TemplateFactory
          * @param img       the colored image
          */
         private void setHoleDistances (DistanceTable distances,
-                                       BufferedImage img)
+                                       ColorImage img)
         {
             for (int y = 0, h = img.getHeight(); y < h; y++) {
                 for (int x = 0, w = img.getWidth(); x < w; x++) {

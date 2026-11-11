@@ -88,11 +88,22 @@ gradle.projectsEvaluated {
         commandLine 'python3', new File(compat, 'tools/generate-resources.py').absolutePath,
                 rootProject.projectDir.absolutePath, bundledResources.absolutePath
     }
+    def musicXmlSource = new File(rootProject.projectDir, 'build/wasm-compat/musicxml-source')
+    rootProject.tasks.register('generatePortableMusicXml', JavaExec) {
+        dependsOn compile
+        classpath = rootProject.files(classes) + app.sourceSets.main.runtimeClasspath
+        mainClass = 'audit.GenerateMusicXmlWriter'
+        maxHeapSize = '256m'
+        inputs.files(new File(harness, 'src/audit/GenerateMusicXmlWriter.java'), app.sourceSets.main.runtimeClasspath)
+        outputs.dir musicXmlSource
+        args musicXmlSource.absolutePath
+    }
     rootProject.tasks.register('compileWasmCompatibility', JavaCompile) {
-        dependsOn 'generateWasmResources', 'generateWasmMusicData', 'compileJdkRasterBridge'
+        dependsOn 'generateWasmResources', 'generateWasmMusicData', 'compileJdkRasterBridge', 'generatePortableMusicXml'
         source new File(compat, 'src/main/java')
         source new File(bundledResources, 'src')
         source new File(musicData, 'src')
+        source musicXmlSource
         classpath = rootProject.files(jdkRasterClasses) + auditDependencies + compatDependencies + app.sourceSets.main.runtimeClasspath
         destinationDirectory = compatClasses
         javaCompiler = app.tasks.named('compileJava').flatMap { it.javaCompiler }

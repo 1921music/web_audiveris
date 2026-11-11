@@ -8,7 +8,7 @@ import sys
 
 
 def main():
-    root=Path(sys.argv[1]);base=root/'build/wasm-compat/freetype-native';output=root/'build/wasm-compat/music-symbols-wasm'
+    root=Path(sys.argv[1]);base=root/'build/wasm-compat/freetype-native';output=Path(sys.argv[2]) if len(sys.argv)>2 else root/'build/wasm-compat/music-symbols-wasm'
     output.mkdir(parents=True,exist_ok=True)
     assert hashlib.sha256((base/'freetype-2.14.3.tar.xz').read_bytes()).hexdigest()=='36bc4f1cc413335368ee656c42afca65c5a3987e8768cc28cf11ba775e785a5f'
     exports=['_music_mask_memory_open','_music_mask_close','_music_mask_version','_music_mask_render',

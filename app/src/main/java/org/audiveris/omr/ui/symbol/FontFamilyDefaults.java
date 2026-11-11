@@ -23,6 +23,8 @@ public final class FontFamilyDefaults {
     public static int pointSize(int staffInterline) { return 4 * staffInterline; }
     static MusicFont.Constants musicConstants() { return musicConstants; }
     static TextFont.Constants textConstants() { return textConstants; }
+    /** Base text fonts are created with plain style; export needs their metadata, not an AWT font. */
+    public static int defaultTextPointSize() { return textConstants.defaultTextFontSize.getValue(); }
 
     /** Same point-size calculation as MusicFont, without initializing desktop fonts. */
     public static int headPointSize(org.audiveris.omr.sheet.Scale scale, double staffInterline) {

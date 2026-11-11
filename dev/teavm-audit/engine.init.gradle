@@ -1,0 +1,85 @@
+// Apply after audit.init.gradle and page-recognition.init.gradle.
+gradle.projectsEvaluated {
+    def app=rootProject.findProject(':app')
+    if(app==null)return
+    rootProject.tasks.register('buildRegexCaptureProbe',JavaExec) {
+        def base=rootProject.tasks.named('buildPageRecognitionProbe',JavaExec).get()
+        dependsOn 'compileTeaVMAudit','compileWasmCompatibilityTests','patchKxmlCompatibility','selectWasmLibraryImplementations'
+        classpath=base.classpath;systemProperties base.systemProperties;maxHeapSize='768m'
+        mainClass='audit.CompileCompatibilityProbe'
+        args new File(rootProject.projectDir,'build/wasm-engine/regex-probe').absolutePath,
+            'org.audiveris.wasm.compat.test.RegexCaptureProbe','regex'
+    }
+    rootProject.tasks.register('testEngineExportJvm',JavaExec) {
+        dependsOn 'compileWasmCompatibilityTests','compileTeaVMAudit','patchKxmlCompatibility','selectWasmLibraryImplementations'
+        def base=rootProject.tasks.named('testPageRecognitionJvm',JavaExec).get()
+        classpath=base.classpath;systemProperties base.systemProperties;jvmArgs base.jvmArgs
+        mainClass='org.audiveris.wasm.compat.test.EngineExportOracle'
+        maxHeapSize='2g';workingDir app.projectDir
+        args rootProject.projectDir.absolutePath
+    }
+    rootProject.tasks.register('packageWorkerEngine',Exec) {
+        dependsOn 'buildWorkerEngine','buildEngineTextFonts','buildEngineFontIntrinsics','buildEngineFontBackend'
+        commandLine 'python3',new File(rootProject.projectDir,'dev/teavm-audit/package_engine.py').absolutePath,
+            rootProject.projectDir.absolutePath
+    }
+    rootProject.tasks.register('packageWorkerOcr',Exec) {
+        dependsOn 'packageWorkerEngine'
+        commandLine 'python3',new File(rootProject.projectDir,'dev/teavm-audit/package_engine_ocr.py').absolutePath,
+            rootProject.projectDir.absolutePath
+    }
+    rootProject.tasks.register('buildEngineTextFonts',JavaExec) {
+        dependsOn 'compileWasmCompatibilityTests','compileTeaVMAudit','patchKxmlCompatibility','selectWasmLibraryImplementations'
+        classpath=rootProject.tasks.named('testPageRecognitionJvm',JavaExec).get().classpath
+        mainClass='org.audiveris.wasm.compat.test.EngineTextFontAssets'
+        maxHeapSize='768m';workingDir app.projectDir
+        systemProperty 'java.awt.headless','true'
+        jvmArgs '--add-exports=java.desktop/sun.font=ALL-UNNAMED','--add-opens=java.desktop/sun.font=ALL-UNNAMED'
+        args new File(rootProject.projectDir,'build/wasm-engine/text-fonts').absolutePath
+    }
+    rootProject.tasks.register('buildEngineFontIntrinsics',JavaExec) {
+        dependsOn 'compileWasmCompatibilityTests','compileTeaVMAudit','patchKxmlCompatibility','selectWasmLibraryImplementations'
+        classpath=rootProject.tasks.named('testPageRecognitionJvm',JavaExec).get().classpath
+        mainClass='org.audiveris.wasm.compat.test.FontResourceOracle'
+        maxHeapSize='768m';workingDir app.projectDir
+        systemProperty 'java.awt.headless','true'
+        args new File(rootProject.projectDir,'build/wasm-engine/font-data').absolutePath
+    }
+    rootProject.tasks.register('buildEngineFontBackend',Exec) {
+        dependsOn 'buildEngineMusicDefinitions'
+        commandLine 'python3',new File(rootProject.projectDir,'dev/teavm-audit/build_engine_fonts.py').absolutePath,
+            rootProject.projectDir.absolutePath
+    }
+    rootProject.tasks.register('buildEngineMusicDefinitions',JavaExec) {
+        dependsOn 'compileWasmCompatibilityTests','compileTeaVMAudit','patchKxmlCompatibility','selectWasmLibraryImplementations'
+        classpath=rootProject.tasks.named('testPageRecognitionJvm',JavaExec).get().classpath
+        mainClass='org.audiveris.wasm.compat.test.MusicSymbolOracle'
+        maxHeapSize='768m';workingDir app.projectDir;systemProperty 'java.awt.headless','true'
+        jvmArgs '--add-exports=java.desktop/sun.font=ALL-UNNAMED','--add-opens=java.desktop/sun.font=ALL-UNNAMED'
+        args new File(rootProject.projectDir,'build/wasm-engine/music-definitions').absolutePath,'--assets-only'
+    }
+    rootProject.tasks.register('testTemplateRasterBoundaryJvm',JavaExec) {
+        dependsOn 'compileWasmCompatibilityTests','compileTeaVMAudit','patchKxmlCompatibility','selectWasmLibraryImplementations'
+        classpath=rootProject.tasks.named('testPageRecognitionJvm',JavaExec).get().classpath
+        mainClass='org.audiveris.wasm.compat.test.TemplateRasterBoundaryOracle'
+        maxHeapSize='768m';workingDir app.projectDir;systemProperty 'java.awt.headless','true'
+        args new File(rootProject.projectDir,'build/wasm-compat/template-original-probe').absolutePath,
+            new File(rootProject.projectDir,'build/wasm-engine/template-reference').absolutePath
+    }
+    rootProject.tasks.register('buildWorkerEngine',JavaExec) {
+        def base=rootProject.tasks.named('buildPageRecognitionProbe',JavaExec).get()
+        dependsOn 'compileTeaVMAudit','compileWasmCompatibilityTests','patchKxmlCompatibility','selectWasmLibraryImplementations'
+        classpath=base.classpath;systemProperties base.systemProperties;maxHeapSize='2g'
+        mainClass='audit.CompileCompatibilityProbe'
+        args new File(rootProject.projectDir,'build/wasm-engine/engine').absolutePath,
+            'org.audiveris.wasm.compat.platform.WorkerEngine','engine'
+    }
+    rootProject.tasks.register('buildEngineResourcesProbe',JavaExec) {
+        def base=rootProject.tasks.named('buildPageRecognitionProbe',JavaExec).get()
+        dependsOn 'compileTeaVMAudit','compileWasmCompatibilityTests','patchKxmlCompatibility','selectWasmLibraryImplementations'
+        classpath=base.classpath;systemProperties base.systemProperties;maxHeapSize='2g'
+        mainClass='audit.CompileCompatibilityProbe'
+        args new File(rootProject.projectDir,'build/wasm-engine/resources-probe').absolutePath,
+            'org.audiveris.wasm.compat.test.EngineResourcesProbe','resources'
+    }
+}

@@ -40,7 +40,7 @@ public final class WorkerMusicSymbols {
     public static int calls(){return calls;}
     public static void paint(byte[] pixels,int width,int height,String family,String shape,int pointSize,double x,double y){
         if(backend==null)throw new UnsupportedOperationException("Music symbol backend is not configured: "+shape);
-        if(pointSize<=0||pointSize>128||!Double.isFinite(x)||!Double.isFinite(y)||Math.abs(x)>4194304||Math.abs(y)>4194304)throw new IllegalArgumentException("Invalid symbol request");
+        if(pointSize<=0||pointSize>4096||!Double.isFinite(x)||!Double.isFinite(y)||Math.abs(x)>4194304||Math.abs(y)>4194304)throw new IllegalArgumentException("Invalid symbol request");
         JSArray<Mask> masks=backend.paint(family,shape,pointSize,x,y);
         blend(pixels,width,height,masks);calls++;
     }

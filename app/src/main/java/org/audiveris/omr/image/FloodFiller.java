@@ -32,7 +32,7 @@ public class FloodFiller
 {
     //~ Instance fields ----------------------------------------------------------------------------
 
-    private final BufferedImage image;
+    private final ColorImage image;
 
     private final int width;
 
@@ -47,6 +47,11 @@ public class FloodFiller
      */
     public FloodFiller (BufferedImage image)
     {
+        this(ColorImage.of(image));
+    }
+
+    public FloodFiller (ColorImage image)
+    {
         this.image = image;
         width = image.getWidth();
         height = image.getHeight();
@@ -55,7 +60,7 @@ public class FloodFiller
     //~ Methods ------------------------------------------------------------------------------------
 
     /**
-     * Flood fill the area from provided (x,y) location by recursively converting
+     * Flood fill the area from provided (x,y) location by iteratively converting
      * pixels from oldColor to newColor.
      * <p>
      * This implementation flood fills only vertically and horizontally, not in diagonal.
@@ -70,15 +75,16 @@ public class FloodFiller
                       int oldColor,
                       int newColor)
     {
-        if ((x >= 0) && (x < width) && (y >= 0) && (y < height)) {
-            int pix = image.getRGB(x, y);
-
-            if ((pix == oldColor) && (pix != newColor)) {
-                image.setRGB(x, y, newColor);
-                fill(x - 1, y, oldColor, newColor); // Left
-                fill(x, y - 1, oldColor, newColor); // Top
-                fill(x, y + 1, oldColor, newColor); // Bottom
-                fill(x + 1, y, oldColor, newColor); // Right
+        if(x<0||y<0||x>=width||y>=height||oldColor==newColor||image.getRGB(x,y)!=oldColor)return;
+        // Mark when enqueuing: each pixel occupies the bounded stack at most once.
+        // This preserves four-connected fill without using the Java call stack for large holes.
+        int[] pending=new int[Math.multiplyExact(width,height)];int size=0;
+        image.setRGB(x,y,newColor);pending[size++]=y*width+x;
+        while(size>0){
+            int index=pending[--size],px=index%width,py=index/width;
+            for(int side=0;side<4;side++){
+                int nx=px+(side==0?-1:side==3?1:0),ny=py+(side==1?-1:side==2?1:0);
+                if(nx>=0&&ny>=0&&nx<width&&ny<height&&image.getRGB(nx,ny)==oldColor){image.setRGB(nx,ny,newColor);pending[size++]=ny*width+nx;}
             }
         }
     }

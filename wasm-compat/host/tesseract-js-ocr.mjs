@@ -75,7 +75,7 @@ export class TesseractJsOcr{
         this.#createWorker=createWorker;this.#available=new Set(availableLanguages);this.#options={errorHandler:()=>{},...workerOptions};this.#encode=encodeImage;
         if(this.#available.size===0||![...this.#available].every(lang=>typeof lang==='string'&&lang.length>0&&!lang.includes('+'))){throw new TypeError('Explicit available OCR languages required');}
     }
-    recognize(request){
+    recognize(request,{signal}={}){
         const token=request?.token;
         if(!token||typeof token.job!=='string'||!token.job||typeof token.page!=='string'||!token.page
                 ||!Number.isInteger(token.generation)||token.generation<0||token.generation>2147483647
@@ -84,18 +84,32 @@ export class TesseractJsOcr{
         // Snapshot callers' data before queueing; transferred engine buffers remain independent.
         const owned={width:request.width,height:request.height,languages:request.languages,layout:request.layout,
             pixels:request.pixels instanceof Uint8Array?request.pixels.slice():null};
+        let abort;
+        const cancelled=new Promise((resolve,reject)=>{
+            abort=()=>reject(signal.reason??new DOMException('Aborted','AbortError'));
+            if(signal?.aborted)abort();else signal?.addEventListener('abort',abort,{once:true});
+        });
+        // A queued cancellation settles promptly without terminating another session's OCR.
+        cancelled.catch(()=>{});
+        const wait=operation=>Promise.race([operation,cancelled]);
         const operation=this.#tail.then(async()=>{
             try{
+                if(signal?.aborted)throw signal.reason??new DOMException('Aborted','AbortError');
                 if(this.#closed){throw new BackendError('EXECUTION_FAILED','OCR adapter is closed');}
                 if(typeof owned.languages!=='string'||!owned.languages.split('+').every(lang=>this.#available.has(lang))){throw new BackendError('MODEL_MISSING','Requested OCR language model is not configured');}
                 const mode=owned.layout==='MULTI_BLOCK'?'3':owned.layout==='SINGLE_BLOCK'?'6':null;if(!mode){unsupported('Unsupported OCR layout');}
                 if(!Number.isInteger(owned.width)||!Number.isInteger(owned.height)||owned.width<=0||owned.height<=0
                         ||!owned.pixels||owned.width*owned.height!==owned.pixels.length){unsupported('Invalid packed GRAY8 OCR request');}
-                const image=await this.#encode(owned);
-                if(!this.#worker){this.#worker=await this.#createWorker(owned.languages,this.#oem,this.#options);this.#languages=owned.languages;}
-                else if(this.#languages!==owned.languages){await this.#worker.reinitialize(owned.languages,this.#oem);this.#languages=owned.languages;}
-                await this.#worker.setParameters({tessedit_pageseg_mode:mode});
-                const {data}=await this.#worker.recognize(image,{}, {text:true,blocks:true});
+                const image=await wait(this.#encode(owned));
+                if(!this.#worker){
+                    this.#worker=await wait(this.#createWorker(owned.languages,this.#oem,this.#options).then(async worker=>{
+                        if(signal?.aborted){await worker.terminate();throw signal.reason??new DOMException('Aborted','AbortError');}
+                        return worker;
+                    }));this.#languages=owned.languages;
+                }
+                else if(this.#languages!==owned.languages){await wait(this.#worker.reinitialize(owned.languages,this.#oem));this.#languages=owned.languages;}
+                await wait(this.#worker.setParameters({tessedit_pageseg_mode:mode}));
+                const {data}=await wait(this.#worker.recognize(image,{}, {text:true,blocks:true}));
                 return {token:ownedToken,result:normalizeTesseractResult(data,this.#oem===0)};
             }catch(error){
                 let message=String(error?.message||error);
@@ -103,10 +117,11 @@ export class TesseractJsOcr{
                     const failed=this.#worker;this.#worker=null;this.#languages=null;
                     if(failed){try{await failed.terminate();}catch(cleanup){message+='; OCR cleanup failed: '+String(cleanup?.message||cleanup);}}
                 }
+                if(signal?.aborted)throw signal.reason??new DOMException('Aborted','AbortError');
                 return {token:ownedToken,failure:{code:error instanceof BackendError?error.code:'EXECUTION_FAILED',message}};
-            }
+            }finally{signal?.removeEventListener('abort',abort);}
         });
-        this.#tail=operation.then(()=>undefined,()=>undefined);return operation;
+        this.#tail=operation.then(()=>undefined,()=>undefined);return signal?Promise.race([operation,cancelled]):operation;
     }
     /** Graceful shutdown. Cancelling one engine session does not terminate another session's OCR. */
     async close(){this.#closed=true;await this.#tail;if(this.#worker){await this.#worker.terminate();this.#worker=null;}}

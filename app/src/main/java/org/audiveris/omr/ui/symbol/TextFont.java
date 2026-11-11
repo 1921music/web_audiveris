@@ -267,7 +267,7 @@ public class TextFont
                 "Sans Serif",
                 "Default font name for texts");
 
-        private final Constant.Integer defaultTextFontSize = new Constant.Integer(
+        final Constant.Integer defaultTextFontSize = new Constant.Integer(
                 "points",
                 10,
                 "Default font point size for texts");

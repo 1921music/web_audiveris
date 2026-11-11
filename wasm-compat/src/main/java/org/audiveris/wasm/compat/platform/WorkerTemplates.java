@@ -15,12 +15,16 @@ public final class WorkerTemplates implements TemplateFactory.Source {
     public static final int MAGIC=0x4154504c, VERSION=1;
     private static final WorkerTemplates INSTANCE=new WorkerTemplates();
     private static final Map<String,Catalog> catalogs=new HashMap<>();
+    private static TemplateFactory.RasterSource raster;
     private record Offset(Anchor anchor,double x,double y) { }
     private record Data(int width,int height,int x,int y,int slimWidth,int slimHeight,
                         List<PixelDistance> points,List<Offset> offsets) { }
     private record Catalog(double[] profile,Map<Shape,Data> entries) { }
     private WorkerTemplates() { }
     public static TemplateFactory.Source source() {return INSTANCE;}
+    public static void installRasterSource(TemplateFactory.RasterSource source){
+        Objects.requireNonNull(source);if(raster!=null)throw new IllegalStateException("Template raster backend is sealed");raster=source;
+    }
     private static String key(MusicFamily family,int pointSize) {return family.name()+":"+pointSize;}
     public static void install(byte[] bytes) throws IOException {
         Objects.requireNonNull(bytes);
@@ -81,6 +85,7 @@ public final class WorkerTemplates implements TemplateFactory.Source {
     }
     @Override public Template build(Shape shape,MusicFamily family,int pointSize) {
         if(TemplateFactory.templateImagesRequested()) {throw new UnsupportedOperationException("Template preview requires a host image backend");}
+        if(raster!=null&&!catalogs.containsKey(key(family,pointSize)))return TemplateFactory.buildFromRaster(shape,family,pointSize,raster);
         Data data=require(shape,family,pointSize);if(data==null) {return null;}
         Template result=new Template(shape,family,pointSize,data.width,data.height,data.points,
                 new Rectangle(data.x,data.y,data.slimWidth,data.slimHeight));
@@ -88,6 +93,7 @@ public final class WorkerTemplates implements TemplateFactory.Source {
         return result;
     }
     @Override public List<PixelDistance> keyPoints(Shape shape,MusicFamily family,int pointSize) {
+        if(raster!=null&&!catalogs.containsKey(key(family,pointSize)))return TemplateFactory.keyPointsFromRaster(shape,family,pointSize,raster);
         Data data=require(shape,family,pointSize);
         if(data==null) {throw new UnsupportedOperationException("Font has no template for "+shape);}
         return new ArrayList<>(data.points);

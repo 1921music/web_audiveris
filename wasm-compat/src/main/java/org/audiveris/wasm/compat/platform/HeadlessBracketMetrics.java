@@ -28,7 +28,13 @@ public final class HeadlessBracketMetrics {
         frozen = true;
         String key = Objects.requireNonNull(family) + "@" + interline;
         Serifs serifs = values.get(key);
-        if (serifs == null) { throw new UnsupportedOperationException("Host must supply bracket font measurements: " + key); }
+        if (serifs == null) {
+            var provider=HeadlessSymbolGeometry.provider();
+            var musicFamily=org.audiveris.omr.ui.symbol.MusicFamily.valueOf(family);
+            var upper=provider.bounds(musicFamily,org.audiveris.omr.glyph.Shape.BRACKET_UPPER_SERIF,interline);
+            var lower=provider.bounds(musicFamily,org.audiveris.omr.glyph.Shape.BRACKET_LOWER_SERIF,interline);
+            serifs=new Serifs(upper.getWidth(),upper.getHeight(),lower.getWidth(),lower.getHeight());
+        }
         return new Rectangle2D[]{new Rectangle2D.Double(0, 0, serifs.upperWidth, serifs.upperHeight),
                 new Rectangle2D.Double(0, 0, serifs.lowerWidth, serifs.lowerHeight)};
     }

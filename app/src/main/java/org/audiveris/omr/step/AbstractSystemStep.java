@@ -128,6 +128,21 @@ public abstract class AbstractSystemStep<C>
         doEpilog(sheet, context);
     }
 
+    /** Execute the same prolog, systems and epilog on the owning thread.
+     * Unlike the desktop task runner, failures propagate to the caller.
+     * @param sheet owned sheet
+     * @throws StepException if a system cannot be processed
+     */
+    public final void doitSerial (Sheet sheet)
+        throws StepException
+    {
+        final C context = doProlog(sheet);
+        for (SystemInfo system : sheet.getSystems()) {
+            doSystem(system, context);
+        }
+        doEpilog(sheet, context);
+    }
+
     //---------------//
     // doitPerSystem //
     //---------------//

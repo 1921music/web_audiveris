@@ -103,6 +103,7 @@ public final class MusicSymbolOracle {
         graphics.setColor(Color.WHITE);graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_OFF);
         var rows=new ArrayList<Object>();var digest=MessageDigest.getInstance("SHA-256");
         try{
+            if(args.length<2||!args[1].equals("--assets-only"))
             for(MusicFamily family:MusicFamily.values())for(int size:new int[]{1,12,19,24,37,48,88,100,101,128}){
                 var font=new MusicFont(family,size);
                 for(Shape shape:Shape.values()){
