@@ -10,4 +10,28 @@ gradle.projectsEvaluated {
         systemProperty 'java.awt.headless', 'true'
         args new File(rootProject.projectDir, 'build/wasm-compat/music-paint-trace').absolutePath
     }
+    rootProject.tasks.register('buildNativeMusicMaskHelper', Exec) {
+        commandLine 'python3', new File(rootProject.projectDir, 'dev/teavm-audit/prepare_music_mask_native.py').absolutePath,
+                rootProject.projectDir.absolutePath
+    }
+    rootProject.tasks.register('traceMusicMasks', JavaExec) {
+        dependsOn 'compileWasmCompatibilityTests', 'buildNativeMusicMaskHelper'
+        classpath = rootProject.files('build/wasm-compat/test-classes') + app.sourceSets.main.runtimeClasspath
+        mainClass = 'org.audiveris.wasm.compat.test.MusicMaskTrace'
+        maxHeapSize = '256m'
+        workingDir app.projectDir
+        systemProperty 'java.awt.headless', 'true'
+        args new File(rootProject.projectDir, 'build/wasm-compat/freetype-native/libmusic-mask.so').absolutePath,
+                new File(rootProject.projectDir, 'build/wasm-compat/music-mask-trace').absolutePath
+    }
+    rootProject.tasks.register('buildMusicMaskWasm', Exec) {
+        dependsOn 'traceMusicMasks'
+        commandLine 'python3', new File(rootProject.projectDir, 'dev/teavm-audit/build_music_mask_wasm.py').absolutePath,
+                rootProject.projectDir.absolutePath
+    }
+    rootProject.tasks.register('verifyMusicMaskWasm', Exec) {
+        dependsOn 'buildMusicMaskWasm'
+        commandLine 'node', '--max-old-space-size=512', new File(rootProject.projectDir, 'wasm-compat/tools/verify-music-masks.cjs').absolutePath,
+                new File(rootProject.projectDir, 'build/wasm-compat/music-mask-wasm').absolutePath
+    }
 }

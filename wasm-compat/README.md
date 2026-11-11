@@ -1582,9 +1582,47 @@ Run `traceMusicPainting` with both `-I dev/teavm-audit/audit.init.gradle` and
 The task uses the original app working directory so its `res` font lookup remains unchanged.
 Archive with `export_music_paint_trace.py <repository> <mirror> <source-commit>`;
 `music-paint-results` records the result and font/source hashes. No Wasm size or speed claim
-follows from this experiment. TODO: evaluate an explicit glyph-mask backend, including a
-FreeType Wasm candidate, against native pixels before selecting its API, caching policy
-or implementation. The two supplied music-font measurements also remain separate work.
+follows from this experiment. The standalone glyph-mask candidate below investigates an
+alternative; selecting its engine API and caching policy remains future work.
+The two supplied music-font measurements also remain separate work.
+
+### Standalone FreeType glyph-mask candidate
+
+An opt-in component builds **FreeType 2.14.3** with **Emscripten 4.0.20**. It reads owned font
+bytes from memory and renders grayscale glyph masks, without DOM, canvas, system font lookup
+or a virtual filesystem. Every component instance owns its FreeType faces and glyph cache.
+This component is separate from the TeaVM engine; it does not change the engine's current
+unsupported-symbol guard.
+
+The native comparison helper builds the pinned FreeType sources as a private static library
+and uses symbolic binding to avoid accidental resolution to the OS's FreeType. The JVM test
+checks the version through the actual helper before comparing pixels. With hinting disabled
+and glyph origins rounded, all **2,280 symbol cases / 58,368,000 pixels** match original
+`ShapeSymbol.paintSymbol`. Three alternate hinting/positioning combinations produce differences.
+Native output includes intermediate gray coverage, even though ordinary graphics antialiasing
+is disabled by the cleaner; the glyph-mask path preserves that coverage.
+
+Two fresh Node module instances and two independent Chromium module Workers reproduce all
+reference pixels. Node compares every byte; Workers match SHA-256. Each instance passes four
+C input guards and uses **480 cached masks / 16,777,216 bytes of linear memory**, with a
+**134,217,728-byte linear-memory ceiling**. Those figures exclude JS buffers, fonts, browser
+memory and test fixtures; the shared development ceiling remains **8 CPU / 8 GiB / no swap**.
+
+The component is **492,353 bytes** (**231,003 gzip**) plus **13,051 bytes of JS glue**
+(**4,482 gzip**). Font files are separate. The native fixture still supplies glyph IDs,
+physical-font selection and positioned glyph commands, so this proves rasterization rather
+than portable symbol layout or full TEXTS integration. No recognition-speed claim follows.
+TODO: connect an explicit module-local font backend, port the required music layout/metrics,
+and measure incremental engine size, throughput, peak memory and buffer copies. Unused font
+drivers and hinting support are additional size candidates after that behavior is verified.
+
+Install the optional pinned SDK through the capped launcher with
+`bash dev/wsl/install-emsdk.sh 4.0.20`; the existing WSL environment hook loads it for subsequent
+commands. Run `verifyMusicMaskWasm` with both audit and music-paint init scripts. The task
+generates native glyph commands/pixels, builds FreeType and runs Node/Worker comparisons.
+Archive with `export_music_masks.py <repository> <mirror> <source-commit>`; summaries go to
+`music-mask-results` and dense fixtures, runnable files, fonts and licenses to
+`wsl-artifacts/wasm-components/music-masks`.
 
 ## Pure Java path-fill component
 
