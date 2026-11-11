@@ -1,6 +1,8 @@
 // Original native cleanup/OCR/font inputs, with actual TEXTS recognition and phase suspension in Wasm.
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),http=require('node:http'),assert=require('node:assert/strict'),crypto=require('node:crypto');
-const {chromium}=require('playwright');const root=path.resolve(process.argv[2]),native=path.join(root,'native');
+const {chromium}=require('playwright');const live=process.env.AUDIVERIS_LIVE_TEXTS==='1',compat=path.resolve(__dirname,'..');
+const root=path.resolve(process.argv[2]),native=path.join(root,live?'live-ocr/jvm':'native');
+const modules=path.join(compat,'node_modules');let coreName;
 const inputSha256={},sha=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
 const inputBytes=file=>{const bytes=fs.readFileSync(file);inputSha256[path.relative(root,path.resolve(file))]=sha(bytes);return bytes;};
 const read=file=>JSON.parse(inputBytes(file));
@@ -25,6 +27,12 @@ function install(api,data,templates,model){
     for(const bytes of templates){api.installTemplates(new Int8Array(bytes.buffer,bytes.byteOffset,bytes.byteLength));}
 }
 (async()=>{
+    if(live){const features=require('wasm-feature-detect');const simd=await features.relaxedSimd()?'relaxedsimd':await features.simd()?'simd':'';coreName='tesseract-core'+(simd?'-'+simd:'');}
+    const adapterFactory=async()=>{
+        const {TesseractJsOcr}=await import(require('node:url').pathToFileURL(path.join(compat,'host/tesseract-js-ocr.mjs')));
+        return new TesseractJsOcr({oem:0,availableLanguages:['eng'],createWorker:require('tesseract.js').createWorker,
+            workerOptions:{workerPath:path.join(compat,'host/tesseract-word-metadata-node.cjs'),langPath:path.join(modules,'@tesseract.js-data/eng/4.0.0'),cacheMethod:'none',gzip:true}});
+    };
     const data={serifs:read(path.resolve(root,'../cue-beams-default-portable-probe/font-measurements.json')),
         geometry:read(path.join(native,'symbol-geometry.json')),widths:read(path.join(native,'point-widths.json')),
         fonts:read(path.join(native,'font-measurements.json')),defaultFont:inputBytes(path.join(native,'default-font.txt')).toString('utf8')};
@@ -35,38 +43,56 @@ function install(api,data,templates,model){
     let checks=0;
     for(let instance=0;instance<2;instance++){
         const api=(await TeaVM.wasmGC.load(path.join(root,'texts-continuation.wasm'))).exports;install(api,data,templates,model);let generation=0;
+        const adapter=live?await adapterFactory():null;try{
         for(const row of references){const meta=read(path.join(native,row.id,'metadata.json')),pixels=inputBytes(path.join(samples,row.id+'.binary')),cleaned=inputBytes(path.join(native,row.id,'cleaned.gray'));
-            assert.deepEqual(read(path.join(native,row.id,'original-lines.json')),read(path.join(native,row.id,'imported-lines.json')));
+            if(!live){assert.deepEqual(read(path.join(native,row.id,'original-lines.json')),read(path.join(native,row.id,'imported-lines.json')));}
             const pixelHash=sha(pixels),cleanHash=sha(cleaned),request=api.beginPage(meta.width,meta.height,new Int8Array(pixels),new Int8Array(cleaned),row.id,meta.margin,meta.languages,++generation);
             assert.equal(request.width,meta.width+2*meta.margin);assert.equal(request.height,meta.height+2*meta.margin);
             const stale={token:{...request.token,generation:request.token.generation-1}};Object.defineProperty(stale,'result',{get(){throw new Error('Late OCR payload decoded');}});assert.equal(api.receive(stale),false);
-            await new Promise(resolve=>setImmediate(resolve));const reply={token:request.token,result:read(path.join(native,row.id,'ocr-result.json'))};
+            await new Promise(resolve=>setImmediate(resolve));const expectedOcr=read(path.join(native,row.id,'ocr-result.json'));
+            const reply=live?await adapter.recognize(request):{token:request.token,result:expectedOcr};
+            assert.ok(!reply.failure,JSON.stringify(reply.failure));assert.deepEqual(reply.result,expectedOcr);
             assert.ok(api.receive(reply));assert.equal(api.receive(reply),false);const actual=JSON.parse(api.resume());
             try{compare(actual,row.result,'node'+instance+'.'+row.id);}catch(error){fs.writeFileSync(path.join(root,'failed-node.json'),JSON.stringify({actual,expected:row.result}));throw error;}
             assert.equal(sha(pixels),pixelHash);assert.equal(sha(cleaned),cleanHash);checks++;await new Promise(resolve=>setImmediate(resolve));
         }
+        }finally{if(adapter){await adapter.close();}}
     }
     const files=new Map([['/module.wasm',path.join(root,'texts-continuation.wasm')],['/runtime.js',path.join(root,'texts-continuation.wasm-runtime.js')]]);
+    if(live){
+        for(const name of ['tesseract-js-ocr.mjs','gray8-png.mjs','tesseract-word-metadata.mjs','tesseract-core-word-metadata.js']){files.set('/host/'+name,path.join(compat,'host',name));}
+        files.set('/ocr-assets/tesseract.min.js',path.join(modules,'tesseract.js/dist/tesseract.min.js'));
+        files.set('/ocr-assets/worker.min.js',path.join(modules,'tesseract.js/dist/worker.min.js'));
+        files.set('/core-assets/'+coreName+'.js',path.join(modules,'tesseract.js-core',coreName+'.js'));
+        files.set('/core-assets/'+coreName+'.wasm',path.join(modules,'tesseract.js-core',coreName+'.wasm'));
+        files.set('/models/eng.traineddata.gz',path.join(modules,'@tesseract.js-data/eng/4.0.0/eng.traineddata.gz'));
+    }
     for(let i=0;i<catalog.length;i++){files.set('/templates/'+i,path.join(templateRoot,catalog[i].file+'.atpl'));}
     for(const row of references){files.set('/pixels/'+row.id,path.join(samples,row.id+'.binary'));files.set('/cleaned/'+row.id,path.join(native,row.id,'cleaned.gray'));}
     const fixture={data,pages:references.map(row=>({meta:read(path.join(native,row.id,'metadata.json')),result:read(path.join(native,row.id,'ocr-result.json'))})),templates:catalog.map((_,i)=>'/templates/'+i)};
-    const worker=`importScripts('/runtime.js');onmessage=async()=>{try{
+    const worker=`importScripts('/runtime.js');${live?"importScripts('/ocr-assets/tesseract.min.js');":""}onmessage=async()=>{let adapter;try{
         const fixture=await(await fetch('/fixture')).json(),model=new Uint8Array(await(await fetch('/model')).arrayBuffer()),templates=[];
         for(const url of fixture.templates){templates.push(new Uint8Array(await(await fetch(url)).arrayBuffer()));}
         const api=(await TeaVM.wasmGC.load('/module.wasm')).exports;
         const install=${install.toString()};install(api,fixture.data,templates,model);const rows=[];let generation=0;
+        ${live?`const {TesseractJsOcr}=await import('/host/tesseract-js-ocr.mjs'),{browserWordMetadataOptions}=await import('/host/tesseract-word-metadata.mjs');
+        adapter=new TesseractJsOcr({oem:0,availableLanguages:['eng'],createWorker:Tesseract.createWorker,
+            workerOptions:browserWordMetadataOptions({workerPath:location.origin+'/ocr-assets/worker.min.js',corePath:location.origin+'/core-assets/${coreName}.js',langPath:location.origin+'/models',cacheMethod:'none',gzip:true},
+                {loaderPath:location.origin+'/host/tesseract-core-word-metadata.js',metadataModulePath:location.origin+'/host/tesseract-word-metadata.mjs'})});`:''}
         for(const page of fixture.pages){const m=page.meta,pixels=new Int8Array(await(await fetch('/pixels/'+m.id)).arrayBuffer()),cleaned=new Int8Array(await(await fetch('/cleaned/'+m.id)).arrayBuffer());
             const request=api.beginPage(m.width,m.height,pixels,cleaned,m.id,m.margin,m.languages,++generation);
-            await new Promise(resolve=>setTimeout(resolve,0));const reply={token:request.token,result:page.result};
+            await new Promise(resolve=>setTimeout(resolve,0));const reply=adapter?await adapter.recognize(request):{token:request.token,result:page.result};
+            if(reply.failure){throw new Error(JSON.stringify(reply.failure));}
+            if(JSON.stringify(reply.result)!==JSON.stringify(page.result)){throw new Error('Live OCR differs from JVM oracle input');}
             if(!api.receive(reply)||api.receive(reply)){throw new Error('TEXTS reply admission');}rows.push({id:m.id,result:JSON.parse(api.resume())});await new Promise(resolve=>setTimeout(resolve,0));
         }postMessage({rows,dom:typeof document});
-    }catch(error){postMessage({error:String(error.stack||error)});}};`;
+    }catch(error){postMessage({error:String(error.stack||error)});}finally{if(adapter){await adapter.close();}}};`;
     const server=http.createServer((req,res)=>{
         if(req.url==='/'){return res.end('<!doctype html><title>TEXTS continuation</title>');}
         if(req.url==='/fixture'){res.setHeader('Content-Type','application/json');return res.end(JSON.stringify(fixture));}
         if(req.url==='/model'){return res.end(model);}
         if(req.url==='/worker.js'){res.setHeader('Content-Type','text/javascript');return res.end(worker);}
-        const file=files.get(req.url);if(!file){res.statusCode=404;return res.end();}res.setHeader('Content-Type',file.endsWith('.wasm')?'application/wasm':file.endsWith('.js')?'text/javascript':'application/octet-stream');fs.createReadStream(file).pipe(res);
+        const file=files.get(new URL(req.url,'http://127.0.0.1').pathname);if(!file){res.statusCode=404;return res.end();}res.setHeader('Content-Type',file.endsWith('.wasm')?'application/wasm':/\.(m?js)$/.test(file)?'text/javascript':'application/octet-stream');fs.createReadStream(file).pipe(res);
     });await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));let browser;
     try{browser=await chromium.launch({headless:true,args:['--js-flags=--max-old-space-size=768']});const context=await browser.newContext(),origin='http://127.0.0.1:'+server.address().port;
         await context.route('**/*',route=>route.request().url().startsWith(origin+'/')?route.continue():route.abort());const page=await context.newPage();await page.goto(origin+'/');
@@ -80,7 +106,10 @@ function install(api,data,templates,model){
             examinedNativePages:coverage.examinedPages,rejectedBeforeTexts:coverage.rejectedBeforeTexts,
             checks,numericValues:numbers,maxDifference,originalTextWords:references.reduce((sum,row)=>sum+row.result.words,0),fontMeasurements:data.fonts.length,
             originalSystemProcessing:true,asynchronousReplyBoundary:true,duplicateAndLateRepliesRejected:true,wasmBytes:bytes.length,wasmSha256:sha(bytes),
-            limitation:'Original native-cleaned rasters, OCR replies and exact font measurements are supplied as fixtures; browser-native cleanup/fonts and live OCR on score pages are not yet established'};
-        fs.writeFileSync(path.join(root,'verification.json'),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report));
+            liveOcr:live,
+            limitation:live?'Actual Tesseract.js OCR and TEXTS resume; original native-cleaned rasters and exact font measurements remain supplied; native OCR parity is not claimed'
+                :'Original native-cleaned rasters, OCR replies and exact font measurements are supplied as fixtures; browser-native cleanup/fonts and live OCR on score pages are not yet established'};
+        if(live){report.ocrAssets=Object.fromEntries([...files].filter(([url])=>url.startsWith('/host/')||url.startsWith('/ocr-assets/')||url.startsWith('/core-assets/')||url.startsWith('/models/')).map(([url,file])=>{const bytes=inputBytes(file);return [url,{bytes:bytes.length,sha256:sha(bytes)}];}));}
+        fs.writeFileSync(path.join(root,live?'live-ocr/verification.json':'verification.json'),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report));
     }finally{if(browser){await browser.close();}await new Promise(resolve=>server.close(resolve));}
 })().catch(error=>{console.error(error);process.exitCode=1;});

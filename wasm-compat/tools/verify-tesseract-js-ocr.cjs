@@ -21,10 +21,10 @@ function withoutMargin(result,margin){
     assert.equal(normalizeTesseractResult(unknownFontData,true).capabilities.fontAttributes,true);
     assert.equal(normalizeTesseractResult(unknownFontData,false).capabilities.fontAttributes,false);
     assert.throws(()=>attachNativeWordMetadata({}));
-    let destroyed=0;const iterator={Begin(){},Empty(){return false;},getBoundingBox(){return {x0:1,y0:0,x1:1,y1:1};},Next(){return false;}};
+    let destroyed=0;const iterator={Begin(){},Empty(){return false;},IsAtBeginningOf(){return true;},GetUTF8Text(){return 'x';},getBoundingBox(){return {x0:1,y0:0,x1:1,y1:1};},Next(){return false;}};
     function MockApi(){}MockApi.prototype.GetJSONText=()=>JSON.stringify({blocks:[{paragraphs:[{lines:[{words:[{bbox:{x0:0,y0:0,x1:1,y1:1}}]}]}]}]});
     MockApi.prototype.GetIterator=()=>iterator;
-    function MockIterator(){}Object.assign(MockIterator.prototype,{getWordFontAttributes(){},getBaseline(){},getBoundingBox(){},Confidence(){}});
+    function MockIterator(){}Object.assign(MockIterator.prototype,{getWordFontAttributes(){},getBaseline(){},getBoundingBox(){},Confidence(){},GetUTF8Text(){},IsAtBeginningOf(){}});
     const mockModule={TessBaseAPI:MockApi,ResultIterator:MockIterator,destroy(value){assert.equal(value,iterator);destroyed++;}};
     attachNativeWordMetadata(mockModule);const wrapped=MockApi.prototype.GetJSONText;attachNativeWordMetadata(mockModule);
     assert.equal(MockApi.prototype.GetJSONText,wrapped);assert.throws(()=>new MockApi().GetJSONText(),/not aligned/);assert.equal(destroyed,1);

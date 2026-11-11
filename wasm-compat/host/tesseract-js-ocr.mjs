@@ -29,7 +29,10 @@ export function normalizeTesseractResult(data,legacyNativeFontMetadata=false){
         if(data?.blocks==null&&typeof data?.text==='string'&&data.text.trim()===''){return {capabilities,lines};}
         unsupported('Structured OCR blocks were not returned');
     }
-    for(const block of data.blocks){
+    const nativeLines=data.blocks[0]?.audiveris_native_lines;
+    if(nativeLines!==undefined&&!Array.isArray(nativeLines)){unsupported('Invalid native OCR lines');}
+    const blocks=nativeLines===undefined?data.blocks:[{paragraphs:[{lines:nativeLines}]}];
+    for(const block of blocks){
         if(!Array.isArray(block.paragraphs)){unsupported('Missing OCR paragraphs');}
         for(const paragraph of block.paragraphs){
             if(!Array.isArray(paragraph.lines)){unsupported('Missing OCR lines');}
@@ -67,7 +70,9 @@ export class TesseractJsOcr{
         if(!availableLanguages||typeof availableLanguages==='string'){throw new TypeError('OCR languages must be an explicit collection');}
         if(![0,1].includes(oem)){throw new TypeError('OCR engine mode must be legacy (0) or LSTM-only (1)');}
         this.#oem=oem;
-        this.#createWorker=createWorker;this.#available=new Set(availableLanguages);this.#options={...workerOptions};this.#encode=encodeImage;
+        // Tesseract.js otherwise throws worker errors outside the rejected recognize promise.
+        // The adapter returns that rejection as an owned failure reply instead.
+        this.#createWorker=createWorker;this.#available=new Set(availableLanguages);this.#options={errorHandler:()=>{},...workerOptions};this.#encode=encodeImage;
         if(this.#available.size===0||![...this.#available].every(lang=>typeof lang==='string'&&lang.length>0&&!lang.includes('+'))){throw new TypeError('Explicit available OCR languages required');}
     }
     recognize(request){

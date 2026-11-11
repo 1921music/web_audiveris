@@ -1311,7 +1311,8 @@ PSM 3 and 6. All raw results now match exactly: four words, 23 character boxes, 
 and word baselines, and font flags/sizes. Before retaining native confidence, each mode had four
 differences from JSON rounding. The test records every field difference and rejects regressions.
 This comparison covers raw OCR on this fixture; original `TextWord` font fitting, score-page
-cleanup and full TEXTS processing remain unverified. The two OCR engine versions can still differ
+cleanup and full TEXTS processing are outside this small test (see the separate TEXTS results).
+The two OCR engine versions can still differ
 on other inputs.
 
 Install the locked test dependencies with `npm ci --ignore-scripts` in the capped WSL mirror, then
@@ -1364,7 +1365,7 @@ the capped launcher (one accepted score page by default; `-PtextsPages=0` select
 The score oracle compares original cleanup/OCR/TEXTS with the continuation, including imported
 words and full text graph output. Exact native-cleaned rasters, OCR replies and font measurements
 are explicitly supplied fixtures for Wasm checks. Browser-side TEXTS cleanup, general font
-measurement and live OCR on score pages remain separate work. The stage-25 all-method analysis
+measurement remain separate work; live score OCR is verified separately below. The stage-25 all-method analysis
 retains every earlier root and keeps the **494 / 203** diagnostic totals; generic and headless
 regression probes also pass. CPU **8**, total
 memory **8 GiB** and swap **0** remain in force.
@@ -1373,6 +1374,40 @@ Archive a committed run with `export_texts_continuation.py <repository> <mirror>
 Input hashes bind the verification to its exact native fixtures, model, templates and sample
 bytes. Summaries go to `texts-continuation-results`; runnable artifacts and native fixtures go to
 `wsl-artifacts/wasm-components/texts-continuation`.
+
+`compareScoreOcr` runs actual metadata-enabled legacy Tesseract.js on all five accepted,
+native-cleaned score rasters, using one reused OCR worker in Node and in each of two independent
+browser Workers. All **282 raw OCR words** (including native whitespace words) match between
+Node and both Workers. The assets are local and hashed. The five results differ from the native
+Tesseract 5.5.2 fixtures; the bundled JavaScript core reports 5.1.0-288-g2a9c1. These are observed
+backend differences, not established native OCR parity. TODO: compare identical engine versions,
+DPI/layout API sequences and adaptive-classifier state before attributing the differences or
+changing OCR defaults. The tiny image's exact comparison alone does not establish score parity.
+
+This real-score test exposed whitespace-only words omitted by `GetJSONText`. The metadata hook
+now reads native symbols/word/line boundaries, retains those words and still checks alignment
+of the JSON words. Native lines travel alongside the public JSON and are consumed by the adapter;
+no whitespace geometry is invented or assigned to the next word. The adapter also supplies the
+Tesseract.js error callback so a rejected recognition becomes a failure reply instead of an
+uncaught worker error. Existing legacy/LSTM Node and two-Worker regressions, including the tiny
+native comparison, still pass. TODO: profile the additional native/JSON payload before optimizing
+serialization; retain the native character boxes, baselines, confidence and font flags.
+
+`testLiveTextsJvm` constructs an independent JVM reference from these actual Tesseract.js replies,
+using the original TEXTS system processing and epilog. `verifyLiveTextsProbe` then requests real
+OCR from the Wasm continuation and compares its resulting recognition graph with that reference.
+All **5 pages / 130 recognized words** match in **two Node instances and two browser Workers**:
+**20 page comparisons / 2,382,096 numeric values**, maximum difference **1.78e-15**. The run uses
+**519 exact supplied font measurements**; the strict module has zero diagnostics and remains
+**3,009,599 bytes**. Each runtime invokes actual OCR, validates its complete reply against the
+JVM oracle's input, restores the margin, resumes original system processing and marks TEXTS done.
+These tasks reuse completed all-page native fixtures; first run the normal TEXTS oracle with
+`-PtextsPages=0`. Native cleanup and exact font measurements remain explicit supplied inputs.
+Live reports use a separate `live-ocr/` directory and do not overwrite the native-OCR comparison.
+Archive a committed live verification with
+`export_texts_continuation.py <repository> <mirror> <source-commit> --live`;
+summaries go to `texts-live-ocr-results` and runnable inputs/assets to
+`wsl-artifacts/wasm-components/texts-live-ocr`.
 
 ## Text font measurement investigation
 
@@ -1394,6 +1429,31 @@ The default font directory is `/usr/share/fonts/truetype/liberation`; override i
 `text-font-metrics-results`; raw reference/Worker results, fonts and their notice are under
 `wsl-artifacts/wasm-components/text-font-metrics`. Archive a committed run with
 `export_text_font_metrics.py <repository> <mirror> <source-commit>`.
+
+`compareFontBoxMetrics` also tests the existing FontBox dependency on the same 384 physical-font
+cases. Raw header/path bounds differ in every case, by at most **0.016602 px**; advances match
+exactly. Rounding outline bounds to 1/64 px leaves **12 differing cases**, all involving the
+accented-string fixture, with at most **0.015625 px** error. Header and path results agree for
+these fonts. The original 1.15x target dimensions produce identical fitted sizes, but a sweep
+of both fitting axes over 1..256 pixels (**196,608 targets per candidate**) exposes **226 size
+differences** after quantization, by up to **one point** (5,827 before quantization).
+Rounding the translated component offsets separately removes the remaining differences in these
+fonts: both header/path candidates match all **384 bounds/advances** and all **196,608 fitted sizes**
+exactly. This candidate explicitly rejects transformed or point-matched composite components.
+The opt-in `verifyFontBoxMetricsProbe` also loads the actual physical TTF bytes in Wasm:
+**384 cases each in two Node instances and two browser Workers / 1,536 checks**, with exact
+bounds, advances and original fitted sizes. Strict compilation has zero diagnostics; the standalone
+module is **742,573 bytes / 263,314 gzip bytes**, with font data supplied separately. This does not
+measure its incremental size inside the recognition engine or establish a speed advantage.
+The profile `audiveris.compat.fontMetrics` avoids the unused GSUB cmap wrapper, disables native
+mapped-file cleaning with an explicit unsupported handler, and delegates Commons Logging directly
+to the existing headless logger. It is not enabled in the normal recognition/audit profiles.
+TODO: broaden compound-glyph coverage, layout/shaping, physical/logical font mapping and music
+fonts before integrating this backend, then measure real-page time and allocations.
+Archive a committed run with `export_fontbox_metrics.py <repository> <mirror> <source-commit>`;
+append `--probe` to include the matching Wasm/Worker verification.
+summaries go to `fontbox-metrics-results` and raw cases/fonts/notices to
+`wsl-artifacts/wasm-components/fontbox-metrics`.
 
 ## Pure Java path-fill component
 
