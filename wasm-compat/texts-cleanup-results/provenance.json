@@ -1,5 +1,5 @@
 {
-  "sourceCommit": "5b2f4519c1f5364fb3ff2d707bd061501cd4f115",
+  "sourceCommit": "26b821cc26d3f31f771a2ce146c867ba3f2b2ffc",
   "sourceSha256": {
     "app/src/main/java/org/audiveris/omr/constant/Constant.java": "98c45eeceea576f6444faedbcabf408554e671d124cac8882f6c007b3f86f7ac",
     "app/src/main/java/org/audiveris/omr/constant/ConstantSet.java": "6881238f5e4116f11cf5621b02f4be50a7fced463e685a78634194ecc66c4053",
@@ -42,7 +42,7 @@
     "app/src/main/java/org/audiveris/omr/ui/symbol/OmrFont.java": "c6024ae6dd277ad0c04154000c8737fd2614ce3cf1a94811b1c5607c86a488b2",
     "app/src/main/java/org/audiveris/omr/ui/symbol/SymbolGeometry.java": "aa9187da94549fbd4cead26d70c6564ce48ae9afa8892f727d88390a79090f5b",
     "app/src/main/java/org/audiveris/omr/ui/symbol/TextFont.java": "2c14abc1c20a4d19ea470c9a3ae4d705b79199d532dacadf7c173df34f45eea8",
-    "dev/teavm-audit/audit.init.gradle": "fc70de432608bf902fd1a40629e14cd463f2dd8bb59425395adc02501e381b5e",
+    "dev/teavm-audit/audit.init.gradle": "15d37021ede5e775c904c96e44609e44ed8ba9b3d8c04c7b8584a3c48ca96567",
     "wasm-compat/host/gray8-png.mjs": "fab3b1da1e3f027ab38fc48eef5a5250988fd3a1a55720364e4ad94078b70bba",
     "wasm-compat/host/tesseract-core-word-metadata.js": "1bdf211ea32a326f535d9d24d012b92b9eb62b2978b85dae3eeee0fc268802de",
     "wasm-compat/host/tesseract-js-ocr.mjs": "3216824bb919d2d515eb354222e6076438737da22f98a8d5f8fa8a8d6af432c6",
@@ -50,6 +50,7 @@
     "wasm-compat/host/tesseract-word-metadata.mjs": "f65724fedd53bf89e629e20bdaaa646a76e8961d64331e6976d36d7445f7379b",
     "wasm-compat/package-lock.json": "e9ee4b3a127b77b423ae5efcdc6d15f5784f0b19a9cb6ccfbc49447e42be5ca2",
     "wasm-compat/src/jdk/java/org/audiveris/wasm/compat/platform/GrayPathRaster.java": "5028e9476eb6548297e4a0843bdad09e78008e4f4fc447c9609ed5c64a21b98a",
+    "wasm-compat/src/jdk/java/org/audiveris/wasm/compat/platform/GrayThinRaster.java": "cd80f39cb5efef4a9a6777a1454bc7ec5aab6d1cddb039869396b07e58d67a95",
     "wasm-compat/src/jdk/java/org/audiveris/wasm/compat/platform/StrokePaths.java": "ecd6da0b0ac2651fb147592815fda432368bb69f86d364f1b32b7147ba11e713",
     "wasm-compat/src/main/java/org/audiveris/omr/text/WorkerTextsBridge.java": "683432538006bf87a532eedcc8c89290e4dce5d3100323734d57e89d1c7ff4bb",
     "wasm-compat/src/main/java/org/audiveris/wasm/compat/CompilerPatches.java": "f1fc4a12acbe07265bd00f9aaaa5449820ed2dcf480a58e8e99a077c966526ae",
@@ -63,7 +64,7 @@
     "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/OcrExchange.java": "c2a0f75503efd702d4a54488a568f1371208e0bc75b331b5c61f77423c070348",
     "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/OcrImageFrame.java": "57fd92a512b8e125c3052c1a887d816038f649f43b6b9cdfb2e11b6023f3aff0",
     "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/OcrTransport.java": "dec38983fc15bbee8f543dc0cd7bda20c718e18ce482e43b9f8f519939b09938",
-    "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/PackedPageRaster.java": "1c9a87b7e54f434d42f892e1451d3bd46ad79a7d42fb1db5f9bdc50799743974",
+    "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/PackedPageRaster.java": "2dc983d7767c16d755cdc20dc7d3d7dc0cd025ffd82ee6af87c80bc9f260c8ca",
     "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/PortableTextGeometry.java": "d515c983485b897e49ba5e7cdd5531c59d2a80999baa3c45e2f954c8e1934be5",
     "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/PortableTextsCleanup.java": "355edef5423121efe4a6dc7aa612acf8c4a2adff2f123384e47e9d5c99930bc6",
     "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/StrokeRuntime.java": "ff8025226f902a5ebfd9120a8f434f350ffdeaf9e72a3a30f66198e3900f8f61",
@@ -81,9 +82,9 @@
     "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/TextsContinuationOracle.java": "99c8e121b83785e3883be8fa9d0dfc96e316d5305c3e737bb05535736ffd5f89",
     "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/TextsContinuationProbe.java": "866101db6e0ba01092778c0939120f670e8e5cde0526be411962997c02cd5c65",
     "wasm-compat/third-party/openjdk/LICENSE": "4b9abebc4338048a7c2dc184e9f800deb349366bdf28eb23c2677a77b4c87726",
-    "wasm-compat/third-party/openjdk/NOTICE.md": "204240237f5faaa8a6362b487870a54be1700d1f4e64cd5623875315956133a2",
+    "wasm-compat/third-party/openjdk/NOTICE.md": "1ba219cc8adce06fd7b8cdcc91585df7cfde0c6c604f2f773bf0ebcad9ab4228",
     "wasm-compat/tools/compare-score-ocr.cjs": "2448b2d0105fc11a08431e505aaf9c6f302a3b3f9ce3e186526e6afc525d09c3",
-    "wasm-compat/tools/verify-texts-continuation.cjs": "80e4e5a25bc0dececc6266caa45375b8602d54058ffdf06552d3cc4e574c7744"
+    "wasm-compat/tools/verify-texts-continuation.cjs": "349daf9155f9e6b698f0865b9b340b2ace99311b34a3c1af87ec8f58cb4c5d43"
   },
   "rawArtifacts": "wsl-artifacts/wasm-components/texts-cleanup",
   "priorCuePrefixRegression": {
@@ -103,7 +104,7 @@
     "inputs/03.binary": "19b8015b3765932003a0b6c09e4dd524c02be89019909c3c6e429beb7d106762",
     "inputs/04.binary": "8c6e44d97583e19ee8b03b0bce7490493314cc157941c553b6f3f19a42261ded",
     "licenses/openjdk/LICENSE": "4b9abebc4338048a7c2dc184e9f800deb349366bdf28eb23c2677a77b4c87726",
-    "licenses/openjdk/NOTICE.md": "204240237f5faaa8a6362b487870a54be1700d1f4e64cd5623875315956133a2",
+    "licenses/openjdk/NOTICE.md": "1ba219cc8adce06fd7b8cdcc91585df7cfde0c6c604f2f773bf0ebcad9ab4228",
     "live-ocr/comparison.json": "6f2b3e07234b50c50eadf0b70806a5675cf3fb5dca9025cd939a5a671b2acea1",
     "live-ocr/node-results.json": "75f9f2f5125b6a8eeab4422b90ba747e71dcc17ba41e57a15ced2d8c046e0d7f",
     "live-ocr/worker-results.json": "8e216280c91795f56546d5e22d82321f171950c2263c128f3a2e531ef78e9cb4",
@@ -135,13 +136,13 @@
     "native/jvm-rejections.json": "b1d154ac418624e8460ca1ae4be70af814778c180f13c5f4225de102e28c7e72",
     "native/point-widths.json": "a0b69372639e88c4826f92270e1fadae42aad4c04c5c8d25e3164882a605dbb3",
     "native/symbol-geometry.json": "07d08f1c77b429323c96877aa4d742a4520507c9c8c76a491d7ee8366a2b01c2",
-    "native-cleanup-verification.json": "8e26c44c4fea2834e1e141966d2572d44f417823d833623e624a86632da259c0",
+    "native-cleanup-verification.json": "de701b2a7085561c686f9b741b20cdcfb13180ccf7834cd2134231e03ccf6639",
     "native-ocr/00.json": "0e6006376b75fba51664cecd9872414da826e167395908aef1b068fcb377869e",
     "native-ocr/01.json": "fc9386119ddcabc0f846ead9e6954932c24c60e2c5429d157951db045f9b6aaf",
     "native-ocr/02.json": "af01c2f5668f3bb3868fec08b5eddf0a5974a34ccbbbf277bfc5eb3a392beac8",
     "native-ocr/03.json": "8383fecf661a869bbcaeeb490423f3ee1d56d1e530929808081ca568f2e4eda9",
     "native-ocr/04.json": "003e9c7a39486fc0760e5bed0a3dbc916ef567d85342ce874d12a85d1b3034ae",
-    "node-verification.json": "cb8b50aaaa6ee8d0fee4e538a3fa5a2def2a243a84c5b2a329e59c959c40d2eb",
+    "node-verification.json": "61dfb6a4adfbcf5786e5171023e9c7a735f30f278993d6d8c0323e9b0a3add4e",
     "ocr/core-assets/tesseract-core-relaxedsimd.js": "716be037611f21b568347421f582f1e1a6456b6d5c3a7c2406c8a2a6c0136427",
     "ocr/core-assets/tesseract-core-relaxedsimd.wasm": "45f8c9b516df326b6ae6b493ed3a6289df5cbd10490e7b6ff8bf5b12ea42d1da",
     "ocr/host/gray8-png.mjs": "fab3b1da1e3f027ab38fc48eef5a5250988fd3a1a55720364e4ad94078b70bba",
@@ -169,9 +170,9 @@
     "text-fonts/fonts/ae7b7855e115-DejaVuSans.ttf": "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280",
     "text-fonts/fonts/copyright": "63d3ba759d12804c5b31a9d5940d855c1820d1f5999e6b0872eb1c7ff045fbc9",
     "text-fonts/music-measurements.json": "469842765edcdc4da9b49ef99bd38e4e15c606308c74ecce7dc762a1ac8b8fbb",
-    "texts-cleanup.wasm": "72f72f0655cfee9f2b9501a451e1684c4f5b6245be42cfd670f955a0a746d66a",
+    "texts-cleanup.wasm": "791bb51d86ab5ec7f7e679b72e7a1a8dce2fcc254942e2e0b518dc131303ba4f",
     "texts-cleanup.wasm-runtime.js": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
-    "verification.json": "97ed4111a0dc0cea610568c246df709df055d55f226313ad37d0dfe77f27cfe4"
+    "verification.json": "2bda5677e7e585ce80f743e2010c720dbb4b8f6934b243f55fec737c311f2311"
   },
   "verifiedInputArtifacts": {
     "live-ocr/jvm/jvm-reference.json": [
@@ -325,5 +326,5 @@
       "ocr/ocr-assets/worker.min.js"
     ]
   },
-  "limitation": "Original TEXTS cleanup, actual OCR and TEXTS resume with physical text fonts; two music-font measurements remain supplied; thin-stroke drawing, music-symbol painting, general shaping/fallback and native OCR parity are not claimed"
+  "limitation": "Original TEXTS cleanup, actual OCR and TEXTS resume with physical text fonts; two music-font measurements remain supplied; dashed thin-stroke drawing, music-symbol painting, general shaping/fallback and native OCR parity are not claimed"
 }
