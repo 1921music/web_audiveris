@@ -5,7 +5,7 @@ The opt-in headless layer also uses the small source boundaries documented below
 is opt-in (`-Pcompat=true`) in the audit harness and targets TeaVM 0.16.0 / Wasm GC.
 It does not yet make the complete recognition engine executable in a browser.
 
-The latest all-method analysis is **stage 25**: **9,080 roots / 8,650 bodies**, with all earlier
+The latest all-method analysis is **stage 26**: **9,091 roots / 8,653 bodies**, with all earlier
 roots retained. The original root set is still preserved; historical stage counts below describe
 their own runs. See the verified result and TEXTS continuation sections for current coverage.
 
@@ -109,8 +109,8 @@ Charset capabilities and optional aliases come from the backend's existing `Char
 the capability check does not add new encoders. Atomic operations inherit TeaVM's existing
 `AtomicLong` semantics. This work adds neither shared Java heaps across workers nor virtual threads.
 The exact floating-point fallback uses `BigInteger`, trading extra code and arithmetic work for
-correctness; Jackson's normal fast paths remain in its own shipped implementations. Engine-level
-size and throughput still need measurement with a runnable recognition path. Test sources use
+correctness; Jackson's normal fast paths remain in its own shipped implementations. Full-engine
+size and throughput remain unmeasured; focused recognition-prefix sizes are reported below. Test sources use
 JDK 25 so they can call recent API names directly; compatibility implementations target Java 17.
 
 ## Reproduction
@@ -224,11 +224,13 @@ the initial Worker boundary stage has 525 and the current Worker compatibility s
 
 | Residual exclusion candidates | Initial Worker boundary | Current presentation boundary |
 | --- | ---: | ---: |
-| Linked classes | 441 | **75** |
-| Used input methods inside excluded classes | 1,681 | **242** |
-| Used input methods under all exclusion rules, including method-only rules | 1,863 | **309** |
+| Linked classes | 441 | **76** |
+| Used input methods inside excluded classes | 1,681 | **251** |
+| Used input methods under all exclusion rules, including method-only rules | 1,863 | **320** |
 
-Of the 75 classes, **55 have used methods and 20 are type-only**. These candidates include enums,
+Of the 76 classes, **56 have used methods and 20 are type-only**. The stage-26 increase includes
+the isolated JVM Graphics2D raster backend (**one class / nine methods**); the focused TEXTS
+entry still compiles without diagnostics. These candidates include enums,
 rendering/output helpers and non-UI host dependencies, as well as remaining presentation paths;
 they are not all removable widgets. The exclusion guard still fails. Fast analysis is conservative,
 not a runtime trace. Some inferred witness paths can disagree with the transformed method model.
@@ -239,8 +241,9 @@ UI branches even after substitution; inspect modified methods and distinguish in
 Presentation-only entry points (display windows, check boards, trackers, UI-task impact overloads,
 manual link/task construction and plot windows) explicitly reject desktop execution. The recognition
 overload `RhythmsStep.impact(Collection)`, ledger geometry, grid recognition, MusicXML building and
-image-difference processing remain rooted. The three configuration source files above and
-`ScaleBuilder.java` are the only application changes from the baseline; `buildSrc` remains unchanged.
+image-difference processing remain rooted. The configuration and scale-source changes above are
+the initial source boundaries; later memory, font and raster boundaries are documented below.
+`buildSrc` remains unchanged.
 
 `OctaveShiftInter.setGlyph` keeps its original setter and geometry instructions, obtaining the sheet
 from `HeadlessSheetContext.requireSheet()` instead of the selected desktop tab. The host must bind
@@ -406,18 +409,21 @@ are under `build/wasm-compat/probe`; audit outputs are under
 
 ## Verified result
 
-The current audit covers **9,080 methods**, including **8,650 method bodies**. Every original
+The current audit covers **9,091 methods**, including **8,653 method bodies**. Every original
 **9,001-method / 8,588-body** root is preserved. Earlier memory/raster/configuration/template
 boundaries add 53 methods. The text-font facade, provider and measurement record plus music-word
 constructor/factory add another **26 methods / 19 bodies**. The JVM-only Java2D default provider
 and holder are classified as excluded; the recognition-facing provider API remains selected.
+Stage 26 adds the cleanup raster API and entry constructors: **11 roots / three bodies**.
+The JVM-only Graphics2D raster backend is excluded from forced roots, while the original cleaner
+traversal and its recognition-facing raster API remain selected.
 With generic compatibility and the opt-in Worker/presentation substitutions enabled, diagnostics
 fall from **1,276 to 494** (782 fewer); unique messages fall from **336 to 203**.
 The stages are **1,276 → 789 → 702 → 609 → 545 → 544 → 525 → 524 → 495 → 494**. The 544/220 result is the
 generic compatibility layer alone; 525/217 is the initial Worker boundary, 524/216 is the
-stage-6 boundary, 495/204 is the stage-7–9 result, and **494/203** is the current stage-25 result (unchanged from stage 10).
-Remaining exclusion candidates are **75 classes / 242 used input methods inside those classes**,
-or **310 methods** when method-only exclusion rules are also included. Of the 75 classes, **55**
+stage-6 boundary, 495/204 is the stage-7–9 result, and **494/203** is the current stage-26 result (unchanged from stage 10).
+Remaining exclusion candidates are **76 classes / 251 used input methods inside those classes**,
+or **320 methods** when method-only exclusion rules are also included. Of the 76 classes, **56**
 have used methods and **20** are type-only links.
 There are no remaining missing-API messages for the generic layer's targeted APIs. The broad fast
 analysis also exposes additional unsupported dependency paths; generic-layer new messages and their
@@ -1691,9 +1697,10 @@ archived stage-3 modules, not a fresh build of later compatibility layers.
 
 The current headless audit has **494 diagnostics**, including reflection/classloading, thread APIs,
 file/XML operations and other dependency runtime paths. None are located directly in selected engine
-sources; this does not establish that OCR/native or other platform boundaries are implemented.
+sources; the focused TEXTS runtime checks above establish narrower coverage than the full engine.
 The generic-only audit still has 544 diagnostics, including three directly in selected engine
 sources; the opt-in Worker substitutions address those three paths. Remaining work requires
 resource, execution and platform adapters that preserve recognition behavior. The current reentry
-report includes **75 classes / 242 class-excluded used input methods** (**310 methods across all exclusion
-rules**); the additional two are raw distance-painting methods retained for recognition. Choosing roots alone does not cut transitive dependencies.
+report includes **76 classes / 251 class-excluded used input methods** (**320 methods across all exclusion
+rules**), including the separate JVM raster backend. Raw distance-painting methods remain retained
+for recognition. Choosing roots alone does not cut transitive dependencies.

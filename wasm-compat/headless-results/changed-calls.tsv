@@ -1,3 +1,1 @@
 change	caller	callee
-added	org.audiveris.omr.text.TextFontGeometry.provider()Lorg/audiveris/omr/text/TextFontGeometry$Provider;	org.audiveris.wasm.compat.platform.HeadlessTextFontGeometry.<clinit>()V
-added	org.audiveris.omr.text.TextFontGeometry.provider()Lorg/audiveris/omr/text/TextFontGeometry$Provider;	org.audiveris.wasm.compat.platform.HeadlessTextFontGeometry.provider()Lorg/audiveris/omr/text/TextFontGeometry$Provider;

@@ -1,35 +1,20 @@
 {
   "identicalOriginalRoots": false,
   "originalRootSubsetPreserved": true,
-  "rootCount": 9080,
-  "baselineRootCount": 9054,
+  "rootCount": 9091,
+  "baselineRootCount": 9080,
   "addedRoots": [
-    "org.audiveris.omr.sig.inter.BeatUnitInter.<init>(Lorg/audiveris/omr/text/FontInfo;Lorg/audiveris/omr/glyph/Glyph;Ljava/awt/Rectangle;Ljava/lang/Double;Ljava/lang/String;Lorg/audiveris/omr/sig/inter/BeatUnitInter$Note;Ljava/awt/Point;)V",
-    "org.audiveris.omr.sig.inter.BeatUnitInter.fromFontInfo(Lorg/audiveris/omr/glyph/Glyph;Ljava/awt/Rectangle;Ljava/lang/Double;Ljava/lang/String;Lorg/audiveris/omr/text/FontInfo;Lorg/audiveris/omr/sig/inter/BeatUnitInter$Note;Ljava/awt/Point;)Lorg/audiveris/omr/sig/inter/BeatUnitInter;",
-    "org.audiveris.omr.sig.inter.MusicWordInter.<init>(Lorg/audiveris/omr/glyph/Glyph;Ljava/awt/Rectangle;Ljava/lang/Double;Lorg/audiveris/omr/glyph/Shape;Lorg/audiveris/omr/text/FontInfo;Ljava/lang/String;Ljava/awt/Point;)V",
-    "org.audiveris.omr.text.TextFontGeometry$Measurement.<init>(Ljava/lang/String;DDDD)V",
-    "org.audiveris.omr.text.TextFontGeometry$Measurement.equals(Ljava/lang/Object;)Z",
-    "org.audiveris.omr.text.TextFontGeometry$Measurement.fontName()Ljava/lang/String;",
-    "org.audiveris.omr.text.TextFontGeometry$Measurement.hashCode()I",
-    "org.audiveris.omr.text.TextFontGeometry$Measurement.height()D",
-    "org.audiveris.omr.text.TextFontGeometry$Measurement.toString()Ljava/lang/String;",
-    "org.audiveris.omr.text.TextFontGeometry$Measurement.width()D",
-    "org.audiveris.omr.text.TextFontGeometry$Measurement.x()D",
-    "org.audiveris.omr.text.TextFontGeometry$Measurement.y()D",
-    "org.audiveris.omr.text.TextFontGeometry$Provider.advance(Lorg/audiveris/omr/text/FontInfo;Ljava/lang/String;)D",
-    "org.audiveris.omr.text.TextFontGeometry$Provider.defaultFontName()Ljava/lang/String;",
-    "org.audiveris.omr.text.TextFontGeometry$Provider.layoutBounds(Lorg/audiveris/omr/text/FontInfo;Ljava/lang/String;)Ljava/awt/geom/Rectangle2D;",
-    "org.audiveris.omr.text.TextFontGeometry$Provider.musicAdvance(Lorg/audiveris/omr/text/FontInfo;Ljava/lang/String;)D",
-    "org.audiveris.omr.text.TextFontGeometry$Provider.musicLayoutBounds(Lorg/audiveris/omr/text/FontInfo;Ljava/lang/String;)Ljava/awt/geom/Rectangle2D;",
-    "org.audiveris.omr.text.TextFontGeometry$Provider.musicVisualBounds(Lorg/audiveris/omr/text/FontInfo;Ljava/lang/String;)Lorg/audiveris/omr/text/TextFontGeometry$Measurement;",
-    "org.audiveris.omr.text.TextFontGeometry$Provider.visualBounds(Lorg/audiveris/omr/text/FontAttributes;ILjava/lang/String;)Lorg/audiveris/omr/text/TextFontGeometry$Measurement;",
-    "org.audiveris.omr.text.TextFontGeometry.<init>()V",
-    "org.audiveris.omr.text.TextFontGeometry.adjustedFont(Lorg/audiveris/omr/text/FontAttributes;ILjava/lang/String;Ljava/awt/Rectangle;)Lorg/audiveris/omr/text/FontInfo;",
-    "org.audiveris.omr.text.TextFontGeometry.adjustedMusicFont(Lorg/audiveris/omr/text/FontInfo;Ljava/lang/String;Ljava/awt/Rectangle;)Lorg/audiveris/omr/text/FontInfo;",
-    "org.audiveris.omr.text.TextFontGeometry.computeSize(Lorg/audiveris/omr/text/TextFontGeometry$Measurement;ILjava/awt/Rectangle;)I",
-    "org.audiveris.omr.text.TextFontGeometry.musicLocation(Lorg/audiveris/omr/text/FontInfo;Ljava/lang/String;Ljava/awt/Rectangle;)Ljava/awt/Point;",
-    "org.audiveris.omr.text.TextFontGeometry.provider()Lorg/audiveris/omr/text/TextFontGeometry$Provider;",
-    "org.audiveris.omr.text.TextFontGeometry.setProvider(Lorg/audiveris/omr/text/TextFontGeometry$Provider;)V"
+    "org.audiveris.omr.image.PageRaster.draw(Ljava/awt/Shape;)V",
+    "org.audiveris.omr.image.PageRaster.fill(Ljava/awt/Shape;)V",
+    "org.audiveris.omr.image.PageRaster.fillRect(IIII)V",
+    "org.audiveris.omr.image.PageRaster.getStroke()Ljava/awt/Stroke;",
+    "org.audiveris.omr.image.PageRaster.glyph(Lorg/audiveris/omr/glyph/Glyph;)V",
+    "org.audiveris.omr.image.PageRaster.initialize()V",
+    "org.audiveris.omr.image.PageRaster.setStroke(Ljava/awt/Stroke;)V",
+    "org.audiveris.omr.image.PageRaster.symbol(Lorg/audiveris/omr/sig/inter/Inter;Lorg/audiveris/omr/ui/symbol/MusicFamily;I)V",
+    "org.audiveris.omr.sheet.PageCleaner.<init>(Lij/process/ByteProcessor;Lorg/audiveris/omr/image/PageRaster;Lorg/audiveris/omr/sheet/Sheet;)V",
+    "org.audiveris.omr.text.SheetScanner$TextsCleaner.<init>(Lij/process/ByteProcessor;Lorg/audiveris/omr/image/PageRaster;Lorg/audiveris/omr/sheet/Sheet;)V",
+    "org.audiveris.omr.text.SheetScanner.cleanBuffer(Lij/process/ByteProcessor;Lorg/audiveris/omr/image/PageRaster;Lorg/audiveris/omr/sheet/Sheet;)V"
   ],
   "baselineDiagnostics": 494,
   "patchedDiagnostics": 494,
@@ -67,21 +52,21 @@
   "platformSubstitutionsEnabled": true,
   "modifiedMethods": 520,
   "removedDirectCallsFromModifiedMethods": 0,
-  "addedDirectCallsFromModifiedMethods": 2,
+  "addedDirectCallsFromModifiedMethods": 0,
   "excludedClassesLinked": {
     "before": 75,
-    "after": 75
+    "after": 76
   },
   "excludedUsedMethods": {
     "before": 310,
-    "after": 310
+    "after": 320
   },
   "usedMethodsInsideExcludedClasses": {
     "before": 242,
-    "after": 242
+    "after": 251
   },
   "remainingClassBreakdown": {
-    "withUsedMethods": 55,
+    "withUsedMethods": 56,
     "typeOnly": 20
   },
   "strictExclusionPass": false

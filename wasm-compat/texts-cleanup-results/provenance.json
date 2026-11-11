@@ -1,0 +1,329 @@
+{
+  "sourceCommit": "5b2f4519c1f5364fb3ff2d707bd061501cd4f115",
+  "sourceSha256": {
+    "app/src/main/java/org/audiveris/omr/constant/Constant.java": "98c45eeceea576f6444faedbcabf408554e671d124cac8882f6c007b3f86f7ac",
+    "app/src/main/java/org/audiveris/omr/constant/ConstantSet.java": "6881238f5e4116f11cf5621b02f4be50a7fced463e685a78634194ecc66c4053",
+    "app/src/main/java/org/audiveris/omr/image/PageRaster.java": "66fa43a3c2b69bdcce7bd3c63a2245ad78dd66a9ab6d4bf69195aabfc6d6be5f",
+    "app/src/main/java/org/audiveris/omr/image/RunTableRaster.java": "b4289d4a4ce9d451c34dc349db0cf4b03d9c0abeb060e1ebbbf4fc889714226e",
+    "app/src/main/java/org/audiveris/omr/image/TemplateFactory.java": "4d6aa44661db2226d98b826edab6b2cdb24f8db87e8ccd907363b982b693418e",
+    "app/src/main/java/org/audiveris/omr/math/NeuralNetwork.java": "29a036091fc9a0b36c51a126926982a58f252cc617d9f088a9bebb3cdd96aaad",
+    "app/src/main/java/org/audiveris/omr/score/DrumSet.java": "aeb42e04d7db1b935a5296d41c3e39d4c16139bd8db588233145f082fc8596a6",
+    "app/src/main/java/org/audiveris/omr/sheet/Book.java": "2e937c57f4157e567b00401afff1c2bdb4fab7d4ec21cfce2a6f86939d858176",
+    "app/src/main/java/org/audiveris/omr/sheet/BookManager.java": "19bc78189f1c222284b1380e002a74578450193b06d1f85cad3eab4d807003b9",
+    "app/src/main/java/org/audiveris/omr/sheet/PageCleaner.java": "48855888db3de7826422507a5ec5be705ed128367f738c89e8197437eb16e0c6",
+    "app/src/main/java/org/audiveris/omr/sheet/Params.java": "37385a3c53cab11ef7d977aa72bc303c8500f192217a477a6f558baded4d81ff",
+    "app/src/main/java/org/audiveris/omr/sheet/Picture.java": "b495c6fe1270d3f577bc9fd08fe196b7150bc25b67a2defa6befb9d10eb4d494",
+    "app/src/main/java/org/audiveris/omr/sheet/PixelPicture.java": "c41c1934f37a61ee0262a8f34980588c519c187d6649499afb071d38482d5b3a",
+    "app/src/main/java/org/audiveris/omr/sheet/ScaleBuilder.java": "79673e422834baf11d03fd2474ee4d6a1ce9a391aa4fbeb7362cdd5ac6a33e03",
+    "app/src/main/java/org/audiveris/omr/sheet/Sheet.java": "89a5ddcf1ee5f3413a357e2c5f5427712408ca0534d5e9b86e8c674f9034e3d4",
+    "app/src/main/java/org/audiveris/omr/sheet/SheetStub.java": "a4c4e40f031fd4d78983b3219ad5fbeaebd50c90def6ebe748c430bd72e7f695",
+    "app/src/main/java/org/audiveris/omr/sheet/Staff.java": "dd4f27173a64802be0694a02839464b210072c16417dbec63b45a5515ac32dea",
+    "app/src/main/java/org/audiveris/omr/sheet/beam/BlackHeadSizer.java": "a314a2aebf2cbed34e0314f8473effed6fb7ff2ab816464cc97b8eae8d613bf0",
+    "app/src/main/java/org/audiveris/omr/sheet/clef/ClefBuilder.java": "dbe03412caa569b00122c1cd4d468e468402fe8a4cab393e8d8a10efaf349ce3",
+    "app/src/main/java/org/audiveris/omr/sheet/key/KeyRoi.java": "64b027c85005435ec32064698c5173e8bef64bea88d432179eae773f78165b39",
+    "app/src/main/java/org/audiveris/omr/sheet/ledger/LedgersPostAnalysis.java": "79691c2d54f56f855bd4630e1a92146bfe171ba1c9a74cc336c04f60032bd193",
+    "app/src/main/java/org/audiveris/omr/sheet/note/DistancesBuilder.java": "ef09cff54934edeab51560d2f7180bbb337d8a700644ab66a3fa0a9662d06829",
+    "app/src/main/java/org/audiveris/omr/sig/inter/AbstractInter.java": "bec6c611e9d6da76b2efe20faafe21555dd2b08bb6d51396e6f1d6eecb4c79c9",
+    "app/src/main/java/org/audiveris/omr/sig/inter/BeatUnitInter.java": "6229ef96f8b413423c20b3a1340cf83eaff4693c484132de0a30b112c399a928",
+    "app/src/main/java/org/audiveris/omr/sig/inter/BracketInter.java": "d66a0c6aacb3aed0e457c1241176073137449345b5f787cd0bf6dca70b91549d",
+    "app/src/main/java/org/audiveris/omr/sig/inter/MetronomeInter.java": "a34df1e0110137e60cb060131761fcfd15bb46b72d0ddf0e429b7a61816733e5",
+    "app/src/main/java/org/audiveris/omr/sig/inter/MusicWordInter.java": "76749f52047a3f092384df768d0e2cbeff64a7603215a6254f4af1e1c2110501",
+    "app/src/main/java/org/audiveris/omr/sig/inter/TimeCustomInter.java": "9fdbfcc522032d28f90667c0b8927e7ffc6cf152c9b6c86552a847ff438fbab4",
+    "app/src/main/java/org/audiveris/omr/sig/inter/TimeWholeInter.java": "722d815499ab5a411d97412b009025d8945633b058be5a2ab5d58bb86ce6c7e3",
+    "app/src/main/java/org/audiveris/omr/sig/inter/WordInter.java": "5348a2d9d83129914cf43bf69774e7a66165e9ad8c408bee7083b70b140e0bae",
+    "app/src/main/java/org/audiveris/omr/text/FontInfo.java": "c091b03cf6dbfad940e7a6ad363bc48e522b0678a0860bd2c3b52f58b19a3699",
+    "app/src/main/java/org/audiveris/omr/text/SheetScanner.java": "6153e03f397d21993591fdc9278986d05eb55992ea0494212ee4fe8b8c80862e",
+    "app/src/main/java/org/audiveris/omr/text/TextBuilder.java": "78d03536cbebeb3b1c04dbfe82205d79f3927be8de20f8cf68e97d2a9926f9ac",
+    "app/src/main/java/org/audiveris/omr/text/TextFontGeometry.java": "595433683ac9b985a3f06bbd17c023ae38837ea30c862b2b1d923867cde2d1ac",
+    "app/src/main/java/org/audiveris/omr/text/TextWord.java": "0f11b330cb662716573518f49a1ede5820720211c5cac58d5ee94e4edf5d6268",
+    "app/src/main/java/org/audiveris/omr/text/tesseract/TesseractOCR.java": "4103463752484cfe7f059b63ae4030211a2eb2ec1d812ad7f63223eb7e3edde2",
+    "app/src/main/java/org/audiveris/omr/ui/symbol/FontFamilyDefaults.java": "5f07045ab7bf440729bd845f43717a2930b4f175a2d8aea362deabc65e521b48",
+    "app/src/main/java/org/audiveris/omr/ui/symbol/MusicFont.java": "3f57260e324069f5bb7073bc2d6715c533ce5bae52422a8e3813d4fc956c77e4",
+    "app/src/main/java/org/audiveris/omr/ui/symbol/OmrFont.java": "c6024ae6dd277ad0c04154000c8737fd2614ce3cf1a94811b1c5607c86a488b2",
+    "app/src/main/java/org/audiveris/omr/ui/symbol/SymbolGeometry.java": "aa9187da94549fbd4cead26d70c6564ce48ae9afa8892f727d88390a79090f5b",
+    "app/src/main/java/org/audiveris/omr/ui/symbol/TextFont.java": "2c14abc1c20a4d19ea470c9a3ae4d705b79199d532dacadf7c173df34f45eea8",
+    "dev/teavm-audit/audit.init.gradle": "fc70de432608bf902fd1a40629e14cd463f2dd8bb59425395adc02501e381b5e",
+    "wasm-compat/host/gray8-png.mjs": "fab3b1da1e3f027ab38fc48eef5a5250988fd3a1a55720364e4ad94078b70bba",
+    "wasm-compat/host/tesseract-core-word-metadata.js": "1bdf211ea32a326f535d9d24d012b92b9eb62b2978b85dae3eeee0fc268802de",
+    "wasm-compat/host/tesseract-js-ocr.mjs": "3216824bb919d2d515eb354222e6076438737da22f98a8d5f8fa8a8d6af432c6",
+    "wasm-compat/host/tesseract-word-metadata-node.cjs": "b17efb04d34f1f7c641b96b01642c2405472653b94f15752bc556367e190df95",
+    "wasm-compat/host/tesseract-word-metadata.mjs": "f65724fedd53bf89e629e20bdaaa646a76e8961d64331e6976d36d7445f7379b",
+    "wasm-compat/package-lock.json": "e9ee4b3a127b77b423ae5efcdc6d15f5784f0b19a9cb6ccfbc49447e42be5ca2",
+    "wasm-compat/src/jdk/java/org/audiveris/wasm/compat/platform/GrayPathRaster.java": "5028e9476eb6548297e4a0843bdad09e78008e4f4fc447c9609ed5c64a21b98a",
+    "wasm-compat/src/jdk/java/org/audiveris/wasm/compat/platform/StrokePaths.java": "ecd6da0b0ac2651fb147592815fda432368bb69f86d364f1b32b7147ba11e713",
+    "wasm-compat/src/main/java/org/audiveris/omr/text/WorkerTextsBridge.java": "683432538006bf87a532eedcc8c89290e4dce5d3100323734d57e89d1c7ff4bb",
+    "wasm-compat/src/main/java/org/audiveris/wasm/compat/CompilerPatches.java": "f1fc4a12acbe07265bd00f9aaaa5449820ed2dcf480a58e8e99a077c966526ae",
+    "wasm-compat/src/main/java/org/audiveris/wasm/compat/FontMetricsPatches.java": "c94aaf0a3f2c24a1d6c72f73d599bc750a659533c44cd89ccff345c2f6ec18b7",
+    "wasm-compat/src/main/java/org/audiveris/wasm/compat/HeadlessPatches.java": "c790416d9110e3c97a387d282c2e2b46b73baa4d487cf6b0e4756a7cd3785f28",
+    "wasm-compat/src/main/java/org/audiveris/wasm/compat/StrokePathPatches.java": "6802777147f04c5bd8d6b9dd69957aeee1cee6dfd65f1e183e6f3e8eb2918c89",
+    "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/FontMetricsRuntime.java": "502cc2f66a543e8e912589fdc1e6f3b6f2413db9e7529e3c3d033c2f203ab7ab",
+    "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/GraySpanRaster.java": "18533b4f21e2c4057b6d91ab610398783a2f2ede46e63c15ae57fc5c57bc61f6",
+    "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/HeadlessLogging.java": "fc7025efbeef581a56762e152b0d004aaa1a6bfb658c4175aba4382f8f980a41",
+    "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/HeadlessTextFontGeometry.java": "f2f91113896337b5726ee09b8a9550cf3ae7aba4995f60319040a7c1b041e322",
+    "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/OcrExchange.java": "c2a0f75503efd702d4a54488a568f1371208e0bc75b331b5c61f77423c070348",
+    "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/OcrImageFrame.java": "57fd92a512b8e125c3052c1a887d816038f649f43b6b9cdfb2e11b6023f3aff0",
+    "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/OcrTransport.java": "dec38983fc15bbee8f543dc0cd7bda20c718e18ce482e43b9f8f519939b09938",
+    "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/PackedPageRaster.java": "1c9a87b7e54f434d42f892e1451d3bd46ad79a7d42fb1db5f9bdc50799743974",
+    "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/PortableTextGeometry.java": "d515c983485b897e49ba5e7cdd5531c59d2a80999baa3c45e2f954c8e1934be5",
+    "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/PortableTextsCleanup.java": "355edef5423121efe4a6dc7aa612acf8c4a2adff2f123384e47e9d5c99930bc6",
+    "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/StrokeRuntime.java": "ff8025226f902a5ebfd9120a8f434f350ffdeaf9e72a3a30f66198e3900f8f61",
+    "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/TrueTypeFaceMetrics.java": "4b6f9aa0f4aab4d12d65e33d9b9ffed3e6cc704e51acc4ecc3d1c79ed712c9d6",
+    "wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/TrueTypeGlyphBounds.java": "93041a37f3092f897384c7ec0fb3e3ac42b6dbed9336e9beb900ca1a245fe739",
+    "wasm-compat/src/test/java/org/audiveris/omr/text/DirectTextsSystems.java": "76491ecc7f063c316f648fa908259ac1b40a27251eee191b0ab0d629d21437d3",
+    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/CleanupTextsProbe.java": "6d612e7634f8807dd1b9222d150369fcb299b631efb8d412b59ab61de0d1f910",
+    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/FontBackedTextsProbe.java": "9d1d722f23b5ac03755a846ecbc845a4d5306703bedeef5d6886301309d2e1ee",
+    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/GraphicsDelegate.java": "023182d08415d4eb4329d047e27cc97b9806e362eb35fbd90478e329692f6a32",
+    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/LiveTextsOracle.java": "8d25bf9e293823cb180df51c853cc8fd646267f52cf965c2e71d3f7b88b3f417",
+    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/NativeOcrBackendOracle.java": "7f3c867ea72e91e42fb19a0168900f9707f6a40b75c05a401277e8ade1b4322a",
+    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/RecordedTextFontsOracle.java": "e0351d49a50d14a46b95bbc1923ee6da86b35af811971d30c5cd5bf61e6a1aed",
+    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/RecordingTextFontGeometry.java": "56d7bf5824b57552581f422ff4c14acf0b2d1b4a6402154fb56486f14c38bd13",
+    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/TextsCleanupTrace.java": "05418c26db4dacaca3054d33dba5abfa1331e8c0763d8515b99c35f98107d762",
+    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/TextsContinuationOracle.java": "99c8e121b83785e3883be8fa9d0dfc96e316d5305c3e737bb05535736ffd5f89",
+    "wasm-compat/src/test/java/org/audiveris/wasm/compat/test/TextsContinuationProbe.java": "866101db6e0ba01092778c0939120f670e8e5cde0526be411962997c02cd5c65",
+    "wasm-compat/third-party/openjdk/LICENSE": "4b9abebc4338048a7c2dc184e9f800deb349366bdf28eb23c2677a77b4c87726",
+    "wasm-compat/third-party/openjdk/NOTICE.md": "204240237f5faaa8a6362b487870a54be1700d1f4e64cd5623875315956133a2",
+    "wasm-compat/tools/compare-score-ocr.cjs": "2448b2d0105fc11a08431e505aaf9c6f302a3b3f9ce3e186526e6afc525d09c3",
+    "wasm-compat/tools/verify-texts-continuation.cjs": "80e4e5a25bc0dececc6266caa45375b8602d54058ffdf06552d3cc4e574c7744"
+  },
+  "rawArtifacts": "wsl-artifacts/wasm-components/texts-cleanup",
+  "priorCuePrefixRegression": {
+    "pages": 8,
+    "exact": true,
+    "referenceSha256": "c731e3352cbdc8319e0d804a47795f400f7f7e81f86ea0102263a57e30879427"
+  },
+  "cpuMax": "800000 100000",
+  "memoryMaxBytes": 8589934592,
+  "memorySwapMaxBytes": 0,
+  "memoryEventsLocal": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0",
+  "artifactSha256": {
+    "diagnostics.tsv": "fedeabd8a34aba0fa7d1aa2d80ccb94c378549c76c57c6942205c67c8f568b5d",
+    "inputs/00.binary": "fa68b16d7d1a41dca21b80d56ab4c9b218f9e6819fcbdd37d781f7c8720f8150",
+    "inputs/01.binary": "ad29f97436f864a6a003f8133b63462c7293a1485e19f6535a95fd5b5c48411f",
+    "inputs/02.binary": "5b84baea8fcfb9335173f8decd02af0ce98a5e98b2883f05e5d16bd2c2fd656b",
+    "inputs/03.binary": "19b8015b3765932003a0b6c09e4dd524c02be89019909c3c6e429beb7d106762",
+    "inputs/04.binary": "8c6e44d97583e19ee8b03b0bce7490493314cc157941c553b6f3f19a42261ded",
+    "licenses/openjdk/LICENSE": "4b9abebc4338048a7c2dc184e9f800deb349366bdf28eb23c2677a77b4c87726",
+    "licenses/openjdk/NOTICE.md": "204240237f5faaa8a6362b487870a54be1700d1f4e64cd5623875315956133a2",
+    "live-ocr/comparison.json": "6f2b3e07234b50c50eadf0b70806a5675cf3fb5dca9025cd939a5a671b2acea1",
+    "live-ocr/node-results.json": "75f9f2f5125b6a8eeab4422b90ba747e71dcc17ba41e57a15ced2d8c046e0d7f",
+    "live-ocr/worker-results.json": "8e216280c91795f56546d5e22d82321f171950c2263c128f3a2e531ef78e9cb4",
+    "model.zip": "327194c47116a8ebf5771d04cea08a4e563ec93d2955e1efd990a54a9245f29e",
+    "native/00/cleaned.gray": "f9483bf00b89a982188c405cb78826038ab1fac24593aba43440dcc1a9c43ad7",
+    "native/00/expected.json": "9a9e603d0f74ddc00155fa4667097f74ccb126f18694be82c7b04adf20fef0ba",
+    "native/00/metadata.json": "afbccc54d8d8a12f638849cf639fc113d160e5e9db7d6a55f51e3e05ba13439b",
+    "native/00/ocr-result.json": "d72fedaa39868f181e306be29989c491573f6983938337ab750db4f2ec1da4f8",
+    "native/01/cleaned.gray": "777cec0547124381c4355761d979c25e9321fb931e9371a43e22256307b7c7ad",
+    "native/01/expected.json": "abe67e818751cd1ca5d41bcef0b5663bb5b2be2e7a00e7da122edf58b830276a",
+    "native/01/metadata.json": "3ad802555bc06a48bc0de286048167b36aeadd8ae0a777beb8b2aa5bf5951926",
+    "native/01/ocr-result.json": "1c5c036e90abd7ba9f026ac239e3351f44fb65aca4ed5f12fb1e7e5bf041b697",
+    "native/02/cleaned.gray": "24a4b292f870188b44c20be65190485220ffef5983aaab71a1ae1aa5f705caba",
+    "native/02/expected.json": "f1189487f749cdfeb68062ed207f4da1e343ae0a4f652237848c81d07ce19492",
+    "native/02/metadata.json": "24b858bddd0ed0cf7b85a0433d29cef36b22a085dba4ec51dd0079ede78a1fb2",
+    "native/02/ocr-result.json": "186bc152be0b20709f232a7c915b46d655148d517beab836f2600285e9db634b",
+    "native/03/cleaned.gray": "b927e5eae3850434d57ded2ec6eedbb28389360ab09672a4d85e013f6d520b4b",
+    "native/03/expected.json": "9c2fe3de4ca74197434a43b5aeedcc2d659c122cef892d9b85fbf96167ea9ac5",
+    "native/03/metadata.json": "e5d8ae0331d248e924fe39a3ea0eceb719344054d4dbc3e9b012f89872b34485",
+    "native/03/ocr-result.json": "5056f62a78dda7813e9600946d7c1caabcfc3f32d7d9d1685d2ed2465b8028b1",
+    "native/04/cleaned.gray": "31013e845668db300018e6e06334eb357e9e85d769702e5e6ae4c13e0b6a8e0d",
+    "native/04/expected.json": "9339c58598f2d23641790d7ef8d4aadac31fb4ff8ec05564435e68f35dbb2f1b",
+    "native/04/metadata.json": "f90cffd2a19054f0aa6ddbf319be7951745bc4a9c94f2d3c55779158a5bba4c5",
+    "native/04/ocr-result.json": "195a40dde19a1febb8f46653dca8226543c0113538f7189b043f0a3dcca81180",
+    "native/coverage.json": "b3a9467ad7ef81fa3a5faf0b33f0744243b89622aeeaa0734400ee54eaf923ee",
+    "native/cue-baseline.json": "c731e3352cbdc8319e0d804a47795f400f7f7e81f86ea0102263a57e30879427",
+    "native/default-font.txt": "465b0dc8595e31facf4d6b4d7cb5d89a7e1fae4dbcfd226ed242902d604ddb3d",
+    "native/jvm-reference.json": "b4044ba074b15eaa09579dcf1e970fe4a90f318753ddc212692651f809a95208",
+    "native/jvm-rejections.json": "b1d154ac418624e8460ca1ae4be70af814778c180f13c5f4225de102e28c7e72",
+    "native/point-widths.json": "a0b69372639e88c4826f92270e1fadae42aad4c04c5c8d25e3164882a605dbb3",
+    "native/symbol-geometry.json": "07d08f1c77b429323c96877aa4d742a4520507c9c8c76a491d7ee8366a2b01c2",
+    "native-cleanup-verification.json": "8e26c44c4fea2834e1e141966d2572d44f417823d833623e624a86632da259c0",
+    "native-ocr/00.json": "0e6006376b75fba51664cecd9872414da826e167395908aef1b068fcb377869e",
+    "native-ocr/01.json": "fc9386119ddcabc0f846ead9e6954932c24c60e2c5429d157951db045f9b6aaf",
+    "native-ocr/02.json": "af01c2f5668f3bb3868fec08b5eddf0a5974a34ccbbbf277bfc5eb3a392beac8",
+    "native-ocr/03.json": "8383fecf661a869bbcaeeb490423f3ee1d56d1e530929808081ca568f2e4eda9",
+    "native-ocr/04.json": "003e9c7a39486fc0760e5bed0a3dbc916ef567d85342ce874d12a85d1b3034ae",
+    "node-verification.json": "cb8b50aaaa6ee8d0fee4e538a3fa5a2def2a243a84c5b2a329e59c959c40d2eb",
+    "ocr/core-assets/tesseract-core-relaxedsimd.js": "716be037611f21b568347421f582f1e1a6456b6d5c3a7c2406c8a2a6c0136427",
+    "ocr/core-assets/tesseract-core-relaxedsimd.wasm": "45f8c9b516df326b6ae6b493ed3a6289df5cbd10490e7b6ff8bf5b12ea42d1da",
+    "ocr/host/gray8-png.mjs": "fab3b1da1e3f027ab38fc48eef5a5250988fd3a1a55720364e4ad94078b70bba",
+    "ocr/host/tesseract-core-word-metadata.js": "1bdf211ea32a326f535d9d24d012b92b9eb62b2978b85dae3eeee0fc268802de",
+    "ocr/host/tesseract-js-ocr.mjs": "3216824bb919d2d515eb354222e6076438737da22f98a8d5f8fa8a8d6af432c6",
+    "ocr/host/tesseract-word-metadata-node.cjs": "b17efb04d34f1f7c641b96b01642c2405472653b94f15752bc556367e190df95",
+    "ocr/host/tesseract-word-metadata.mjs": "f65724fedd53bf89e629e20bdaaa646a76e8961d64331e6976d36d7445f7379b",
+    "ocr/models/eng.traineddata.gz": "ed350f3752f81ee8f38769edc14d92d997dababe23b565c59879372cc46a2468",
+    "ocr/ocr-assets/tesseract.min.js": "000c27d9cd0def655f77b36c72a389c0ab13793aa31cb4d7aab56d09c0afbc7e",
+    "ocr/ocr-assets/worker.min.js": "576b7df7e3393e137e51849357c9adb53fe7ac1bb69bfa06cf3d61520f182c6d",
+    "ocr/packages/@tesseract.js-data/eng/package.json": "b603509212196b5d09e10519bf252c1e344b79704d065e0d62886846f8554c80",
+    "ocr/packages/tesseract.js/LICENSE.md": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1",
+    "ocr/packages/tesseract.js/package.json": "fa342f37afd665595eca66ee867197c47c9ac35a7967123d1132c39a40b3dfbd",
+    "ocr/packages/tesseract.js-core/LICENSE": "c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08",
+    "ocr/packages/tesseract.js-core/package.json": "554b867684677c81aa3ffab61f31e83618445fa09adee99e8fff3515cee6ca54",
+    "serifs.json": "54a1891e54afcfb363d3cc65707ef56800f03848a2caa77850d3631415d2b6dc",
+    "templates/Bravura-90.atpl": "5441ad6f53bd633e2cffc7b017365baf83ef07d1bbdad44af20bde69bc537a28",
+    "templates/Bravura-91.atpl": "4471a1770f6b3960c16d984f47679c1ef7aaefaab406a3b15a9021da63546fdf",
+    "templates/Bravura-92.atpl": "31f852332ad1f5b494651c7d7226e8ffff03678a671b37a81fadec1b23f69f14",
+    "templates/reference.json": "135d7e84d09a6c4608b4456b4133e222c7f2b7aae304820866c5c248999f4d46",
+    "text-fonts/font-resources.json": "c7e3c8dae1256e27fd0e3053c25de7e0db74e691f2326c37f129975400ed6f8b",
+    "text-fonts/fonts/5c1247acef7f-DejaVuSans-Bold.ttf": "5c1247acef7f2b8522a31742c76d6adcb5569bacc0be7ceaa4dc39dd252ce895",
+    "text-fonts/fonts/847b33e13925-DejaVuSerif-Bold.ttf": "847b33e13925f19ff87e4d934d6b3cf7cac35ce16424f6f670e40c2f377cf2df",
+    "text-fonts/fonts/8f2c103bfa3f-DejaVuSerif.ttf": "8f2c103bfa3fd5de71f1b92b18f21906b5a26871fb7e19a9a4c9af539c3cc7ab",
+    "text-fonts/fonts/ae7b7855e115-DejaVuSans.ttf": "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280",
+    "text-fonts/fonts/copyright": "63d3ba759d12804c5b31a9d5940d855c1820d1f5999e6b0872eb1c7ff045fbc9",
+    "text-fonts/music-measurements.json": "469842765edcdc4da9b49ef99bd38e4e15c606308c74ecce7dc762a1ac8b8fbb",
+    "texts-cleanup.wasm": "72f72f0655cfee9f2b9501a451e1684c4f5b6245be42cfd670f955a0a746d66a",
+    "texts-cleanup.wasm-runtime.js": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "verification.json": "97ed4111a0dc0cea610568c246df709df055d55f226313ad37d0dfe77f27cfe4"
+  },
+  "verifiedInputArtifacts": {
+    "live-ocr/jvm/jvm-reference.json": [
+      "native/jvm-reference.json"
+    ],
+    "live-ocr/jvm/coverage.json": [
+      "native/coverage.json"
+    ],
+    "live-ocr/jvm/jvm-rejections.json": [
+      "native/jvm-rejections.json"
+    ],
+    "../../../app/res/basic-classifier.zip": [
+      "model.zip"
+    ],
+    "../cue-beams-default-portable-probe/font-measurements.json": [
+      "serifs.json"
+    ],
+    "live-ocr/jvm/symbol-geometry.json": [
+      "native/symbol-geometry.json"
+    ],
+    "live-ocr/jvm/point-widths.json": [
+      "native/point-widths.json"
+    ],
+    "../recorded-text-fonts/music-measurements.json": [
+      "text-fonts/music-measurements.json"
+    ],
+    "live-ocr/jvm/default-font.txt": [
+      "native/default-font.txt"
+    ],
+    "../recorded-text-fonts/font-resources.json": [
+      "text-fonts/font-resources.json"
+    ],
+    "../recorded-text-fonts/fonts/ae7b7855e115-DejaVuSans.ttf": [
+      "text-fonts/fonts/ae7b7855e115-DejaVuSans.ttf"
+    ],
+    "../recorded-text-fonts/fonts/8f2c103bfa3f-DejaVuSerif.ttf": [
+      "text-fonts/fonts/8f2c103bfa3f-DejaVuSerif.ttf"
+    ],
+    "../recorded-text-fonts/fonts/847b33e13925-DejaVuSerif-Bold.ttf": [
+      "text-fonts/fonts/847b33e13925-DejaVuSerif-Bold.ttf"
+    ],
+    "../recorded-text-fonts/fonts/5c1247acef7f-DejaVuSans-Bold.ttf": [
+      "text-fonts/fonts/5c1247acef7f-DejaVuSans-Bold.ttf"
+    ],
+    "../template-original-probe/reference.json": [
+      "templates/reference.json"
+    ],
+    "../template-original-probe/Bravura-90.atpl": [
+      "templates/Bravura-90.atpl"
+    ],
+    "../template-original-probe/Bravura-91.atpl": [
+      "templates/Bravura-91.atpl"
+    ],
+    "../template-original-probe/Bravura-92.atpl": [
+      "templates/Bravura-92.atpl"
+    ],
+    "../texts-cleanup-probe/texts-cleanup.wasm-runtime.js": [
+      "texts-cleanup.wasm-runtime.js"
+    ],
+    "../texts-cleanup-probe/texts-cleanup.wasm": [
+      "texts-cleanup.wasm"
+    ],
+    "../../../wasm-compat/node_modules/@tesseract.js-data/eng/4.0.0/eng.traineddata.gz": [
+      "ocr/models/eng.traineddata.gz"
+    ],
+    "../../../wasm-compat/node_modules/tesseract.js-core/tesseract-core-relaxedsimd.js": [
+      "ocr/core-assets/tesseract-core-relaxedsimd.js"
+    ],
+    "../../../wasm-compat/node_modules/tesseract.js-core/tesseract-core-relaxedsimd.wasm": [
+      "ocr/core-assets/tesseract-core-relaxedsimd.wasm"
+    ],
+    "../../../wasm-compat/host/tesseract-js-ocr.mjs": [
+      "ocr/host/tesseract-js-ocr.mjs"
+    ],
+    "../../../wasm-compat/host/gray8-png.mjs": [
+      "ocr/host/gray8-png.mjs"
+    ],
+    "../../../wasm-compat/host/tesseract-word-metadata.mjs": [
+      "ocr/host/tesseract-word-metadata.mjs"
+    ],
+    "../../../wasm-compat/host/tesseract-word-metadata-node.cjs": [
+      "ocr/host/tesseract-word-metadata-node.cjs"
+    ],
+    "live-ocr/jvm/00/metadata.json": [
+      "native/00/metadata.json"
+    ],
+    "../pixel-probe/samples/00.binary": [
+      "inputs/00.binary"
+    ],
+    "live-ocr/jvm/00/cleaned.gray": [
+      "native/00/cleaned.gray"
+    ],
+    "live-ocr/jvm/00/ocr-result.json": [
+      "native/00/ocr-result.json"
+    ],
+    "live-ocr/jvm/01/metadata.json": [
+      "native/01/metadata.json"
+    ],
+    "../pixel-probe/samples/01.binary": [
+      "inputs/01.binary"
+    ],
+    "live-ocr/jvm/01/cleaned.gray": [
+      "native/01/cleaned.gray"
+    ],
+    "live-ocr/jvm/01/ocr-result.json": [
+      "native/01/ocr-result.json"
+    ],
+    "live-ocr/jvm/02/metadata.json": [
+      "native/02/metadata.json"
+    ],
+    "../pixel-probe/samples/02.binary": [
+      "inputs/02.binary"
+    ],
+    "live-ocr/jvm/02/cleaned.gray": [
+      "native/02/cleaned.gray"
+    ],
+    "live-ocr/jvm/02/ocr-result.json": [
+      "native/02/ocr-result.json"
+    ],
+    "live-ocr/jvm/03/metadata.json": [
+      "native/03/metadata.json"
+    ],
+    "../pixel-probe/samples/03.binary": [
+      "inputs/03.binary"
+    ],
+    "live-ocr/jvm/03/cleaned.gray": [
+      "native/03/cleaned.gray"
+    ],
+    "live-ocr/jvm/03/ocr-result.json": [
+      "native/03/ocr-result.json"
+    ],
+    "live-ocr/jvm/04/metadata.json": [
+      "native/04/metadata.json"
+    ],
+    "../pixel-probe/samples/04.binary": [
+      "inputs/04.binary"
+    ],
+    "live-ocr/jvm/04/cleaned.gray": [
+      "native/04/cleaned.gray"
+    ],
+    "live-ocr/jvm/04/ocr-result.json": [
+      "native/04/ocr-result.json"
+    ],
+    "../../../wasm-compat/host/tesseract-core-word-metadata.js": [
+      "ocr/host/tesseract-core-word-metadata.js"
+    ],
+    "../../../wasm-compat/node_modules/tesseract.js/dist/tesseract.min.js": [
+      "ocr/ocr-assets/tesseract.min.js"
+    ],
+    "../../../wasm-compat/node_modules/tesseract.js/dist/worker.min.js": [
+      "ocr/ocr-assets/worker.min.js"
+    ]
+  },
+  "limitation": "Original TEXTS cleanup, actual OCR and TEXTS resume with physical text fonts; two music-font measurements remain supplied; thin-stroke drawing, music-symbol painting, general shaping/fallback and native OCR parity are not claimed"
+}

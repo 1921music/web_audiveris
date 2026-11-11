@@ -1,0 +1,73 @@
+{
+  "identicalOriginalRoots": false,
+  "originalRootSubsetPreserved": true,
+  "rootCount": 9091,
+  "baselineRootCount": 9080,
+  "addedRoots": [
+    "org.audiveris.omr.image.PageRaster.draw(Ljava/awt/Shape;)V",
+    "org.audiveris.omr.image.PageRaster.fill(Ljava/awt/Shape;)V",
+    "org.audiveris.omr.image.PageRaster.fillRect(IIII)V",
+    "org.audiveris.omr.image.PageRaster.getStroke()Ljava/awt/Stroke;",
+    "org.audiveris.omr.image.PageRaster.glyph(Lorg/audiveris/omr/glyph/Glyph;)V",
+    "org.audiveris.omr.image.PageRaster.initialize()V",
+    "org.audiveris.omr.image.PageRaster.setStroke(Ljava/awt/Stroke;)V",
+    "org.audiveris.omr.image.PageRaster.symbol(Lorg/audiveris/omr/sig/inter/Inter;Lorg/audiveris/omr/ui/symbol/MusicFamily;I)V",
+    "org.audiveris.omr.sheet.PageCleaner.<init>(Lij/process/ByteProcessor;Lorg/audiveris/omr/image/PageRaster;Lorg/audiveris/omr/sheet/Sheet;)V",
+    "org.audiveris.omr.text.SheetScanner$TextsCleaner.<init>(Lij/process/ByteProcessor;Lorg/audiveris/omr/image/PageRaster;Lorg/audiveris/omr/sheet/Sheet;)V",
+    "org.audiveris.omr.text.SheetScanner.cleanBuffer(Lij/process/ByteProcessor;Lorg/audiveris/omr/image/PageRaster;Lorg/audiveris/omr/sheet/Sheet;)V"
+  ],
+  "baselineDiagnostics": 494,
+  "patchedDiagnostics": 494,
+  "diagnosticReduction": 0,
+  "baselineUniqueMessages": 203,
+  "patchedUniqueMessages": 203,
+  "removedMessages": [],
+  "newMessages": [],
+  "newDiagnosticCount": 0,
+  "remainingTargetedApiMessages": [],
+  "baselineByFamily": {
+    "Other Java runtime": 167,
+    "Threads and synchronization": 65,
+    "Files and streams": 35,
+    "Reflection and class loading": 181,
+    "Other libraries or compiler diagnostics": 20,
+    "XML and JAXB": 26
+  },
+  "patchedByFamily": {
+    "Other Java runtime": 167,
+    "Threads and synchronization": 65,
+    "Files and streams": 35,
+    "Reflection and class loading": 181,
+    "Other libraries or compiler diagnostics": 20,
+    "XML and JAXB": 26
+  },
+  "baselineByDirectOwner": {
+    "dependency": 492,
+    "unattributed": 2
+  },
+  "patchedByDirectOwner": {
+    "dependency": 492,
+    "unattributed": 2
+  },
+  "platformSubstitutionsEnabled": true,
+  "modifiedMethods": 520,
+  "removedDirectCallsFromModifiedMethods": 0,
+  "addedDirectCallsFromModifiedMethods": 0,
+  "excludedClassesLinked": {
+    "before": 75,
+    "after": 76
+  },
+  "excludedUsedMethods": {
+    "before": 310,
+    "after": 320
+  },
+  "usedMethodsInsideExcludedClasses": {
+    "before": 242,
+    "after": 251
+  },
+  "remainingClassBreakdown": {
+    "withUsedMethods": 56,
+    "typeOnly": 20
+  },
+  "strictExclusionPass": false
+}
