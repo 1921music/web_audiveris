@@ -1,0 +1,18 @@
+{
+  "sourceCommit": "44be3157b58175ac1e48a3b5464366308ee79301",
+  "sourceSha256": {
+    "wasm-compat/web/index.html": "5a0d69728e708ef4c6e4b77eb1048420472272209b7de0bca40c85cca2dfc7b9",
+    "wasm-compat/web/app.css": "ba36e7c72a2158afc081792b926efc43a102682f181720930359c25b2d46f55f",
+    "wasm-compat/web/app.mjs": "fc41d9f30fce8e3714539efc6dda00f341c23627de4335e972246acd4ce88eac",
+    "wasm-compat/tools/verify-engine-ui.cjs": "5f8273291fffd0f8061380df09eb61cf2658ea20a3e403c25f23b1883e52a1ea",
+    "dev/teavm-audit/package_engine.py": "b6aafc3658d289d3652018dce8bbe144062ced0a70ac6d35dfb005c6c605a557"
+  },
+  "package": "wsl-artifacts/wasm-engine",
+  "rawArtifacts": "wsl-artifacts/wasm-components/ui",
+  "engineSha256": "0f90e8afad81f22f7512aae4f1a6e2183d898c7e78ac4c462f86c12b7b0458d1",
+  "cpuMax": "800000 100000",
+  "allowedCpus": "0-7",
+  "memoryMaxBytes": 8589934592,
+  "swapMaxBytes": 0,
+  "memoryEvents": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0"
+}

@@ -1,0 +1,8 @@
+{
+  "url": "http://127.0.0.1:8765/",
+  "status": 200,
+  "moduleContentType": "text/javascript",
+  "wasmContentType": "application/wasm",
+  "verifiedAssetFiles": 57,
+  "engineSha256": "0f90e8afad81f22f7512aae4f1a6e2183d898c7e78ac4c462f86c12b7b0458d1"
+}
