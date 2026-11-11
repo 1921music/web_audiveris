@@ -23,7 +23,8 @@ def main():
         'app/src/main/java/org/audiveris/omr/ui/symbol/OmrFont.java', 'app/build.gradle', 'dev/teavm-audit/audit.init.gradle']
     if include_probe:
         sources += ['wasm-compat/src/test/java/org/audiveris/wasm/compat/test/FontBoxMetricsProbe.java',
-            'wasm-compat/src/test/java/org/audiveris/wasm/compat/test/QuadraticGlyphBounds.java',
+            'wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/TrueTypeGlyphBounds.java',
+            'wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/TrueTypeFaceMetrics.java',
             'wasm-compat/tools/verify-fontbox-metrics.cjs', 'dev/teavm-audit/src/audit/CompileCompatibilityProbe.java',
             'wasm-compat/src/main/java/org/audiveris/wasm/compat/CompilerPatches.java',
             'wasm-compat/src/main/java/org/audiveris/wasm/compat/FontMetricsPatches.java',

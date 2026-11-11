@@ -92,7 +92,7 @@ public final class FontBoxMetricsExperiment {
             int gid = cmap.getGlyphId(codepoint);
             var glyph = font.getGlyph().getGlyph(gid);
             if (glyph != null && glyph.getNumberOfContours() != 0) {
-                Rectangle2D box = syntheticItalic ? QuadraticGlyphBounds.measure(font, gid, scale)
+                Rectangle2D box = syntheticItalic ? org.audiveris.wasm.compat.platform.TrueTypeGlyphBounds.measure(font, gid, scale, true)
                         : glyphBounds(font, gid, scale, pathBounds, roundingMode, 0);
                 double x1 = box.getMinX(), x2 = box.getMaxX();
                 double y1 = -box.getMaxY(), y2 = -box.getMinY();

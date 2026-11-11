@@ -1467,11 +1467,50 @@ Native comparison has zero differing/unsupported queries; two Node instances and
 Workers pass **2,068 checks** exactly, including bounds, advances and fitted sizes. The test also
 keeps Java's saturated integer conversion for zero-ink strings, rather than treating infinity
 as a fitted integer. JVM font discovery/reflection stays in the reference generator, outside Wasm.
-These are still component results: normal-text measurements have not yet replaced the supplied
-tables in the full TEXTS entry, and the **two music-font queries** remain separate.
+The component comparison is separate from the font-backed TEXTS entry below; the **two music-font
+queries** remain separate.
 Archive a committed run with `export_recorded_text_fonts.py <repository> <mirror> <source-commit>`;
 summaries go to `recorded-text-font-results`, while fonts, their notice, bindings and runnable
 artifacts go to `wsl-artifacts/wasm-components/recorded-text-fonts`.
+
+## TEXTS with physical text fonts
+
+`TrueTypeFaceMetrics` and `TrueTypeGlyphBounds` provide the verified measurement in the engine's
+compatibility code. `PortableTextGeometry` selects an explicit physical face and logical name
+from font attributes. Font resources are installed once and sealed before recognition; attempts
+to replace fonts after a page begins fail. Each module owns its parsed faces. Missing characters,
+unconfigured styles, transformed/point-matched components and unsupported font formats remain
+explicit failures. The initial layout path accepts ordinary ASCII; general shaping/fallback is
+still separate work. This profile currently supports power-of-two TTF units per em and positive
+integer sizes up to the JDK scaler's 16,384-point ceiling.
+
+`verifyFontBackedTextsProbe` uses the same real OCR/JVM reference as the live continuation test,
+but installs four physical fonts (**2,205,968 bytes**) and eight style bindings instead of a
+per-string table. `FontBackedTextsProbe` rejects ordinary-text measurement entries, so those
+fixtures cannot hide a missing font implementation. The only supplied `TextFontGeometry` entries
+are the **two music-font measurements**. The font resource manifest contains face/style/name
+bindings, with no recognition strings or point-size measurements. Native-cleaned rasters and
+the existing CUE templates/symbol resources remain supplied inputs.
+
+Strict compilation has zero diagnostics. This separate module is **3,271,357 bytes**, an increase
+of **261,758 bytes** over the supplied-metrics continuation module; physical font files are
+additional assets. The standalone font component after extracting the engine implementation is
+**734,565 bytes / 260,051 gzip bytes**, and the 384-case plus 517-case comparisons still pass.
+No real-page speed advantage is inferred from these sizes. The existing supplied-metrics entry
+is retained as a comparison. The new profile is opt-in and does not change the stage-25 audit's
+root policy or the ordinary headless compiler profile.
+
+Run `verifyFontBackedTextsProbe` after generating all-page native/live references. Archive a
+committed verification with `export_texts_continuation.py <repository> <mirror> <source-commit> --ttf`;
+summaries go to `texts-font-backed-results` and assets to
+`wsl-artifacts/wasm-components/texts-font-backed`.
+
+The continuation verifier allows ten minutes each for Chromium launch and each Worker run;
+`AUDIVERIS_BROWSER_LAUNCH_TIMEOUT_MS` (zero disables the launch timeout) and
+`AUDIVERIS_TEXTS_WORKER_TIMEOUT_MS` override these limits. It writes `node-verification.json`
+after the two Node instances pass. If browser startup fails, rerun the same verifier directly
+with `AUDIVERIS_RESUME_TEXTS_NODE=1` to reuse that phase. Reuse requires the same verifier,
+Node version, module and input hashes; it does not skip either browser Worker.
 
 ## Pure Java path-fill component
 

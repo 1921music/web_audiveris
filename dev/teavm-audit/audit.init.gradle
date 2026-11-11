@@ -1093,6 +1093,25 @@ gradle.projectsEvaluated {
                 new File(rootProject.projectDir, 'build/wasm-compat/texts-continuation-probe').absolutePath,
                 new File(app.projectDir, 'res/basic-classifier.zip').absolutePath
     }
+    rootProject.tasks.register('buildFontBackedTextsProbe', JavaExec) {
+        dependsOn compile, 'compileWasmCompatibilityTests', 'patchKxmlCompatibility', 'selectWasmLibraryImplementations'
+        classpath = rootProject.files(compatTests) + compatRuntime
+        mainClass = 'audit.CompileCompatibilityProbe'
+        maxHeapSize = '2g'
+        systemProperty 'audiveris.compat.enabled', 'true'
+        systemProperty 'audiveris.compat.headless', 'true'
+        systemProperty 'audiveris.compat.fontMetrics', 'true'
+        args new File(rootProject.projectDir, 'build/wasm-compat/texts-font-backed-probe').absolutePath,
+                'org.audiveris.wasm.compat.test.FontBackedTextsProbe', 'texts-font-backed'
+    }
+    rootProject.tasks.register('verifyFontBackedTextsProbe', Exec) {
+        dependsOn 'compareRecordedTextFonts', 'buildFontBackedTextsProbe'
+        environment 'AUDIVERIS_LIVE_TEXTS', '1'
+        environment 'AUDIVERIS_TEXTS_TTF', '1'
+        commandLine 'node', '--max-old-space-size=768', new File(compat, 'tools/verify-texts-continuation.cjs').absolutePath,
+                new File(rootProject.projectDir, 'build/wasm-compat/texts-continuation-probe').absolutePath,
+                new File(app.projectDir, 'res/basic-classifier.zip').absolutePath
+    }
     rootProject.tasks.register('testGrayPathJvm', JavaExec) {
         dependsOn 'compileWasmCompatibilityTests'
         classpath = rootProject.files(compatTests, compatClasses, jdkRasterClasses)

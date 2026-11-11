@@ -9,19 +9,33 @@ import sys
 
 def main():
     root, mirror = map(Path, sys.argv[1:3]); revision = sys.argv[3]
-    live = '--live' in sys.argv[4:]
+    ttf = '--ttf' in sys.argv[4:]
+    live = ttf or '--live' in sys.argv[4:]
     source = mirror / 'build/wasm-compat/texts-continuation-probe'
+    module = mirror / 'build/wasm-compat/texts-font-backed-probe' if ttf else source
+    module_name = 'texts-font-backed' if ttf else 'texts-continuation'
     native = source / ('live-ocr/jvm' if live else 'native')
-    verification = source / ('live-ocr/verification.json' if live else 'verification.json')
+    verification = module / 'verification.json' if ttf else source / ('live-ocr/verification.json' if live else 'verification.json')
     read = lambda path: json.loads(path.read_text())
     sha = lambda path: hashlib.sha256(path.read_bytes()).hexdigest()
     report = read(verification)
+    checkpoint = module / 'node-verification.json'
+    if 'nodeCheckpointSha256' in report:
+        assert sha(checkpoint) == report['nodeCheckpointSha256']
+        saved = read(checkpoint)
+        assert saved['verifierHash'] == report['verifierSha256']
+        assert saved['checks'] == report['pages'] * 2
     assert report.get('liveOcr', False) == live
+    assert report.get('ordinaryFontsFromFiles', False) == ttf
+    if ttf:
+        assert report['suppliedOrdinaryFontMeasurements'] == 0 and report['fontMeasurements'] == 2
+        assert report['fontResourcesSealed'] and len(report['textFontMeasurementCalls']) == 4
+        assert all(value > 0 for value in report['textFontMeasurementCalls'])
     assert report['workers'] == report['nodeInstances'] == 2
     assert report['checks'] == report['pages'] * 4 and report['originalTextWords'] > 0
     assert report['originalSystemProcessing'] and report['asynchronousReplyBoundary'] and report['duplicateAndLateRepliesRejected']
-    assert report['maxDifference'] <= 1e-8 and sha(source / 'texts-continuation.wasm') == report['wasmSha256']
-    assert (source / 'diagnostics.tsv').read_text().splitlines() == ['severity\tmethod\tmessage']
+    assert report['maxDifference'] <= 1e-8 and sha(module / (module_name + '.wasm')) == report['wasmSha256']
+    assert (module / 'diagnostics.tsv').read_text().splitlines() == ['severity\tmethod\tmessage']
     for name, expected in report['inputSha256'].items():
         path = (source / name).resolve(); assert path.is_relative_to(mirror.resolve())
         assert sha(path) == expected, 'Verified TEXTS input changed: ' + name
@@ -47,6 +61,10 @@ def main():
             'wasm-compat/package-lock.json',
             'wasm-compat/host/gray8-png.mjs', 'wasm-compat/host/tesseract-word-metadata.mjs',
             'wasm-compat/host/tesseract-word-metadata-node.cjs', 'wasm-compat/host/tesseract-core-word-metadata.js']
+    if ttf:
+        sources += ['wasm-compat/src/test/java/org/audiveris/wasm/compat/test/' + name + '.java' for name in ['FontBackedTextsProbe', 'RecordedTextFontsOracle']]
+        sources += ['wasm-compat/src/main/java/org/audiveris/wasm/compat/' + name + '.java' for name in ['CompilerPatches', 'FontMetricsPatches']]
+        sources += ['wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/' + name + '.java' for name in ['TrueTypeFaceMetrics', 'TrueTypeGlyphBounds', 'PortableTextGeometry', 'FontMetricsRuntime', 'HeadlessLogging']]
     source_hashes = {}
     for name in sorted(set(sources)):
         data = (mirror / name).read_bytes().replace(b'\r\n', b'\n')
@@ -55,16 +73,21 @@ def main():
     limits = Path('/sys/fs/cgroup/wasm_audiveris_dev')
     cpu, memory, swap = [(limits / name).read_text().strip() for name in ['cpu.max', 'memory.max', 'memory.swap.max']]
     assert (cpu, memory, swap) == ('800000 100000', '8589934592', '0')
-    name = 'texts-live-ocr' if live else 'texts-continuation'
+    name = 'texts-font-backed' if ttf else 'texts-live-ocr' if live else 'texts-continuation'
     relative = 'wsl-artifacts/wasm-components/' + name
     raw = root / relative; tracked = root / ('wasm-compat/' + name + '-results')
     raw.mkdir(parents=True, exist_ok=True); tracked.mkdir(parents=True, exist_ok=True)
     def copy(origin, name):
         destination = raw / name; destination.parent.mkdir(parents=True, exist_ok=True); shutil.copyfile(origin, destination)
     copy(verification, 'verification.json')
-    for name in ['diagnostics.tsv', 'texts-continuation.wasm', 'texts-continuation.wasm-runtime.js']:
-        copy(source / name, name)
-    for name in ['jvm-reference.json', 'jvm-rejections.json', 'coverage.json', 'font-measurements.json', 'default-font.txt', 'symbol-geometry.json', 'point-widths.json']:
+    if 'nodeCheckpointSha256' in report:
+        copy(checkpoint, 'node-verification.json')
+    for name in ['diagnostics.tsv', module_name + '.wasm', module_name + '.wasm-runtime.js']:
+        copy(module / name, name)
+    native_names = ['jvm-reference.json', 'jvm-rejections.json', 'coverage.json', 'default-font.txt', 'symbol-geometry.json', 'point-widths.json']
+    if not ttf:
+        native_names += ['font-measurements.json']
+    for name in native_names:
         copy(native / name, 'native/' + name)
     rows = read(native / 'jvm-reference.json'); assert len(rows) == report['pages']
     prior_path = mirror / 'build/wasm-compat/cue-beams-default-original-probe/jvm-reference.json'
@@ -96,6 +119,15 @@ def main():
     for row in catalogs:
         path = template_root / (row['file'] + '.atpl'); assert sha(path) == row['sha256']; copy(path, 'templates/' + path.name)
     copy(template_root / 'reference.json', 'templates/reference.json')
+    if ttf:
+        fonts = mirror / 'build/wasm-compat/recorded-text-fonts'
+        resources = read(fonts / 'font-resources.json')
+        for name in ['font-resources.json', 'music-measurements.json']:
+            copy(fonts / name, 'text-fonts/' + name)
+        for face in resources['faces']:
+            path = fonts / 'fonts' / face['file']; assert sha(path) == face['sha256']
+            copy(path, 'text-fonts/fonts/' + face['file'])
+        copy(Path('/usr/share/doc/fonts-dejavu-core/copyright'), 'text-fonts/fonts/copyright')
     if live:
         diagnostic = read(source / 'live-ocr/comparison.json')
         assert diagnostic['workers'] == 2 and diagnostic['workerResultsExact'] and len(diagnostic['pages']) == len(rows)
@@ -124,7 +156,7 @@ def main():
         'artifactSha256': artifact_hashes, 'verifiedInputArtifacts': input_artifacts,
         'limitation': report['limitation']}
     shutil.copyfile(verification, tracked / 'verification.json')
-    shutil.copyfile(source / 'diagnostics.tsv', tracked / 'diagnostics.tsv')
+    shutil.copyfile(module / 'diagnostics.tsv', tracked / 'diagnostics.tsv')
     if live:
         shutil.copyfile(source / 'live-ocr/comparison.json', tracked / 'ocr-comparison.json')
     for destination in [raw, tracked]:

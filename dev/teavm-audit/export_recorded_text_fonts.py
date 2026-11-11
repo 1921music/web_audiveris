@@ -35,9 +35,9 @@ def main():
         assert any(all(case['bounds'][field] == entry[field] for field in ['x', 'y', 'width', 'height'])
                    and (binding['kind'] == 0 or case['advance'] == entry['advance']) for case in cases[key(binding)])
     sources = ['wasm-compat/src/test/java/org/audiveris/wasm/compat/test/' + name + '.java' for name in [
-        'RecordedTextFontsOracle', 'QuadraticGlyphBounds', 'FontBoxMetricsExperiment', 'FontBoxMetricsProbe', 'TextFontMetricsOracle']]
+        'RecordedTextFontsOracle', 'FontBoxMetricsExperiment', 'FontBoxMetricsProbe', 'TextFontMetricsOracle']]
     sources += ['wasm-compat/src/main/java/org/audiveris/wasm/compat/' + name + '.java' for name in ['CompilerPatches', 'FontMetricsPatches', 'HeadlessPatches']]
-    sources += ['wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/' + name + '.java' for name in ['FontMetricsRuntime', 'HeadlessLogging']]
+    sources += ['wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/' + name + '.java' for name in ['FontMetricsRuntime', 'HeadlessLogging', 'TrueTypeFaceMetrics', 'TrueTypeGlyphBounds']]
     sources += ['app/src/main/java/org/audiveris/omr/' + name + '.java' for name in ['text/FontAttributes', 'text/FontInfo', 'ui/symbol/OmrFont', 'ui/symbol/TextFont']]
     sources += ['app/build.gradle', 'wasm-compat/tools/verify-fontbox-metrics.cjs', 'dev/teavm-audit/audit.init.gradle']
     hashes = {}

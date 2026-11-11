@@ -1,26 +1,28 @@
-package org.audiveris.wasm.compat.test;
+// SPDX-License-Identifier: AGPL-3.0-or-later
+package org.audiveris.wasm.compat.platform;
 
 import java.awt.geom.Rectangle2D;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.fontbox.ttf.GlyfCompositeDescript;
 import org.apache.fontbox.ttf.TrueTypeFont;
 
-/** Research: scaled quadratic outlines and fixed-point synthetic italic, without native calls. */
-final class QuadraticGlyphBounds {
+/** Scaled quadratic outlines and fixed-point synthetic italic, without native font calls. */
+public final class TrueTypeGlyphBounds {
     // OpenJDK 25 freetypeScaler.c setupTransform uses this 16.16 synthetic-italic shear.
     // https://github.com/openjdk/jdk/blob/jdk-25%2B36/src/java.desktop/share/native/libfontmanager/freetypeScaler.c
     private static final long OBLIQUE_XY = 0x0366A;
     private record Point(long x, long y, boolean on) { }
     private final long[] min = {Long.MAX_VALUE, Long.MAX_VALUE}, max = {Long.MIN_VALUE, Long.MIN_VALUE};
 
-    static Rectangle2D measure(TrueTypeFont font, int gid, double scale) throws Exception {
+    public static Rectangle2D measure(TrueTypeFont font, int gid, double scale, boolean syntheticItalic) throws IOException {
         var contours = points(font, gid, scale, 0);
-        var projected = new ArrayList<List<Point>>(); var bounds = new QuadraticGlyphBounds();
+        var projected = new ArrayList<List<Point>>(); var bounds = new TrueTypeGlyphBounds();
         for (var contour : contours) {
             var row = new ArrayList<Point>();
             for (Point p : contour) {
-                Point q = new Point(p.x + multiplyDivide(p.y, OBLIQUE_XY, 65536), p.y, p.on);
+                Point q = new Point(p.x + (syntheticItalic ? multiplyDivide(p.y, OBLIQUE_XY, 65536) : 0), p.y, p.on);
                 row.add(q); if (q.on) { bounds.add(q); }
             }
             projected.add(row);
@@ -31,7 +33,7 @@ final class QuadraticGlyphBounds {
                 (bounds.max[0] - bounds.min[0]) / 64.0, (bounds.max[1] - bounds.min[1]) / 64.0);
     }
 
-    private static List<List<Point>> points(TrueTypeFont font, int gid, double scale, int depth) throws Exception {
+    private static List<List<Point>> points(TrueTypeFont font, int gid, double scale, int depth) throws IOException {
         if (depth > 16) { throw new IllegalArgumentException("Composite font recursion"); }
         var glyph = font.getGlyph().getGlyph(gid); var result = new ArrayList<List<Point>>();
         if (glyph == null || glyph.getNumberOfContours() == 0) { return result; }

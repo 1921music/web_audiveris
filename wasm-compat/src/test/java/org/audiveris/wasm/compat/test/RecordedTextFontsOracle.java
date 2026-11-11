@@ -99,6 +99,19 @@ public final class RecordedTextFontsOracle {
         } }
         json.writeValue(output.resolve("jvm-reference.json").toFile(), fixture);
         json.writeValue(output.resolve("bindings.json").toFile(), bindings);
+        var styles = new TreeMap<Integer, Map<String, Object>>();
+        for (var binding : bindings) {
+            int flags = (int) binding.get("flags");
+            int key = (flags & 3) | ((flags & 16) != 0 ? 16 : flags & 8);
+            Map<String, Object> style = Map.of("flags", key, "face", binding.get("face"),
+                    "name", binding.get("logicalName"), "syntheticItalic", binding.get("syntheticItalic"));
+            var previous = styles.putIfAbsent(key, style);
+            if (previous != null && !previous.equals(style)) { throw new AssertionError("Physical fallback differs within a text style: " + key); }
+        }
+        json.writeValue(output.resolve("font-resources.json").toFile(), Map.of("faces", faces.values(), "styles", styles.values()));
+        var music = json.createArrayNode();
+        for (var entry : json.readTree(input.toFile())) { if (entry.get("kind").asInt() >= 2) { music.add(entry); } }
+        json.writeValue(output.resolve("music-measurements.json").toFile(), music);
         json.writeValue(output.resolve("comparison.json").toFile(), Map.of("eligibleQueries", eligible, "checkedQueries", checked,
                 "faces", faces.size(), "differentQueries", differences.size(), "maxDifference", maxDifference,
                 "differences", differences, "unsupported", unsupported, "javaRuntime", System.getProperty("java.runtime.version"), "syntheticItalicQueries", syntheticItalicCount));
