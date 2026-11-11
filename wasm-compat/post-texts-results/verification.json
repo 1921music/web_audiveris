@@ -1,0 +1,304 @@
+{
+  "node": "v24.22.2",
+  "chromium": "158.0.8127.18",
+  "nodeInstances": 2,
+  "workers": 2,
+  "pages": 5,
+  "inputSha256": {
+    "live-ocr/jvm/jvm-reference.json": "b4044ba074b15eaa09579dcf1e970fe4a90f318753ddc212692651f809a95208",
+    "../post-texts-native/jvm-reference.json": "384fb919cb97129e33fbb71d099c99876305c208f122616877d92f9a5202dede",
+    "live-ocr/jvm/coverage.json": "b3a9467ad7ef81fa3a5faf0b33f0744243b89622aeeaa0734400ee54eaf923ee",
+    "live-ocr/jvm/jvm-rejections.json": "b1d154ac418624e8460ca1ae4be70af814778c180f13c5f4225de102e28c7e72",
+    "../../../app/res/basic-classifier.zip": "327194c47116a8ebf5771d04cea08a4e563ec93d2955e1efd990a54a9245f29e",
+    "../cue-beams-default-portable-probe/font-measurements.json": "54a1891e54afcfb363d3cc65707ef56800f03848a2caa77850d3631415d2b6dc",
+    "../post-texts-native/symbol-geometry.json": "db9b5b65816e316f098e630dba49c779d6b7c7afa0398f67be71233b895b49fe",
+    "../post-texts-native/point-widths.json": "5df033a84284d827b208578ef620980e66b14bddbbc4705e65a9b1e44f8704f3",
+    "live-ocr/jvm/default-font.txt": "465b0dc8595e31facf4d6b4d7cb5d89a7e1fae4dbcfd226ed242902d604ddb3d",
+    "../music-symbols-wasm/music-symbols.wasm": "1b4287df7df7baa63fe3701ff09499c8a7558d1c916d553f3316b481c5418c75",
+    "../music-symbols-wasm/music-symbols.mjs": "4ac52428cdf72e72e60cab3a5676f995243ecb31df75a6171963aa94d94468c6",
+    "../music-symbols-wasm/fonts/Bravura.otf": "dca2d90c88437a701b1c2e71fa54e76f9fa41d7deee935d74dc871ea66ecfdd2",
+    "../music-symbols-wasm/fonts/FinaleJazz.otf": "a8ea0408ef7628ca38ae29eaa1b4357d2b0bf11747f6eee3c5f9ed5cca358e08",
+    "../music-symbols-wasm/fonts/JazzPerc.ttf": "310ef24d859055f1ba026fe3a86359eb3be1e3ebbcac6cb9029281952e958538",
+    "../music-symbols-wasm/fonts/Leland.otf": "cacca69cb750d851023d52a8e41d3373904aa82afc7247085f37d4ee6823506c",
+    "../music-symbols-wasm/fonts/MusicalSymbols.ttf": "07fb37d9fd2c6ccceb1124d0e9e7aa8a4ffe03ae2f0a3bff5e620b241b59d5cc",
+    "../music-symbols-wasm/fonts/Primus.ttf": "25f73922f6462d50a250e98cbb3b69909a7546eae8167e99592c3d641b80facd",
+    "../music-symbols-wasm/fonts/ae7b7855e115-DejaVuSans.ttf": "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280",
+    "../music-symbols-wasm/recipes.json": "5bbcede1a8cdb822d5d6774f6d2673d23ec275fb6f0063d146858dda96515359",
+    "../music-symbols-wasm/font-resources.json": "3096f9bb4249f3f09976975733bcc51afd3e0fc488413fdaab7821364e8874f4",
+    "../music-symbols-wasm/jvm-reference.json": "68fd2ba69a91733f97b8d216f3fe35f427d295f980d09c8e2d78a9d837233f7a",
+    "../../../wasm-compat/host/freetype-music-symbols.mjs": "eb6c5b2eaa812d9c2bda90704361485bda487d3c1dfb0a19c71c98e88d5de4e4",
+    "../../../wasm-compat/host/freetype-music-metrics.mjs": "c55d841162594f6085ee1b4dce4d3d711373c49f378ccd4e1b551a830718a7da",
+    "../recorded-text-fonts/font-resources.json": "c7e3c8dae1256e27fd0e3053c25de7e0db74e691f2326c37f129975400ed6f8b",
+    "../recorded-text-fonts/fonts/ae7b7855e115-DejaVuSans.ttf": "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280",
+    "../recorded-text-fonts/fonts/8f2c103bfa3f-DejaVuSerif.ttf": "8f2c103bfa3fd5de71f1b92b18f21906b5a26871fb7e19a9a4c9af539c3cc7ab",
+    "../recorded-text-fonts/fonts/847b33e13925-DejaVuSerif-Bold.ttf": "847b33e13925f19ff87e4d934d6b3cf7cac35ce16424f6f670e40c2f377cf2df",
+    "../recorded-text-fonts/fonts/5c1247acef7f-DejaVuSans-Bold.ttf": "5c1247acef7f2b8522a31742c76d6adcb5569bacc0be7ceaa4dc39dd252ce895",
+    "../template-original-probe/reference.json": "135d7e84d09a6c4608b4456b4133e222c7f2b7aae304820866c5c248999f4d46",
+    "../template-original-probe/Bravura-90.atpl": "5441ad6f53bd633e2cffc7b017365baf83ef07d1bbdad44af20bde69bc537a28",
+    "../template-original-probe/Bravura-91.atpl": "4471a1770f6b3960c16d984f47679c1ef7aaefaab406a3b15a9021da63546fdf",
+    "../template-original-probe/Bravura-92.atpl": "31f852332ad1f5b494651c7d7226e8ffff03678a671b37a81fadec1b23f69f14",
+    "../post-texts-probe/post-texts.wasm-runtime.js": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "../post-texts-probe/post-texts.wasm": "0cec01658e917fad75064ec1542b6da3a05ee0705795db8dbc4d454f5b2b5222",
+    "../../../wasm-compat/node_modules/@tesseract.js-data/eng/4.0.0/eng.traineddata.gz": "ed350f3752f81ee8f38769edc14d92d997dababe23b565c59879372cc46a2468",
+    "../../../wasm-compat/node_modules/tesseract.js-core/tesseract-core-relaxedsimd.js": "716be037611f21b568347421f582f1e1a6456b6d5c3a7c2406c8a2a6c0136427",
+    "../../../wasm-compat/node_modules/tesseract.js-core/tesseract-core-relaxedsimd.wasm": "45f8c9b516df326b6ae6b493ed3a6289df5cbd10490e7b6ff8bf5b12ea42d1da",
+    "../../../wasm-compat/host/tesseract-js-ocr.mjs": "3216824bb919d2d515eb354222e6076438737da22f98a8d5f8fa8a8d6af432c6",
+    "../../../wasm-compat/host/gray8-png.mjs": "fab3b1da1e3f027ab38fc48eef5a5250988fd3a1a55720364e4ad94078b70bba",
+    "../../../wasm-compat/host/tesseract-word-metadata.mjs": "f65724fedd53bf89e629e20bdaaa646a76e8961d64331e6976d36d7445f7379b",
+    "../../../wasm-compat/host/tesseract-word-metadata-node.cjs": "b17efb04d34f1f7c641b96b01642c2405472653b94f15752bc556367e190df95",
+    "live-ocr/jvm/00/metadata.json": "afbccc54d8d8a12f638849cf639fc113d160e5e9db7d6a55f51e3e05ba13439b",
+    "../pixel-probe/samples/00.binary": "fa68b16d7d1a41dca21b80d56ab4c9b218f9e6819fcbdd37d781f7c8720f8150",
+    "live-ocr/jvm/00/cleaned.gray": "f9483bf00b89a982188c405cb78826038ab1fac24593aba43440dcc1a9c43ad7",
+    "live-ocr/jvm/00/ocr-result.json": "d72fedaa39868f181e306be29989c491573f6983938337ab750db4f2ec1da4f8",
+    "live-ocr/jvm/01/metadata.json": "3ad802555bc06a48bc0de286048167b36aeadd8ae0a777beb8b2aa5bf5951926",
+    "../pixel-probe/samples/01.binary": "ad29f97436f864a6a003f8133b63462c7293a1485e19f6535a95fd5b5c48411f",
+    "live-ocr/jvm/01/cleaned.gray": "777cec0547124381c4355761d979c25e9321fb931e9371a43e22256307b7c7ad",
+    "live-ocr/jvm/01/ocr-result.json": "1c5c036e90abd7ba9f026ac239e3351f44fb65aca4ed5f12fb1e7e5bf041b697",
+    "live-ocr/jvm/02/metadata.json": "24b858bddd0ed0cf7b85a0433d29cef36b22a085dba4ec51dd0079ede78a1fb2",
+    "../pixel-probe/samples/02.binary": "5b84baea8fcfb9335173f8decd02af0ce98a5e98b2883f05e5d16bd2c2fd656b",
+    "live-ocr/jvm/02/cleaned.gray": "24a4b292f870188b44c20be65190485220ffef5983aaab71a1ae1aa5f705caba",
+    "live-ocr/jvm/02/ocr-result.json": "186bc152be0b20709f232a7c915b46d655148d517beab836f2600285e9db634b",
+    "live-ocr/jvm/03/metadata.json": "e5d8ae0331d248e924fe39a3ea0eceb719344054d4dbc3e9b012f89872b34485",
+    "../pixel-probe/samples/03.binary": "19b8015b3765932003a0b6c09e4dd524c02be89019909c3c6e429beb7d106762",
+    "live-ocr/jvm/03/cleaned.gray": "b927e5eae3850434d57ded2ec6eedbb28389360ab09672a4d85e013f6d520b4b",
+    "live-ocr/jvm/03/ocr-result.json": "5056f62a78dda7813e9600946d7c1caabcfc3f32d7d9d1685d2ed2465b8028b1",
+    "live-ocr/jvm/04/metadata.json": "f90cffd2a19054f0aa6ddbf319be7951745bc4a9c94f2d3c55779158a5bba4c5",
+    "../pixel-probe/samples/04.binary": "8c6e44d97583e19ee8b03b0bce7490493314cc157941c553b6f3f19a42261ded",
+    "live-ocr/jvm/04/cleaned.gray": "31013e845668db300018e6e06334eb357e9e85d769702e5e6ae4c13e0b6a8e0d",
+    "live-ocr/jvm/04/ocr-result.json": "195a40dde19a1febb8f46653dca8226543c0113538f7189b043f0a3dcca81180",
+    "../../../wasm-compat/host/tesseract-core-word-metadata.js": "1bdf211ea32a326f535d9d24d012b92b9eb62b2978b85dae3eeee0fc268802de",
+    "../../../wasm-compat/node_modules/tesseract.js/dist/tesseract.min.js": "000c27d9cd0def655f77b36c72a389c0ab13793aa31cb4d7aab56d09c0afbc7e",
+    "../../../wasm-compat/node_modules/tesseract.js/dist/worker.min.js": "576b7df7e3393e137e51849357c9adb53fe7ac1bb69bfa06cf3d61520f182c6d"
+  },
+  "examinedNativePages": 8,
+  "rejectedBeforeTexts": 3,
+  "checks": 20,
+  "numericValues": 2485364,
+  "maxDifference": 1.7763568394002505e-15,
+  "originalTextWords": 130,
+  "fontMeasurements": 0,
+  "originalSystemProcessing": true,
+  "asynchronousReplyBoundary": true,
+  "duplicateAndLateRepliesRejected": true,
+  "wasmBytes": 3613913,
+  "wasmSha256": "0cec01658e917fad75064ec1542b6da3a05ee0705795db8dbc4d454f5b2b5222",
+  "liveOcr": true,
+  "ordinaryFontsFromFiles": true,
+  "originalCleanupInWasm": true,
+  "suppliedCleanupRasters": 0,
+  "cleanupReferencePixelsExact": true,
+  "resumedNodeValidation": false,
+  "nodeCheckpointSha256": "7de46d86578bb50cad981e09813c1e45dafede44c7e6e4601015f6b4cdbd39bc",
+  "verifierSha256": "74de35bb43db59e30d64e1e2ac8c4e3221a2952f6012187a787f0deeddbb14bd",
+  "limitation": "Original MEASURES and CHORDS after full TEXTS on the same sheet. Later recognition stages, general font shaping/fallback and native OCR parity remain unverified.",
+  "ocrAssets": {
+    "/host/tesseract-js-ocr.mjs": {
+      "bytes": 8510,
+      "sha256": "3216824bb919d2d515eb354222e6076438737da22f98a8d5f8fa8a8d6af432c6"
+    },
+    "/host/gray8-png.mjs": {
+      "bytes": 1759,
+      "sha256": "fab3b1da1e3f027ab38fc48eef5a5250988fd3a1a55720364e4ad94078b70bba"
+    },
+    "/host/tesseract-word-metadata.mjs": {
+      "bytes": 5446,
+      "sha256": "f65724fedd53bf89e629e20bdaaa646a76e8961d64331e6976d36d7445f7379b"
+    },
+    "/host/tesseract-core-word-metadata.js": {
+      "bytes": 859,
+      "sha256": "1bdf211ea32a326f535d9d24d012b92b9eb62b2978b85dae3eeee0fc268802de"
+    },
+    "/ocr-assets/tesseract.min.js": {
+      "bytes": 62961,
+      "sha256": "000c27d9cd0def655f77b36c72a389c0ab13793aa31cb4d7aab56d09c0afbc7e"
+    },
+    "/ocr-assets/worker.min.js": {
+      "bytes": 111307,
+      "sha256": "576b7df7e3393e137e51849357c9adb53fe7ac1bb69bfa06cf3d61520f182c6d"
+    },
+    "/core-assets/tesseract-core-relaxedsimd.js": {
+      "bytes": 89066,
+      "sha256": "716be037611f21b568347421f582f1e1a6456b6d5c3a7c2406c8a2a6c0136427"
+    },
+    "/core-assets/tesseract-core-relaxedsimd.wasm": {
+      "bytes": 3456075,
+      "sha256": "45f8c9b516df326b6ae6b493ed3a6289df5cbd10490e7b6ff8bf5b12ea42d1da"
+    },
+    "/models/eng.traineddata.gz": {
+      "bytes": 10923060,
+      "sha256": "ed350f3752f81ee8f38769edc14d92d997dababe23b565c59879372cc46a2468"
+    }
+  },
+  "textFontFiles": [
+    {
+      "id": "Physical0",
+      "file": "ae7b7855e115-DejaVuSans.ttf",
+      "name": "DejaVuSans.ttf",
+      "sha256": "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280",
+      "bytes": 759720
+    },
+    {
+      "id": "Physical1",
+      "file": "8f2c103bfa3f-DejaVuSerif.ttf",
+      "name": "DejaVuSerif.ttf",
+      "sha256": "8f2c103bfa3fd5de71f1b92b18f21906b5a26871fb7e19a9a4c9af539c3cc7ab",
+      "bytes": 380660
+    },
+    {
+      "id": "Physical2",
+      "file": "847b33e13925-DejaVuSerif-Bold.ttf",
+      "name": "DejaVuSerif-Bold.ttf",
+      "sha256": "847b33e13925f19ff87e4d934d6b3cf7cac35ce16424f6f670e40c2f377cf2df",
+      "bytes": 356668
+    },
+    {
+      "id": "Physical3",
+      "file": "5c1247acef7f-DejaVuSans-Bold.ttf",
+      "name": "DejaVuSans-Bold.ttf",
+      "sha256": "5c1247acef7f2b8522a31742c76d6adcb5569bacc0be7ceaa4dc39dd252ce895",
+      "bytes": 708920
+    }
+  ],
+  "textFontMeasurementCalls": [
+    1139,
+    1139,
+    1139,
+    1139
+  ],
+  "fontResourcesSealed": true,
+  "suppliedOrdinaryFontMeasurements": 0,
+  "suppliedMusicFontMeasurements": 0,
+  "musicFontBackend": "FreeType 2.14.3",
+  "musicFontMeasurementCalls": [
+    2,
+    2,
+    2,
+    2
+  ],
+  "musicFontStats": [
+    {
+      "requests": 2,
+      "cacheLimit": 256,
+      "cachedMeasurements": 2,
+      "cachedGlyphMetrics": 2,
+      "linearMemoryBytes": 16777216,
+      "symbols": {
+        "calls": 5,
+        "cachedMasks": 6,
+        "cacheLimit": 256,
+        "cachedMaskBytes": 8688,
+        "maskCacheBudgetBytes": 16777216
+      },
+      "pageSymbolCalls": 0
+    },
+    {
+      "requests": 2,
+      "cacheLimit": 256,
+      "cachedMeasurements": 2,
+      "cachedGlyphMetrics": 2,
+      "linearMemoryBytes": 16777216,
+      "symbols": {
+        "calls": 5,
+        "cachedMasks": 6,
+        "cacheLimit": 256,
+        "cachedMaskBytes": 8688,
+        "maskCacheBudgetBytes": 16777216
+      },
+      "pageSymbolCalls": 0
+    },
+    {
+      "requests": 2,
+      "cacheLimit": 256,
+      "cachedMeasurements": 2,
+      "cachedGlyphMetrics": 2,
+      "linearMemoryBytes": 16777216,
+      "symbols": {
+        "calls": 5,
+        "cachedMasks": 6,
+        "cacheLimit": 256,
+        "cachedMaskBytes": 8688,
+        "maskCacheBudgetBytes": 16777216
+      },
+      "pageSymbolCalls": 0
+    },
+    {
+      "requests": 2,
+      "cacheLimit": 256,
+      "cachedMeasurements": 2,
+      "cachedGlyphMetrics": 2,
+      "linearMemoryBytes": 16777216,
+      "symbols": {
+        "calls": 5,
+        "cachedMasks": 6,
+        "cacheLimit": 256,
+        "cachedMaskBytes": 8688,
+        "maskCacheBudgetBytes": 16777216
+      },
+      "pageSymbolCalls": 0
+    }
+  ],
+  "sharedMusicMetricsAndRendering": true,
+  "symbolSmokeChecksPerInstance": 5,
+  "musicFontAssets": {
+    "/music/factory.mjs": {
+      "bytes": 13763,
+      "sha256": "4ac52428cdf72e72e60cab3a5676f995243ecb31df75a6171963aa94d94468c6"
+    },
+    "/music/module.wasm": {
+      "bytes": 497135,
+      "sha256": "1b4287df7df7baa63fe3701ff09499c8a7558d1c916d553f3316b481c5418c75"
+    },
+    "/music/host.mjs": {
+      "bytes": 6838,
+      "sha256": "eb6c5b2eaa812d9c2bda90704361485bda487d3c1dfb0a19c71c98e88d5de4e4"
+    },
+    "/music/freetype-music-metrics.mjs": {
+      "bytes": 5943,
+      "sha256": "c55d841162594f6085ee1b4dce4d3d711373c49f378ccd4e1b551a830718a7da"
+    },
+    "/music/recipes.json": {
+      "bytes": 93888,
+      "sha256": "5bbcede1a8cdb822d5d6774f6d2673d23ec275fb6f0063d146858dda96515359"
+    },
+    "/music/fonts/Bravura.otf": {
+      "bytes": 512924,
+      "sha256": "dca2d90c88437a701b1c2e71fa54e76f9fa41d7deee935d74dc871ea66ecfdd2"
+    },
+    "/music/fonts/FinaleJazz.otf": {
+      "bytes": 136984,
+      "sha256": "a8ea0408ef7628ca38ae29eaa1b4357d2b0bf11747f6eee3c5f9ed5cca358e08"
+    },
+    "/music/fonts/JazzPerc.ttf": {
+      "bytes": 26748,
+      "sha256": "310ef24d859055f1ba026fe3a86359eb3be1e3ebbcac6cb9029281952e958538"
+    },
+    "/music/fonts/Leland.otf": {
+      "bytes": 88132,
+      "sha256": "cacca69cb750d851023d52a8e41d3373904aa82afc7247085f37d4ee6823506c"
+    },
+    "/music/fonts/MusicalSymbols.ttf": {
+      "bytes": 37644,
+      "sha256": "07fb37d9fd2c6ccceb1124d0e9e7aa8a4ffe03ae2f0a3bff5e620b241b59d5cc"
+    },
+    "/music/fonts/Primus.ttf": {
+      "bytes": 48072,
+      "sha256": "25f73922f6462d50a250e98cbb3b69909a7546eae8167e99592c3d641b80facd"
+    },
+    "/music/fonts/ae7b7855e115-DejaVuSans.ttf": {
+      "bytes": 759720,
+      "sha256": "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280"
+    }
+  },
+  "postTextsStages": [
+    "MEASURES",
+    "CHORDS"
+  ],
+  "postTextsChecks": 40,
+  "postTextsGuardCounts": [
+    51,
+    51,
+    51,
+    51
+  ],
+  "originalPostTextsRecognition": true
+}

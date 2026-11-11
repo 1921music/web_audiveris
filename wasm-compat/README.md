@@ -1770,6 +1770,12 @@ structural keys use class, shape, bounds, staff and chord membership, preserving
 The harness compares two independent Node instances and two Workers, including ordering,
 duplicate-call and token guards. Later stages beginning with CURVES remain separate work.
 
+Verified on all five pages: **20 TEXTS comparisons + 40 post-TEXTS comparisons**, with **204
+transition/token guards**. All **2,485,364 numeric values** remain within the existing tolerances;
+maximum difference is **1.7763568394002505e-15**. The entry is **3,613,913 bytes**, **88,843 bytes**
+above the prior TEXTS entry; with the shared FreeType binary the total is **4,111,048 bytes**.
+JavaScript, fonts, classifier, templates and OCR resources remain additional assets.
+
 After preparing the existing font/OCR/template resources, run `verifyPostTextsProbe` with the
 audit init script through the capped launcher. Archive with
 `export_texts_continuation.py <repository> <mirror> <commit> --post` into `post-texts-results`
