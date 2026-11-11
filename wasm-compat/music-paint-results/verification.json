@@ -1,0 +1,119 @@
+{
+  "javaRuntime" : "25.0.5+8-LTS",
+  "cases" : 2280,
+  "shapes" : 19,
+  "pointSizes" : [ 12, 19, 24, 37, 48 ],
+  "fractionalCenters" : [ 0, 0.25, 0.5, 0.75 ],
+  "pixelsPerCase" : 25600,
+  "differentCases" : 2280,
+  "differentPixels" : 205637,
+  "nativeGlyphVectorCalls" : 2280,
+  "families" : {
+    "Bravura" : {
+      "cases" : 380,
+      "differentCases" : 380
+    },
+    "FinaleJazz" : {
+      "cases" : 380,
+      "differentCases" : 380
+    },
+    "JazzPerc" : {
+      "cases" : 380,
+      "differentCases" : 380
+    },
+    "Leland" : {
+      "cases" : 380,
+      "differentCases" : 380
+    },
+    "MusicalSymbols" : {
+      "cases" : 380,
+      "differentCases" : 380
+    },
+    "Primus" : {
+      "cases" : 380,
+      "differentCases" : 380
+    }
+  },
+  "examples" : [ {
+    "differentPixels" : 12,
+    "size" : 12,
+    "shape" : "NOTEHEAD_BLACK",
+    "fraction" : 0.0,
+    "family" : "Bravura"
+  }, {
+    "differentPixels" : 13,
+    "size" : 12,
+    "shape" : "NOTEHEAD_BLACK",
+    "fraction" : 0.25,
+    "family" : "Bravura"
+  }, {
+    "differentPixels" : 11,
+    "size" : 12,
+    "shape" : "NOTEHEAD_BLACK",
+    "fraction" : 0.5,
+    "family" : "Bravura"
+  }, {
+    "differentPixels" : 11,
+    "size" : 12,
+    "shape" : "NOTEHEAD_BLACK",
+    "fraction" : 0.75,
+    "family" : "Bravura"
+  }, {
+    "differentPixels" : 19,
+    "size" : 19,
+    "shape" : "NOTEHEAD_BLACK",
+    "fraction" : 0.0,
+    "family" : "Bravura"
+  }, {
+    "differentPixels" : 23,
+    "size" : 19,
+    "shape" : "NOTEHEAD_BLACK",
+    "fraction" : 0.25,
+    "family" : "Bravura"
+  }, {
+    "differentPixels" : 18,
+    "size" : 19,
+    "shape" : "NOTEHEAD_BLACK",
+    "fraction" : 0.5,
+    "family" : "Bravura"
+  }, {
+    "differentPixels" : 18,
+    "size" : 19,
+    "shape" : "NOTEHEAD_BLACK",
+    "fraction" : 0.75,
+    "family" : "Bravura"
+  }, {
+    "differentPixels" : 27,
+    "size" : 24,
+    "shape" : "NOTEHEAD_BLACK",
+    "fraction" : 0.0,
+    "family" : "Bravura"
+  }, {
+    "differentPixels" : 27,
+    "size" : 24,
+    "shape" : "NOTEHEAD_BLACK",
+    "fraction" : 0.25,
+    "family" : "Bravura"
+  }, {
+    "differentPixels" : 23,
+    "size" : 24,
+    "shape" : "NOTEHEAD_BLACK",
+    "fraction" : 0.5,
+    "family" : "Bravura"
+  }, {
+    "differentPixels" : 24,
+    "size" : 24,
+    "shape" : "NOTEHEAD_BLACK",
+    "fraction" : 0.75,
+    "family" : "Bravura"
+  } ],
+  "fontSha256" : {
+    "Bravura.otf" : "dca2d90c88437a701b1c2e71fa54e76f9fa41d7deee935d74dc871ea66ecfdd2",
+    "FinaleJazz.otf" : "a8ea0408ef7628ca38ae29eaa1b4357d2b0bf11747f6eee3c5f9ed5cca358e08",
+    "JazzPerc.ttf" : "310ef24d859055f1ba026fe3a86359eb3be1e3ebbcac6cb9029281952e958538",
+    "Leland.otf" : "cacca69cb750d851023d52a8e41d3373904aa82afc7247085f37d4ee6823506c",
+    "MusicalSymbols.ttf" : "07fb37d9fd2c6ccceb1124d0e9e7aa8a4ffe03ae2f0a3bff5e620b241b59d5cc",
+    "Primus.ttf" : "25f73922f6462d50a250e98cbb3b69909a7546eae8167e99592c3d641b80facd"
+  },
+  "limitation" : "Diagnostic only: both paths use actual JVM fonts and glyph positioning. Outline filling is not a portable music-font implementation or an accepted approximation."
+}
