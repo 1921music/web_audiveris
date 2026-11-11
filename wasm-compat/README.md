@@ -1545,6 +1545,41 @@ incremental Wasm size and allocations on actual pages before deciding whether an
 is worthwhile. Reports are in `gray-path-results`; runnable artifacts are kept under
 `wsl-artifacts/wasm-components/gray-path`.
 
+## Pure Java span-fill component and actual TEXTS cleanup drawing
+
+`GraySpanRaster` adapts OpenJDK 25's `ShapeSpanIterator.c` into Java-owned segments and a
+packed grayscale sink. It keeps float subdivision, winding, endpoint normalization and
+integer stepping; JNI and native memory management are absent. The original quadratic
+normalization behavior is retained, including its control-point X adjustment. Attribution
+and GPLv2 with Classpath Exception are in `third-party/openjdk`. Non-finite coordinates and
+coordinates outside +/-4,194,304 fail explicitly.
+
+`verifyGraySpanProbe` compares **1,024 cases / 1,780,736 pixels** against the native JDK span
+iterator, covering both normalization modes, curves, holes, winding rules, open subpaths and
+clipping. Two Node instances compare every byte; two independent Chromium Workers compare
+the complete SHA-256 and per-path hashes. All agree exactly, the four input guards pass in
+each instance, strict compilation has zero diagnostics, and the component is **140,964 bytes**.
+
+`traceTextsCleanup` invokes the unchanged private `SheetScanner.TextsCleaner` on all eight
+sample inputs and checks the five accepted pages against the saved native cleanup and CUE
+prefix. The observed **836,628 drawing operations** comprise 835,344 rectangle erasures,
+559 area fills, 511 area outlines and 214 ledger-line draws; no font drawing occurs in these
+five pages. An independent native replay matches **43,474,400 pixels** exactly. Combining
+integer rectangles, the existing thin-fill converter, normalized Marlin stroke geometry and
+the new span converter also gives **zero differing pixels**, both before the final glyph
+pass and in the final image, on all five pages.
+
+For comparison, routing everything through the thin-fill converter leaves **6,535 pixels**
+different before the glyph pass and **6,074** in the final images. Endpoint snapping alone
+does not solve this. These are observations of drawing decisions from the original cleaner;
+the new raster backend is not yet wired into the engine's cleanup traversal. Glyph/symbol
+painting, other inputs and actual cleanup throughput remain separate checks.
+
+Archive a committed run with `export_span_cleanup.py <repository> <mirror> <source-commit>`.
+The summary, source/input hashes and drawing observations go to `gray-span-results`; runnable
+Wasm, dense native pixels, cleanup inputs and license notices go to
+`wsl-artifacts/wasm-components/gray-span`.
+
 ## Pure Java stroke geometry component
 
 `StrokePaths` invokes the JDK Marlin stroker directly, including line widths, caps, joins, miters,
