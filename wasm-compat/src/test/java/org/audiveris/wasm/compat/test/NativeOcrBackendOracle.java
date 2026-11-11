@@ -39,7 +39,7 @@ public final class NativeOcrBackendOracle {
                     api.SetImage(image); api.SetSourceResolution(70); api.SetPageSegMode(psm);
                     var layout = api.AnalyseLayout(); if (layout != null) { layout.deallocate(); }
                     if (api.Recognize(null) != 0) { throw new AssertionError("Native OCR recognition"); }
-                    var result = read(api);
+                    var result = read(api, true);
                     String words = result.lines().stream().flatMap(line -> line.words().stream()).map(OcrExchange.Word::text).collect(java.util.stream.Collectors.joining(" "));
                     if (!words.equals("Allegro moderato Music 123")) { throw new AssertionError(words); }
                     Files.writeString(output.resolve("psm-" + psm + ".json"), OcrTransportOracle.json(new Run(
@@ -49,7 +49,7 @@ public final class NativeOcrBackendOracle {
             }
         }
     }
-    static OcrExchange.Result read(TessBaseAPI api) {
+    static OcrExchange.Result read(TessBaseAPI api, boolean fontAttributesSupported) {
         var lines = new ArrayList<OcrExchange.Line>();
         var words = new ArrayList<OcrExchange.Word>(); Word word = null;
         OcrExchange.Baseline lineBaseline = null; boolean fonts = false;
@@ -72,7 +72,7 @@ public final class NativeOcrBackendOracle {
         }
         if (word != null) { words.add(word.finish()); }
         if (!words.isEmpty()) { lines.add(new OcrExchange.Line(words, lineBaseline)); }
-        return new OcrExchange.Result(new OcrExchange.Capabilities(true, true, fonts), lines);
+        return new OcrExchange.Result(new OcrExchange.Capabilities(true, true, fontAttributesSupported || fonts), lines);
     }
     private static String text(ResultIterator iterator, int level) {
         try (BytePointer text = iterator.GetUTF8Text(level)) { return text.getString(java.nio.charset.StandardCharsets.UTF_8); }

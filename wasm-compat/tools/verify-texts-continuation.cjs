@@ -1,11 +1,16 @@
 // Original native cleanup/OCR/font inputs, with actual TEXTS recognition and phase suspension in Wasm.
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),http=require('node:http'),assert=require('node:assert/strict'),crypto=require('node:crypto');
 const {chromium}=require('playwright');const root=path.resolve(process.argv[2]),native=path.join(root,'native');
-const read=file=>JSON.parse(fs.readFileSync(file)),sha=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
+const inputSha256={},sha=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
+const inputBytes=file=>{const bytes=fs.readFileSync(file);inputSha256[path.relative(root,path.resolve(file))]=sha(bytes);return bytes;};
+const read=file=>JSON.parse(inputBytes(file));
 const references=read(path.join(native,'jvm-reference.json')),samples=path.resolve(root,'../pixel-probe/samples');
-const model=fs.readFileSync(process.argv[3]);let numbers=0,maxDifference=0;
+const coverage=read(path.join(native,'coverage.json'));assert.equal(coverage.acceptedPages,references.length);
+assert.equal(read(path.join(native,'jvm-rejections.json')).length,coverage.rejectedBeforeTexts);
+const model=inputBytes(process.argv[3]);let numbers=0,maxDifference=0;
 function compare(a,b,key='$'){
-    if(typeof b==='number'){assert.ok(Number.isFinite(a),key);const error=Math.abs(a-b);numbers++;maxDifference=Math.max(maxDifference,error);assert.ok(error<=1e-8,key+': '+a+' != '+b);}
+    if(typeof b==='number'){assert.ok(Number.isFinite(a),key);const error=Math.abs(a-b);numbers++;maxDifference=Math.max(maxDifference,error);
+        const tolerance=key.endsWith('.grade')?2e-13:key.endsWith('.slope')?1e-12:1e-8;assert.ok(error<=tolerance,key+': '+a+' != '+b);}
     else if(Array.isArray(b)){assert.ok(Array.isArray(a),key);assert.equal(a.length,b.length,key);b.forEach((v,i)=>compare(a[i],v,key+'['+i+']'));}
     else if(b&&typeof b==='object'){assert.deepEqual(Object.keys(a).sort(),Object.keys(b).sort(),key);for(const k of Object.keys(b)){compare(a[k],b[k],key+'.'+k);}}
     else{assert.equal(a,b,key);}
@@ -22,15 +27,16 @@ function install(api,data,templates,model){
 (async()=>{
     const data={serifs:read(path.resolve(root,'../cue-beams-default-portable-probe/font-measurements.json')),
         geometry:read(path.join(native,'symbol-geometry.json')),widths:read(path.join(native,'point-widths.json')),
-        fonts:read(path.join(native,'font-measurements.json')),defaultFont:fs.readFileSync(path.join(native,'default-font.txt'),'utf8')};
+        fonts:read(path.join(native,'font-measurements.json')),defaultFont:inputBytes(path.join(native,'default-font.txt')).toString('utf8')};
     const required=new Set(references.flatMap(row=>row.result.templatesUsed||[]));
     const templateRoot=path.resolve(root,'../template-original-probe'),catalog=read(path.join(templateRoot,'reference.json')).catalogs.filter(row=>required.has(row.family+':'+row.pointSize));
-    assert.equal(catalog.length,required.size);const templates=catalog.map(row=>{const bytes=fs.readFileSync(path.join(templateRoot,row.file+'.atpl'));assert.equal(sha(bytes),row.sha256);return bytes;});
-    vm.runInThisContext(fs.readFileSync(path.join(root,'texts-continuation.wasm-runtime.js'),'utf8'),{importModuleDynamically:vm.constants.USE_MAIN_CONTEXT_DEFAULT_LOADER});
+    assert.equal(catalog.length,required.size);const templates=catalog.map(row=>{const bytes=inputBytes(path.join(templateRoot,row.file+'.atpl'));assert.equal(sha(bytes),row.sha256);return bytes;});
+    vm.runInThisContext(inputBytes(path.join(root,'texts-continuation.wasm-runtime.js')).toString('utf8'),{importModuleDynamically:vm.constants.USE_MAIN_CONTEXT_DEFAULT_LOADER});
     let checks=0;
     for(let instance=0;instance<2;instance++){
         const api=(await TeaVM.wasmGC.load(path.join(root,'texts-continuation.wasm'))).exports;install(api,data,templates,model);let generation=0;
-        for(const row of references){const meta=read(path.join(native,row.id,'metadata.json')),pixels=fs.readFileSync(path.join(samples,row.id+'.binary')),cleaned=fs.readFileSync(path.join(native,row.id,'cleaned.gray'));
+        for(const row of references){const meta=read(path.join(native,row.id,'metadata.json')),pixels=inputBytes(path.join(samples,row.id+'.binary')),cleaned=inputBytes(path.join(native,row.id,'cleaned.gray'));
+            assert.deepEqual(read(path.join(native,row.id,'original-lines.json')),read(path.join(native,row.id,'imported-lines.json')));
             const pixelHash=sha(pixels),cleanHash=sha(cleaned),request=api.beginPage(meta.width,meta.height,new Int8Array(pixels),new Int8Array(cleaned),row.id,meta.margin,meta.languages,++generation);
             assert.equal(request.width,meta.width+2*meta.margin);assert.equal(request.height,meta.height+2*meta.margin);
             const stale={token:{...request.token,generation:request.token.generation-1}};Object.defineProperty(stale,'result',{get(){throw new Error('Late OCR payload decoded');}});assert.equal(api.receive(stale),false);
@@ -60,7 +66,7 @@ function install(api,data,templates,model){
         if(req.url==='/fixture'){res.setHeader('Content-Type','application/json');return res.end(JSON.stringify(fixture));}
         if(req.url==='/model'){return res.end(model);}
         if(req.url==='/worker.js'){res.setHeader('Content-Type','text/javascript');return res.end(worker);}
-        const file=files.get(req.url);if(!file){res.statusCode=404;return res.end();}res.setHeader('Content-Type',file.endsWith('.wasm')?'application/wasm':'application/octet-stream');fs.createReadStream(file).pipe(res);
+        const file=files.get(req.url);if(!file){res.statusCode=404;return res.end();}res.setHeader('Content-Type',file.endsWith('.wasm')?'application/wasm':file.endsWith('.js')?'text/javascript':'application/octet-stream');fs.createReadStream(file).pipe(res);
     });await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));let browser;
     try{browser=await chromium.launch({headless:true,args:['--js-flags=--max-old-space-size=768']});const context=await browser.newContext(),origin='http://127.0.0.1:'+server.address().port;
         await context.route('**/*',route=>route.request().url().startsWith(origin+'/')?route.continue():route.abort());const page=await context.newPage();await page.goto(origin+'/');
@@ -70,7 +76,8 @@ function install(api,data,templates,model){
                 worker.onmessage=({data})=>{clearTimeout(timer);worker.terminate();data.error?reject(new Error(data.error)):resolve(data);};worker.onerror=event=>{clearTimeout(timer);worker.terminate();reject(new Error(event.message));};worker.postMessage(null);}));
             assert.equal(row.dom,'undefined');for(let i=0;i<references.length;i++){compare(row.rows[i].result,references[i].result,'worker'+instance+'.'+references[i].id);checks++;}
         }
-        const bytes=fs.readFileSync(path.join(root,'texts-continuation.wasm')),report={node:process.version,chromium:browser.version(),nodeInstances:2,workers:2,pages:references.length,
+        const bytes=inputBytes(path.join(root,'texts-continuation.wasm')),report={node:process.version,chromium:browser.version(),nodeInstances:2,workers:2,pages:references.length,inputSha256,
+            examinedNativePages:coverage.examinedPages,rejectedBeforeTexts:coverage.rejectedBeforeTexts,
             checks,numericValues:numbers,maxDifference,originalTextWords:references.reduce((sum,row)=>sum+row.result.words,0),fontMeasurements:data.fonts.length,
             originalSystemProcessing:true,asynchronousReplyBoundary:true,duplicateAndLateRepliesRejected:true,wasmBytes:bytes.length,wasmSha256:sha(bytes),
             limitation:'Original native-cleaned rasters, OCR replies and exact font measurements are supplied as fixtures; browser-native cleanup/fonts and live OCR on score pages are not yet established'};

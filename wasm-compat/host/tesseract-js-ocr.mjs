@@ -23,7 +23,7 @@ function font(value){
         serif:value.serif,smallcaps:value.smallcaps,pointSize:value.pointSize,name:null};
 }
 /** Retain real character boxes and line baselines. Missing font/word-baseline metadata stays absent. */
-export function normalizeTesseractResult(data){
+export function normalizeTesseractResult(data,legacyNativeFontMetadata=false){
     const capabilities={characters:true,baselines:true,fontAttributes:false},lines=[];
     if(!Array.isArray(data?.blocks)){
         if(data?.blocks==null&&typeof data?.text==='string'&&data.text.trim()===''){return {capabilities,lines};}
@@ -37,6 +37,8 @@ export function normalizeTesseractResult(data){
                 if(!Array.isArray(line.words)){unsupported('Missing OCR words');}
                 const words=[];
                 for(const word of line.words){
+                    // Capability describes the backend, even if this image's words all have unknown fonts.
+                    if(legacyNativeFontMetadata&&Object.hasOwn(word,'audiveris_font')){capabilities.fontAttributes=true;}
                     if(word.text===''&&Array.isArray(word.symbols)&&word.symbols.length===0){continue;}
                     if(typeof word.text!=='string'||word.text.length===0||!Array.isArray(word.symbols)||word.symbols.length===0){unsupported('Actual OCR character boxes are required');}
                     if(!Number.isFinite(word.confidence)||word.confidence<0||word.confidence>100){unsupported('Invalid OCR confidence');}
@@ -89,7 +91,7 @@ export class TesseractJsOcr{
                 else if(this.#languages!==owned.languages){await this.#worker.reinitialize(owned.languages,this.#oem);this.#languages=owned.languages;}
                 await this.#worker.setParameters({tessedit_pageseg_mode:mode});
                 const {data}=await this.#worker.recognize(image,{}, {text:true,blocks:true});
-                return {token:ownedToken,result:normalizeTesseractResult(data)};
+                return {token:ownedToken,result:normalizeTesseractResult(data,this.#oem===0)};
             }catch(error){
                 let message=String(error?.message||error);
                 if(!(error instanceof BackendError)){

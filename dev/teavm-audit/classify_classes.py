@@ -120,6 +120,8 @@ def decide(item, inventory, method_categories):
     name = item['class']
     top = name.split('$')[0]
     local = top.removeprefix(PREFIX)
+    if name in {PREFIX + 'text.TextFontGeometry$AwtProvider', PREFIX + 'text.TextFontGeometry$DefaultHolder'}:
+        return 'exclude', 'JVM-only Java2D text-font default; the engine measurement facade and provider API remain retained'
     if top == 'org.audiveris.omrdataset.api.OmrShape':
         return 'keep', 'Symbol-category enum used directly by recognition inters/factories, not just dataset export'
     if top.startswith('org.audiveris.omrdataset.'):

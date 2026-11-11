@@ -3,10 +3,20 @@ from pathlib import Path
 import unittest
 from select_roots import choose
 from trace_exclusions import shortest_paths, witness, check_exclusion_guard
-from classify_classes import is_component
+from classify_classes import is_component, decide
 
 
 class SelectionTest(unittest.TestCase):
+    def test_text_font_backend_is_separate_from_retained_engine_api(self):
+        base = 'org.audiveris.omr.text.TextFontGeometry'
+        for name in [base + '$AwtProvider', base + '$DefaultHolder']:
+            decision, _ = decide({'class': name}, {}, {})
+            self.assertEqual(decision, 'exclude')
+            self.assertEqual(self.action(name, '<init>()V', decision=decision)[0], 'excluded')
+        for name in [base, base + '$Provider', base + '$Measurement']:
+            decision, _ = decide({'class': name}, {}, {})
+            self.assertEqual(decision, 'keep')
+            self.assertEqual(self.action(name, 'measure()V', decision=decision)[0], 'root')
     @classmethod
     def setUpClass(cls):
         cls.policy = json.loads(Path(__file__).with_name('root-policy.json').read_text(encoding='utf-8'))

@@ -58,16 +58,30 @@ public final class TextsContinuationProbe {
         boolean first=true;
         for(SystemInfo system:sheet.getSystems()){
             var items=new java.util.ArrayList<>(system.getSig().inters(org.audiveris.omr.sig.inter.WordInter.class));
-            items.sort(java.util.Comparator.comparingInt(org.audiveris.omr.sig.inter.Inter::getId));
+            items.sort(java.util.Comparator.comparingInt((org.audiveris.omr.sig.inter.Inter inter)->inter.getBounds().x)
+                    .thenComparingInt(inter->inter.getBounds().y).thenComparing(inter->((org.audiveris.omr.sig.inter.WordInter)inter).getValue()));
             for(var inter:items){var word=(org.audiveris.omr.sig.inter.WordInter)inter;var font=word.getFontInfo();var box=word.getBounds();
                 if(!first){out.append(',');}first=false;
-                out.append("{\"system\":").append(system.getId()).append(",\"id\":").append(word.getId()).append(",\"value\":");quote(out,word.getValue());
+                out.append("{\"system\":").append(system.getId()).append(",\"value\":");quote(out,word.getValue());
                 out.append(",\"bounds\":[").append(box.x).append(',').append(box.y).append(',').append(box.width).append(',').append(box.height)
                         .append("],\"grade\":").append(word.getGrade()).append(",\"flags\":").append(HeadlessTextFontGeometry.flags(font))
                         .append(",\"size\":").append(font.pointSize).append(",\"font\":");quote(out,font.fontName);out.append('}');
             }
         }
-        out.append("],\"textGraphEdges\":[");BeamProbe.appendRelations(out,sheet);return out.append("]}").toString();
+        out.append("],\"textSentences\":[");first=true;
+        for(SystemInfo system:sheet.getSystems()){
+            var items=new java.util.ArrayList<>(system.getSig().inters(org.audiveris.omr.sig.inter.SentenceInter.class));
+            items.sort(java.util.Comparator.comparingInt((org.audiveris.omr.sig.inter.Inter inter)->inter.getBounds().x)
+                    .thenComparingInt(inter->inter.getBounds().y).thenComparing(inter->((org.audiveris.omr.sig.inter.SentenceInter)inter).getValue()));
+            for(var inter:items){var sentence=(org.audiveris.omr.sig.inter.SentenceInter)inter;var box=sentence.getBounds();
+                if(!first){out.append(',');}first=false;out.append("{\"system\":").append(system.getId()).append(",\"role\":");
+                quote(out,sentence.getRole()==null?null:sentence.getRole().name());out.append(",\"value\":");quote(out,sentence.getValue());
+                out.append(",\"bounds\":[").append(box.x).append(',').append(box.y).append(',').append(box.width).append(',').append(box.height)
+                        .append("],\"grade\":").append(sentence.getGrade()).append('}');
+            }
+        }
+        out.append("],\"textsDone\":").append(sheet.getStub().isDone(OmrStep.TEXTS));
+        out.append(",\"textGraphEdges\":[");BeamProbe.appendRelations(out,sheet);return out.append("]}").toString();
     }
     private static void quote(StringBuilder out,String value){
         if(value==null){out.append("null");return;}out.append('"');

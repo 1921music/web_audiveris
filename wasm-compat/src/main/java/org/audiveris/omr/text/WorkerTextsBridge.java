@@ -41,6 +41,7 @@ public final class WorkerTextsBridge {
         if (reply.failure() != null) { throw new StepException("External OCR " + reply.failure().code() + ": " + reply.failure().message()); }
         List<TextLine> lines = textLines(sheet, reply.result());
         new Continuation().run(sheet, new TextsStep.Context(buffer, lines));
+        sheet.getStub().done(org.audiveris.omr.step.OmrStep.TEXTS);
         return lines;
     }
     /** Preserve original word construction, character splitting, ordinate sorting and font adjustment. */

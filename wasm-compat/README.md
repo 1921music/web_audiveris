@@ -5,9 +5,9 @@ The opt-in headless layer also uses the small source boundaries documented below
 is opt-in (`-Pcompat=true`) in the audit harness and targets TeaVM 0.16.0 / Wasm GC.
 It does not yet make the complete recognition engine executable in a browser.
 
-The last archived full audit remains **stage 24**. The newer TEXTS continuation and font-boundary
-changes below have not yet received a new all-method audit; stage-24 counts describe that archived
-run, not a re-analysis of these changes.
+The latest all-method analysis is **stage 25**: **9,080 roots / 8,650 bodies**, with all earlier
+roots retained. The original root set is still preserved; historical stage counts below describe
+their own runs. See the verified result and TEXTS continuation sections for current coverage.
 
 ## Approach
 
@@ -406,17 +406,19 @@ are under `build/wasm-compat/probe`; audit outputs are under
 
 ## Verified result
 
-The current audit covers **9,054 methods**, including **8,631 method bodies**. Every original
-**9,001-method / 8,588-body** root is preserved; 18 scale-context/adapter methods and the memory-book
-factory, nine initial pixel-model methods, one bracket-geometry seam, three staff-free raster methods,
-two model-construction methods, two shared run-raster methods and three raw-distance preparation methods and two drum configuration boundaries and eleven template-source methods and one head-spot cache lifecycle hook are added explicitly.
+The current audit covers **9,080 methods**, including **8,650 method bodies**. Every original
+**9,001-method / 8,588-body** root is preserved. Earlier memory/raster/configuration/template
+boundaries add 53 methods. The text-font facade, provider and measurement record plus music-word
+constructor/factory add another **26 methods / 19 bodies**. The JVM-only Java2D default provider
+and holder are classified as excluded; the recognition-facing provider API remains selected.
 With generic compatibility and the opt-in Worker/presentation substitutions enabled, diagnostics
 fall from **1,276 to 494** (782 fewer); unique messages fall from **336 to 203**.
 The stages are **1,276 → 789 → 702 → 609 → 545 → 544 → 525 → 524 → 495 → 494**. The 544/220 result is the
 generic compatibility layer alone; 525/217 is the initial Worker boundary, 524/216 is the
-stage-6 boundary, 495/204 is the stage-7–9 result, and **494/203** is the current stage-24 result (unchanged from stage 10).
+stage-6 boundary, 495/204 is the stage-7–9 result, and **494/203** is the current stage-25 result (unchanged from stage 10).
 Remaining exclusion candidates are **75 classes / 242 used input methods inside those classes**,
-or **310 methods** when method-only exclusion rules are also included.
+or **310 methods** when method-only exclusion rules are also included. Of the 75 classes, **55**
+have used methods and **20** are type-only links.
 There are no remaining missing-API messages for the generic layer's targeted APIs. The broad fast
 analysis also exposes additional unsupported dependency paths; generic-layer new messages and their
 callers are recorded in `results/new-diagnostics.tsv`, and current headless results in
@@ -1287,8 +1289,8 @@ are:
 
 | Profile | OCR core Wasm bytes | English model gzip bytes | First request ms | Reused request ms |
 | --- | ---: | ---: | ---: | ---: |
-| Legacy, OEM 0 | 3,456,075 | 10,923,060 | 947.7–948.0 | 28.9–30.6 |
-| LSTM-only, OEM 1 | 2,862,266 | 2,952,873 | 766.8–766.9 | 41.3–41.6 |
+| Legacy, OEM 0 | 3,456,075 | 10,923,060 | 774.9–775.0 | 28.2–29.0 |
+| LSTM-only, OEM 1 | 2,862,266 | 2,952,873 | 719.9–720.0 | 42.0–42.4 |
 
 First-request timing includes initialization, local asset loading, PNG encoding and OCR. These
 single-fixture observations establish local request latency; score-image quality and full-engine
@@ -1321,15 +1323,17 @@ The earlier `{legacy,lstm}` results retain the stock-output comparison. Export e
 with `export_ocr_backend.py <repository> <mirror> <source-commit> <legacy|lstm>`.
 For the legacy profile, append `--native` to archive the matching JVM comparison under `native/`.
 
-## TEXTS continuation work in progress
+## TEXTS recognition continuation
 
 `WorkerTextsBridge` retains a sheet and an owned, already-cleaned GRAY8 buffer across the external
 OCR request. A matching reply restores the image origin, builds original `TextWord` / `TextLine`
 objects, performs the original ordinate sorting and font adjustment, then calls the original
-`TextsStep.doSystem` for each system and its epilog. Failures remain failures, cancellation rejects
+`TextsStep.doSystem` for each system and its epilog, then marks TEXTS complete. Failures remain failures, cancellation rejects
 late replies, and a continuation can be resumed only once. As in `TesseractOrder`, individual
 words without font metadata are skipped; a backend with no font capability needs an explicit
-fallback and cannot silently become an empty successful TEXTS result.
+fallback and cannot silently become an empty successful TEXTS result. Font capability describes
+the backend, so an image with only unknown fonts still follows the original per-word filtering
+when using the metadata-enabled legacy backend.
 
 The small source boundary `TextFontGeometry` separates exact font measurements from recognition.
 Its JVM default keeps Java2D visual bounds, layout bounds and advances. Font fitting retains the
@@ -1341,27 +1345,34 @@ explicit resource boundary, not a portable font implementation or a Canvas appro
 The original Tesseract confidence constant also has a scalar accessor so system recognition does
 not need to instantiate an OCR service merely to read that setting.
 
-Verified so far: **4,096 JVM checks** compare original text fitting and exact recorded replay;
-the TEXTS continuation entry compiled with strict TeaVM checking and **zero diagnostics** after
-the text/music font split. Subsequent graph-output/test changes and the real-score continuation
-comparison are still pending verification. The first score run exposed the original per-word
-missing-font filtering rule, which is now reflected in the bridge but has not yet been rerun.
+**4,096 JVM checks** compare original text fitting and exact recorded replay. All **2,048 cases**
+also match in two Node module instances and two independent Chromium Workers; missing measurements
+are rejected. The font-only verification module is **167,763 bytes**. This verifies consumption of
+exact supplied measurements, not a portable font-outline backend.
 
-Execution was interrupted by WSL becoming unresponsive during `verifyTextGeometryProbe` on
-2026-11-11. A simple WSL command and `wsl --shutdown` also stopped responding; restarting
-`WslService` was denied by Windows service permissions. No successful Worker font or score-TEXTS
-result is claimed for this work. CPU **8**, total memory **8 GiB**, swap **0** were retained.
-The pending shutdown eventually completed, but the next capped WSL liveness command still did
-not respond. The committed source is on Windows and does not depend on that running command.
+The strict TEXTS continuation entry compiles with **zero diagnostics**. The real-score comparison
+covers all **5 accepted pages / 123 words / 107 sentences**, in two Node instances and two Workers,
+including sentence roles, bounds, font attributes, graph relations and completion state. The
+other **3 of 8 input pages** retain their pre-TEXTS low-resolution rejection. The checks compare
+**2,381,628 numeric values**, with a maximum difference of **1.78e-15**, using **466 exact font
+measurements**. Runtime-generated entity IDs differ between fresh sheets,
+so recognition comparison uses content/geometry and relationships. The verification module is
+**3,009,599 bytes**. These are recognition-continuation results with supplied native inputs.
 
-After WSL recovery, run the capped launcher with the audit init script and
-`verifyTextGeometryProbe verifyTextsContinuationProbe` (initially one accepted score page;
-`-PtextsPages=0` selects all pages). The score oracle compares original cleanup/OCR/TEXTS with the
-continuation, including imported words, graph word geometry and relations. Its exact native
-cleaned rasters, OCR replies and font measurements are explicitly supplied fixtures for the
-Wasm checks. Browser-side TEXTS cleanup, general font measurement and live OCR on score pages
-remain separate work. A new full audit and earlier-stage regression checks are also required
-before updating the global verified counts.
+Run `verifyTextGeometryProbe verifyTextsContinuationProbe` with the audit init script through
+the capped launcher (one accepted score page by default; `-PtextsPages=0` selects all pages).
+The score oracle compares original cleanup/OCR/TEXTS with the continuation, including imported
+words and full text graph output. Exact native-cleaned rasters, OCR replies and font measurements
+are explicitly supplied fixtures for Wasm checks. Browser-side TEXTS cleanup, general font
+measurement and live OCR on score pages remain separate work. The stage-25 all-method analysis
+retains every earlier root and keeps the **494 / 203** diagnostic totals; generic and headless
+regression probes also pass. CPU **8**, total
+memory **8 GiB** and swap **0** remain in force.
+
+Archive a committed run with `export_texts_continuation.py <repository> <mirror> <source-commit>`.
+Input hashes bind the verification to its exact native fixtures, model, templates and sample
+bytes. Summaries go to `texts-continuation-results`; runnable artifacts and native fixtures go to
+`wsl-artifacts/wasm-components/texts-continuation`.
 
 ## Text font measurement investigation
 

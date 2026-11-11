@@ -47,7 +47,8 @@ def main():
     raw.mkdir(parents=True, exist_ok=True); tracked.mkdir(parents=True, exist_ok=True)
     files = [name + '.wasm', name + '.wasm-runtime.js', 'verification.json', 'diagnostics.tsv', 'jvm-reference.txt']
     files += [file for file in ['jdk-reference.json', 'jvm-pixels.binary', 'cbrt-reference.txt',
-        'strict-cbrt-reference.txt', 'acos-reference.txt', 'ulp-reference.txt', 'jvm-frame-reference.json'] if (source / file).exists()]
+        'strict-cbrt-reference.txt', 'acos-reference.txt', 'ulp-reference.txt', 'jvm-frame-reference.json',
+        'font-measurements.json', 'cases.json', 'default-font.txt'] if (source / file).exists()]
     for file in files:
         shutil.copyfile(source / file, raw / file)
     provenance = {'sourceCommit': args.revision, 'sourceSha256': sources, 'rawArtifacts': raw_relative,

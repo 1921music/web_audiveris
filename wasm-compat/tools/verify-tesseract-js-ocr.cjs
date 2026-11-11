@@ -16,6 +16,10 @@ function withoutMargin(result,margin){
     const {TesseractJsOcr,normalizeTesseractResult}=await import(pathToFileURL(path.join(compat,'host/tesseract-js-ocr.mjs')));
     const {encodeGray8Png}=await import(pathToFileURL(path.join(compat,'host/gray8-png.mjs')));
     const {attachNativeWordMetadata}=await import(pathToFileURL(path.join(compat,'host/tesseract-word-metadata.mjs')));
+    const unknownFontData={blocks:[{paragraphs:[{lines:[{words:[{text:'x',confidence:90,bbox:{x0:0,y0:0,x1:1,y1:1},
+        audiveris_font:null,symbols:[{text:'x',bbox:{x0:0,y0:0,x1:1,y1:1}}]}]}]}]}]};
+    assert.equal(normalizeTesseractResult(unknownFontData,true).capabilities.fontAttributes,true);
+    assert.equal(normalizeTesseractResult(unknownFontData,false).capabilities.fontAttributes,false);
     assert.throws(()=>attachNativeWordMetadata({}));
     let destroyed=0;const iterator={Begin(){},Empty(){return false;},getBoundingBox(){return {x0:1,y0:0,x1:1,y1:1};},Next(){return false;}};
     function MockApi(){}MockApi.prototype.GetJSONText=()=>JSON.stringify({blocks:[{paragraphs:[{lines:[{words:[{bbox:{x0:0,y0:0,x1:1,y1:1}}]}]}]}]});

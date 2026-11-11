@@ -26,12 +26,15 @@ public final class TextsContinuationOracle {
         var fonts=new RecordingTextFontGeometry(TextFontGeometry.provider());TextFontGeometry.setProvider(fonts);
         int limit=Integer.getInteger("audiveris.probe.textsPages",1),count=0;
         var results=new ArrayList<Map<String,Object>>();
-        for(JsonNode page:JSON.readTree(samples.resolve("manifest.json").toFile()).get("pages")){
+        var rejected=new ArrayList<Map<String,Object>>();int examined=0;
+        JsonNode pages=JSON.readTree(samples.resolve("manifest.json").toFile()).get("pages");
+        for(JsonNode page:pages){
             if(limit>0&&count>=limit){break;}
             String id=page.get("id").asText();int width=page.get("width").asInt(),height=page.get("height").asInt();
             byte[] pixels=Files.readAllBytes(samples.resolve(id+".binary"));
             Sheet original=PixelSheetProbe.create(width,height,pixels.clone(),id);String prefix=CueBeamsProbe.analyze(original);
-            if(prefix.contains("\"rejected\":true")){continue;}
+            examined++;
+            if(prefix.contains("\"rejected\":true")){rejected.add(Map.of("id",id,"result",JSON.readTree(prefix)));continue;}
             original.getStub().done(OmrStep.CUE_BEAMS);Path folder=root.resolve(id);Files.createDirectories(folder);
             Original step=new Original();step.prepare(original);
             byte[] cleaned=((byte[])step.buffer.getPixels()).clone();Files.write(folder.resolve("cleaned.gray"),cleaned);
@@ -55,7 +58,8 @@ public final class TextsContinuationOracle {
             try{continuation.resume();}finally{HeadlessSheetContext.bind(previous);}
             String actual=summary(nextPrefix,continued);
             if(!JSON.readTree(expected).equals(JSON.readTree(actual))){Files.writeString(folder.resolve("failed-continued.json"),actual);throw new AssertionError("TEXTS continuation changed recognition: "+id);}
-            JSON.writeValue(folder.resolve("metadata.json").toFile(),Map.of("id",id,"width",width,"height",height,"margin",margin,"languages",languages));
+            JSON.writeValue(folder.resolve("metadata.json").toFile(),Map.of("id",id,"width",width,"height",height,"margin",margin,"languages",languages,
+                    "nativeOcrEngineVersion",TessBaseAPI.Version().getString(),"javaRuntime",System.getProperty("java.runtime.version")));
             results.add(Map.of("id",id,"result",JSON.readTree(expected)));count++;
             System.out.println("Original TEXTS and continuation match: "+id+"; OCR lines "+raw.lines().size());
         }
@@ -63,6 +67,9 @@ public final class TextsContinuationOracle {
         JSON.writeValue(root.resolve("font-measurements.json").toFile(),fonts.records());Files.writeString(root.resolve("default-font.txt"),fonts.defaultFontName());
         JSON.writeValue(root.resolve("symbol-geometry.json").toFile(),music.records());JSON.writeValue(root.resolve("point-widths.json").toFile(),music.pointWidths());
         JSON.writeValue(root.resolve("jvm-reference.json").toFile(),results);
+        JSON.writeValue(root.resolve("jvm-rejections.json").toFile(),rejected);
+        JSON.writeValue(root.resolve("coverage.json").toFile(),Map.of("manifestPages",pages.size(),"examinedPages",examined,
+                "acceptedPages",count,"rejectedBeforeTexts",rejected.size(),"acceptedPageLimit",limit));
     }
     private static OcrExchange.Result recognize(ij.process.ByteProcessor buffer,Path model,Path output,int margin,String languages) throws Exception {
         OcrExchange exchange=new OcrExchange("native", "page",0);
@@ -75,7 +82,7 @@ public final class TextsContinuationOracle {
             try{if(api.Init(model.toString(),languages,OEM_TESSERACT_ONLY)!=0){throw new AssertionError("Native OCR initialization");}
                 api.SetImage(pix);api.SetSourceResolution(70);api.SetPageSegMode(PSM_AUTO);
                 var layout=api.AnalyseLayout();if(layout!=null){layout.deallocate();}
-                if(api.Recognize(null)!=0){throw new AssertionError("Native OCR recognition");}return NativeOcrBackendOracle.read(api);
+                if(api.Recognize(null)!=0){throw new AssertionError("Native OCR recognition");}return NativeOcrBackendOracle.read(api,true);
             }finally{api.End();pixDestroy(pix);}
         }
     }
@@ -100,6 +107,6 @@ public final class TextsContinuationOracle {
             var field=set.getClass().getDeclaredField("whiteMarginAdded");field.setAccessible(true);margin=((org.audiveris.omr.constant.Constant.Integer)field.get(set)).getValue();
             if(margin!=10){throw new AssertionError("Fixture expects default margin; actual "+margin);}
         }
-        void finish(Sheet sheet)throws StepException{for(SystemInfo system:sheet.getSystems()){super.doSystem(system,context);}super.doEpilog(sheet,context);}
+        void finish(Sheet sheet)throws StepException{for(SystemInfo system:sheet.getSystems()){super.doSystem(system,context);}super.doEpilog(sheet,context);sheet.getStub().done(OmrStep.TEXTS);}
     }
 }
