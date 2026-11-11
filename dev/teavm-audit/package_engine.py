@@ -44,6 +44,9 @@ for source in (root / 'wasm-compat/third-party').rglob('*'):
 for source in (root / 'wasm-compat/host').iterdir():
     if source.suffix in ['.mjs', '.js', '.cjs']:
         copy(source, 'host/' + source.name)
+for source in (root / 'wasm-compat/web').iterdir():
+    if source.is_file():
+        copy(source, source.name)
 manifest = {
     'format': 1,
     'engine': 'engine.wasm',

@@ -28,6 +28,36 @@ instances and two Workers. General shaping/fallback remains outside this backend
 
 ## Approach
 
+### Browser UI
+
+`packageWorkerOcr` now includes a small Japanese UI at `index.html`. Select or drop a PNG,
+JPEG, WebP or BMP image, start recognition, and download the resulting `.musicxml` file.
+The UI shows a preview, recognition progress and elapsed time, supports cancellation and retry,
+and clears previous downloads when selecting another image. Each score gets its own download
+link. Recognition runs locally in a single engine Worker with a separate OCR Worker; images
+are not uploaded. The current OCR bundle is English, and TIFF/PDF input is outside this UI.
+
+After building `packageWorkerOcr` as below, start the local server through the capped WSL launcher:
+
+```powershell
+.\dev\wsl\Manage-WasmDev.ps1 Run -CommandArgs @(
+  'python3', '-u', '-m', 'http.server', '8765', '--bind', '127.0.0.1',
+  '--directory', '/home/dev/work/web_audiveris/build/wasm-engine/package')
+```
+
+Open `http://127.0.0.1:8765/` in the browser. Serve over HTTP; directly opening the HTML file
+does not provide the module/Worker environment. The packaged Windows copy is under
+`wsl-artifacts/wasm-engine/`.
+
+The browser UI test selects a real grayscale score image, cancels and retries recognition,
+clicks the download link and checks the downloaded MusicXML against native JAXB output
+(170 notes, exact XML tree). It also checks invalid files, recognition failure, stale downloads,
+and a 390-pixel mobile layout. Verification runs inside the shared eight-CPU / 8 GiB WSL ceiling.
+Compact verification and source provenance are in `ui-results/`.
+Run `node --max-old-space-size=768 --v8-pool-size=1 wasm-compat/tools/verify-engine-ui.cjs "$PWD"`
+from the mirrored repository inside the capped launcher. Screenshots and full downloaded XML
+are kept outside Git under `wsl-artifacts/wasm-components/ui/`.
+
 ### Standalone engine integration
 
 `WorkerEngine` / `RecognitionSession` provide the production entry, separate from test probes.

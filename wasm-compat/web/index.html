@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Audiveris · 楽譜からMusicXMLへ</title>
+  <link rel="stylesheet" href="./app.css">
+  <script type="module" src="./app.mjs"></script>
+</head>
+<body>
+  <header><a class="brand" href="./">Audiveris <span>Web</span></a><span class="privacy">画像はブラウザ内で処理します</span></header>
+  <main>
+    <div class="intro"><p class="eyebrow">SCORE TO MUSICXML</p><h1>楽譜画像を、MusicXMLへ。</h1><p>画像を選んで認識すると、楽譜編集ソフトで使えるMusicXMLを保存できます。</p></div>
+    <div class="workspace">
+      <section class="image-panel" aria-labelledby="image-title">
+        <div class="panel-heading"><h2 id="image-title">楽譜画像</h2><span id="image-size"></span></div>
+        <label class="picker" id="drop-zone">
+          <span class="picker-icon" aria-hidden="true">＋</span>
+          <strong>画像を選択</strong><span>または、ここにドラッグ＆ドロップ</span>
+          <input id="image-file" type="file" accept="image/png,image/jpeg,image/webp,image/bmp,.png,.jpg,.jpeg,.webp,.bmp" aria-label="楽譜画像を選択">
+        </label>
+        <p class="formats">PNG / JPEG / WebP / BMP · 1画像ずつ</p>
+        <div class="preview" id="preview" hidden><img id="image-preview" alt="選択した楽譜画像のプレビュー"></div>
+        <p class="filename" id="filename">画像が選択されていません</p>
+      </section>
+      <section class="recognition-panel" aria-labelledby="recognition-title">
+        <div class="panel-heading"><h2 id="recognition-title">認識して保存</h2></div>
+        <p class="description">五線・音符・文字を読み取り、楽譜データに変換します。</p>
+        <div class="actions"><button id="recognize" class="primary" disabled>認識を開始</button><button id="cancel" class="secondary" hidden>キャンセル</button></div>
+        <div class="status-card" id="status-card" data-state="idle" aria-busy="false">
+          <p id="status" role="status" aria-live="polite">楽譜画像を選択してください</p>
+          <progress id="progress" max="20" value="0" aria-label="認識工程の進み具合" hidden></progress>
+          <p id="elapsed" class="muted" hidden></p>
+        </div>
+        <div id="downloads" class="downloads" aria-label="MusicXMLのダウンロード" hidden></div>
+        <details id="error-details" hidden><summary>エラーの詳細</summary><pre id="error-message"></pre></details>
+        <div class="notes"><p>初回は認識用データの読み込みに少し時間がかかります。</p><p>文字認識は英語に対応しています。認識結果は楽譜編集ソフトで確認・修正してください。</p></div>
+      </section>
+    </div>
+  </main>
+  <footer>Audiveris · ブラウザで動く楽譜認識エンジン</footer>
+</body>
+</html>
