@@ -1,0 +1,41 @@
+{
+  "node": "v24.22.2",
+  "chromium": "158.0.8127.18",
+  "nodeInstances": 2,
+  "workers": 2,
+  "cases": 517,
+  "checks": 2068,
+  "syntheticItalicCases": 88,
+  "exactPhysicalMetrics": true,
+  "wasmBytes": 749207,
+  "gzipBytes": 265472,
+  "wasmSha256": "138b57dee59991dc92c769250050ef829592b9d36d3a386f5cc53fca048ce3cb",
+  "referenceSha256": "9cb05e1936ac742822851b8d2fe1a1f9c68b934b99cf048f71fecd487e9f5206",
+  "faces": [
+    {
+      "id": "Physical0",
+      "file": "ae7b7855e115-DejaVuSans.ttf",
+      "name": "DejaVuSans.ttf",
+      "sha256": "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280"
+    },
+    {
+      "id": "Physical1",
+      "file": "8f2c103bfa3f-DejaVuSerif.ttf",
+      "name": "DejaVuSerif.ttf",
+      "sha256": "8f2c103bfa3fd5de71f1b92b18f21906b5a26871fb7e19a9a4c9af539c3cc7ab"
+    },
+    {
+      "id": "Physical2",
+      "file": "847b33e13925-DejaVuSerif-Bold.ttf",
+      "name": "DejaVuSerif-Bold.ttf",
+      "sha256": "847b33e13925f19ff87e4d934d6b3cf7cac35ce16424f6f670e40c2f377cf2df"
+    },
+    {
+      "id": "Physical3",
+      "file": "5c1247acef7f-DejaVuSans-Bold.ttf",
+      "name": "DejaVuSans-Bold.ttf",
+      "sha256": "5c1247acef7f2b8522a31742c76d6adcb5569bacc0be7ceaa4dc39dd252ce895"
+    }
+  ],
+  "limitation": "Physical TTF glyph metrics and translated composites only; not general font selection, shaping, music fonts, rasterization or engine integration"
+}

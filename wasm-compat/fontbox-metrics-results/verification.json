@@ -5,10 +5,11 @@
   "workers": 2,
   "cases": 384,
   "checks": 1536,
+  "syntheticItalicCases": 0,
   "exactPhysicalMetrics": true,
-  "wasmBytes": 742573,
-  "gzipBytes": 263314,
-  "wasmSha256": "3f9bfbfa4df4139c8bfba4026504cc0f65c757ec83b1b06dd0a9871e77857db6",
+  "wasmBytes": 749207,
+  "gzipBytes": 265472,
+  "wasmSha256": "138b57dee59991dc92c769250050ef829592b9d36d3a386f5cc53fca048ce3cb",
   "referenceSha256": "ab484d0b4bc0715478d0ab1f1a76e59770cf9ed190c8453c50161fc2451b33b8",
   "faces": [
     {
