@@ -1747,6 +1747,34 @@ TODO: measure recognition throughput, FFI overhead, startup, complete transfer s
 memory; consider caching outlines, avoiding unused bitmap rendering for large glyphs, sharing
 downloaded font buffers and removing unused FreeType drivers after equivalent validation.
 
+## Recognition after TEXTS
+
+`PostTextsRecognition` continues the existing in-memory sheet through **MEASURES → CHORDS**.
+It executes the original system processing and epilogs serially, retaining page measure numbering,
+chord construction and graph updates. Each call completes one step, allowing the host to regain
+control between steps. A failed step makes the continuation unusable; a fresh page is required.
+
+The entry accepts the current OCR request token (job, page, generation and request number)
+alongside the requested step. OCR must have been consumed and TEXTS must have completed
+successfully. Unknown, skipped, repeated and stale-token requests fail before step execution.
+Module-local sheet ownership and headless context binding are preserved across the boundary.
+
+`PostTextsProbe` extends the physical-font cleanup/OCR/TEXTS harness. Its independent JVM oracle
+calls the original `MeasuresStep.doit` and `ChordsStep.doit`, using the same actual Tesseract.js
+replies and the existing padded-image coordinate conversion. The five accepted pages contain
+**121 measure stacks**. The Wasm entry compiles with zero strict diagnostics.
+
+The comparison snapshots include stack numbering/bounds, part membership, chord notes and
+stems, grades, and graph relations/support ratios. Internal allocation IDs vary between runtimes;
+structural keys use class, shape, bounds, staff and chord membership, preserving duplicate entries.
+The harness compares two independent Node instances and two Workers, including ordering,
+duplicate-call and token guards. Later stages beginning with CURVES remain separate work.
+
+After preparing the existing font/OCR/template resources, run `verifyPostTextsProbe` with the
+audit init script through the capped launcher. Archive with
+`export_texts_continuation.py <repository> <mirror> <commit> --post` into `post-texts-results`
+and `wsl-artifacts/wasm-components/post-texts`.
+
 ## Pure Java path-fill component
 
 `GrayPathRaster` calls the unchanged JDK `sun.java2d.loops.ProcessPath` scan converter, compiled

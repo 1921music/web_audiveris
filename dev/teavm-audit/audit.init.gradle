@@ -1164,6 +1164,44 @@ gradle.projectsEvaluated {
         args new File(rootProject.projectDir,'build/wasm-compat/texts-music-backed-probe').absolutePath,
                 'org.audiveris.wasm.compat.test.MusicBackedTextsProbe','texts-music-backed'
     }
+    rootProject.tasks.register('testPostTextsJvm', JavaExec) {
+        dependsOn compile,'compileWasmCompatibilityTests','patchKxmlCompatibility','selectWasmLibraryImplementations'
+        classpath = rootProject.files(compatTests) + compatRuntime
+        mainClass = 'org.audiveris.wasm.compat.test.PostTextsOracle'
+        maxHeapSize = '2g'
+        workingDir app.projectDir
+        systemProperty 'java.awt.headless','true'
+        systemProperty 'logback.configurationFile',new File(harness,'logback.xml').absolutePath
+        environment 'XDG_CONFIG_HOME',new File(rootProject.projectDir,'build/wasm-compat/texts-continuation-probe/config').absolutePath
+        environment 'XDG_DATA_HOME',new File(rootProject.projectDir,'build/wasm-compat/texts-continuation-probe/data').absolutePath
+        args new File(rootProject.projectDir,'build/wasm-compat/texts-continuation-probe').absolutePath,
+                new File(rootProject.projectDir,'build/wasm-compat/pixel-probe/samples').absolutePath,
+                new File(rootProject.projectDir,'build/wasm-compat/post-texts-native').absolutePath
+    }
+    rootProject.tasks.register('buildPostTextsProbe', JavaExec) {
+        dependsOn compile,'compileWasmCompatibilityTests','patchKxmlCompatibility','selectWasmLibraryImplementations'
+        classpath = rootProject.files(compatTests) + compatRuntime
+        mainClass = 'audit.CompileCompatibilityProbe'
+        maxHeapSize = '2g'
+        systemProperty 'audiveris.compat.enabled','true'
+        systemProperty 'audiveris.compat.headless','true'
+        systemProperty 'audiveris.compat.fontMetrics','true'
+        systemProperty 'audiveris.compat.strokePaths','true'
+        systemProperty 'audiveris.compat.alphaRaster','true'
+        args new File(rootProject.projectDir,'build/wasm-compat/post-texts-probe').absolutePath,
+                'org.audiveris.wasm.compat.test.PostTextsProbe','post-texts'
+    }
+    rootProject.tasks.register('verifyPostTextsProbe', Exec) {
+        dependsOn 'testPostTextsJvm','buildPostTextsProbe'
+        environment 'AUDIVERIS_LIVE_TEXTS','1'
+        environment 'AUDIVERIS_TEXTS_TTF','1'
+        environment 'AUDIVERIS_TEXTS_CLEANUP','1'
+        environment 'AUDIVERIS_TEXTS_MUSIC_FT','1'
+        environment 'AUDIVERIS_POST_TEXTS','1'
+        commandLine 'node','--max-old-space-size=768','--v8-pool-size=1',new File(compat,'tools/verify-texts-continuation.cjs').absolutePath,
+                new File(rootProject.projectDir,'build/wasm-compat/texts-continuation-probe').absolutePath,
+                new File(app.projectDir,'res/basic-classifier.zip').absolutePath
+    }
     rootProject.tasks.register('buildMusicSymbolProbe', JavaExec) {
         dependsOn compile,'compileWasmCompatibilityTests','patchKxmlCompatibility','selectWasmLibraryImplementations'
         classpath = rootProject.files(compatTests) + compatRuntime

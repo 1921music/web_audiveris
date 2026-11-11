@@ -13,6 +13,7 @@ public final class TextsContinuationProbe {
     private static WorkerTextsBridge pending;
     private static Sheet sheet;
     private static String prefix;
+    private static boolean completed;
     public static void main(String[] args) { }
     @JSExport public static void configure(Int8Array bytes) { CueBeamsProbe.configure(bytes); }
     @JSExport public static void installTemplates(Int8Array bytes) throws Exception { CueBeamsProbe.installTemplates(bytes); }
@@ -34,6 +35,7 @@ public final class TextsContinuationProbe {
             if(pending.state()==OcrExchange.State.WAITING||pending.state()==OcrExchange.State.READY){throw new IllegalStateException("Finish or cancel the pending TEXTS operation");}
             if(generation<=pending.request().token().generation()){throw new IllegalArgumentException("Use a new TEXTS generation");}
         }
+        completed=false;
         sheet = PixelSheetProbe.create(width,height,pixels.copyToJavaArray(),id);
         prefix = CueBeamsProbe.analyze(sheet);
         if (prefix.contains("\"rejected\":true")) { throw new IllegalArgumentException("Page rejected before TEXTS"); }
@@ -47,10 +49,19 @@ public final class TextsContinuationProbe {
         if (pending.state() != OcrExchange.State.WAITING || !pending.request().token().equals(OcrTransport.token(envelope))) { return false; }
         return pending.accept(OcrTransport.reply(envelope));
     }
-    @JSExport public static void cancel() { pending.cancel(); }
+    @JSExport public static void cancel() { pending.cancel(); completed=false; }
+    public static Sheet completedSheet() {
+        if(!completed||sheet==null||pending==null||pending.state()!=OcrExchange.State.IDLE||!sheet.getStub().isDone(OmrStep.TEXTS))throw new IllegalStateException("Complete the current TEXTS operation first");
+        return sheet;
+    }
+    public static Sheet completedSheet(JSObject envelope) {
+        Sheet value=completedSheet();
+        if(!pending.request().token().equals(OcrTransport.token(envelope)))throw new IllegalArgumentException("Post-TEXTS token does not match the current page");
+        return value;
+    }
     @JSExport public static String resume() throws Exception {
         Sheet previous = HeadlessSheetContext.current(); HeadlessSheetContext.bind(sheet);
-        try { pending.resume(); BeamProbe.checkErrors(); return summary(prefix,sheet); }
+        try { pending.resume(); BeamProbe.checkErrors();String result=summary(prefix,sheet);completed=true;return result; }
         finally { HeadlessSheetContext.bind(previous); }
     }
     public static String summary(String prefix, Sheet sheet) {

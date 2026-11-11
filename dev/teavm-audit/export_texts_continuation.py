@@ -11,12 +11,13 @@ import tarfile
 
 def main():
     root, mirror = map(Path, sys.argv[1:3]); revision = sys.argv[3]
-    music = '--music' in sys.argv[4:]
+    post = '--post' in sys.argv[4:]
+    music = post or '--music' in sys.argv[4:]
     cleanup = music or '--cleanup' in sys.argv[4:]
     ttf = cleanup or '--ttf' in sys.argv[4:]
     live = ttf or '--live' in sys.argv[4:]
     source = mirror / 'build/wasm-compat/texts-continuation-probe'
-    module_name = 'texts-music-backed' if music else 'texts-cleanup' if cleanup else 'texts-font-backed' if ttf else 'texts-continuation'
+    module_name = 'post-texts' if post else 'texts-music-backed' if music else 'texts-cleanup' if cleanup else 'texts-font-backed' if ttf else 'texts-continuation'
     module = mirror / 'build/wasm-compat' / (module_name + '-probe') if ttf else source
     native = source / ('live-ocr/jvm' if live else 'native')
     verification = module / 'verification.json' if ttf else source / ('live-ocr/verification.json' if live else 'verification.json')
@@ -32,6 +33,9 @@ def main():
     assert report.get('liveOcr', False) == live
     assert report.get('ordinaryFontsFromFiles', False) == ttf
     assert report.get('originalCleanupInWasm', False) == cleanup
+    if post:
+        assert report['originalPostTextsRecognition'] and report['postTextsStages'] == ['MEASURES','CHORDS']
+        assert report['postTextsChecks'] == report['pages'] * 4 * 2 and report['postTextsGuardCounts'] == [51]*4
     if cleanup:
         assert report['suppliedCleanupRasters'] == 0 and report['cleanupReferencePixelsExact']
         cleanup_comparison = mirror / 'build/wasm-compat/texts-cleanup-trace/verification.json'
@@ -106,6 +110,11 @@ def main():
         sources += subprocess.check_output(git + ['ls-tree', '-r', '--name-only', revision, '--', 'app/src/main/java/org/audiveris/omr/ui/symbol']).decode().splitlines()
         sources += ['dev/teavm-audit/' + name for name in ['music-mask-native.c', 'music-mask-wasm.c',
             'music-metrics-functions.h', 'music-metrics-wasm.c', 'music-symbols-wasm.c', 'build_music_symbols_wasm.py']]
+    if post:
+        sources += ['wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/PostTextsRecognition.java']
+        sources += ['wasm-compat/src/test/java/org/audiveris/wasm/compat/test/'+name+'.java' for name in ['PostTextsProbe','PostTextsSnapshot','PostTextsOracle']]
+        sources += ['app/src/main/java/org/audiveris/omr/sheet/'+name+'.java' for name in ['rhythm/MeasuresStep','rhythm/MeasuresBuilder','note/ChordsStep','note/ChordsBuilder']]
+        sources += ['app/src/main/java/org/audiveris/omr/score/Page.java','app/src/main/java/org/audiveris/omr/sheet/rhythm/Measure.java','app/src/main/java/org/audiveris/omr/sheet/rhythm/MeasureStack.java']
     sources.append('dev/teavm-audit/export_texts_continuation.py')
     source_hashes = {}
     archive = subprocess.check_output(git + ['archive', revision] + sorted(set(sources)))
@@ -126,12 +135,15 @@ def main():
     limits = Path('/sys/fs/cgroup/wasm_audiveris_dev')
     cpu, memory, swap = [(limits / name).read_text().strip() for name in ['cpu.max', 'memory.max', 'memory.swap.max']]
     assert (cpu, memory, swap) == ('800000 100000', '8589934592', '0')
-    name = 'texts-music-backed' if music else 'texts-cleanup' if cleanup else 'texts-font-backed' if ttf else 'texts-live-ocr' if live else 'texts-continuation'
+    name = 'post-texts' if post else 'texts-music-backed' if music else 'texts-cleanup' if cleanup else 'texts-font-backed' if ttf else 'texts-live-ocr' if live else 'texts-continuation'
     relative = 'wsl-artifacts/wasm-components/' + name
     raw = root / relative; tracked = root / ('wasm-compat/' + name + '-results')
     raw.mkdir(parents=True, exist_ok=True); tracked.mkdir(parents=True, exist_ok=True)
     def copy(origin, name):
         destination = raw / name; destination.parent.mkdir(parents=True, exist_ok=True); shutil.copyfile(origin, destination)
+    if post:
+        for name in ['jvm-reference.json','symbol-geometry.json','point-widths.json']:
+            copy(mirror/'build/wasm-compat/post-texts-native'/name,'post-native/'+name)
     copy(verification, 'verification.json')
     if cleanup:
         copy(cleanup_comparison, 'native-cleanup-verification.json')

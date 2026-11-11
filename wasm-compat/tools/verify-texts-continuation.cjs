@@ -5,7 +5,9 @@ const root=path.resolve(process.argv[2]),native=path.join(root,live?'live-ocr/jv
 const ttf=process.env.AUDIVERIS_TEXTS_TTF==='1';assert.ok(!ttf||live);
 const cleanup=process.env.AUDIVERIS_TEXTS_CLEANUP==='1';assert.ok(!cleanup||ttf);
 const musicFt=process.env.AUDIVERIS_TEXTS_MUSIC_FT==='1';assert.ok(!musicFt||cleanup);
-const moduleName=musicFt?'texts-music-backed':cleanup?'texts-cleanup':ttf?'texts-font-backed':'texts-continuation',moduleRoot=musicFt?path.resolve(root,'../texts-music-backed-probe'):cleanup?path.resolve(root,'../texts-cleanup-probe'):ttf?path.resolve(root,'../texts-font-backed-probe'):root;
+const postTexts=process.env.AUDIVERIS_POST_TEXTS==='1';assert.ok(!postTexts||musicFt);
+const moduleName=postTexts?'post-texts':musicFt?'texts-music-backed':cleanup?'texts-cleanup':ttf?'texts-font-backed':'texts-continuation',moduleRoot=postTexts?path.resolve(root,'../post-texts-probe'):musicFt?path.resolve(root,'../texts-music-backed-probe'):cleanup?path.resolve(root,'../texts-cleanup-probe'):ttf?path.resolve(root,'../texts-font-backed-probe'):root;
+const postRoot=path.resolve(root,'../post-texts-native');
 const musicRoot=path.resolve(root,'../music-symbols-wasm');
 const textFontRoot=path.resolve(root,'../recorded-text-fonts');
 const launchTimeout=Number(process.env.AUDIVERIS_BROWSER_LAUNCH_TIMEOUT_MS||600000),workerTimeout=Number(process.env.AUDIVERIS_TEXTS_WORKER_TIMEOUT_MS||600000);
@@ -15,6 +17,8 @@ const inputSha256={},sha=bytes=>crypto.createHash('sha256').update(bytes).digest
 const inputBytes=file=>{const bytes=fs.readFileSync(file);inputSha256[path.relative(root,path.resolve(file))]=sha(bytes);return bytes;};
 const read=file=>JSON.parse(inputBytes(file));
 const references=read(path.join(native,'jvm-reference.json')),samples=path.resolve(root,'../pixel-probe/samples');
+const postReferences=postTexts?read(path.join(postRoot,'jvm-reference.json')):[];
+if(postTexts){assert.deepEqual(postReferences.map(r=>r.id),references.map(r=>r.id));}
 const coverage=read(path.join(native,'coverage.json'));assert.equal(coverage.acceptedPages,references.length);
 assert.equal(read(path.join(native,'jvm-rejections.json')).length,coverage.rejectedBeforeTexts);
 const model=inputBytes(process.argv[3]);let numbers=0,maxDifference=0;
@@ -47,6 +51,14 @@ function install(api,data,templates,model,faces=[],musicService=null){
     }
     for(const bytes of templates){api.installTemplates(new Int8Array(bytes.buffer,bytes.byteOffset,bytes.byteLength));}
 }
+function rejected(action){try{action();}catch{return 1;}throw new Error('Invalid post-TEXTS transition accepted');}
+function advancePhases(api,phases,token){
+    const envelope={token};let guards=rejected(()=>api.advance('CHORDS',envelope))+rejected(()=>api.advance('UNKNOWN',envelope));
+    for(const [key,value] of [['generation',token.generation-1],['job',token.job+'-old'],['page',token.page+'-old'],['request',token.request+1]]){
+        guards+=rejected(()=>api.advance('MEASURES',{token:{...token,[key]:value}}));}
+    const results=[];for(const phase of phases){results.push(JSON.parse(api.advance(phase.stage,envelope)));guards+=rejected(()=>api.advance(phase.stage,envelope));}
+    return {phases:results,guards};
+}
 async function checkMusicSymbols(api,samples){
     for(const row of samples){const split=row.key.indexOf(':'),pixels=api.verifyMusicSymbol(row.key.slice(0,split),row.key.slice(split+1),row.size,row.x,row.y,row.background);
         const digest=await crypto.subtle.digest('SHA-256',pixels),actual=Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('');
@@ -68,7 +80,7 @@ function checkCleanup(request,cleaned,width,height,margin){
             workerOptions:{workerPath:path.join(compat,'host/tesseract-word-metadata-node.cjs'),langPath:path.join(modules,'@tesseract.js-data/eng/4.0.0'),cacheMethod:'none',gzip:true}});
     };
     const data={serifs:read(path.resolve(root,'../cue-beams-default-portable-probe/font-measurements.json')),
-        geometry:read(path.join(native,'symbol-geometry.json')),widths:read(path.join(native,'point-widths.json')),
+        geometry:read(path.join(postTexts?postRoot:native,'symbol-geometry.json')),widths:read(path.join(postTexts?postRoot:native,'point-widths.json')),
         fonts:musicFt?[]:read(ttf?path.join(textFontRoot,'music-measurements.json'):path.join(native,'font-measurements.json')),defaultFont:inputBytes(path.join(native,'default-font.txt')).toString('utf8')};
     let musicFactory,musicModule,musicFonts,musicHost,musicRecipes;
     if(musicFt){
@@ -94,12 +106,13 @@ function checkCleanup(request,cleaned,width,height,margin){
         ...['tesseract-js-ocr.mjs','gray8-png.mjs','tesseract-word-metadata.mjs','tesseract-word-metadata-node.cjs'].map(name=>path.join(compat,'host',name))]){inputBytes(file);}}
     const verifierHash=sha(fs.readFileSync(__filename,'utf8').replace(/\r\n/g,'\n')),checkpointPath=path.join(moduleRoot,'node-verification.json');
     const resumeNode=process.env.AUDIVERIS_RESUME_TEXTS_NODE==='1';
-    let checks=0;const fontCalls=[],musicCalls=[],musicStats=[];
+    let checks=0,postChecks=0;const fontCalls=[],musicCalls=[],musicStats=[],postGuardCounts=[];
     if(resumeNode){
         const saved=JSON.parse(fs.readFileSync(checkpointPath));
         assert.equal(saved.verifierHash,verifierHash);assert.equal(saved.node,process.version);assert.equal(saved.live,live);assert.equal(saved.ttf,ttf);
         assert.equal(saved.cleanup,cleanup);
         assert.equal(saved.musicFt,musicFt);
+        assert.equal(saved.postTexts??false,postTexts);
         assert.equal(saved.checks,references.length*2);assert.ok(Number.isSafeInteger(saved.numbers)&&saved.numbers>0&&Number.isFinite(saved.maxDifference)&&saved.maxDifference<=1e-8);
         for(const [name,digest] of Object.entries(inputSha256)){assert.equal(saved.inputSha256[name],digest,'Node checkpoint input mismatch: '+name);}
         const project=path.resolve(root,'../../..')+path.sep;
@@ -107,10 +120,12 @@ function checkCleanup(request,cleaned,width,height,margin){
         Object.assign(inputSha256,saved.inputSha256);checks=saved.checks;numbers=saved.numbers;maxDifference=saved.maxDifference;
         if(ttf){assert.equal(saved.fontCalls.length,2);assert.ok(saved.fontCalls.every(value=>value>0));fontCalls.push(...saved.fontCalls);}
         if(musicFt){assert.equal(saved.musicCalls.length,2);musicCalls.push(...saved.musicCalls);musicStats.push(...saved.musicStats);}
+        if(postTexts){postChecks=saved.postChecks;postGuardCounts.push(...saved.postGuardCounts);}
         console.log('Reusing Node phase with identical verifier, module and input hashes');
     }
     for(let instance=resumeNode?2:0;instance<2;instance++){
         const api=(await TeaVM.wasmGC.load(path.join(moduleRoot,moduleName+'.wasm'))).exports;
+        let postGuards=postTexts?rejected(()=>api.advance('MEASURES')):0;
         const musicService=musicFt?await(await import(require('node:url').pathToFileURL(musicHost))).createFreeTypeMusicSymbols(musicFactory,musicModule,musicFonts,musicRecipes,{maxCacheEntries:data.musicCacheEntries,textFamilies:data.symbolTextFamilies}):null;
         install(api,data,templates,model,faces,musicService);let generation=0;
         if(musicFt){await checkMusicSymbols(api,data.symbolSamples);}
@@ -121,21 +136,25 @@ function checkCleanup(request,cleaned,width,height,margin){
                 ?api.beginPage(meta.width,meta.height,new Int8Array(pixels),row.id,meta.margin,meta.languages,++generation)
                 :api.beginPage(meta.width,meta.height,new Int8Array(pixels),new Int8Array(cleaned),row.id,meta.margin,meta.languages,++generation);
             if(cleanup){checkCleanup(request,cleaned,meta.width,meta.height,meta.margin);}
+            if(postTexts){postGuards+=rejected(()=>api.advance('MEASURES',{token:request.token}));}
             if(ttf&&generation===1){assert.throws(()=>api.installTextFace('late-font',new Int8Array(faces[0].bytes)));}
             assert.equal(request.width,meta.width+2*meta.margin);assert.equal(request.height,meta.height+2*meta.margin);
             const stale={token:{...request.token,generation:request.token.generation-1}};Object.defineProperty(stale,'result',{get(){throw new Error('Late OCR payload decoded');}});assert.equal(api.receive(stale),false);
             await new Promise(resolve=>setImmediate(resolve));const expectedOcr=read(path.join(native,row.id,'ocr-result.json'));
             const reply=live?await adapter.recognize(request):{token:request.token,result:expectedOcr};
             assert.ok(!reply.failure,JSON.stringify(reply.failure));assert.deepEqual(reply.result,expectedOcr);
-            assert.ok(api.receive(reply));assert.equal(api.receive(reply),false);const actual=JSON.parse(api.resume());
+            assert.ok(api.receive(reply));assert.equal(api.receive(reply),false);if(postTexts){postGuards+=rejected(()=>api.advance('MEASURES',{token:request.token}));}const actual=JSON.parse(api.resume());
             try{compare(actual,row.result,'node'+instance+'.'+row.id);}catch(error){fs.writeFileSync(path.join(root,'failed-node.json'),JSON.stringify({actual,expected:row.result}));throw error;}
+            if(postTexts){const expected=postReferences.find(r=>r.id===row.id).phases,result=advancePhases(api,expected,request.token);postGuards+=result.guards;
+                try{compare(result.phases,expected,'post-node'+instance+'.'+row.id);}catch(error){fs.writeFileSync(path.join(moduleRoot,'failed-node.json'),JSON.stringify({actual:result.phases,expected}));throw error;}postChecks+=expected.length;}
             assert.equal(sha(pixels),pixelHash);assert.equal(sha(cleaned),cleanHash);checks++;await new Promise(resolve=>setImmediate(resolve));
         }
         if(ttf){assert.ok(api.textMeasurements()>0);fontCalls.push(api.textMeasurements());}
         if(musicFt){assert.ok(api.musicMeasurements()>0);assert.equal(api.musicMeasurements(),musicService.stats().requests);musicCalls.push(api.musicMeasurements());musicStats.push({...musicService.stats(),symbols:musicService.symbolStats(),pageSymbolCalls:api.musicSymbolPaints()-data.symbolSamples.length});}
+        if(postTexts){postGuardCounts.push(postGuards);}
         }finally{if(musicService){musicService.dispose();}if(adapter){await adapter.close();}}
     }
-    if(!resumeNode){fs.writeFileSync(checkpointPath,JSON.stringify({verifierHash,node:process.version,live,ttf,cleanup,musicFt,inputSha256,checks,numbers,maxDifference,fontCalls,musicCalls,musicStats})+'\n');}
+    if(!resumeNode){fs.writeFileSync(checkpointPath,JSON.stringify({verifierHash,node:process.version,live,ttf,cleanup,musicFt,postTexts,postChecks,postGuardCounts,inputSha256,checks,numbers,maxDifference,fontCalls,musicCalls,musicStats})+'\n');}
     const nodePhase=JSON.parse(fs.readFileSync(checkpointPath));
     const files=new Map([['/module.wasm',path.join(moduleRoot,moduleName+'.wasm')],['/runtime.js',path.join(moduleRoot,moduleName+'.wasm-runtime.js')]]);
     if(musicFt){files.set('/music/factory.mjs',path.join(musicRoot,'music-symbols.mjs'));files.set('/music/module.wasm',path.join(musicRoot,'music-symbols.wasm'));files.set('/music/host.mjs',musicHost);files.set('/music/freetype-music-metrics.mjs',path.join(compat,'host/freetype-music-metrics.mjs'));files.set('/music/recipes.json',path.join(musicRoot,'recipes.json'));
@@ -151,12 +170,13 @@ function checkCleanup(request,cleaned,width,height,margin){
     }
     for(let i=0;i<catalog.length;i++){files.set('/templates/'+i,path.join(templateRoot,catalog[i].file+'.atpl'));}
     for(const row of references){files.set('/pixels/'+row.id,path.join(samples,row.id+'.binary'));files.set('/cleaned/'+row.id,path.join(native,row.id,'cleaned.gray'));}
-    const fixture={data,pages:references.map(row=>({meta:read(path.join(native,row.id,'metadata.json')),result:read(path.join(native,row.id,'ocr-result.json'))})),templates:catalog.map((_,i)=>'/templates/'+i),
+    const fixture={data,pages:references.map(row=>({meta:read(path.join(native,row.id,'metadata.json')),result:read(path.join(native,row.id,'ocr-result.json')),phases:postReferences.find(r=>r.id===row.id)?.phases})),templates:catalog.map((_,i)=>'/templates/'+i),
         textFaces:faces.map((face,index)=>({id:face.id,url:'/text-fonts/'+index})),musicFonts:musicFt?Object.fromEntries(Object.keys(musicFonts).map(name=>[name,'/music/fonts/'+name])):{}};
     const worker=`importScripts('/runtime.js');${live?"importScripts('/ocr-assets/tesseract.min.js');":""}onmessage=async()=>{let adapter,musicService;try{
         const fixture=await(await fetch('/fixture')).json(),model=new Uint8Array(await(await fetch('/model')).arrayBuffer()),templates=[];
         for(const url of fixture.templates){templates.push(new Uint8Array(await(await fetch(url)).arrayBuffer()));}
         const api=(await TeaVM.wasmGC.load('/module.wasm')).exports,faces=[];
+        ${postTexts?`const rejected=${rejected.toString()},advancePhases=${advancePhases.toString()};let postGuards=rejected(()=>api.advance('MEASURES'));`:''}
         for(const face of fixture.textFaces){faces.push({id:face.id,bytes:new Uint8Array(await(await fetch(face.url)).arrayBuffer())});}
         ${musicFt?`const {default:factory}=await import('/music/factory.mjs'),{createFreeTypeMusicSymbols}=await import('/music/host.mjs'),musicFonts={};
         for(const [name,url] of Object.entries(fixture.musicFonts)){musicFonts[name]=new Uint8Array(await fetch(url).then(r=>r.arrayBuffer()));}
@@ -170,12 +190,14 @@ function checkCleanup(request,cleaned,width,height,margin){
         for(const page of fixture.pages){const m=page.meta,pixels=new Int8Array(await(await fetch('/pixels/'+m.id)).arrayBuffer()),cleaned=new Int8Array(await(await fetch('/cleaned/'+m.id)).arrayBuffer());
             const request=${cleanup?'api.beginPage(m.width,m.height,pixels,m.id,m.margin,m.languages,++generation)':'api.beginPage(m.width,m.height,pixels,cleaned,m.id,m.margin,m.languages,++generation)'};
             ${cleanup?'checkCleanup(request,cleaned,m.width,m.height,m.margin);':''}
+            ${postTexts?`postGuards+=rejected(()=>api.advance('MEASURES',{token:request.token}));`:''}
             ${ttf?`if(generation===1){let rejected=false;try{api.installTextFace('late-font',new Int8Array(faces[0].bytes));}catch(error){rejected=true;}if(!rejected){throw new Error('Late font configuration accepted');}}`:''}
             await new Promise(resolve=>setTimeout(resolve,0));const reply=adapter?await adapter.recognize(request):{token:request.token,result:page.result};
             if(reply.failure){throw new Error(JSON.stringify(reply.failure));}
             if(JSON.stringify(reply.result)!==JSON.stringify(page.result)){throw new Error('Live OCR differs from JVM oracle input');}
-            if(!api.receive(reply)||api.receive(reply)){throw new Error('TEXTS reply admission');}rows.push({id:m.id,result:JSON.parse(api.resume())});await new Promise(resolve=>setTimeout(resolve,0));
-        }postMessage({rows,dom:typeof document,fontCalls:${ttf?'api.textMeasurements()':'0'},musicCalls:${musicFt?'api.musicMeasurements()':'0'},musicStats:musicService?{...musicService.stats(),symbols:musicService.symbolStats(),pageSymbolCalls:api.musicSymbolPaints()-fixture.data.symbolSamples.length}:null});
+            if(!api.receive(reply)||api.receive(reply)){throw new Error('TEXTS reply admission');}${postTexts?`postGuards+=rejected(()=>api.advance('MEASURES',{token:request.token}));`:''}
+            const result=JSON.parse(api.resume());${postTexts?`const post=advancePhases(api,page.phases,request.token);postGuards+=post.guards;rows.push({id:m.id,result,phases:post.phases});`:`rows.push({id:m.id,result});`}await new Promise(resolve=>setTimeout(resolve,0));
+        }postMessage({rows,dom:typeof document,postGuards:${postTexts?'postGuards':'0'},fontCalls:${ttf?'api.textMeasurements()':'0'},musicCalls:${musicFt?'api.musicMeasurements()':'0'},musicStats:musicService?{...musicService.stats(),symbols:musicService.symbolStats(),pageSymbolCalls:api.musicSymbolPaints()-fixture.data.symbolSamples.length}:null});
     }catch(error){postMessage({error:String(error.stack||error)});}finally{if(musicService){musicService.dispose();}if(adapter){await adapter.close();}}};`;
     const server=http.createServer((req,res)=>{
         if(req.url==='/'){return res.end('<!doctype html><title>TEXTS continuation</title>');}
@@ -191,6 +213,7 @@ function checkCleanup(request,cleaned,width,height,margin){
             const row=await page.evaluate(timeout=>new Promise((resolve,reject)=>{const worker=new Worker('/worker.js');const timer=setTimeout(()=>{worker.terminate();reject(new Error('TEXTS timeout'));},timeout);
                 worker.onmessage=({data})=>{clearTimeout(timer);worker.terminate();data.error?reject(new Error(data.error)):resolve(data);};worker.onerror=event=>{clearTimeout(timer);worker.terminate();reject(new Error(event.message));};worker.postMessage(null);}),workerTimeout);
             assert.equal(row.dom,'undefined');if(ttf){assert.ok(row.fontCalls>0);fontCalls.push(row.fontCalls);}for(let i=0;i<references.length;i++){compare(row.rows[i].result,references[i].result,'worker'+instance+'.'+references[i].id);checks++;}
+            if(postTexts){for(let i=0;i<references.length;i++){compare(row.rows[i].phases,postReferences[i].phases,'post-worker'+instance+'.'+references[i].id);postChecks+=postReferences[i].phases.length;}postGuardCounts.push(row.postGuards);}
             if(musicFt){assert.ok(row.musicCalls>0);assert.equal(row.musicCalls,row.musicStats.requests);musicCalls.push(row.musicCalls);musicStats.push(row.musicStats);}
         }
         assert.equal(sha(fs.readFileSync(__filename,'utf8').replace(/\r\n/g,'\n')),verifierHash);
@@ -209,6 +232,9 @@ function checkCleanup(request,cleaned,width,height,margin){
         if(musicFt){report.suppliedMusicFontMeasurements=0;report.musicFontBackend='FreeType 2.14.3';report.musicFontMeasurementCalls=musicCalls;report.musicFontStats=musicStats;
             report.sharedMusicMetricsAndRendering=true;report.symbolSmokeChecksPerInstance=data.symbolSamples.length;
             report.musicFontAssets=Object.fromEntries([...files].filter(([url])=>url.startsWith('/music/')).map(([url,file])=>{const bytes=inputBytes(file);return[url,{bytes:bytes.length,sha256:sha(bytes)}];}));}
+        if(postTexts){report.postTextsStages=postReferences[0].phases.map(p=>p.stage);report.postTextsChecks=postChecks;report.postTextsGuardCounts=postGuardCounts;report.originalPostTextsRecognition=true;
+            assert.equal(postChecks,references.length*report.postTextsStages.length*4);assert.deepEqual(postGuardCounts,[51,51,51,51]);
+            report.limitation='Original MEASURES and CHORDS after full TEXTS on the same sheet. Later recognition stages, general font shaping/fallback and native OCR parity remain unverified.';}
         fs.writeFileSync(ttf?path.join(moduleRoot,'verification.json'):path.join(root,live?'live-ocr/verification.json':'verification.json'),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report));
     }finally{if(browser){await browser.close();}await new Promise(resolve=>server.close(resolve));}
 })().catch(error=>{console.error(error);process.exitCode=1;});
