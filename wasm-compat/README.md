@@ -9,6 +9,12 @@ The latest all-method analysis is **stage 26**: **9,091 roots / 8,653 bodies**, 
 roots retained. The original root set is still preserved; historical stage counts below describe
 their own runs. See the verified result and TEXTS continuation sections for current coverage.
 
+The latest TEXTS entry performs original cleanup, actual external OCR and full TEXTS resume
+on five accepted pages in two Node instances and two Workers. Ordinary and music text-font
+measurements are computed from physical font files; **zero TEXTS font measurements and zero
+cleaned rasters are supplied to the engine**. The earlier fixture-backed entries remain
+comparison profiles. Music-symbol painting and general shaping/fallback remain separate work.
+
 ## Approach
 
 - `CompilerSubstitutions` uses TeaVM's substitution SPI to replace `java.awt.Point`,
@@ -1584,7 +1590,8 @@ Archive with `export_music_paint_trace.py <repository> <mirror> <source-commit>`
 `music-paint-results` records the result and font/source hashes. No Wasm size or speed claim
 follows from this experiment. The standalone glyph-mask candidate below investigates an
 alternative; selecting its engine API and caching policy remains future work.
-The two supplied music-font measurements also remain separate work.
+The entry above retains two supplied music-font measurements; the music-backed entry below
+replaces them with physical-font calculations.
 
 ### Standalone FreeType glyph-mask candidate
 
@@ -1623,6 +1630,58 @@ generates native glyph commands/pixels, builds FreeType and runs Node/Worker com
 Archive with `export_music_masks.py <repository> <mirror> <source-commit>`; summaries go to
 `music-mask-results` and dense fixtures, runnable files, fonts and licenses to
 `wsl-artifacts/wasm-components/music-masks`.
+
+### Physical music metrics and complete TEXTS connection
+
+The music-metrics component uses the same pinned FreeType/toolchain, true outline bounds,
+fractional advances and float-position arithmetic as the native reference. It reads the full
+SFNT font name, preserving names such as `Finale Jazz Regular` separately from family selection.
+The reference covers all **nine beat-unit strings**, including spaced/dotted forms, at point
+sizes **1–128 and 16,384** in six bundled music families (**6,966 examined cases**).
+
+All **3,483 cases** with the required glyphs in **Bravura, Leland and Finale Jazz** match
+native visual bounds, layout bounds, advance and font name exactly in two Node instances and
+two independent Workers. The other **3,483 cases** require missing-glyph fallback and are
+explicitly rejected; their native diagnostics are retained rather than treated as equivalent.
+Five request/lifecycle guards pass per instance. The configurable FIFO caches default to
+**4,096 entries** per cache; an additional 18-case run with a one-entry limit verifies eviction
+without changing results. General shaping is outside this backend's PUA/space text profile.
+
+The metrics component is **494,499 bytes** (**232,211 gzip**) plus **13,406 bytes of generated
+JS glue** and **5,749 bytes of host adapter**. Its linear memory starts at 16 MiB and has a
+128 MiB ceiling. These are component figures, not total process memory or download size.
+Run `verifyMusicMetricsWasm` with the audit and music-paint init scripts. Archive with
+`export_music_metrics.py <repository> <mirror> <source-commit>` into `music-metrics-results` and
+`wsl-artifacts/wasm-components/music-metrics`.
+
+`WorkerMusicFontGeometry` accepts a synchronous backend callback after asynchronous backend
+initialization. Configuration is sealed per engine module; the Java cache limit is an explicit
+installation parameter. The opt-in `MusicBackedTextsProbe` uses the original cleanup/OCR/TEXTS
+continuation and rejects supplied font-measurement entries. It installs physical ordinary
+fonts and the FreeType music provider before beginning recognition. No additional suspension
+point is introduced inside recognition; OCR remains the external request/reply boundary.
+
+`verifyMusicBackedTextsProbe` passes all **five pages / 20 comparisons / 130 recognized words**
+with exact OCR input pixels and **zero supplied ordinary/music TEXTS font measurements**.
+All **2,382,096 numeric values** match within the existing tolerances; maximum difference is
+**1.7763568394002505e-15**. Each instance performs **1,139 ordinary-font measurements** and
+**two external music measurements**, with separate module resources and caches. Duplicate/stale
+OCR replies and invalid/repeated font configuration are rejected. Strict compilation has zero
+diagnostics. Header geometry, note templates and classifier resources remain explicit inputs.
+
+The TeaVM entry is **3,449,826 bytes**, **8,059 bytes** above the prior cleanup entry. Together
+with the music-metrics Wasm, the two Wasm binaries total **3,944,325 bytes**. Generated JS,
+the host adapter, the **512,924-byte Bravura font**, four ordinary font files, templates,
+classifier and OCR assets are additional resources. These checks establish compatibility for
+the accepted sample inputs, not a recognition-throughput improvement or native OCR parity.
+Music-symbol painting, dashed thin strokes and general shaping/fallback remain unsupported.
+TODO: evaluate a shared rendering/metrics module, remove unused font drivers where verified,
+and measure end-to-end download size, startup time, peak memory, allocations and throughput.
+
+After the component/resources are built, run `verifyMusicBackedTextsProbe` with the audit init
+script through the capped launcher. Archive a committed run with
+`export_texts_continuation.py <repository> <mirror> <source-commit> --music` into
+`texts-music-backed-results` and `wsl-artifacts/wasm-components/texts-music-backed`.
 
 ## Pure Java path-fill component
 

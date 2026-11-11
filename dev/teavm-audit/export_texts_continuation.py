@@ -9,12 +9,13 @@ import sys
 
 def main():
     root, mirror = map(Path, sys.argv[1:3]); revision = sys.argv[3]
-    cleanup = '--cleanup' in sys.argv[4:]
+    music = '--music' in sys.argv[4:]
+    cleanup = music or '--cleanup' in sys.argv[4:]
     ttf = cleanup or '--ttf' in sys.argv[4:]
     live = ttf or '--live' in sys.argv[4:]
     source = mirror / 'build/wasm-compat/texts-continuation-probe'
-    module = mirror / 'build/wasm-compat/texts-cleanup-probe' if cleanup else mirror / 'build/wasm-compat/texts-font-backed-probe' if ttf else source
-    module_name = 'texts-cleanup' if cleanup else 'texts-font-backed' if ttf else 'texts-continuation'
+    module_name = 'texts-music-backed' if music else 'texts-cleanup' if cleanup else 'texts-font-backed' if ttf else 'texts-continuation'
+    module = mirror / 'build/wasm-compat' / (module_name + '-probe') if ttf else source
     native = source / ('live-ocr/jvm' if live else 'native')
     verification = module / 'verification.json' if ttf else source / ('live-ocr/verification.json' if live else 'verification.json')
     read = lambda path: json.loads(path.read_text())
@@ -34,9 +35,15 @@ def main():
         cleanup_comparison = mirror / 'build/wasm-compat/texts-cleanup-trace/verification.json'
         assert read(cleanup_comparison)['portableCleanupTraversalExact']
     if ttf:
-        assert report['suppliedOrdinaryFontMeasurements'] == 0 and report['fontMeasurements'] == 2
+        assert report['suppliedOrdinaryFontMeasurements'] == 0 and report['fontMeasurements'] == (0 if music else 2)
         assert report['fontResourcesSealed'] and len(report['textFontMeasurementCalls']) == 4
         assert all(value > 0 for value in report['textFontMeasurementCalls'])
+    if music:
+        assert report['suppliedMusicFontMeasurements'] == 0 and report['musicFontBackend'] == 'FreeType 2.14.3'
+        assert len(report['musicFontMeasurementCalls']) == 4 and all(value > 0 for value in report['musicFontMeasurementCalls'])
+        assert len(report['musicFontStats']) == 4
+        for calls, stats in zip(report['musicFontMeasurementCalls'], report['musicFontStats']):
+            assert calls == stats['requests'] and stats['cachedMeasurements'] <= stats['cacheLimit'] == 256
     assert report['workers'] == report['nodeInstances'] == 2
     assert report['checks'] == report['pages'] * 4 and report['originalTextWords'] > 0
     assert report['originalSystemProcessing'] and report['asynchronousReplyBoundary'] and report['duplicateAndLateRepliesRejected']
@@ -78,15 +85,29 @@ def main():
         sources += ['wasm-compat/src/main/java/org/audiveris/wasm/compat/StrokePathPatches.java']
         sources += ['wasm-compat/src/jdk/java/org/audiveris/wasm/compat/platform/' + name + '.java' for name in ['GrayPathRaster', 'GrayThinRaster', 'StrokePaths']]
         sources += ['wasm-compat/third-party/openjdk/LICENSE', 'wasm-compat/third-party/openjdk/NOTICE.md']
+    if music:
+        sources += ['wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/WorkerMusicFontGeometry.java',
+            'wasm-compat/src/test/java/org/audiveris/wasm/compat/test/MusicBackedTextsProbe.java',
+            'wasm-compat/host/freetype-music-metrics.mjs', 'wasm-compat/third-party/freetype/NOTICE.md', 'app/res/Bravura.otf']
+        sources += ['dev/teavm-audit/' + name for name in ['music-mask-native.c', 'music-mask-wasm.c',
+            'music-metrics-functions.h', 'music-metrics-wasm.c', 'build_music_mask_wasm.py', 'build_music_metrics_wasm.py']]
     source_hashes = {}
     for name in sorted(set(sources)):
-        data = (mirror / name).read_bytes().replace(b'\r\n', b'\n')
-        assert data == subprocess.check_output(git + ['show', revision + ':' + name]).replace(b'\r\n', b'\n'), name
+        directory = root if name == 'wasm-compat/third-party/freetype/NOTICE.md' else mirror
+        data = (directory / name).read_bytes(); committed = subprocess.check_output(git + ['show', revision + ':' + name])
+        if not name.endswith(('.otf', '.ttf')):
+            data = data.replace(b'\r\n', b'\n'); committed = committed.replace(b'\r\n', b'\n')
+        assert data == committed, name
         source_hashes[name] = hashlib.sha256(data).hexdigest()
+    if music:
+        backend_build = read(mirror / 'build/wasm-compat/music-metrics-wasm/build.json')
+        assert backend_build['wasmSha256'] == report['musicFontAssets']['/music/module.wasm']['sha256']
+        for name, digest in backend_build['sourceSha256'].items():
+            assert source_hashes['dev/teavm-audit/' + name] == digest
     limits = Path('/sys/fs/cgroup/wasm_audiveris_dev')
     cpu, memory, swap = [(limits / name).read_text().strip() for name in ['cpu.max', 'memory.max', 'memory.swap.max']]
     assert (cpu, memory, swap) == ('800000 100000', '8589934592', '0')
-    name = 'texts-cleanup' if cleanup else 'texts-font-backed' if ttf else 'texts-live-ocr' if live else 'texts-continuation'
+    name = 'texts-music-backed' if music else 'texts-cleanup' if cleanup else 'texts-font-backed' if ttf else 'texts-live-ocr' if live else 'texts-continuation'
     relative = 'wsl-artifacts/wasm-components/' + name
     raw = root / relative; tracked = root / ('wasm-compat/' + name + '-results')
     raw.mkdir(parents=True, exist_ok=True); tracked.mkdir(parents=True, exist_ok=True)
@@ -139,12 +160,27 @@ def main():
     if ttf:
         fonts = mirror / 'build/wasm-compat/recorded-text-fonts'
         resources = read(fonts / 'font-resources.json')
-        for name in ['font-resources.json', 'music-measurements.json']:
+        for name in ['font-resources.json'] + ([] if music else ['music-measurements.json']):
             copy(fonts / name, 'text-fonts/' + name)
         for face in resources['faces']:
             path = fonts / 'fonts' / face['file']; assert sha(path) == face['sha256']
             copy(path, 'text-fonts/fonts/' + face['file'])
         copy(Path('/usr/share/doc/fonts-dejavu-core/copyright'), 'text-fonts/fonts/copyright')
+    if music:
+        backend = mirror / 'build/wasm-compat/music-metrics-wasm'
+        for url, info in report['musicFontAssets'].items():
+            assert url.startswith('/music/') and '..' not in Path(url).parts
+            matches = [source / name for name, digest in report['inputSha256'].items() if digest == info['sha256']]
+            assert matches and matches[0].stat().st_size == info['bytes'], url
+            copy(matches[0], 'font-backend' + url)
+        for name in ['FTL.TXT', 'GPLv2.TXT', 'LICENSE.TXT']:
+            copy(backend / name, 'licenses/freetype/' + name)
+        copy(root / 'wasm-compat/third-party/freetype/NOTICE.md', 'licenses/freetype/NOTICE.md')
+        copy(mirror / 'build/wasm-compat/freetype-native/freetype-2.14.3.tar.xz', 'licenses/freetype/freetype-2.14.3.tar.xz')
+        copy(backend / 'build.json', 'font-backend/build.json')
+        sdk = Path('/home/dev/tools/emsdk/upstream/emscripten')
+        copy(sdk / 'LICENSE', 'licenses/emscripten/LICENSE')
+        copy(sdk / 'system/lib/libc/musl/COPYRIGHT', 'licenses/emscripten/musl-COPYRIGHT')
     if live:
         diagnostic = read(source / 'live-ocr/comparison.json')
         assert diagnostic['workers'] == 2 and diagnostic['workerResultsExact'] and len(diagnostic['pages']) == len(rows)

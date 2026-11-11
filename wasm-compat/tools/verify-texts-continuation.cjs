@@ -4,7 +4,9 @@ const {chromium}=require('playwright');const live=process.env.AUDIVERIS_LIVE_TEX
 const root=path.resolve(process.argv[2]),native=path.join(root,live?'live-ocr/jvm':'native');
 const ttf=process.env.AUDIVERIS_TEXTS_TTF==='1';assert.ok(!ttf||live);
 const cleanup=process.env.AUDIVERIS_TEXTS_CLEANUP==='1';assert.ok(!cleanup||ttf);
-const moduleName=cleanup?'texts-cleanup':ttf?'texts-font-backed':'texts-continuation',moduleRoot=cleanup?path.resolve(root,'../texts-cleanup-probe'):ttf?path.resolve(root,'../texts-font-backed-probe'):root;
+const musicFt=process.env.AUDIVERIS_TEXTS_MUSIC_FT==='1';assert.ok(!musicFt||cleanup);
+const moduleName=musicFt?'texts-music-backed':cleanup?'texts-cleanup':ttf?'texts-font-backed':'texts-continuation',moduleRoot=musicFt?path.resolve(root,'../texts-music-backed-probe'):cleanup?path.resolve(root,'../texts-cleanup-probe'):ttf?path.resolve(root,'../texts-font-backed-probe'):root;
+const musicRoot=path.resolve(root,'../music-metrics-wasm');
 const textFontRoot=path.resolve(root,'../recorded-text-fonts');
 const launchTimeout=Number(process.env.AUDIVERIS_BROWSER_LAUNCH_TIMEOUT_MS||600000),workerTimeout=Number(process.env.AUDIVERIS_TEXTS_WORKER_TIMEOUT_MS||600000);
 assert.ok(Number.isSafeInteger(launchTimeout)&&launchTimeout>=0&&Number.isSafeInteger(workerTimeout)&&workerTimeout>0);
@@ -23,7 +25,7 @@ function compare(a,b,key='$'){
     else if(b&&typeof b==='object'){assert.deepEqual(Object.keys(a).sort(),Object.keys(b).sort(),key);for(const k of Object.keys(b)){compare(a[k],b[k],key+'.'+k);}}
     else{assert.equal(a,b,key);}
 }
-function install(api,data,templates,model,faces=[]){
+function install(api,data,templates,model,faces=[],musicService=null){
     api.configure(new Int8Array(model.buffer,model.byteOffset,model.byteLength));
     for(const m of data.serifs){api.configureSerifs(m.family,m.interline,...m.dimensions);}
     for(const m of data.geometry){api.configureGeometry(m.kind,m.family,m.shape,m.interline,m.num,m.den,...m.values);}
@@ -32,6 +34,15 @@ function install(api,data,templates,model,faces=[]){
     for(const face of faces){api.installTextFace(face.id,new Int8Array(face.bytes.buffer,face.bytes.byteOffset,face.bytes.byteLength));}
     for(const style of data.textStyles||[]){api.bindTextFace(style.flags,style.face,style.name,style.syntheticItalic);}
     for(const m of data.fonts){api.configureTextFont(m.kind,m.flags,m.size,m.value,m.family,m.name,m.x,m.y,m.width,m.height,m.advance);}
+    if(musicService){
+        const backend=(kind,family,size,value)=>{if(kind!==2&&kind!==3){throw new Error('Unexpected music metric kind');}return musicService.measure(family,size,value);};
+        const reject=action=>{try{action();}catch{return;}throw new Error('Music font configuration guard failed');};
+        reject(()=>api.configureTextFont(2,0,12,'probe','Bravura','Bravura',0,0,1,1,1));
+        reject(()=>api.installMusicMetrics(null,data.musicCacheEntries));
+        reject(()=>api.installMusicMetrics(backend,0));
+        api.installMusicMetrics(backend,data.musicCacheEntries);
+        reject(()=>api.installMusicMetrics(backend,data.musicCacheEntries));
+    }
     for(const bytes of templates){api.installTemplates(new Int8Array(bytes.buffer,bytes.byteOffset,bytes.byteLength));}
 }
 function checkCleanup(request,cleaned,width,height,margin){
@@ -51,7 +62,15 @@ function checkCleanup(request,cleaned,width,height,margin){
     };
     const data={serifs:read(path.resolve(root,'../cue-beams-default-portable-probe/font-measurements.json')),
         geometry:read(path.join(native,'symbol-geometry.json')),widths:read(path.join(native,'point-widths.json')),
-        fonts:read(ttf?path.join(textFontRoot,'music-measurements.json'):path.join(native,'font-measurements.json')),defaultFont:inputBytes(path.join(native,'default-font.txt')).toString('utf8')};
+        fonts:musicFt?[]:read(ttf?path.join(textFontRoot,'music-measurements.json'):path.join(native,'font-measurements.json')),defaultFont:inputBytes(path.join(native,'default-font.txt')).toString('utf8')};
+    let musicFactory,musicModule,musicFonts,musicHost;
+    if(musicFt){
+        data.musicCacheEntries=256;
+        musicModule=inputBytes(path.join(musicRoot,'music-metrics.wasm'));inputBytes(path.join(musicRoot,'music-metrics.mjs'));
+        musicFonts={'Bravura.otf':inputBytes(path.resolve(root,'../../../app/res/Bravura.otf'))};
+        musicHost=path.join(compat,'host/freetype-music-metrics.mjs');inputBytes(musicHost);
+        musicFactory=(await import(require('node:url').pathToFileURL(path.join(musicRoot,'music-metrics.mjs')))).default;
+    }
     const textResources=ttf?read(path.join(textFontRoot,'font-resources.json')):null;
     const faces=textResources?textResources.faces.map(face=>{const bytes=inputBytes(path.join(textFontRoot,'fonts',face.file));assert.equal(sha(bytes),face.sha256);return {...face,bytes};}):[];
     if(ttf){data.textStyles=textResources.styles;assert.ok(data.fonts.every(entry=>entry.kind>=2));}
@@ -65,21 +84,25 @@ function checkCleanup(request,cleaned,width,height,margin){
         ...['tesseract-js-ocr.mjs','gray8-png.mjs','tesseract-word-metadata.mjs','tesseract-word-metadata-node.cjs'].map(name=>path.join(compat,'host',name))]){inputBytes(file);}}
     const verifierHash=sha(fs.readFileSync(__filename,'utf8').replace(/\r\n/g,'\n')),checkpointPath=path.join(moduleRoot,'node-verification.json');
     const resumeNode=process.env.AUDIVERIS_RESUME_TEXTS_NODE==='1';
-    let checks=0;const fontCalls=[];
+    let checks=0;const fontCalls=[],musicCalls=[],musicStats=[];
     if(resumeNode){
         const saved=JSON.parse(fs.readFileSync(checkpointPath));
         assert.equal(saved.verifierHash,verifierHash);assert.equal(saved.node,process.version);assert.equal(saved.live,live);assert.equal(saved.ttf,ttf);
         assert.equal(saved.cleanup,cleanup);
+        assert.equal(saved.musicFt,musicFt);
         assert.equal(saved.checks,references.length*2);assert.ok(Number.isSafeInteger(saved.numbers)&&saved.numbers>0&&Number.isFinite(saved.maxDifference)&&saved.maxDifference<=1e-8);
         for(const [name,digest] of Object.entries(inputSha256)){assert.equal(saved.inputSha256[name],digest,'Node checkpoint input mismatch: '+name);}
         const project=path.resolve(root,'../../..')+path.sep;
         for(const [name,digest] of Object.entries(saved.inputSha256)){const file=path.resolve(root,name);assert.ok(file.startsWith(project));assert.equal(sha(fs.readFileSync(file)),digest,name);}
         Object.assign(inputSha256,saved.inputSha256);checks=saved.checks;numbers=saved.numbers;maxDifference=saved.maxDifference;
         if(ttf){assert.equal(saved.fontCalls.length,2);assert.ok(saved.fontCalls.every(value=>value>0));fontCalls.push(...saved.fontCalls);}
+        if(musicFt){assert.equal(saved.musicCalls.length,2);musicCalls.push(...saved.musicCalls);musicStats.push(...saved.musicStats);}
         console.log('Reusing Node phase with identical verifier, module and input hashes');
     }
     for(let instance=resumeNode?2:0;instance<2;instance++){
-        const api=(await TeaVM.wasmGC.load(path.join(moduleRoot,moduleName+'.wasm'))).exports;install(api,data,templates,model,faces);let generation=0;
+        const api=(await TeaVM.wasmGC.load(path.join(moduleRoot,moduleName+'.wasm'))).exports;
+        const musicService=musicFt?await(await import(require('node:url').pathToFileURL(musicHost))).createFreeTypeMusicMetrics(musicFactory,musicModule,musicFonts,{maxCacheEntries:data.musicCacheEntries}):null;
+        install(api,data,templates,model,faces,musicService);let generation=0;
         const adapter=live?await adapterFactory():null;try{
         for(const row of references){const meta=read(path.join(native,row.id,'metadata.json')),pixels=inputBytes(path.join(samples,row.id+'.binary')),cleaned=inputBytes(path.join(native,row.id,'cleaned.gray'));
             if(!live){assert.deepEqual(read(path.join(native,row.id,'original-lines.json')),read(path.join(native,row.id,'imported-lines.json')));}
@@ -98,11 +121,13 @@ function checkCleanup(request,cleaned,width,height,margin){
             assert.equal(sha(pixels),pixelHash);assert.equal(sha(cleaned),cleanHash);checks++;await new Promise(resolve=>setImmediate(resolve));
         }
         if(ttf){assert.ok(api.textMeasurements()>0);fontCalls.push(api.textMeasurements());}
-        }finally{if(adapter){await adapter.close();}}
+        if(musicFt){assert.ok(api.musicMeasurements()>0);assert.equal(api.musicMeasurements(),musicService.stats().requests);musicCalls.push(api.musicMeasurements());musicStats.push(musicService.stats());}
+        }finally{if(musicService){musicService.dispose();}if(adapter){await adapter.close();}}
     }
-    if(!resumeNode){fs.writeFileSync(checkpointPath,JSON.stringify({verifierHash,node:process.version,live,ttf,cleanup,inputSha256,checks,numbers,maxDifference,fontCalls})+'\n');}
+    if(!resumeNode){fs.writeFileSync(checkpointPath,JSON.stringify({verifierHash,node:process.version,live,ttf,cleanup,musicFt,inputSha256,checks,numbers,maxDifference,fontCalls,musicCalls,musicStats})+'\n');}
     const nodePhase=JSON.parse(fs.readFileSync(checkpointPath));
     const files=new Map([['/module.wasm',path.join(moduleRoot,moduleName+'.wasm')],['/runtime.js',path.join(moduleRoot,moduleName+'.wasm-runtime.js')]]);
+    if(musicFt){files.set('/music/factory.mjs',path.join(musicRoot,'music-metrics.mjs'));files.set('/music/module.wasm',path.join(musicRoot,'music-metrics.wasm'));files.set('/music/host.mjs',musicHost);files.set('/music/Bravura.otf',path.resolve(root,'../../../app/res/Bravura.otf'));}
     if(ttf){for(let i=0;i<faces.length;i++){files.set('/text-fonts/'+i,path.join(textFontRoot,'fonts',faces[i].file));}}
     if(live){
         for(const name of ['tesseract-js-ocr.mjs','gray8-png.mjs','tesseract-word-metadata.mjs','tesseract-core-word-metadata.js']){files.set('/host/'+name,path.join(compat,'host',name));}
@@ -115,13 +140,16 @@ function checkCleanup(request,cleaned,width,height,margin){
     for(let i=0;i<catalog.length;i++){files.set('/templates/'+i,path.join(templateRoot,catalog[i].file+'.atpl'));}
     for(const row of references){files.set('/pixels/'+row.id,path.join(samples,row.id+'.binary'));files.set('/cleaned/'+row.id,path.join(native,row.id,'cleaned.gray'));}
     const fixture={data,pages:references.map(row=>({meta:read(path.join(native,row.id,'metadata.json')),result:read(path.join(native,row.id,'ocr-result.json'))})),templates:catalog.map((_,i)=>'/templates/'+i),
-        textFaces:faces.map((face,index)=>({id:face.id,url:'/text-fonts/'+index}))};
-    const worker=`importScripts('/runtime.js');${live?"importScripts('/ocr-assets/tesseract.min.js');":""}onmessage=async()=>{let adapter;try{
+        textFaces:faces.map((face,index)=>({id:face.id,url:'/text-fonts/'+index})),musicFonts:musicFt?{'Bravura.otf':'/music/Bravura.otf'}:{}};
+    const worker=`importScripts('/runtime.js');${live?"importScripts('/ocr-assets/tesseract.min.js');":""}onmessage=async()=>{let adapter,musicService;try{
         const fixture=await(await fetch('/fixture')).json(),model=new Uint8Array(await(await fetch('/model')).arrayBuffer()),templates=[];
         for(const url of fixture.templates){templates.push(new Uint8Array(await(await fetch(url)).arrayBuffer()));}
         const api=(await TeaVM.wasmGC.load('/module.wasm')).exports,faces=[];
         for(const face of fixture.textFaces){faces.push({id:face.id,bytes:new Uint8Array(await(await fetch(face.url)).arrayBuffer())});}
-        const install=${install.toString()},checkCleanup=${checkCleanup.toString()};install(api,fixture.data,templates,model,faces);const rows=[];let generation=0;
+        ${musicFt?`const {default:factory}=await import('/music/factory.mjs'),{createFreeTypeMusicMetrics}=await import('/music/host.mjs'),musicFonts={};
+        for(const [name,url] of Object.entries(fixture.musicFonts)){musicFonts[name]=new Uint8Array(await fetch(url).then(r=>r.arrayBuffer()));}
+        musicService=await createFreeTypeMusicMetrics(factory,new Uint8Array(await fetch('/music/module.wasm').then(r=>r.arrayBuffer())),musicFonts,{maxCacheEntries:fixture.data.musicCacheEntries});`:''}
+        const install=${install.toString()},checkCleanup=${checkCleanup.toString()};install(api,fixture.data,templates,model,faces,musicService);const rows=[];let generation=0;
         ${live?`const {TesseractJsOcr}=await import('/host/tesseract-js-ocr.mjs'),{browserWordMetadataOptions}=await import('/host/tesseract-word-metadata.mjs');
         adapter=new TesseractJsOcr({oem:0,availableLanguages:['eng'],createWorker:Tesseract.createWorker,
             workerOptions:browserWordMetadataOptions({workerPath:location.origin+'/ocr-assets/worker.min.js',corePath:location.origin+'/core-assets/${coreName}.js',langPath:location.origin+'/models',cacheMethod:'none',gzip:true},
@@ -134,8 +162,8 @@ function checkCleanup(request,cleaned,width,height,margin){
             if(reply.failure){throw new Error(JSON.stringify(reply.failure));}
             if(JSON.stringify(reply.result)!==JSON.stringify(page.result)){throw new Error('Live OCR differs from JVM oracle input');}
             if(!api.receive(reply)||api.receive(reply)){throw new Error('TEXTS reply admission');}rows.push({id:m.id,result:JSON.parse(api.resume())});await new Promise(resolve=>setTimeout(resolve,0));
-        }postMessage({rows,dom:typeof document,fontCalls:${ttf?'api.textMeasurements()':'0'}});
-    }catch(error){postMessage({error:String(error.stack||error)});}finally{if(adapter){await adapter.close();}}};`;
+        }postMessage({rows,dom:typeof document,fontCalls:${ttf?'api.textMeasurements()':'0'},musicCalls:${musicFt?'api.musicMeasurements()':'0'},musicStats:musicService?musicService.stats():null});
+    }catch(error){postMessage({error:String(error.stack||error)});}finally{if(musicService){musicService.dispose();}if(adapter){await adapter.close();}}};`;
     const server=http.createServer((req,res)=>{
         if(req.url==='/'){return res.end('<!doctype html><title>TEXTS continuation</title>');}
         if(req.url==='/fixture'){res.setHeader('Content-Type','application/json');return res.end(JSON.stringify(fixture));}
@@ -150,6 +178,7 @@ function checkCleanup(request,cleaned,width,height,margin){
             const row=await page.evaluate(timeout=>new Promise((resolve,reject)=>{const worker=new Worker('/worker.js');const timer=setTimeout(()=>{worker.terminate();reject(new Error('TEXTS timeout'));},timeout);
                 worker.onmessage=({data})=>{clearTimeout(timer);worker.terminate();data.error?reject(new Error(data.error)):resolve(data);};worker.onerror=event=>{clearTimeout(timer);worker.terminate();reject(new Error(event.message));};worker.postMessage(null);}),workerTimeout);
             assert.equal(row.dom,'undefined');if(ttf){assert.ok(row.fontCalls>0);fontCalls.push(row.fontCalls);}for(let i=0;i<references.length;i++){compare(row.rows[i].result,references[i].result,'worker'+instance+'.'+references[i].id);checks++;}
+            if(musicFt){assert.ok(row.musicCalls>0);assert.equal(row.musicCalls,row.musicStats.requests);musicCalls.push(row.musicCalls);musicStats.push(row.musicStats);}
         }
         assert.equal(sha(fs.readFileSync(__filename,'utf8').replace(/\r\n/g,'\n')),verifierHash);
         for(const [name,digest] of Object.entries(nodePhase.inputSha256)){assert.equal(sha(fs.readFileSync(path.resolve(root,name))),digest,'Node phase input changed: '+name);}
@@ -160,10 +189,12 @@ function checkCleanup(request,cleaned,width,height,margin){
             liveOcr:live,ordinaryFontsFromFiles:ttf,
             originalCleanupInWasm:cleanup,suppliedCleanupRasters:cleanup?0:references.length,cleanupReferencePixelsExact:cleanup,
             resumedNodeValidation:resumeNode,nodeCheckpointSha256:sha(fs.readFileSync(checkpointPath)),verifierSha256:verifierHash,
-            limitation:cleanup?'Original TEXTS cleanup, actual OCR and TEXTS resume with physical text fonts; two music-font measurements remain supplied; dashed thin-stroke drawing, music-symbol painting, general shaping/fallback and native OCR parity are not claimed':ttf?'Actual OCR and TEXTS resume with ordinary text measured from physical TTF files; native cleanup and two music-font measurements remain supplied; general shaping/fallback and native OCR parity are not claimed':live?'Actual Tesseract.js OCR and TEXTS resume; original native-cleaned rasters and exact font measurements remain supplied; native OCR parity is not claimed'
+            limitation:musicFt?'Original cleanup, actual OCR and full TEXTS with physical ordinary and music font measurements; music-symbol painting, dashed thin strokes, general shaping/fallback and native OCR parity are not claimed':cleanup?'Original TEXTS cleanup, actual OCR and TEXTS resume with physical text fonts; two music-font measurements remain supplied; dashed thin-stroke drawing, music-symbol painting, general shaping/fallback and native OCR parity are not claimed':ttf?'Actual OCR and TEXTS resume with ordinary text measured from physical TTF files; native cleanup and two music-font measurements remain supplied; general shaping/fallback and native OCR parity are not claimed':live?'Actual Tesseract.js OCR and TEXTS resume; original native-cleaned rasters and exact font measurements remain supplied; native OCR parity is not claimed'
                 :'Original native-cleaned rasters, OCR replies and exact font measurements are supplied as fixtures; browser-native cleanup/fonts and live OCR on score pages are not yet established'};
         if(live){report.ocrAssets=Object.fromEntries([...files].filter(([url])=>url.startsWith('/host/')||url.startsWith('/ocr-assets/')||url.startsWith('/core-assets/')||url.startsWith('/models/')).map(([url,file])=>{const bytes=inputBytes(file);return [url,{bytes:bytes.length,sha256:sha(bytes)}];}));}
         if(ttf){report.textFontFiles=faces.map(({bytes,...face})=>({...face,bytes:bytes.length}));report.textFontMeasurementCalls=fontCalls;report.fontResourcesSealed=true;report.suppliedOrdinaryFontMeasurements=0;}
+        if(musicFt){report.suppliedMusicFontMeasurements=0;report.musicFontBackend='FreeType 2.14.3';report.musicFontMeasurementCalls=musicCalls;report.musicFontStats=musicStats;
+            report.musicFontAssets=Object.fromEntries([...files].filter(([url])=>url.startsWith('/music/')).map(([url,file])=>{const bytes=inputBytes(file);return[url,{bytes:bytes.length,sha256:sha(bytes)}];}));}
         fs.writeFileSync(ttf?path.join(moduleRoot,'verification.json'):path.join(root,live?'live-ocr/verification.json':'verification.json'),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report));
     }finally{if(browser){await browser.close();}await new Promise(resolve=>server.close(resolve));}
 })().catch(error=>{console.error(error);process.exitCode=1;});
