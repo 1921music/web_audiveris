@@ -38,12 +38,12 @@
   "wordBaselineAvailable": true,
   "workerTimings": [
     {
-      "firstRequestMs": 775,
-      "warmRequestMs": 29
+      "firstRequestMs": 826.5,
+      "warmRequestMs": 29.59999999962747
     },
     {
-      "firstRequestMs": 774.8999999999069,
-      "warmRequestMs": 28.199999999720603
+      "firstRequestMs": 826.2999999998137,
+      "warmRequestMs": 29.59999999962747
     }
   ],
   "words": [
@@ -64,16 +64,16 @@
       "sha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b"
     },
     "/host/tesseract-js-ocr.mjs": {
-      "bytes": 8063,
-      "sha256": "e829d4250e4eacfb14ffb1b17809fe9fb902689aebf910bda4d3e11429e23de6"
+      "bytes": 8510,
+      "sha256": "3216824bb919d2d515eb354222e6076438737da22f98a8d5f8fa8a8d6af432c6"
     },
     "/host/gray8-png.mjs": {
       "bytes": 1759,
       "sha256": "fab3b1da1e3f027ab38fc48eef5a5250988fd3a1a55720364e4ad94078b70bba"
     },
     "/host/tesseract-word-metadata.mjs": {
-      "bytes": 3721,
-      "sha256": "1468eb12906a12cc7eb5274a2f251e9c56b8437554df04e4e8e7570b705f4ccd"
+      "bytes": 5446,
+      "sha256": "f65724fedd53bf89e629e20bdaaa646a76e8961d64331e6976d36d7445f7379b"
     },
     "/host/tesseract-core-word-metadata.js": {
       "bytes": 859,

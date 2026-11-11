@@ -1,0 +1,88 @@
+{
+  "node": "v24.22.2",
+  "chromium": "158.0.8127.18",
+  "nodeInstances": 2,
+  "workers": 2,
+  "cases": 384,
+  "checks": 1536,
+  "exactPhysicalMetrics": true,
+  "wasmBytes": 742573,
+  "gzipBytes": 263314,
+  "wasmSha256": "3f9bfbfa4df4139c8bfba4026504cc0f65c757ec83b1b06dd0a9871e77857db6",
+  "referenceSha256": "ab484d0b4bc0715478d0ab1f1a76e59770cf9ed190c8453c50161fc2451b33b8",
+  "faces": [
+    {
+      "id": "Physical0",
+      "file": "LiberationSans-Regular.ttf",
+      "name": "Liberation Sans",
+      "sha256": "4659bc0c58c5028dd488ec928d41d9265db43d9b669fc14ca8b0832daca7b144"
+    },
+    {
+      "id": "Physical1",
+      "file": "LiberationSans-Bold.ttf",
+      "name": "Liberation Sans Bold",
+      "sha256": "3973aa5054fb467dd5627245d3dc82e37bf16fe075756156a570455871351582"
+    },
+    {
+      "id": "Physical2",
+      "file": "LiberationSans-Italic.ttf",
+      "name": "Liberation Sans Italic",
+      "sha256": "830c5fa600505fb4c1a271b4271c53c44bae43f492b2a240d0e98a3a7a380121"
+    },
+    {
+      "id": "Physical3",
+      "file": "LiberationSans-BoldItalic.ttf",
+      "name": "Liberation Sans Bold Italic",
+      "sha256": "c80fa7f2ffa0e01d4d8dcd6a6d1e43eda665222d1b4db597dde1174c456006cf"
+    },
+    {
+      "id": "Physical4",
+      "file": "LiberationSerif-Regular.ttf",
+      "name": "Liberation Serif",
+      "sha256": "705903ae1382f0150f115d6f10a30f5b2f3d6ade649c474afe6366c39174fb65"
+    },
+    {
+      "id": "Physical5",
+      "file": "LiberationSerif-Bold.ttf",
+      "name": "Liberation Serif Bold",
+      "sha256": "9e66c25e20868756bf12eb24a520a4552727c9cd108f577f7ae33e3c0110e39c"
+    },
+    {
+      "id": "Physical6",
+      "file": "LiberationSerif-Italic.ttf",
+      "name": "Liberation Serif Italic",
+      "sha256": "eaeaf7f2b12544ecde64290c1fa7ec403ff70fd58b313637b265400b20249242"
+    },
+    {
+      "id": "Physical7",
+      "file": "LiberationSerif-BoldItalic.ttf",
+      "name": "Liberation Serif Bold Italic",
+      "sha256": "379010e87421a883f7bbfa7936d23dfe0257a54ce850819b74556e9f2c615a8a"
+    },
+    {
+      "id": "Physical8",
+      "file": "LiberationMono-Regular.ttf",
+      "name": "Liberation Mono",
+      "sha256": "395fa5ab8d40c8eba390ced528744ea75a7f69aabf3e68b6f925ca0e39a27370"
+    },
+    {
+      "id": "Physical9",
+      "file": "LiberationMono-Bold.ttf",
+      "name": "Liberation Mono Bold",
+      "sha256": "626655e94dd82f3f42549daf995c921b0915fa8ab1f4b839559e8892ea41d240"
+    },
+    {
+      "id": "Physical10",
+      "file": "LiberationMono-Italic.ttf",
+      "name": "Liberation Mono Italic",
+      "sha256": "a71b2c25c89da05cf0e7c4dbba8d473fdead0b181ae56165217747d2c1f39215"
+    },
+    {
+      "id": "Physical11",
+      "file": "LiberationMono-BoldItalic.ttf",
+      "name": "Liberation Mono Bold Italic",
+      "sha256": "15eb161953e3ecc7fc05a3fec8a59e0f4e0a54a4e375736adf8e98d65981f813"
+    }
+  ],
+  "limitation": "Physical TTF glyph metrics and translated composites only; not general font selection, shaping, music fonts, rasterization or engine integration"
+}
