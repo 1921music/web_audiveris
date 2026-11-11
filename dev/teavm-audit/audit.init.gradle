@@ -1152,6 +1152,44 @@ gradle.projectsEvaluated {
                 new File(app.projectDir,'res/basic-classifier.zip').absolutePath
     }
     def graySpanOutput = new File(rootProject.projectDir, 'build/wasm-compat/gray-span-probe')
+    def grayThinOutput = new File(rootProject.projectDir, 'build/wasm-compat/gray-thin-probe')
+    rootProject.tasks.register('testGrayThinJvm', JavaExec) {
+        dependsOn 'compileWasmCompatibilityTests'
+        classpath = rootProject.files(compatTests,compatClasses,jdkRasterClasses) + app.sourceSets.main.runtimeClasspath
+        mainClass = 'org.audiveris.wasm.compat.test.GrayThinOracle'
+        jvmArgs '--add-exports=java.desktop/sun.java2d.loops=ALL-UNNAMED'
+        maxHeapSize = '256m'
+        systemProperty 'java.awt.headless','true'
+        args grayThinOutput.absolutePath
+    }
+    rootProject.tasks.register('buildGrayThinProbe', JavaExec) {
+        dependsOn compile,'testGrayThinJvm','patchKxmlCompatibility','selectWasmLibraryImplementations'
+        classpath = rootProject.files(compatTests) + compatRuntime
+        mainClass = 'audit.CompileCompatibilityProbe'
+        maxHeapSize = '1g'
+        systemProperty 'audiveris.compat.enabled','true'
+        args grayThinOutput.absolutePath,'org.audiveris.wasm.compat.test.GrayThinProbe','gray-thin'
+    }
+    rootProject.tasks.register('verifyGrayThinProbe', Exec) {
+        dependsOn 'buildGrayThinProbe'
+        commandLine 'node','--max-old-space-size=256',new File(compat,'tools/verify-gray-thin.cjs').absolutePath,grayThinOutput.absolutePath
+    }
+    def packedThinOutput = new File(rootProject.projectDir,'build/wasm-compat/packed-thin-probe')
+    rootProject.tasks.register('buildPackedThinProbe', JavaExec) {
+        dependsOn compile,'testGrayThinJvm','patchKxmlCompatibility','selectWasmLibraryImplementations'
+        classpath = rootProject.files(compatTests) + compatRuntime
+        mainClass = 'audit.CompileCompatibilityProbe'
+        maxHeapSize = '1g'
+        systemProperty 'audiveris.compat.enabled','true'
+        systemProperty 'audiveris.compat.headless','true'
+        systemProperty 'audiveris.compat.strokePaths','true'
+        args packedThinOutput.absolutePath,'org.audiveris.wasm.compat.test.PackedThinProbe','packed-thin'
+    }
+    rootProject.tasks.register('verifyPackedThinProbe', Exec) {
+        dependsOn 'buildPackedThinProbe'
+        environment 'AUDIVERIS_PACKED_THIN','1'
+        commandLine 'node','--max-old-space-size=256',new File(compat,'tools/verify-gray-thin.cjs').absolutePath,packedThinOutput.absolutePath
+    }
     rootProject.tasks.register('testGraySpanJvm', JavaExec) {
         dependsOn 'compileWasmCompatibilityTests'
         classpath = rootProject.files(compatTests,compatClasses) + app.sourceSets.main.runtimeClasspath

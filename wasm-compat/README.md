@@ -1549,13 +1549,15 @@ Two Node instances and two independent Chromium Workers pass all five pages (**2
 including exact OCR input pixels and TEXTS results. All **2,382,096 numeric values** match within
 the existing tolerances; maximum difference is **1.7763568394002505e-15**. Each instance makes
 **1,139 physical-font measurements**. Strict compilation has zero diagnostics.
-The module is **3,432,669 bytes**, an increase
-of **161,312 bytes** over the physical-font entry without cleanup. These sizes do not establish
+The module is **3,441,767 bytes**, an increase
+of **170,410 bytes** over the physical-font entry without cleanup. Verified thin-stroke support
+adds **9,098 bytes** over the original cleanup entry. These sizes do not establish
 actual recognition speed or total download size; fonts, classifier/templates and OCR assets
 are separate resources.
 
-Thin-stroke drawing and music-symbol painting remain explicit unsupported paths in the packed
-backend; neither occurs in the five accepted cleanup fixtures. The two music-font measurement
+Dashed thin-stroke drawing and music-symbol painting remain explicit unsupported paths in the packed
+backend; neither occurs in the five accepted cleanup fixtures. Ordinary thin paths are verified
+separately below. The two music-font measurement
 resources remain supplied. General text shaping/fallback, other score inputs and parity with
 the separate native OCR backend are not established. TODO: measure cleanup time, peak memory,
 allocations and buffer copies before choosing further size/speed changes.
@@ -1623,6 +1625,35 @@ Archive a committed run with `export_span_cleanup.py <repository> <mirror> <sour
 The summary, source/input hashes and drawing observations go to `gray-span-results`; runnable
 Wasm, dense native pixels, cleanup inputs and license notices go to
 `wsl-artifacts/wasm-components/gray-span`.
+
+## Pure Java thin-path drawing
+
+`GrayThinRaster` uses the unchanged Java `ProcessPath` curve processing with an owned white
+pixel sink. Its integer line stepping and extra endpoint clipping match the native JDK loops.
+Initial tests exposed a difference between the Java and C `PROCESS_LINE` paths: the native
+version clips integer endpoints again before drawing; the Java version delegates that work.
+The sink restores that stage without modifying `ProcessPath` or using runtime reflection/JNI.
+The source/attribution and license are covered by `third-party/openjdk`.
+
+`verifyGrayThinProbe` compares **9,506 cases / 16,530,934 pixels** with native Graphics2D:
+512 shape/curve fixtures, all 4,225 directed vectors in a 65-by-65 grid, and 16 large-coordinate
+paths, each in default and pure stroke mode. Native widths are 0, 0.25, 0.5 and 1, with all three
+cap and join values. Two Node instances compare all bytes; two independent Chromium Workers
+compare complete/per-path hashes. All agree exactly. Four input guards pass per instance,
+strict compilation has zero diagnostics and the standalone module is **137,549 bytes**.
+
+`PackedPageRaster.draw` now selects this path for non-dashed widths at most one pixel. The
+actual backend also matches **4,753 default-mode cases** against Graphics2D; custom strokes
+and dashed thin strokes are explicitly rejected. A separate `verifyPackedThinProbe` repeats
+those **4,753 cases / 8,265,467 pixels** through the actual backend in two Node instances and
+two independent Workers; all bytes/hashes and the two rejection guards agree. Its separate
+module is **292,619 bytes**, with zero strict diagnostics. Colors, arbitrary graphics transforms and
+composites remain outside this white-raster API. Coordinates are finite and bounded to the
+same +/-4,194,304 range as the span converter. General music-glyph painting remains separate.
+
+Archive a committed run with `export_thin_raster.py <repository> <mirror> <source-commit>`;
+summaries go to `gray-thin-results`, and dense native pixels, runnable Wasm and notices go to
+`wsl-artifacts/wasm-components/gray-thin`.
 
 ## Pure Java stroke geometry component
 

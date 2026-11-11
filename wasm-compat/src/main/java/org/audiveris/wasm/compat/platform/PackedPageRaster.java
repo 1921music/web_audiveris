@@ -35,8 +35,10 @@ public final class PackedPageRaster implements PageRaster {
         } else { GraySpanRaster.fill(pixels, width, height, shape, true); }
     }
     @Override public void draw(Shape shape) {
-        if (stroke.getLineWidth() <= 1) { throw new UnsupportedOperationException("Thin-stroke drawing needs its own verified raster path"); }
-        GraySpanRaster.fill(pixels, width, height, StrokePaths.normalized(shape, stroke), false);
+        if (stroke.getLineWidth() <= 1) {
+            if (stroke.getDashArray() != null) { throw new UnsupportedOperationException("Dashed thin-stroke drawing needs its own verified geometry path"); }
+            GrayThinRaster.draw(pixels, width, height, new Path2D.Float(shape), false);
+        } else { GraySpanRaster.fill(pixels, width, height, StrokePaths.normalized(shape, stroke), false); }
     }
     @Override public void fillRect(int x, int y, int w, int h) {
         if (w <= 0 || h <= 0) { return; }

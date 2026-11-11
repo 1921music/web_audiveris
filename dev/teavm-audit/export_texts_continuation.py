@@ -76,7 +76,7 @@ def main():
         sources += ['wasm-compat/src/test/java/org/audiveris/wasm/compat/test/' + name + '.java' for name in ['TextsCleanupTrace', 'GraphicsDelegate']]
         sources += ['wasm-compat/src/main/java/org/audiveris/wasm/compat/platform/' + name + '.java' for name in ['PackedPageRaster', 'PortableTextsCleanup', 'GraySpanRaster', 'StrokeRuntime']]
         sources += ['wasm-compat/src/main/java/org/audiveris/wasm/compat/StrokePathPatches.java']
-        sources += ['wasm-compat/src/jdk/java/org/audiveris/wasm/compat/platform/' + name + '.java' for name in ['GrayPathRaster', 'StrokePaths']]
+        sources += ['wasm-compat/src/jdk/java/org/audiveris/wasm/compat/platform/' + name + '.java' for name in ['GrayPathRaster', 'GrayThinRaster', 'StrokePaths']]
         sources += ['wasm-compat/third-party/openjdk/LICENSE', 'wasm-compat/third-party/openjdk/NOTICE.md']
     source_hashes = {}
     for name in sorted(set(sources)):
