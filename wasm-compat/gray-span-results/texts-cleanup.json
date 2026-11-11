@@ -1,0 +1,429 @@
+{
+  "comparedPixels" : 43474400,
+  "recordedOperationsReplayExact" : true,
+  "originalCleanupPixelsExact" : true,
+  "inputSha256" : {
+    "native/00/cleaned.gray" : "f9483bf00b89a982188c405cb78826038ab1fac24593aba43440dcc1a9c43ad7",
+    "native/01/cleaned.gray" : "777cec0547124381c4355761d979c25e9321fb931e9371a43e22256307b7c7ad",
+    "native/02/cleaned.gray" : "24a4b292f870188b44c20be65190485220ffef5983aaab71a1ae1aa5f705caba",
+    "native/03/cleaned.gray" : "b927e5eae3850434d57ded2ec6eedbb28389360ab09672a4d85e013f6d520b4b",
+    "native/04/cleaned.gray" : "31013e845668db300018e6e06334eb357e9e85d769702e5e6ae4c13e0b6a8e0d",
+    "native/jvm-reference.json" : "b30637d9ae7137468fa3b5918fe7d4377ae6c1824f9a288ab237d49522f98ffb",
+    "native/jvm-rejections.json" : "b1d154ac418624e8460ca1ae4be70af814778c180f13c5f4225de102e28c7e72",
+    "samples/00.binary" : "fa68b16d7d1a41dca21b80d56ab4c9b218f9e6819fcbdd37d781f7c8720f8150",
+    "samples/01.binary" : "ad29f97436f864a6a003f8133b63462c7293a1485e19f6535a95fd5b5c48411f",
+    "samples/02.binary" : "5b84baea8fcfb9335173f8decd02af0ce98a5e98b2883f05e5d16bd2c2fd656b",
+    "samples/03.binary" : "19b8015b3765932003a0b6c09e4dd524c02be89019909c3c6e429beb7d106762",
+    "samples/04.binary" : "8c6e44d97583e19ee8b03b0bce7490493314cc157941c553b6f3f19a42261ded",
+    "samples/05.binary" : "7d960d31d7839e697847dd66614da0982752388957ec947fb29ae95ce65c25dc",
+    "samples/06.binary" : "e1d8a4e853079aee770bf168e8312663452280845ee5ffd6f9ea2578642e874b",
+    "samples/07.binary" : "8a5b9c728931e2597d081177068046261d575d7b4d6336435e4811022a96f596",
+    "samples/manifest.json" : "3a7ad9ec743cf55104fa04c4662ad9b166c945d6fbc0dd4deea715387e96b801"
+  },
+  "pages" : [ {
+    "id" : "00",
+    "cleanedSha256" : "f9483bf00b89a982188c405cb78826038ab1fac24593aba43440dcc1a9c43ad7",
+    "strokeStates" : {
+      "draw:java.awt.geom.Area:width=2.1:cap=2:join=0:normalize=Default stroke normalization" : 82,
+      "draw:java.awt.geom.Line2D$Double:width=3.0:cap=0:join=1:normalize=Default stroke normalization" : 2,
+      "draw:java.awt.geom.Line2D$Double:width=3.9756098:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=3.9767442:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=4.0:cap=0:join=1:normalize=Default stroke normalization" : 3,
+      "draw:java.awt.geom.Line2D$Double:width=4.175:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=4.325:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=4.475:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=4.525:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=4.85:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=4.902439:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=4.9285717:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=4.952381:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=4.960784:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=4.975:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=4.9:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.025:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.047619:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.097561:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.0:cap=0:join=1:normalize=Default stroke normalization" : 2,
+      "draw:java.awt.geom.Line2D$Double:width=5.125:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.318182:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.325:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.3809524:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.7619047:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.878049:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=6.8:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "fill:java.awt.geom.Area:width=1.0:cap=2:join=0:normalize=Default stroke normalization" : 1,
+      "fill:java.awt.geom.Area:width=2.1:cap=2:join=0:normalize=Default stroke normalization" : 89,
+      "fillRect:width=1.0:cap=2:join=0:normalize=Default stroke normalization" : 95,
+      "fillRect:width=2.1:cap=2:join=0:normalize=Default stroke normalization" : 142542
+    },
+    "rasterCandidates" : {
+      "spanFill" : {
+        "beforeGlyphPassDifferentPixels" : 0,
+        "finalDifferentPixels" : 0
+      },
+      "unsupportedOperations" : 0,
+      "thinFill" : {
+        "beforeGlyphPassDifferentPixels" : 1017,
+        "finalDifferentPixels" : 968
+      },
+      "quarterSnappedFill" : {
+        "beforeGlyphPassDifferentPixels" : 1271,
+        "finalDifferentPixels" : 1158
+      }
+    },
+    "examples" : {
+      "draw:java.awt.geom.Area" : {
+        "segments" : [ [ 0.0, 209.0, 847.5 ], [ 1.0, 209.0, 935.5 ], [ 1.0, 214.0, 935.5 ], [ 1.0, 214.0, 847.5 ], [ 4.0 ] ],
+        "transform" : [ 1.0, 0.0, 0.0, 1.0, 0.0, 0.0 ],
+        "winding" : 1
+      },
+      "draw:java.awt.geom.Line2D$Double" : {
+        "segments" : [ [ 0.0, 926.0, 1064.5576990140341 ], [ 1.0, 970.0, 1064.985228060494 ] ],
+        "transform" : [ 1.0, 0.0, 0.0, 1.0, 0.0, 0.0 ],
+        "winding" : 1
+      },
+      "fill:java.awt.geom.Area" : {
+        "segments" : [ [ 0.0, 209.0, 847.5 ], [ 1.0, 209.0, 935.5 ], [ 1.0, 214.0, 935.5 ], [ 1.0, 214.0, 847.5 ], [ 4.0 ] ],
+        "transform" : [ 1.0, 0.0, 0.0, 1.0, 0.0, 0.0 ],
+        "winding" : 1
+      },
+      "fillRect" : {
+        "segments" : [ [ 0.0, 176.0, 1127.0 ], [ 1.0, 177.0, 1127.0 ], [ 1.0, 177.0, 1129.0 ], [ 1.0, 176.0, 1129.0 ], [ 1.0, 176.0, 1127.0 ], [ 4.0 ] ],
+        "transform" : [ 1.0, 0.0, 0.0, 1.0, 0.0, 0.0 ],
+        "winding" : 1
+      }
+    },
+    "operations" : {
+      "draw:java.awt.geom.Area" : 82,
+      "draw:java.awt.geom.Line2D$Double" : 30,
+      "fill:java.awt.geom.Area" : 90,
+      "fillRect" : 142637
+    },
+    "pixels" : 8694880,
+    "fonts" : { },
+    "height" : 3506,
+    "width" : 2480
+  }, {
+    "id" : "01",
+    "cleanedSha256" : "777cec0547124381c4355761d979c25e9321fb931e9371a43e22256307b7c7ad",
+    "strokeStates" : {
+      "draw:java.awt.geom.Area:width=2.1:cap=2:join=0:normalize=Default stroke normalization" : 104,
+      "draw:java.awt.geom.Line2D$Double:width=3.9230769:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=3.96875:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=4.0:cap=0:join=1:normalize=Default stroke normalization" : 2,
+      "draw:java.awt.geom.Line2D$Double:width=4.125:cap=0:join=1:normalize=Default stroke normalization" : 2,
+      "draw:java.awt.geom.Line2D$Double:width=4.4615383:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=4.851852:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=4.9230766:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=4.92:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=4.948718:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.0:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.40625:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.8095236:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.85:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.9:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=6.025:cap=0:join=1:normalize=Default stroke normalization" : 2,
+      "draw:java.awt.geom.Line2D$Double:width=6.0:cap=0:join=1:normalize=Default stroke normalization" : 6,
+      "draw:java.awt.geom.Line2D$Double:width=6.105263:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "fill:java.awt.geom.Area:width=1.0:cap=2:join=0:normalize=Default stroke normalization" : 1,
+      "fill:java.awt.geom.Area:width=2.1:cap=2:join=0:normalize=Default stroke normalization" : 113,
+      "fillRect:width=1.0:cap=2:join=0:normalize=Default stroke normalization" : 93,
+      "fillRect:width=2.1:cap=2:join=0:normalize=Default stroke normalization" : 149506
+    },
+    "rasterCandidates" : {
+      "spanFill" : {
+        "beforeGlyphPassDifferentPixels" : 0,
+        "finalDifferentPixels" : 0
+      },
+      "unsupportedOperations" : 0,
+      "thinFill" : {
+        "beforeGlyphPassDifferentPixels" : 1463,
+        "finalDifferentPixels" : 1288
+      },
+      "quarterSnappedFill" : {
+        "beforeGlyphPassDifferentPixels" : 1571,
+        "finalDifferentPixels" : 1364
+      }
+    },
+    "examples" : {
+      "draw:java.awt.geom.Area" : {
+        "segments" : [ [ 0.0, 164.0, 262.5 ], [ 1.0, 164.0, 346.5 ], [ 1.0, 168.0, 346.5 ], [ 1.0, 168.0, 262.5 ], [ 4.0 ] ],
+        "transform" : [ 1.0, 0.0, 0.0, 1.0, 0.0, 0.0 ],
+        "winding" : 1
+      },
+      "draw:java.awt.geom.Line2D$Double" : {
+        "segments" : [ [ 0.0, 1946.0, 237.0 ], [ 1.0, 1986.0, 237.0 ] ],
+        "transform" : [ 1.0, 0.0, 0.0, 1.0, 0.0, 0.0 ],
+        "winding" : 1
+      },
+      "fill:java.awt.geom.Area" : {
+        "segments" : [ [ 0.0, 164.0, 262.5 ], [ 1.0, 164.0, 346.5 ], [ 1.0, 168.0, 346.5 ], [ 1.0, 168.0, 262.5 ], [ 4.0 ] ],
+        "transform" : [ 1.0, 0.0, 0.0, 1.0, 0.0, 0.0 ],
+        "winding" : 1
+      },
+      "fillRect" : {
+        "segments" : [ [ 0.0, 132.0, 306.0 ], [ 1.0, 133.0, 306.0 ], [ 1.0, 133.0, 320.0 ], [ 1.0, 132.0, 320.0 ], [ 1.0, 132.0, 306.0 ], [ 4.0 ] ],
+        "transform" : [ 1.0, 0.0, 0.0, 1.0, 0.0, 0.0 ],
+        "winding" : 1
+      }
+    },
+    "operations" : {
+      "draw:java.awt.geom.Area" : 104,
+      "draw:java.awt.geom.Line2D$Double" : 25,
+      "fill:java.awt.geom.Area" : 114,
+      "fillRect" : 149599
+    },
+    "pixels" : 8694880,
+    "fonts" : { },
+    "height" : 3506,
+    "width" : 2480
+  }, {
+    "id" : "02",
+    "cleanedSha256" : "24a4b292f870188b44c20be65190485220ffef5983aaab71a1ae1aa5f705caba",
+    "strokeStates" : {
+      "draw:java.awt.geom.Area:width=2.1:cap=2:join=0:normalize=Default stroke normalization" : 104,
+      "draw:java.awt.geom.Line2D$Double:width=4.0:cap=0:join=1:normalize=Default stroke normalization" : 7,
+      "draw:java.awt.geom.Line2D$Double:width=4.1372547:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=4.921053:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=4.925:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=4.9473686:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=4.95:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=4.974359:cap=0:join=1:normalize=Default stroke normalization" : 2,
+      "draw:java.awt.geom.Line2D$Double:width=5.0:cap=0:join=1:normalize=Default stroke normalization" : 3,
+      "draw:java.awt.geom.Line2D$Double:width=5.75:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.8095236:cap=0:join=1:normalize=Default stroke normalization" : 2,
+      "draw:java.awt.geom.Line2D$Double:width=5.85:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.904762:cap=0:join=1:normalize=Default stroke normalization" : 3,
+      "draw:java.awt.geom.Line2D$Double:width=5.909091:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.977273:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.9:cap=0:join=1:normalize=Default stroke normalization" : 4,
+      "draw:java.awt.geom.Line2D$Double:width=6.0:cap=0:join=1:normalize=Default stroke normalization" : 3,
+      "fill:java.awt.geom.Area:width=1.0:cap=2:join=0:normalize=Default stroke normalization" : 1,
+      "fill:java.awt.geom.Area:width=2.1:cap=2:join=0:normalize=Default stroke normalization" : 113,
+      "fillRect:width=1.0:cap=2:join=0:normalize=Default stroke normalization" : 86,
+      "fillRect:width=2.1:cap=2:join=0:normalize=Default stroke normalization" : 202077
+    },
+    "rasterCandidates" : {
+      "spanFill" : {
+        "beforeGlyphPassDifferentPixels" : 0,
+        "finalDifferentPixels" : 0
+      },
+      "unsupportedOperations" : 0,
+      "thinFill" : {
+        "beforeGlyphPassDifferentPixels" : 646,
+        "finalDifferentPixels" : 597
+      },
+      "quarterSnappedFill" : {
+        "beforeGlyphPassDifferentPixels" : 810,
+        "finalDifferentPixels" : 669
+      }
+    },
+    "examples" : {
+      "draw:java.awt.geom.Area" : {
+        "segments" : [ [ 0.0, 150.0, 333.5 ], [ 1.0, 150.0, 419.5 ], [ 1.0, 156.0, 419.5 ], [ 1.0, 156.0, 333.5 ], [ 4.0 ] ],
+        "transform" : [ 1.0, 0.0, 0.0, 1.0, 0.0, 0.0 ],
+        "winding" : 1
+      },
+      "draw:java.awt.geom.Line2D$Double" : {
+        "segments" : [ [ 0.0, 422.0, 543.0 ], [ 1.0, 468.0, 543.0 ] ],
+        "transform" : [ 1.0, 0.0, 0.0, 1.0, 0.0, 0.0 ],
+        "winding" : 1
+      },
+      "fill:java.awt.geom.Area" : {
+        "segments" : [ [ 0.0, 150.0, 333.5 ], [ 1.0, 150.0, 419.5 ], [ 1.0, 156.0, 419.5 ], [ 1.0, 156.0, 333.5 ], [ 4.0 ] ],
+        "transform" : [ 1.0, 0.0, 0.0, 1.0, 0.0, 0.0 ],
+        "winding" : 1
+      },
+      "fillRect" : {
+        "segments" : [ [ 0.0, 118.0, 372.0 ], [ 1.0, 119.0, 372.0 ], [ 1.0, 119.0, 392.0 ], [ 1.0, 118.0, 392.0 ], [ 1.0, 118.0, 372.0 ], [ 4.0 ] ],
+        "transform" : [ 1.0, 0.0, 0.0, 1.0, 0.0, 0.0 ],
+        "winding" : 1
+      }
+    },
+    "operations" : {
+      "draw:java.awt.geom.Area" : 104,
+      "draw:java.awt.geom.Line2D$Double" : 33,
+      "fill:java.awt.geom.Area" : 114,
+      "fillRect" : 202163
+    },
+    "pixels" : 8694880,
+    "fonts" : { },
+    "height" : 3506,
+    "width" : 2480
+  }, {
+    "id" : "03",
+    "cleanedSha256" : "b927e5eae3850434d57ded2ec6eedbb28389360ab09672a4d85e013f6d520b4b",
+    "strokeStates" : {
+      "draw:java.awt.geom.Area:width=2.1:cap=2:join=0:normalize=Default stroke normalization" : 111,
+      "draw:java.awt.geom.Line2D$Double:width=4.0238094:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=4.025:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=4.0:cap=0:join=1:normalize=Default stroke normalization" : 14,
+      "draw:java.awt.geom.Line2D$Double:width=4.785714:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=4.857143:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=4.883721:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=4.948718:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=4.952381:cap=0:join=1:normalize=Default stroke normalization" : 2,
+      "draw:java.awt.geom.Line2D$Double:width=4.95:cap=0:join=1:normalize=Default stroke normalization" : 2,
+      "draw:java.awt.geom.Line2D$Double:width=5.0263157:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.0714283:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.0:cap=0:join=1:normalize=Default stroke normalization" : 6,
+      "draw:java.awt.geom.Line2D$Double:width=5.340909:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.452381:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.45:cap=0:join=1:normalize=Default stroke normalization" : 2,
+      "draw:java.awt.geom.Line2D$Double:width=5.525:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.575:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.5:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.8095236:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.820513:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.886364:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.894737:cap=0:join=1:normalize=Default stroke normalization" : 3,
+      "draw:java.awt.geom.Line2D$Double:width=5.8:cap=0:join=1:normalize=Default stroke normalization" : 2,
+      "draw:java.awt.geom.Line2D$Double:width=5.904762:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.931818:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.9473686:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.9:cap=0:join=1:normalize=Default stroke normalization" : 6,
+      "draw:java.awt.geom.Line2D$Double:width=6.0:cap=0:join=1:normalize=Default stroke normalization" : 15,
+      "draw:java.awt.geom.Line2D$Double:width=7.7:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "fill:java.awt.geom.Area:width=1.0:cap=2:join=0:normalize=Default stroke normalization" : 1,
+      "fill:java.awt.geom.Area:width=2.1:cap=2:join=0:normalize=Default stroke normalization" : 120,
+      "fillRect:width=1.0:cap=2:join=0:normalize=Default stroke normalization" : 76,
+      "fillRect:width=2.1:cap=2:join=0:normalize=Default stroke normalization" : 158969
+    },
+    "rasterCandidates" : {
+      "spanFill" : {
+        "beforeGlyphPassDifferentPixels" : 0,
+        "finalDifferentPixels" : 0
+      },
+      "unsupportedOperations" : 0,
+      "thinFill" : {
+        "beforeGlyphPassDifferentPixels" : 1967,
+        "finalDifferentPixels" : 1907
+      },
+      "quarterSnappedFill" : {
+        "beforeGlyphPassDifferentPixels" : 2155,
+        "finalDifferentPixels" : 2080
+      }
+    },
+    "examples" : {
+      "draw:java.awt.geom.Area" : {
+        "segments" : [ [ 0.0, 167.0, 221.5 ], [ 1.0, 167.0, 307.5 ], [ 1.0, 173.0, 307.5 ], [ 1.0, 173.0, 221.5 ], [ 4.0 ] ],
+        "transform" : [ 1.0, 0.0, 0.0, 1.0, 0.0, 0.0 ],
+        "winding" : 1
+      },
+      "draw:java.awt.geom.Line2D$Double" : {
+        "segments" : [ [ 0.0, 1974.0, 196.98290464958865 ], [ 1.0, 2018.0, 197.0832654452591 ] ],
+        "transform" : [ 1.0, 0.0, 0.0, 1.0, 0.0, 0.0 ],
+        "winding" : 1
+      },
+      "fill:java.awt.geom.Area" : {
+        "segments" : [ [ 0.0, 167.0, 221.5 ], [ 1.0, 167.0, 307.5 ], [ 1.0, 173.0, 307.5 ], [ 1.0, 173.0, 221.5 ], [ 4.0 ] ],
+        "transform" : [ 1.0, 0.0, 0.0, 1.0, 0.0, 0.0 ],
+        "winding" : 1
+      },
+      "fillRect" : {
+        "segments" : [ [ 0.0, 136.0, 471.0 ], [ 1.0, 137.0, 471.0 ], [ 1.0, 137.0, 503.0 ], [ 1.0, 136.0, 503.0 ], [ 1.0, 136.0, 471.0 ], [ 4.0 ] ],
+        "transform" : [ 1.0, 0.0, 0.0, 1.0, 0.0, 0.0 ],
+        "winding" : 1
+      }
+    },
+    "operations" : {
+      "draw:java.awt.geom.Area" : 111,
+      "draw:java.awt.geom.Line2D$Double" : 72,
+      "fill:java.awt.geom.Area" : 121,
+      "fillRect" : 159045
+    },
+    "pixels" : 8694880,
+    "fonts" : { },
+    "height" : 3506,
+    "width" : 2480
+  }, {
+    "id" : "04",
+    "cleanedSha256" : "31013e845668db300018e6e06334eb357e9e85d769702e5e6ae4c13e0b6a8e0d",
+    "strokeStates" : {
+      "draw:java.awt.geom.Area:width=2.1:cap=2:join=0:normalize=Default stroke normalization" : 110,
+      "draw:java.awt.geom.Line2D$Double:width=3.0:cap=0:join=1:normalize=Default stroke normalization" : 2,
+      "draw:java.awt.geom.Line2D$Double:width=3.9555554:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=3.974359:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=4.0:cap=0:join=1:normalize=Default stroke normalization" : 6,
+      "draw:java.awt.geom.Line2D$Double:width=4.904762:cap=0:join=1:normalize=Default stroke normalization" : 2,
+      "draw:java.awt.geom.Line2D$Double:width=4.9130435:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=4.9230766:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=4.925:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=4.952381:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=4.95:cap=0:join=1:normalize=Default stroke normalization" : 2,
+      "draw:java.awt.geom.Line2D$Double:width=4.9736843:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=4.974359:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=4.97561:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=4.9:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.025:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.051282:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.075:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.0769234:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.0:cap=0:join=1:normalize=Default stroke normalization" : 3,
+      "draw:java.awt.geom.Line2D$Double:width=5.157895:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.4:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.85:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.8:cap=0:join=1:normalize=Default stroke normalization" : 3,
+      "draw:java.awt.geom.Line2D$Double:width=5.904762:cap=0:join=1:normalize=Default stroke normalization" : 5,
+      "draw:java.awt.geom.Line2D$Double:width=5.95:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.9761906:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=5.9:cap=0:join=1:normalize=Default stroke normalization" : 6,
+      "draw:java.awt.geom.Line2D$Double:width=6.0789475:cap=0:join=1:normalize=Default stroke normalization" : 1,
+      "draw:java.awt.geom.Line2D$Double:width=6.0:cap=0:join=1:normalize=Default stroke normalization" : 5,
+      "fill:java.awt.geom.Area:width=1.0:cap=2:join=0:normalize=Default stroke normalization" : 1,
+      "fill:java.awt.geom.Area:width=2.1:cap=2:join=0:normalize=Default stroke normalization" : 119,
+      "fillRect:width=1.0:cap=2:join=0:normalize=Default stroke normalization" : 97,
+      "fillRect:width=2.1:cap=2:join=0:normalize=Default stroke normalization" : 181803
+    },
+    "rasterCandidates" : {
+      "spanFill" : {
+        "beforeGlyphPassDifferentPixels" : 0,
+        "finalDifferentPixels" : 0
+      },
+      "unsupportedOperations" : 0,
+      "thinFill" : {
+        "beforeGlyphPassDifferentPixels" : 1442,
+        "finalDifferentPixels" : 1314
+      },
+      "quarterSnappedFill" : {
+        "beforeGlyphPassDifferentPixels" : 1634,
+        "finalDifferentPixels" : 1454
+      }
+    },
+    "examples" : {
+      "draw:java.awt.geom.Area" : {
+        "segments" : [ [ 0.0, 150.0, 344.5 ], [ 1.0, 150.0, 431.5 ], [ 1.0, 154.0, 431.5 ], [ 1.0, 154.0, 344.5 ], [ 4.0 ] ],
+        "transform" : [ 1.0, 0.0, 0.0, 1.0, 0.0, 0.0 ],
+        "winding" : 1
+      },
+      "draw:java.awt.geom.Line2D$Double" : {
+        "segments" : [ [ 0.0, 1785.0, 451.1414540953336 ], [ 1.0, 1825.0, 450.80659785271837 ] ],
+        "transform" : [ 1.0, 0.0, 0.0, 1.0, 0.0, 0.0 ],
+        "winding" : 1
+      },
+      "fill:java.awt.geom.Area" : {
+        "segments" : [ [ 0.0, 150.0, 344.5 ], [ 1.0, 150.0, 431.5 ], [ 1.0, 154.0, 431.5 ], [ 1.0, 154.0, 344.5 ], [ 4.0 ] ],
+        "transform" : [ 1.0, 0.0, 0.0, 1.0, 0.0, 0.0 ],
+        "winding" : 1
+      },
+      "fillRect" : {
+        "segments" : [ [ 0.0, 116.0, 599.0 ], [ 1.0, 117.0, 599.0 ], [ 1.0, 117.0, 605.0 ], [ 1.0, 116.0, 605.0 ], [ 1.0, 116.0, 599.0 ], [ 4.0 ] ],
+        "transform" : [ 1.0, 0.0, 0.0, 1.0, 0.0, 0.0 ],
+        "winding" : 1
+      }
+    },
+    "operations" : {
+      "draw:java.awt.geom.Area" : 110,
+      "draw:java.awt.geom.Line2D$Double" : 54,
+      "fill:java.awt.geom.Area" : 120,
+      "fillRect" : 181900
+    },
+    "pixels" : 8694880,
+    "fonts" : { },
+    "height" : 3506,
+    "width" : 2480
+  } ],
+  "javaRuntime" : "25.0.5+8-LTS",
+  "rejectedBeforeTexts" : [ "05", "06", "07" ],
+  "limitation" : "JVM observation and native replay; the thin-fill candidate replays native drawing decisions and is diagnostic, not a portable cleaner"
+}

@@ -1,0 +1,19 @@
+{
+  "node": "v24.22.2",
+  "chromium": "158.0.8127.18",
+  "nodeInstances": 2,
+  "workers": 2,
+  "paths": 1024,
+  "normalizationModes": 2,
+  "nativeComparedPixels": 1780736,
+  "nativeJvmPixelsExact": true,
+  "nodePixelsExact": true,
+  "workerPixelSha256Exact": true,
+  "pixelSha256": "22705052f008c14d597884dd969a24dc1a158208c888d16e5f04802d71d3eb77",
+  "wasmPerPathHashesExact": true,
+  "inputGuardsPerInstance": 4,
+  "pureJavaSpanConverter": true,
+  "wasmBytes": 140964,
+  "wasmSha256": "5499c03940fdfcf202e1554c1da9d88bb1e82c6634514ae4dcbdab7c8d437f6c",
+  "limitation": "Packed white non-AA span fill only; portable TEXTS cleanup integration and music glyph painting are separate"
+}
