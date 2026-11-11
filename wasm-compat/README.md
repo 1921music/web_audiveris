@@ -1566,6 +1566,26 @@ Run after generating the all-page native/live reference and physical font resour
 a committed verification with `export_texts_continuation.py <repository> <mirror> <source-commit> --cleanup`;
 summaries go to `texts-cleanup-results` and assets to `wsl-artifacts/wasm-components/texts-cleanup`.
 
+### Music-symbol painting investigation
+
+`MusicPaintTrace` compares the original `ShapeSymbol.paintSymbol` with the same native
+font, layout, alignment and drawing state, replacing only `drawGlyphVector` with native
+`fill(glyphs.getOutline(x, y))`. The grid covers six music families, 19 notehead/rest/fermata/
+dynamics/pedal shapes, five point sizes and four fractional center positions. All **2,280 cases**
+differ, by **205,637 pixels** in total. This is a JVM-only diagnostic, not a portable renderer;
+it does not isolate the contributions of hinting, positioning and rasterization.
+Obtaining glyph outlines alone is therefore insufficient to establish cleanup compatibility.
+The packed backend continues to reject music-symbol painting explicitly.
+
+Run `traceMusicPainting` with both `-I dev/teavm-audit/audit.init.gradle` and
+`-I dev/teavm-audit/music-paint.init.gradle` through the capped WSL launcher.
+The task uses the original app working directory so its `res` font lookup remains unchanged.
+Archive with `export_music_paint_trace.py <repository> <mirror> <source-commit>`;
+`music-paint-results` records the result and font/source hashes. No Wasm size or speed claim
+follows from this experiment. TODO: evaluate an explicit glyph-mask backend, including a
+FreeType Wasm candidate, against native pixels before selecting its API, caching policy
+or implementation. The two supplied music-font measurements also remain separate work.
+
 ## Pure Java path-fill component
 
 `GrayPathRaster` calls the unchanged JDK `sun.java2d.loops.ProcessPath` scan converter, compiled

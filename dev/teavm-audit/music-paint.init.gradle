@@ -1,0 +1,13 @@
+// Use together with audit.init.gradle; this task observes native painting without substitutions.
+gradle.projectsEvaluated {
+    def app = rootProject.findProject(':app')
+    rootProject.tasks.register('traceMusicPainting', JavaExec) {
+        dependsOn 'compileWasmCompatibilityTests'
+        classpath = rootProject.files('build/wasm-compat/test-classes') + app.sourceSets.main.runtimeClasspath
+        mainClass = 'org.audiveris.wasm.compat.test.MusicPaintTrace'
+        maxHeapSize = '256m'
+        workingDir app.projectDir
+        systemProperty 'java.awt.headless', 'true'
+        args new File(rootProject.projectDir, 'build/wasm-compat/music-paint-trace').absolutePath
+    }
+}
