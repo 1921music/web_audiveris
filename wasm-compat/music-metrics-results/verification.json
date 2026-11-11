@@ -72,7 +72,7 @@
   "wasmSha256": "bb905aff0a3ec055eef600612c21a0f72564e0fdfc91e6e5d83b5e453f549f83",
   "glueBytes": 13406,
   "glueSha256": "ddd0b217e73cf68e1aafa5400c08718118fa89e5bdff7ddef1c113cbf99f756c",
-  "hostSha256": "bc0edbc9e37fa1326458871bd784b4de01ced59730f4ba2ad232562cec30251d",
+  "hostSha256": "c55d841162594f6085ee1b4dce4d3d711373c49f378ccd4e1b551a830718a7da",
   "fontSha256": {
     "Bravura.otf": "dca2d90c88437a701b1c2e71fa54e76f9fa41d7deee935d74dc871ea66ecfdd2",
     "FinaleJazz.otf": "a8ea0408ef7628ca38ae29eaa1b4357d2b0bf11747f6eee3c5f9ed5cca358e08",

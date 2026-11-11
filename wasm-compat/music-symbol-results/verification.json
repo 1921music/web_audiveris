@@ -1,0 +1,104 @@
+{
+  "node": "v24.22.2",
+  "chromium": "158.0.8127.18",
+  "nodeInstances": 2,
+  "workers": 2,
+  "recipes": 1194,
+  "unsupportedDefinitions": 378,
+  "pointSizes": [
+    1,
+    12,
+    19,
+    24,
+    37,
+    48,
+    88,
+    100,
+    101,
+    128
+  ],
+  "cases": 47760,
+  "pixelsPerInstance": 1222656000,
+  "nativePixelHashesExact": true,
+  "originalPackedRasterInWasm": true,
+  "suppliedGlyphIds": 0,
+  "suppliedGlyphPositions": 0,
+  "evictionChecks": 20,
+  "sharedFaceMetricRecoveryChecks": 20,
+  "nodeRows": [
+    {
+      "calls": 47760,
+      "guards": 8,
+      "stats": {
+        "calls": 47761,
+        "cachedMasks": 4096,
+        "cacheLimit": 4096,
+        "cachedMaskBytes": 5494380,
+        "maskCacheBudgetBytes": 16777216
+      },
+      "marlinBufferBytes": 135168
+    },
+    {
+      "calls": 47760,
+      "guards": 8,
+      "stats": {
+        "calls": 47761,
+        "cachedMasks": 4096,
+        "cacheLimit": 4096,
+        "cachedMaskBytes": 5494380,
+        "maskCacheBudgetBytes": 16777216
+      },
+      "marlinBufferBytes": 135168
+    }
+  ],
+  "workerRows": [
+    {
+      "calls": 47760,
+      "guards": 8,
+      "stats": {
+        "calls": 47761,
+        "cachedMasks": 4096,
+        "cacheLimit": 4096,
+        "cachedMaskBytes": 5494380,
+        "maskCacheBudgetBytes": 16777216
+      },
+      "marlinBufferBytes": 135168,
+      "dom": "undefined"
+    },
+    {
+      "calls": 47760,
+      "guards": 8,
+      "stats": {
+        "calls": 47761,
+        "cachedMasks": 4096,
+        "cacheLimit": 4096,
+        "cachedMaskBytes": 5494380,
+        "maskCacheBudgetBytes": 16777216
+      },
+      "marlinBufferBytes": 135168,
+      "dom": "undefined"
+    }
+  ],
+  "engineWasmBytes": 500613,
+  "engineWasmSha256": "621ec754b01b709a1c5c9761e20d5232b30919f70fe9cca76a8bb8810976f641",
+  "fontWasmBytes": 497135,
+  "fontWasmGzipBytes": 233464,
+  "fontWasmSha256": "1b4287df7df7baa63fe3701ff09499c8a7558d1c916d553f3316b481c5418c75",
+  "recipesSha256": "5bbcede1a8cdb822d5d6774f6d2673d23ec275fb6f0063d146858dda96515359",
+  "nativeReferenceSha256": "68fd2ba69a91733f97b8d216f3fe35f427d295f980d09c8e2d78a9d837233f7a",
+  "fontResourcesSha256": "3096f9bb4249f3f09976975733bcc51afd3e0fc488413fdaab7821364e8874f4",
+  "missingTextRoleRejected": true,
+  "hostSha256": "eb6c5b2eaa812d9c2bda90704361485bda487d3c1dfb0a19c71c98e88d5de4e4",
+  "metricsHostSha256": "c55d841162594f6085ee1b4dce4d3d711373c49f378ccd4e1b551a830718a7da",
+  "verifierSha256": "5d60ab334da7a4634f8a2450d50c7e0dcfe52b8a71bb6cd7468ca5540917bbac",
+  "fontSha256": {
+    "Bravura.otf": "dca2d90c88437a701b1c2e71fa54e76f9fa41d7deee935d74dc871ea66ecfdd2",
+    "FinaleJazz.otf": "a8ea0408ef7628ca38ae29eaa1b4357d2b0bf11747f6eee3c5f9ed5cca358e08",
+    "JazzPerc.ttf": "310ef24d859055f1ba026fe3a86359eb3be1e3ebbcac6cb9029281952e958538",
+    "Leland.otf": "cacca69cb750d851023d52a8e41d3373904aa82afc7247085f37d4ee6823506c",
+    "MusicalSymbols.ttf": "07fb37d9fd2c6ccceb1124d0e9e7aa8a4ffe03ae2f0a3bff5e620b241b59d5cc",
+    "Primus.ttf": "25f73922f6462d50a250e98cbb3b69909a7546eae8167e99592c3d641b80facd",
+    "ae7b7855e115-DejaVuSans.ttf": "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280"
+  },
+  "limitation": "Source-derived centered glyphs, reviewed size transforms, centered repeat-bar layers and ASCII TextSymbol definitions with explicit physical-font bindings. Other composite/line definitions remain explicit unsupported; point sizes above 128 and general text shaping/fallback need separate validation."
+}

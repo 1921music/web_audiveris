@@ -1,0 +1,96 @@
+{
+  "scope": "Only PageCleaner.symbol calls; this is not an engine-wide class exclusion list",
+  "source": "app/src/main/java/org/audiveris/omr/sheet/PageCleaner.java",
+  "remaining": [
+    {
+      "definitionClassOrReason": "BeamHookSymbol",
+      "definitions": 6,
+      "cleanupRoute": "AbstractBeamInter: area fill"
+    },
+    {
+      "definitionClassOrReason": "BeamSymbol",
+      "definitions": 6,
+      "cleanupRoute": "AbstractBeamInter: area fill"
+    },
+    {
+      "definitionClassOrReason": "BraceSymbol",
+      "definitions": 6,
+      "cleanupRoute": "BraceInter: existing glyph"
+    },
+    {
+      "definitionClassOrReason": "EndingSymbol",
+      "definitions": 12,
+      "cleanupRoute": "EndingInter: line and legs"
+    },
+    {
+      "definitionClassOrReason": "FlagsDownSymbol",
+      "definitions": 6,
+      "cleanupRoute": "AbstractFlagInter: existing glyph"
+    },
+    {
+      "definitionClassOrReason": "FlagsSymbol",
+      "definitions": 6,
+      "cleanupRoute": "AbstractFlagInter: existing glyph"
+    },
+    {
+      "definitionClassOrReason": "KeyCancelSymbol",
+      "definitions": 6,
+      "cleanupRoute": "KeyInter/KeyAlterInter: existing glyphs"
+    },
+    {
+      "definitionClassOrReason": "KeyFlatSymbol",
+      "definitions": 42,
+      "cleanupRoute": "KeyInter/KeyAlterInter: existing glyphs"
+    },
+    {
+      "definitionClassOrReason": "KeySharpSymbol",
+      "definitions": 42,
+      "cleanupRoute": "KeyInter/KeyAlterInter: existing glyphs"
+    },
+    {
+      "definitionClassOrReason": "LedgerSymbol",
+      "definitions": 6,
+      "cleanupRoute": "LedgerInter: line drawing"
+    },
+    {
+      "definitionClassOrReason": "MetronomeSymbol",
+      "definitions": 6,
+      "cleanupRoute": "Composite UI icon; BeatUnitInter uses its existing glyph"
+    },
+    {
+      "definitionClassOrReason": "No symbol",
+      "definitions": 132,
+      "cleanupRoute": "No definition; unsupported requests are rejected"
+    },
+    {
+      "definitionClassOrReason": "NonDraggableSymbol",
+      "definitions": 6,
+      "cleanupRoute": "UI marker"
+    },
+    {
+      "definitionClassOrReason": "NumDenSymbol",
+      "definitions": 60,
+      "cleanupRoute": "TimeWhole/TimePair/TimeCustomInter: glyph/member visitors"
+    },
+    {
+      "definitionClassOrReason": "NumberSymbol",
+      "definitions": 6,
+      "cleanupRoute": "UI prototype; AbstractNumberInter uses its existing glyph"
+    },
+    {
+      "definitionClassOrReason": "SlashedFlagSymbol",
+      "definitions": 12,
+      "cleanupRoute": "AbstractFlagInter: existing glyph"
+    },
+    {
+      "definitionClassOrReason": "SlurSymbol",
+      "definitions": 12,
+      "cleanupRoute": "SlurInter: area fill"
+    },
+    {
+      "definitionClassOrReason": "SmallBeamSymbol",
+      "definitions": 6,
+      "cleanupRoute": "AbstractBeamInter: area fill"
+    }
+  ]
+}

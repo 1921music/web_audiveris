@@ -13,10 +13,20 @@
     "live-ocr/jvm/symbol-geometry.json": "07d08f1c77b429323c96877aa4d742a4520507c9c8c76a491d7ee8366a2b01c2",
     "live-ocr/jvm/point-widths.json": "a0b69372639e88c4826f92270e1fadae42aad4c04c5c8d25e3164882a605dbb3",
     "live-ocr/jvm/default-font.txt": "465b0dc8595e31facf4d6b4d7cb5d89a7e1fae4dbcfd226ed242902d604ddb3d",
-    "../music-metrics-wasm/music-metrics.wasm": "bb905aff0a3ec055eef600612c21a0f72564e0fdfc91e6e5d83b5e453f549f83",
-    "../music-metrics-wasm/music-metrics.mjs": "ddd0b217e73cf68e1aafa5400c08718118fa89e5bdff7ddef1c113cbf99f756c",
-    "../../../app/res/Bravura.otf": "dca2d90c88437a701b1c2e71fa54e76f9fa41d7deee935d74dc871ea66ecfdd2",
-    "../../../wasm-compat/host/freetype-music-metrics.mjs": "bc0edbc9e37fa1326458871bd784b4de01ced59730f4ba2ad232562cec30251d",
+    "../music-symbols-wasm/music-symbols.wasm": "1b4287df7df7baa63fe3701ff09499c8a7558d1c916d553f3316b481c5418c75",
+    "../music-symbols-wasm/music-symbols.mjs": "4ac52428cdf72e72e60cab3a5676f995243ecb31df75a6171963aa94d94468c6",
+    "../music-symbols-wasm/fonts/Bravura.otf": "dca2d90c88437a701b1c2e71fa54e76f9fa41d7deee935d74dc871ea66ecfdd2",
+    "../music-symbols-wasm/fonts/FinaleJazz.otf": "a8ea0408ef7628ca38ae29eaa1b4357d2b0bf11747f6eee3c5f9ed5cca358e08",
+    "../music-symbols-wasm/fonts/JazzPerc.ttf": "310ef24d859055f1ba026fe3a86359eb3be1e3ebbcac6cb9029281952e958538",
+    "../music-symbols-wasm/fonts/Leland.otf": "cacca69cb750d851023d52a8e41d3373904aa82afc7247085f37d4ee6823506c",
+    "../music-symbols-wasm/fonts/MusicalSymbols.ttf": "07fb37d9fd2c6ccceb1124d0e9e7aa8a4ffe03ae2f0a3bff5e620b241b59d5cc",
+    "../music-symbols-wasm/fonts/Primus.ttf": "25f73922f6462d50a250e98cbb3b69909a7546eae8167e99592c3d641b80facd",
+    "../music-symbols-wasm/fonts/ae7b7855e115-DejaVuSans.ttf": "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280",
+    "../music-symbols-wasm/recipes.json": "5bbcede1a8cdb822d5d6774f6d2673d23ec275fb6f0063d146858dda96515359",
+    "../music-symbols-wasm/font-resources.json": "3096f9bb4249f3f09976975733bcc51afd3e0fc488413fdaab7821364e8874f4",
+    "../music-symbols-wasm/jvm-reference.json": "68fd2ba69a91733f97b8d216f3fe35f427d295f980d09c8e2d78a9d837233f7a",
+    "../../../wasm-compat/host/freetype-music-symbols.mjs": "eb6c5b2eaa812d9c2bda90704361485bda487d3c1dfb0a19c71c98e88d5de4e4",
+    "../../../wasm-compat/host/freetype-music-metrics.mjs": "c55d841162594f6085ee1b4dce4d3d711373c49f378ccd4e1b551a830718a7da",
     "../recorded-text-fonts/font-resources.json": "c7e3c8dae1256e27fd0e3053c25de7e0db74e691f2326c37f129975400ed6f8b",
     "../recorded-text-fonts/fonts/ae7b7855e115-DejaVuSans.ttf": "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280",
     "../recorded-text-fonts/fonts/8f2c103bfa3f-DejaVuSerif.ttf": "8f2c103bfa3fd5de71f1b92b18f21906b5a26871fb7e19a9a4c9af539c3cc7ab",
@@ -27,7 +37,7 @@
     "../template-original-probe/Bravura-91.atpl": "4471a1770f6b3960c16d984f47679c1ef7aaefaab406a3b15a9021da63546fdf",
     "../template-original-probe/Bravura-92.atpl": "31f852332ad1f5b494651c7d7226e8ffff03678a671b37a81fadec1b23f69f14",
     "../texts-music-backed-probe/texts-music-backed.wasm-runtime.js": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
-    "../texts-music-backed-probe/texts-music-backed.wasm": "08ea96950858e4190edb63506e2bf7177e90b360d42704f080277cd48d987e3c",
+    "../texts-music-backed-probe/texts-music-backed.wasm": "1eb6232afa1984db1f3065a5c83d10e5514fd47075243219ada025e4564b8e19",
     "../../../wasm-compat/node_modules/@tesseract.js-data/eng/4.0.0/eng.traineddata.gz": "ed350f3752f81ee8f38769edc14d92d997dababe23b565c59879372cc46a2468",
     "../../../wasm-compat/node_modules/tesseract.js-core/tesseract-core-relaxedsimd.js": "716be037611f21b568347421f582f1e1a6456b6d5c3a7c2406c8a2a6c0136427",
     "../../../wasm-compat/node_modules/tesseract.js-core/tesseract-core-relaxedsimd.wasm": "45f8c9b516df326b6ae6b493ed3a6289df5cbd10490e7b6ff8bf5b12ea42d1da",
@@ -69,17 +79,17 @@
   "originalSystemProcessing": true,
   "asynchronousReplyBoundary": true,
   "duplicateAndLateRepliesRejected": true,
-  "wasmBytes": 3449826,
-  "wasmSha256": "08ea96950858e4190edb63506e2bf7177e90b360d42704f080277cd48d987e3c",
+  "wasmBytes": 3525070,
+  "wasmSha256": "1eb6232afa1984db1f3065a5c83d10e5514fd47075243219ada025e4564b8e19",
   "liveOcr": true,
   "ordinaryFontsFromFiles": true,
   "originalCleanupInWasm": true,
   "suppliedCleanupRasters": 0,
   "cleanupReferencePixelsExact": true,
   "resumedNodeValidation": false,
-  "nodeCheckpointSha256": "7e168bfd54cd63ef010b6a75c8d6efb8c750abbe97c74f3783cd55b1de098695",
-  "verifierSha256": "aee54a09d17028da562cdbf05944cf2f366147be62f17a972fb2e1a1aa9b4b7e",
-  "limitation": "Original cleanup, actual OCR and full TEXTS with physical ordinary and music font measurements; music-symbol painting, dashed thin strokes, general shaping/fallback and native OCR parity are not claimed",
+  "nodeCheckpointSha256": "b6a0759be621ef485ada27241355eed516388b5c918edf71faa9d112d66c3172",
+  "verifierSha256": "e774d473c38f0ff1b7dd39e3288f9aa04a153a620c5e0d45ae9b92b07a6f57e6",
+  "limitation": "Original cleanup, actual OCR and full TEXTS with shared FreeType music metrics/rendering. Five native-hash symbol smoke cases are separate from the five pages; page symbol call counts are reported. Other composite/line definitions, dashed thin strokes, general shaping/fallback and native OCR parity are not claimed",
   "ocrAssets": {
     "/host/tesseract-js-ocr.mjs": {
       "bytes": 8510,
@@ -170,46 +180,112 @@
       "cacheLimit": 256,
       "cachedMeasurements": 2,
       "cachedGlyphMetrics": 2,
-      "linearMemoryBytes": 16777216
+      "linearMemoryBytes": 16777216,
+      "symbols": {
+        "calls": 5,
+        "cachedMasks": 6,
+        "cacheLimit": 256,
+        "cachedMaskBytes": 8688,
+        "maskCacheBudgetBytes": 16777216
+      },
+      "pageSymbolCalls": 0
     },
     {
       "requests": 2,
       "cacheLimit": 256,
       "cachedMeasurements": 2,
       "cachedGlyphMetrics": 2,
-      "linearMemoryBytes": 16777216
+      "linearMemoryBytes": 16777216,
+      "symbols": {
+        "calls": 5,
+        "cachedMasks": 6,
+        "cacheLimit": 256,
+        "cachedMaskBytes": 8688,
+        "maskCacheBudgetBytes": 16777216
+      },
+      "pageSymbolCalls": 0
     },
     {
       "requests": 2,
       "cacheLimit": 256,
       "cachedMeasurements": 2,
       "cachedGlyphMetrics": 2,
-      "linearMemoryBytes": 16777216
+      "linearMemoryBytes": 16777216,
+      "symbols": {
+        "calls": 5,
+        "cachedMasks": 6,
+        "cacheLimit": 256,
+        "cachedMaskBytes": 8688,
+        "maskCacheBudgetBytes": 16777216
+      },
+      "pageSymbolCalls": 0
     },
     {
       "requests": 2,
       "cacheLimit": 256,
       "cachedMeasurements": 2,
       "cachedGlyphMetrics": 2,
-      "linearMemoryBytes": 16777216
+      "linearMemoryBytes": 16777216,
+      "symbols": {
+        "calls": 5,
+        "cachedMasks": 6,
+        "cacheLimit": 256,
+        "cachedMaskBytes": 8688,
+        "maskCacheBudgetBytes": 16777216
+      },
+      "pageSymbolCalls": 0
     }
   ],
+  "sharedMusicMetricsAndRendering": true,
+  "symbolSmokeChecksPerInstance": 5,
   "musicFontAssets": {
     "/music/factory.mjs": {
-      "bytes": 13406,
-      "sha256": "ddd0b217e73cf68e1aafa5400c08718118fa89e5bdff7ddef1c113cbf99f756c"
+      "bytes": 13763,
+      "sha256": "4ac52428cdf72e72e60cab3a5676f995243ecb31df75a6171963aa94d94468c6"
     },
     "/music/module.wasm": {
-      "bytes": 494499,
-      "sha256": "bb905aff0a3ec055eef600612c21a0f72564e0fdfc91e6e5d83b5e453f549f83"
+      "bytes": 497135,
+      "sha256": "1b4287df7df7baa63fe3701ff09499c8a7558d1c916d553f3316b481c5418c75"
     },
     "/music/host.mjs": {
-      "bytes": 5749,
-      "sha256": "bc0edbc9e37fa1326458871bd784b4de01ced59730f4ba2ad232562cec30251d"
+      "bytes": 6838,
+      "sha256": "eb6c5b2eaa812d9c2bda90704361485bda487d3c1dfb0a19c71c98e88d5de4e4"
     },
-    "/music/Bravura.otf": {
+    "/music/freetype-music-metrics.mjs": {
+      "bytes": 5943,
+      "sha256": "c55d841162594f6085ee1b4dce4d3d711373c49f378ccd4e1b551a830718a7da"
+    },
+    "/music/recipes.json": {
+      "bytes": 93888,
+      "sha256": "5bbcede1a8cdb822d5d6774f6d2673d23ec275fb6f0063d146858dda96515359"
+    },
+    "/music/fonts/Bravura.otf": {
       "bytes": 512924,
       "sha256": "dca2d90c88437a701b1c2e71fa54e76f9fa41d7deee935d74dc871ea66ecfdd2"
+    },
+    "/music/fonts/FinaleJazz.otf": {
+      "bytes": 136984,
+      "sha256": "a8ea0408ef7628ca38ae29eaa1b4357d2b0bf11747f6eee3c5f9ed5cca358e08"
+    },
+    "/music/fonts/JazzPerc.ttf": {
+      "bytes": 26748,
+      "sha256": "310ef24d859055f1ba026fe3a86359eb3be1e3ebbcac6cb9029281952e958538"
+    },
+    "/music/fonts/Leland.otf": {
+      "bytes": 88132,
+      "sha256": "cacca69cb750d851023d52a8e41d3373904aa82afc7247085f37d4ee6823506c"
+    },
+    "/music/fonts/MusicalSymbols.ttf": {
+      "bytes": 37644,
+      "sha256": "07fb37d9fd2c6ccceb1124d0e9e7aa8a4ffe03ae2f0a3bff5e620b241b59d5cc"
+    },
+    "/music/fonts/Primus.ttf": {
+      "bytes": 48072,
+      "sha256": "25f73922f6462d50a250e98cbb3b69909a7546eae8167e99592c3d641b80facd"
+    },
+    "/music/fonts/ae7b7855e115-DejaVuSans.ttf": {
+      "bytes": 759720,
+      "sha256": "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280"
     }
   }
 }

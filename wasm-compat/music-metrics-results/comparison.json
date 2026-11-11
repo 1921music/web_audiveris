@@ -401,34 +401,34 @@
   "portableDifferences" : 0,
   "families" : {
     "Bravura" : {
+      "portableCases" : 1161,
       "differentCases" : 0,
-      "missingCodepoints" : [ ],
-      "portableCases" : 1161
+      "missingCodepoints" : [ ]
     },
     "FinaleJazz" : {
+      "portableCases" : 1161,
       "differentCases" : 0,
-      "missingCodepoints" : [ ],
-      "portableCases" : 1161
+      "missingCodepoints" : [ ]
     },
     "JazzPerc" : {
+      "portableCases" : 0,
       "differentCases" : 258,
-      "missingCodepoints" : [ 32, 57506, 57811, 57813, 57815, 57817, 57831 ],
-      "portableCases" : 0
+      "missingCodepoints" : [ 32, 57506, 57811, 57813, 57815, 57817, 57831 ]
     },
     "Leland" : {
+      "portableCases" : 1161,
       "differentCases" : 0,
-      "missingCodepoints" : [ ],
-      "portableCases" : 1161
+      "missingCodepoints" : [ ]
     },
     "MusicalSymbols" : {
+      "portableCases" : 0,
       "differentCases" : 258,
-      "missingCodepoints" : [ 32, 57506, 57811, 57813, 57815, 57817, 57831 ],
-      "portableCases" : 0
+      "missingCodepoints" : [ 32, 57506, 57811, 57813, 57815, 57817, 57831 ]
     },
     "Primus" : {
+      "portableCases" : 0,
       "differentCases" : 258,
-      "missingCodepoints" : [ 32, 57506, 57811, 57813, 57815, 57817, 57831 ],
-      "portableCases" : 0
+      "missingCodepoints" : [ 32, 57506, 57811, 57813, 57815, 57817, 57831 ]
     }
   },
   "limitation" : "Unshaped music metrics for characters present in the physical font. Missing glyphs need a separate fallback/shaping backend; those cases remain diagnostic only."

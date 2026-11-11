@@ -1,0 +1,15 @@
+{
+  "sourceSha256": {
+    "music-symbols-wasm.c": "6b8eb1da198008ce8ac006da833da0b0375d82b333ea4bb262933dc0c15315f7",
+    "music-mask-native.c": "22c00cf9acee2b4b577fbf5f528fec582f418afd7310ede40e81c716188d431e",
+    "music-mask-wasm.c": "ed1d6fe2ca04879087d5c7791c7d69e5f3df98ac13f5fafab1c334f44d150742",
+    "music-metrics-wasm.c": "a9d8b450c4d654e5fb51865c79d1250f791b278decaed81cbf5e4959a415e725",
+    "music-metrics-functions.h": "35849d383546404b57cb04430ad7615efa560e087d3d3daa97543becdf87d01d",
+    "build_music_symbols_wasm.py": "018404a0e531f0eff3a9b62ad4500aa8ec94995389be25ee4939d063726c7a7e"
+  },
+  "wasmBytes": 497135,
+  "wasmSha256": "1b4287df7df7baa63fe3701ff09499c8a7558d1c916d553f3316b481c5418c75",
+  "maximumLinearMemoryBytes": 134217728,
+  "recipesSha256": "5bbcede1a8cdb822d5d6774f6d2673d23ec275fb6f0063d146858dda96515359",
+  "nativeReferenceSha256": "68fd2ba69a91733f97b8d216f3fe35f427d295f980d09c8e2d78a9d837233f7a"
+}
