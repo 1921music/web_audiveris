@@ -1,0 +1,435 @@
+{
+  "cases" : 6966,
+  "differentCases" : 774,
+  "mappingDifferences" : 0,
+  "maxDifference" : 8192.0,
+  "fontSha256" : {
+    "Bravura.otf" : "dca2d90c88437a701b1c2e71fa54e76f9fa41d7deee935d74dc871ea66ecfdd2",
+    "FinaleJazz.otf" : "a8ea0408ef7628ca38ae29eaa1b4357d2b0bf11747f6eee3c5f9ed5cca358e08",
+    "JazzPerc.ttf" : "310ef24d859055f1ba026fe3a86359eb3be1e3ebbcac6cb9029281952e958538",
+    "Leland.otf" : "cacca69cb750d851023d52a8e41d3373904aa82afc7247085f37d4ee6823506c",
+    "MusicalSymbols.ttf" : "07fb37d9fd2c6ccceb1124d0e9e7aa8a4ffe03ae2f0a3bff5e620b241b59d5cc",
+    "Primus.ttf" : "25f73922f6462d50a250e98cbb3b69909a7546eae8167e99592c3d641b80facd"
+  },
+  "differences" : [ {
+    "reference" : {
+      "family" : "Primus",
+      "font" : "Primus.ttf",
+      "name" : "PriMus",
+      "size" : 1,
+      "value" : " ",
+      "visual" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "layout" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "advance" : 1.24993896484375,
+      "portable" : false
+    },
+    "candidate" : [ 0.0, 0.0, 0.0, 0.0, 1.499908447265625 ],
+    "candidateIds" : [ 0, 0, 0 ],
+    "nativeIds" : [ 0, 0, 0 ],
+    "candidateName" : "PriMus"
+  }, {
+    "reference" : {
+      "family" : "Primus",
+      "font" : "Primus.ttf",
+      "name" : "PriMus",
+      "size" : 1,
+      "value" : " ",
+      "visual" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "layout" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "advance" : 1.24993896484375,
+      "portable" : false
+    },
+    "candidate" : [ 0.0, 0.0, 0.0, 0.0, 1.499908447265625 ],
+    "candidateIds" : [ 0, 0, 0 ],
+    "nativeIds" : [ 0, 0, 0 ],
+    "candidateName" : "PriMus"
+  }, {
+    "reference" : {
+      "family" : "Primus",
+      "font" : "Primus.ttf",
+      "name" : "PriMus",
+      "size" : 2,
+      "value" : " ",
+      "visual" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "layout" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "advance" : 2.500091552734375,
+      "portable" : false
+    },
+    "candidate" : [ 0.0, 0.0, 0.0, 0.0, 3.0001373291015625 ],
+    "candidateIds" : [ 0, 0, 0 ],
+    "nativeIds" : [ 0, 0, 0 ],
+    "candidateName" : "PriMus"
+  }, {
+    "reference" : {
+      "family" : "Primus",
+      "font" : "Primus.ttf",
+      "name" : "PriMus",
+      "size" : 2,
+      "value" : " ",
+      "visual" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "layout" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "advance" : 2.500091552734375,
+      "portable" : false
+    },
+    "candidate" : [ 0.0, 0.0, 0.0, 0.0, 3.0001373291015625 ],
+    "candidateIds" : [ 0, 0, 0 ],
+    "nativeIds" : [ 0, 0, 0 ],
+    "candidateName" : "PriMus"
+  }, {
+    "reference" : {
+      "family" : "Primus",
+      "font" : "Primus.ttf",
+      "name" : "PriMus",
+      "size" : 3,
+      "value" : " ",
+      "visual" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "layout" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "advance" : 3.750030517578125,
+      "portable" : false
+    },
+    "candidate" : [ 0.0, 0.0, 0.0, 0.0, 4.5000457763671875 ],
+    "candidateIds" : [ 0, 0, 0 ],
+    "nativeIds" : [ 0, 0, 0 ],
+    "candidateName" : "PriMus"
+  }, {
+    "reference" : {
+      "family" : "Primus",
+      "font" : "Primus.ttf",
+      "name" : "PriMus",
+      "size" : 3,
+      "value" : " ",
+      "visual" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "layout" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "advance" : 3.750030517578125,
+      "portable" : false
+    },
+    "candidate" : [ 0.0, 0.0, 0.0, 0.0, 4.5000457763671875 ],
+    "candidateIds" : [ 0, 0, 0 ],
+    "nativeIds" : [ 0, 0, 0 ],
+    "candidateName" : "PriMus"
+  }, {
+    "reference" : {
+      "family" : "Primus",
+      "font" : "Primus.ttf",
+      "name" : "PriMus",
+      "size" : 4,
+      "value" : " ",
+      "visual" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "layout" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "advance" : 4.99993896484375,
+      "portable" : false
+    },
+    "candidate" : [ 0.0, 0.0, 0.0, 0.0, 5.999908447265625 ],
+    "candidateIds" : [ 0, 0, 0 ],
+    "nativeIds" : [ 0, 0, 0 ],
+    "candidateName" : "PriMus"
+  }, {
+    "reference" : {
+      "family" : "Primus",
+      "font" : "Primus.ttf",
+      "name" : "PriMus",
+      "size" : 4,
+      "value" : " ",
+      "visual" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "layout" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "advance" : 4.99993896484375,
+      "portable" : false
+    },
+    "candidate" : [ 0.0, 0.0, 0.0, 0.0, 5.999908447265625 ],
+    "candidateIds" : [ 0, 0, 0 ],
+    "nativeIds" : [ 0, 0, 0 ],
+    "candidateName" : "PriMus"
+  }, {
+    "reference" : {
+      "family" : "Primus",
+      "font" : "Primus.ttf",
+      "name" : "PriMus",
+      "size" : 5,
+      "value" : " ",
+      "visual" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "layout" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "advance" : 6.2501220703125,
+      "portable" : false
+    },
+    "candidate" : [ 0.0, 0.0, 0.0, 0.0, 7.50018310546875 ],
+    "candidateIds" : [ 0, 0, 0 ],
+    "nativeIds" : [ 0, 0, 0 ],
+    "candidateName" : "PriMus"
+  }, {
+    "reference" : {
+      "family" : "Primus",
+      "font" : "Primus.ttf",
+      "name" : "PriMus",
+      "size" : 5,
+      "value" : " ",
+      "visual" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "layout" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "advance" : 6.2501220703125,
+      "portable" : false
+    },
+    "candidate" : [ 0.0, 0.0, 0.0, 0.0, 7.50018310546875 ],
+    "candidateIds" : [ 0, 0, 0 ],
+    "nativeIds" : [ 0, 0, 0 ],
+    "candidateName" : "PriMus"
+  }, {
+    "reference" : {
+      "family" : "Primus",
+      "font" : "Primus.ttf",
+      "name" : "PriMus",
+      "size" : 6,
+      "value" : " ",
+      "visual" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "layout" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "advance" : 7.500030517578125,
+      "portable" : false
+    },
+    "candidate" : [ 0.0, 0.0, 0.0, 0.0, 9.000045776367188 ],
+    "candidateIds" : [ 0, 0, 0 ],
+    "nativeIds" : [ 0, 0, 0 ],
+    "candidateName" : "PriMus"
+  }, {
+    "reference" : {
+      "family" : "Primus",
+      "font" : "Primus.ttf",
+      "name" : "PriMus",
+      "size" : 6,
+      "value" : " ",
+      "visual" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "layout" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "advance" : 7.500030517578125,
+      "portable" : false
+    },
+    "candidate" : [ 0.0, 0.0, 0.0, 0.0, 9.000045776367188 ],
+    "candidateIds" : [ 0, 0, 0 ],
+    "nativeIds" : [ 0, 0, 0 ],
+    "candidateName" : "PriMus"
+  }, {
+    "reference" : {
+      "family" : "Primus",
+      "font" : "Primus.ttf",
+      "name" : "PriMus",
+      "size" : 7,
+      "value" : " ",
+      "visual" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "layout" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "advance" : 8.749969482421875,
+      "portable" : false
+    },
+    "candidate" : [ 0.0, 0.0, 0.0, 0.0, 10.499954223632812 ],
+    "candidateIds" : [ 0, 0, 0 ],
+    "nativeIds" : [ 0, 0, 0 ],
+    "candidateName" : "PriMus"
+  }, {
+    "reference" : {
+      "family" : "Primus",
+      "font" : "Primus.ttf",
+      "name" : "PriMus",
+      "size" : 7,
+      "value" : " ",
+      "visual" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "layout" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "advance" : 8.749969482421875,
+      "portable" : false
+    },
+    "candidate" : [ 0.0, 0.0, 0.0, 0.0, 10.499954223632812 ],
+    "candidateIds" : [ 0, 0, 0 ],
+    "nativeIds" : [ 0, 0, 0 ],
+    "candidateName" : "PriMus"
+  }, {
+    "reference" : {
+      "family" : "Primus",
+      "font" : "Primus.ttf",
+      "name" : "PriMus",
+      "size" : 8,
+      "value" : " ",
+      "visual" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "layout" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "advance" : 9.999908447265625,
+      "portable" : false
+    },
+    "candidate" : [ 0.0, 0.0, 0.0, 0.0, 11.999862670898438 ],
+    "candidateIds" : [ 0, 0, 0 ],
+    "nativeIds" : [ 0, 0, 0 ],
+    "candidateName" : "PriMus"
+  }, {
+    "reference" : {
+      "family" : "Primus",
+      "font" : "Primus.ttf",
+      "name" : "PriMus",
+      "size" : 8,
+      "value" : " ",
+      "visual" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "layout" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "advance" : 9.999908447265625,
+      "portable" : false
+    },
+    "candidate" : [ 0.0, 0.0, 0.0, 0.0, 11.999862670898438 ],
+    "candidateIds" : [ 0, 0, 0 ],
+    "nativeIds" : [ 0, 0, 0 ],
+    "candidateName" : "PriMus"
+  }, {
+    "reference" : {
+      "family" : "Primus",
+      "font" : "Primus.ttf",
+      "name" : "PriMus",
+      "size" : 9,
+      "value" : " ",
+      "visual" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "layout" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "advance" : 11.25006103515625,
+      "portable" : false
+    },
+    "candidate" : [ 0.0, 0.0, 0.0, 0.0, 13.500091552734375 ],
+    "candidateIds" : [ 0, 0, 0 ],
+    "nativeIds" : [ 0, 0, 0 ],
+    "candidateName" : "PriMus"
+  }, {
+    "reference" : {
+      "family" : "Primus",
+      "font" : "Primus.ttf",
+      "name" : "PriMus",
+      "size" : 9,
+      "value" : " ",
+      "visual" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "layout" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "advance" : 11.25006103515625,
+      "portable" : false
+    },
+    "candidate" : [ 0.0, 0.0, 0.0, 0.0, 13.500091552734375 ],
+    "candidateIds" : [ 0, 0, 0 ],
+    "nativeIds" : [ 0, 0, 0 ],
+    "candidateName" : "PriMus"
+  }, {
+    "reference" : {
+      "family" : "Primus",
+      "font" : "Primus.ttf",
+      "name" : "PriMus",
+      "size" : 10,
+      "value" : " ",
+      "visual" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "layout" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "advance" : 12.5,
+      "portable" : false
+    },
+    "candidate" : [ 0.0, 0.0, 0.0, 0.0, 15.0 ],
+    "candidateIds" : [ 0, 0, 0 ],
+    "nativeIds" : [ 0, 0, 0 ],
+    "candidateName" : "PriMus"
+  }, {
+    "reference" : {
+      "family" : "Primus",
+      "font" : "Primus.ttf",
+      "name" : "PriMus",
+      "size" : 10,
+      "value" : " ",
+      "visual" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "layout" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "advance" : 12.5,
+      "portable" : false
+    },
+    "candidate" : [ 0.0, 0.0, 0.0, 0.0, 15.0 ],
+    "candidateIds" : [ 0, 0, 0 ],
+    "nativeIds" : [ 0, 0, 0 ],
+    "candidateName" : "PriMus"
+  }, {
+    "reference" : {
+      "family" : "Primus",
+      "font" : "Primus.ttf",
+      "name" : "PriMus",
+      "size" : 11,
+      "value" : " ",
+      "visual" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "layout" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "advance" : 13.749908447265625,
+      "portable" : false
+    },
+    "candidate" : [ 0.0, 0.0, 0.0, 0.0, 16.499862670898438 ],
+    "candidateIds" : [ 0, 0, 0 ],
+    "nativeIds" : [ 0, 0, 0 ],
+    "candidateName" : "PriMus"
+  }, {
+    "reference" : {
+      "family" : "Primus",
+      "font" : "Primus.ttf",
+      "name" : "PriMus",
+      "size" : 11,
+      "value" : " ",
+      "visual" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "layout" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "advance" : 13.749908447265625,
+      "portable" : false
+    },
+    "candidate" : [ 0.0, 0.0, 0.0, 0.0, 16.499862670898438 ],
+    "candidateIds" : [ 0, 0, 0 ],
+    "nativeIds" : [ 0, 0, 0 ],
+    "candidateName" : "PriMus"
+  }, {
+    "reference" : {
+      "family" : "Primus",
+      "font" : "Primus.ttf",
+      "name" : "PriMus",
+      "size" : 12,
+      "value" : " ",
+      "visual" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "layout" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "advance" : 15.000091552734375,
+      "portable" : false
+    },
+    "candidate" : [ 0.0, 0.0, 0.0, 0.0, 18.000137329101562 ],
+    "candidateIds" : [ 0, 0, 0 ],
+    "nativeIds" : [ 0, 0, 0 ],
+    "candidateName" : "PriMus"
+  }, {
+    "reference" : {
+      "family" : "Primus",
+      "font" : "Primus.ttf",
+      "name" : "PriMus",
+      "size" : 12,
+      "value" : " ",
+      "visual" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "layout" : [ 0.0, 0.0, 0.0, 0.0 ],
+      "advance" : 15.000091552734375,
+      "portable" : false
+    },
+    "candidate" : [ 0.0, 0.0, 0.0, 0.0, 18.000137329101562 ],
+    "candidateIds" : [ 0, 0, 0 ],
+    "nativeIds" : [ 0, 0, 0 ],
+    "candidateName" : "PriMus"
+  } ],
+  "javaRuntime" : "25.0.5+8-LTS",
+  "portableCases" : 3483,
+  "portableDifferences" : 0,
+  "families" : {
+    "Bravura" : {
+      "differentCases" : 0,
+      "missingCodepoints" : [ ],
+      "portableCases" : 1161
+    },
+    "FinaleJazz" : {
+      "differentCases" : 0,
+      "missingCodepoints" : [ ],
+      "portableCases" : 1161
+    },
+    "JazzPerc" : {
+      "differentCases" : 258,
+      "missingCodepoints" : [ 32, 57506, 57811, 57813, 57815, 57817, 57831 ],
+      "portableCases" : 0
+    },
+    "Leland" : {
+      "differentCases" : 0,
+      "missingCodepoints" : [ ],
+      "portableCases" : 1161
+    },
+    "MusicalSymbols" : {
+      "differentCases" : 258,
+      "missingCodepoints" : [ 32, 57506, 57811, 57813, 57815, 57817, 57831 ],
+      "portableCases" : 0
+    },
+    "Primus" : {
+      "differentCases" : 258,
+      "missingCodepoints" : [ 32, 57506, 57811, 57813, 57815, 57817, 57831 ],
+      "portableCases" : 0
+    }
+  },
+  "limitation" : "Unshaped music metrics for characters present in the physical font. Missing glyphs need a separate fallback/shaping backend; those cases remain diagnostic only."
+}

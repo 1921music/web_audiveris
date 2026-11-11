@@ -1,0 +1,99 @@
+{
+  "node": "v24.22.2",
+  "chromium": "158.0.8127.18",
+  "nodeInstances": 2,
+  "workers": 2,
+  "examinedCases": 6966,
+  "supportedCases": 3483,
+  "unsupportedCases": 3483,
+  "exactValues": true,
+  "inputGuardsPerInstance": 5,
+  "nodeRows": [
+    {
+      "checked": 3483,
+      "unsupported": 3483,
+      "guards": 5,
+      "stats": {
+        "requests": 6966,
+        "cacheLimit": 4096,
+        "cachedMeasurements": 3483,
+        "cachedGlyphMetrics": 2709,
+        "linearMemoryBytes": 16777216
+      },
+      "valueSha256": "47e2cf7f91a1a3a13349382b1c873f7825dca7f2460eb87010248129d10854b8"
+    },
+    {
+      "checked": 3483,
+      "unsupported": 3483,
+      "guards": 5,
+      "stats": {
+        "requests": 6966,
+        "cacheLimit": 4096,
+        "cachedMeasurements": 3483,
+        "cachedGlyphMetrics": 2709,
+        "linearMemoryBytes": 16777216
+      },
+      "valueSha256": "47e2cf7f91a1a3a13349382b1c873f7825dca7f2460eb87010248129d10854b8"
+    }
+  ],
+  "workerRows": [
+    {
+      "checked": 3483,
+      "unsupported": 3483,
+      "guards": 5,
+      "stats": {
+        "requests": 6966,
+        "cacheLimit": 4096,
+        "cachedMeasurements": 3483,
+        "cachedGlyphMetrics": 2709,
+        "linearMemoryBytes": 16777216
+      },
+      "valueSha256": "47e2cf7f91a1a3a13349382b1c873f7825dca7f2460eb87010248129d10854b8",
+      "dom": "undefined"
+    },
+    {
+      "checked": 3483,
+      "unsupported": 3483,
+      "guards": 5,
+      "stats": {
+        "requests": 6966,
+        "cacheLimit": 4096,
+        "cachedMeasurements": 3483,
+        "cachedGlyphMetrics": 2709,
+        "linearMemoryBytes": 16777216
+      },
+      "valueSha256": "47e2cf7f91a1a3a13349382b1c873f7825dca7f2460eb87010248129d10854b8",
+      "dom": "undefined"
+    }
+  ],
+  "nativeReferenceSha256": "c40a192bdd51ec9e97f6862385a2393a2cb86e0b9bc9b313c5cebb84eac915ef",
+  "wasmBytes": 494499,
+  "wasmGzipBytes": 232211,
+  "wasmSha256": "bb905aff0a3ec055eef600612c21a0f72564e0fdfc91e6e5d83b5e453f549f83",
+  "glueBytes": 13406,
+  "glueSha256": "ddd0b217e73cf68e1aafa5400c08718118fa89e5bdff7ddef1c113cbf99f756c",
+  "hostSha256": "bc0edbc9e37fa1326458871bd784b4de01ced59730f4ba2ad232562cec30251d",
+  "fontSha256": {
+    "Bravura.otf": "dca2d90c88437a701b1c2e71fa54e76f9fa41d7deee935d74dc871ea66ecfdd2",
+    "FinaleJazz.otf": "a8ea0408ef7628ca38ae29eaa1b4357d2b0bf11747f6eee3c5f9ed5cca358e08",
+    "JazzPerc.ttf": "310ef24d859055f1ba026fe3a86359eb3be1e3ebbcac6cb9029281952e958538",
+    "Leland.otf": "cacca69cb750d851023d52a8e41d3373904aa82afc7247085f37d4ee6823506c",
+    "MusicalSymbols.ttf": "07fb37d9fd2c6ccceb1124d0e9e7aa8a4ffe03ae2f0a3bff5e620b241b59d5cc",
+    "Primus.ttf": "25f73922f6462d50a250e98cbb3b69909a7546eae8167e99592c3d641b80facd"
+  },
+  "evictionNodeCheck": {
+    "checked": 18,
+    "unsupported": 0,
+    "guards": 5,
+    "stats": {
+      "requests": 18,
+      "cacheLimit": 1,
+      "cachedMeasurements": 1,
+      "cachedGlyphMetrics": 1,
+      "linearMemoryBytes": 16777216
+    },
+    "valueSha256": "30e3537265523a45fd2f75ed00842b2e2a32aeadd223b2336fb10bb281718544"
+  },
+  "cacheLimitGuard": true,
+  "limitation": "Unshaped music strings whose glyphs are present in explicit physical fonts; missing glyphs require an explicit fallback. No TeaVM TEXTS integration is established by this component."
+}

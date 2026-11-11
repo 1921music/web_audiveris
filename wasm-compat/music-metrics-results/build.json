@@ -1,0 +1,13 @@
+{
+  "sourceSha256": {
+    "music-metrics-wasm.c": "a9d8b450c4d654e5fb51865c79d1250f791b278decaed81cbf5e4959a415e725",
+    "music-metrics-functions.h": "35849d383546404b57cb04430ad7615efa560e087d3d3daa97543becdf87d01d",
+    "music-mask-wasm.c": "ed1d6fe2ca04879087d5c7791c7d69e5f3df98ac13f5fafab1c334f44d150742",
+    "music-mask-native.c": "22c00cf9acee2b4b577fbf5f528fec582f418afd7310ede40e81c716188d431e",
+    "build_music_metrics_wasm.py": "ddecf59623d382fa7ef2dbf48498b3512f162faf6f7dc26e53e78d770f026a4e"
+  },
+  "wasmBytes": 494499,
+  "wasmSha256": "bb905aff0a3ec055eef600612c21a0f72564e0fdfc91e6e5d83b5e453f549f83",
+  "maximumLinearMemoryBytes": 134217728,
+  "nativeReferenceSha256": "c40a192bdd51ec9e97f6862385a2393a2cb86e0b9bc9b313c5cebb84eac915ef"
+}

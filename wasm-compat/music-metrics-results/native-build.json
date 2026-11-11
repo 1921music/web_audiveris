@@ -1,0 +1,11 @@
+{
+  "sourceSha256": {
+    "music-mask-native.c": "22c00cf9acee2b4b577fbf5f528fec582f418afd7310ede40e81c716188d431e",
+    "music-metrics-native.c": "9be54ed1388c2a06a084ba187aa2af49617b8cc6c29efcf5ff8fb455dbf12dda",
+    "music-metrics-functions.h": "35849d383546404b57cb04430ad7615efa560e087d3d3daa97543becdf87d01d",
+    "prepare_music_metrics_native.py": "41e13980bc82907d11f883125119c2183104ca0a4ff10d759037e63ef49382a0",
+    "prepare_music_mask_native.py": "ba306dfe64de7d6fc3bcd431f541846906ef50ba395fe6043c3e03c14ae86b2d"
+  },
+  "helperSha256": "c750a3c23c6f272b44a17b496586569a0ccae5f627ea232fbf15592b8c1584ee",
+  "isolatedStaticFreeType": true
+}
