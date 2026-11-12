@@ -1,0 +1,32 @@
+{
+  "url": "https://1921music.github.io/web_audiveris/",
+  "chromium": "158.0.8127.18",
+  "httpStatus": 200,
+  "backend": "tesseract-wasm",
+  "deployment": {
+    "sourceCommit": "dfcca455b3a372992c83e26f59ce31e6342a213d",
+    "backend": "tesseract-wasm",
+    "publishedAt": "2026-11-12T03:33:12.8406373Z",
+    "url": "https://1921music.github.io/web_audiveris/",
+    "engineSha256": "0f90e8afad81f22f7512aae4f1a6e2183d898c7e78ac4c462f86c12b7b0458d1",
+    "offlineHtmlSha256": "8c91b7da77f3f19fd9fc4ea39c68ffaafde5fc4d180577d8c77336b24b04c8f2",
+    "versions": {
+      "tesseract-wasm": "0.11.0",
+      "@tesseract.js-data/eng": "1.0.0"
+    }
+  },
+  "musicXmlDownloaded": true,
+  "recognitionMs": 41400.441058000004,
+  "pageErrors": [],
+  "failedRequests": [],
+  "notes": 169,
+  "cpuMax": "800000 100000",
+  "memoryMaxBytes": 8589934592,
+  "wasmContentType": "application/wasm",
+  "pagesBranch": "gh-pages",
+  "pagesCommit": "94c5eba4af1c34e8cd49c455516eceed5d925d3c",
+  "matchesVerifiedLstmXmlTree": true,
+  "offlineHtmlMatchesVerifiedArtifact": true,
+  "sample": "MerryGoRound page 00 (2480 x 3506 GRAY8, encoded as PNG)",
+  "scope": "one real-page public-URL smoke test; recognition accuracy limitations remain unchanged"
+}

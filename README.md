@@ -27,6 +27,8 @@ PNG・JPEG・WebP・BMPに対応しています。入力は1画像ずつで、�
 
 エンジン・フォント・OCRモデルを同梱した単一HTMLも作成できます。`audiveris-offline.html` を直接開くことで、サーバーやネットワーク接続なしで使えます。
 
+公開済みの[オフライン版の単一HTML](https://1921music.github.io/web_audiveris/audiveris-offline.html)も利用できます。リンク先をファイルとして保存し、ローカルで開いてください。
+
 既定のtesseract-wasm版は約12.3 MBです。Wasmとフォントはgzip圧縮後にBase64で埋め込みます。通常のWeb配布用 `index.html` はHTTP配信が必要です。
 
 ## 開発・ビルド
