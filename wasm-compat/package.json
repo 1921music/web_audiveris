@@ -5,6 +5,7 @@
   "devDependencies": {
     "@tesseract.js-data/eng": "1.0.0",
     "playwright": "1.65.0",
+    "tesseract-wasm": "0.11.0",
     "tesseract.js": "7.0.0"
   }
 }

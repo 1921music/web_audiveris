@@ -45,7 +45,8 @@ html = html.replace('</body>', '<script type="application/json" id="audiveris-em
     + '</script>\n<script>\n' + bootstrap + '\n</script>\n</body>')
 target = output / 'audiveris-offline.html'
 target.write_text(html, encoding='utf-8')
-report = {'htmlBytes': target.stat().st_size, 'htmlSha256': hashlib.sha256(target.read_bytes()).hexdigest(),
+report = {'ocrBackend': json.loads((source / 'ocr/assets.json').read_text()).get('backend', 'tesseract-js'),
+    'htmlBytes': target.stat().st_size, 'htmlSha256': hashlib.sha256(target.read_bytes()).hexdigest(),
     'embeddedFiles': len(file_hashes), 'uniquePayloads': len(payloads), 'assetSha256': file_hashes,
     'networkRequired': False, 'engineSha256': file_hashes['engine.wasm'], 'assetEncoding': encodings}
 (output / 'build.json').write_text(json.dumps(report, indent=2) + '\n')

@@ -140,6 +140,75 @@ then use the same build command with task `packageWorkerOcr`. This adds optional
 (library, SIMD core, English model and notices). The core package works with other OCR adapters
 without downloading this optional bundle. Serve the package over HTTP with Wasm MIME support.
 
+### Build-time OCR backend selection
+
+Both `packageWorkerOcr` and `packageWorkerOffline` accept
+`-PocrBackend=tesseract-js` (default) or `-PocrBackend=tesseract-wasm`.
+For example, append `'packageWorkerOffline', '-PocrBackend=tesseract-wasm'` to the
+three-init-script Gradle command above, after `npm ci --prefix wasm-compat` in WSL.
+Only the selected OCR runtime and English model are packaged. The common engine Wasm and fonts
+are unchanged. Switching builds replaces the generated `package/ocr/` directory.
+To repack existing engine binaries without compiling Java, run inside the capped launcher:
+
+```sh
+python3 dev/teavm-audit/package_engine.py "$PWD"
+python3 dev/teavm-audit/package_engine_ocr.py "$PWD" --backend tesseract-wasm
+python3 dev/teavm-audit/package_engine_offline.py "$PWD"
+```
+
+`ocr/assets.json` records the backend, pinned package versions, model variant and metadata policy;
+`ocr/integrity.json` records every file's SHA-256. Tesseract.js 7.0.0 uses OEM 0 and the existing
+`@tesseract.js-data/eng@1.0.0/4.0.0` model. Tesseract-wasm 0.11.0 uses LSTM and the same pinned
+data package's smaller `4.0.0_best_int` model. Both SIMD and non-SIMD OCR cores are included for
+the latter, with feature detection at initialization. No OCR package or model is fetched from a CDN.
+
+The tesseract-wasm adapter runs the low-level synchronous engine in its own classic Worker.
+Actual per-character hOCR boxes (`hocr_char_boxes=1`) and native line baselines are retained;
+word baselines interpolate that native line. Missing character boxes cause an explicit failure.
+LSTM font styles are unknown: this backend explicitly supplies plain Sans attributes, uses native
+`x_fsize` for initial size (word height only if absent), and leaves size refinement to original TEXTS
+physical-font measurement. This is a normalization policy, not detected native font attributes.
+Consequently its OCR text, text classification, downstream recognition and MusicXML may differ
+from JVM/Tesseract.js results. JVM equality remains a Tesseract.js regression requirement;
+tesseract-wasm is evaluated separately. Words without native line baselines retain their text and
+character geometry in the transport, but get `font: null`, so original TEXTS excludes them. This
+avoids inventing baselines and prevents downstream null-baseline failures (observed on page 04).
+No character whitelist or transliteration is applied. General complex-script support remains
+outside this build; the existing ASCII-only layout guard still applies to paths requiring shaping.
+
+Both adapters serialize OCR calls, own queued image snapshots, reject unavailable languages,
+isolate queued cancellations, and terminate active OCR work on abort. Retry creates a fresh
+Worker. HTTP and single-file `file://` deployments use the same adapter and transport.
+Run `wasm-compat/tools/verify-bundled-ocr.cjs` for real text/character geometry, initialization
+abort/retry, queue isolation and missing-model checks, plus the UI and offline verifiers above.
+
+The compared builds have the following sizes (decimal MB; both tesseract-wasm cores are shipped):
+
+| Asset | Tesseract.js | tesseract-wasm |
+| --- | ---: | ---: |
+| OCR assets, including compressed English model and notices | 14.66 MB | 6.70 MB |
+| Primary OCR Wasm | 3,451,410 bytes | 1,839,004 bytes |
+| Non-SIMD fallback OCR Wasm | — | 1,808,229 bytes |
+| English model, gzip | 10,923,060 bytes | 2,952,873 bytes |
+| Complete single HTML (gzip → Base64 for Wasm/fonts) | about 22.7 MB | about 12.3 MB |
+
+Both backend builds recognize MerryGoRound pages 00 and 04 in two concurrent engine Workers;
+the adapters serialize access to their shared OCR Worker. HTTP/file UI recognition, cancellation,
+retry and MusicXML downloads pass on page 00. The enclosure fixture also exercises local CURVES
+OCR resume. Its LSTM result does not reproduce the legacy rehearsal marks, so backend selection
+is a size/recognition tradeoff. This small fixture set is not a general accuracy benchmark.
+Tesseract.js retains exact JVM-reference MusicXML comparisons on the checked pages. LSTM output
+is compared and recorded without requiring equality. Per-run timings are recorded, but the
+single capped runs do not establish a speed advantage.
+
+Ready-to-use builds are under `wsl-artifacts/wasm-ocr-backends/<backend>/package/` and
+`wsl-artifacts/wasm-ocr-backends/<backend>/offline/audiveris-offline.html`. Compact verification,
+sizes, XML summaries and source/asset hashes are in `ocr-backend-results/`; full XML and screenshots
+are outside Git under `wsl-artifacts/wasm-components/ocr-backends/`.
+Use `AUDIVERIS_BUNDLED_OCR=1` with `tools/verify-engine-workers.cjs` to test the selected bundle;
+add `AUDIVERIS_LOCAL_OCR_FIXTURE=1` for the enclosure fixture. All commands run through the
+shared eight-CPU / 8 GiB / no-swap launcher.
+
 Example caller, with an image `Blob` supplied by the application:
 
 ```javascript

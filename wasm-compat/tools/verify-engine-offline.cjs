@@ -31,14 +31,15 @@ const root=path.resolve(process.argv[2]),output=path.join(root,'build/wasm-engin
         if(await page.locator('#status-card').getAttribute('data-state')==='error')throw new Error(await page.locator('#error-message').textContent());
         await page.locator('#cancel').click();
         await page.waitForFunction(()=>document.getElementById('status').textContent.includes('キャンセルしました')&&!document.getElementById('recognize').disabled,{},{timeout:60000});
-        await page.locator('#recognize').click();
+        const recognitionStarted=performance.now();await page.locator('#recognize').click();
         await page.waitForFunction(()=>['success','error'].includes(document.getElementById('status-card').dataset.state),{},{timeout:1200000});
         assert.equal(await page.locator('#status-card').getAttribute('data-state'),'success',await page.locator('#error-message').textContent());
         const event=page.waitForEvent('download');await page.locator('#downloads a').click();const download=await event;
         assert.equal(download.suggestedFilename(),'offline-score.musicxml');await download.saveAs(path.join(output,'00-0.musicxml'));
         await page.screenshot({path:path.join(output,'completed-desktop.png'),fullPage:true});
         assert.deepEqual(errors,[]);assert.deepEqual(requests,[]);
-        const report={chromium:browser.version(),protocol:new URL(page.url()).protocol,specialFileAccessFlags:false,
+        const report={backend:JSON.parse(fs.readFileSync(path.join(output,'build.json'))).ocrBackend,
+            recognitionMs:performance.now()-recognitionStarted,chromium:browser.version(),protocol:new URL(page.url()).protocol,specialFileAccessFlags:false,
             serverUsed:false,browserNetworkDisabled:true,networkRequests:requests,initialization:true,cancelAndRetry:true,imageRecognition:true,musicXmlDownloaded:true,
             htmlBytes:fs.statSync(path.join(output,'audiveris-offline.html')).size,
             cpuMax:fs.readFileSync(limits+'cpu.max','utf8').trim(),memoryMaxBytes:Number(fs.readFileSync(limits+'memory.max','utf8').trim())};

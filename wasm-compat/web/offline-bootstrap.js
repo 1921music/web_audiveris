@@ -32,7 +32,7 @@
             const url = URL.createObjectURL(new Blob([text], {type: 'text/javascript'}));
             moduleUrls[name] = url; assetUrls[name] = url; building.delete(name); return url;
         }
-        for (const name of Object.keys(code)) if (name.endsWith('.mjs') || name === 'ocr/tesseract.esm.min.js') module(name);
+        for (const name of Object.keys(code)) if (name.endsWith('.mjs') || ['ocr/tesseract.esm.min.js', 'ocr/lib.js'].includes(name)) module(name);
         for (const [name, text] of Object.entries(code)) {
             if (!moduleUrls[name]) assetUrls[name] = URL.createObjectURL(new Blob([transform(name, text)], {type: 'text/javascript'}));
         }

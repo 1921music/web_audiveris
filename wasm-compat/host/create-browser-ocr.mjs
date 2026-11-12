@@ -2,13 +2,19 @@
 import {TesseractJsOcr} from './tesseract-js-ocr.mjs';
 import {browserWordMetadataOptions} from './tesseract-word-metadata.mjs';
 
-/** Optional bundled Tesseract.js backend; alternative OCR implementations need only the transport. */
+/** The package manifest selects one bundled backend at build time. */
 export async function createBrowserOcr({base=new URL('../ocr/',import.meta.url)}={}){
     base=new URL(base);
     const response=await fetch(new URL('assets.json',base));
     if(!response.ok)throw new Error('OCR assets are unavailable: '+response.status);
-    const assets=await response.json(),{default:Tesseract}=await import(new URL(assets.library,base).href);
+    const assets=await response.json();
     const url=name=>new URL(name,base).href;
+    if(assets.backend==='tesseract-wasm'){
+        const {TesseractWasmOcr}=await import('./tesseract-wasm-ocr.mjs');
+        return new TesseractWasmOcr({assets:{...Object.fromEntries(['library','core','fallbackCore','model'].map(key=>[key,url(assets[key])])),variables:assets.variables??{}}});
+    }
+    if(assets.backend&&assets.backend!=='tesseract-js')throw new Error('Unknown OCR backend: '+assets.backend);
+    const {default:Tesseract}=await import(new URL(assets.library,base).href);
     return new TesseractJsOcr({oem:0,availableLanguages:assets.languages,createWorker:Tesseract.createWorker,
         workerOptions:browserWordMetadataOptions({workerPath:url(assets.worker),corePath:url(assets.core),langPath:url(assets.models),cacheMethod:'none',gzip:true},
             {loaderPath:new URL('./tesseract-core-word-metadata.js',import.meta.url).href,

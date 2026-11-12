@@ -32,10 +32,11 @@ const root=path.resolve(process.argv[2]),assets=path.join(root,'build/wasm-engin
         await page.locator('#recognize').click();await page.locator('#cancel').click();
         await page.waitForFunction(()=>document.getElementById('status').textContent.includes('キャンセルしました')&&!document.getElementById('recognize').disabled,{},{timeout:60000});
         assert.ok(await page.locator('#downloads').isHidden());console.log('UI cancellation and retry readiness passed');
-        await page.locator('#recognize').click();
+        const recognitionStarted=performance.now();await page.locator('#recognize').click();
         assert.ok(await page.locator('#image-file').isDisabled());assert.ok(await page.locator('#recognize').isDisabled());
         await page.waitForFunction(()=>['success','error'].includes(document.getElementById('status-card').dataset.state),{},{timeout:1200000});
         assert.equal(await page.locator('#status-card').getAttribute('data-state'),'success',await page.locator('#error-message').textContent());
+        const recognitionMs=performance.now()-recognitionStarted;
         await page.waitForFunction(()=>!document.getElementById('recognize').disabled);assert.equal(await page.locator('#downloads a').count(),1);
         const received=page.waitForEvent('download');await page.locator('#downloads a').click();const download=await received;
         assert.equal(download.suggestedFilename(),'MerryGoRound_p1.musicxml');await download.saveAs(path.join(output,'00-0.musicxml'));
@@ -49,7 +50,8 @@ const root=path.resolve(process.argv[2]),assets=path.join(root,'build/wasm-engin
         await page.waitForFunction(()=>document.getElementById('status-card').dataset.state==='error'&&!document.getElementById('recognize').disabled,{},{timeout:120000});
         assert.ok(await page.locator('#error-details').isVisible());assert.ok(await page.locator('#downloads').isHidden());
         assert.deepEqual(errors,[]);
-        const report={chromium:browser.version(),imageSelection:true,invalidFileRejected:true,preview:true,cancelAndRetry:true,progress:true,musicXmlDownloaded:true,
+        const report={backend:JSON.parse(fs.readFileSync(path.join(assets,'ocr/assets.json'))).backend,
+            recognitionMs,chromium:browser.version(),imageSelection:true,invalidFileRejected:true,preview:true,cancelAndRetry:true,progress:true,musicXmlDownloaded:true,
             suggestedFilename:download.suggestedFilename(),responsiveNoHorizontalOverflow:true,recognitionFailureRecoverable:true,staleDownloadsCleared:true,
             pageErrors:errors,cpuMax:fs.readFileSync(limits+'cpu.max','utf8').trim(),memoryMaxBytes:Number(fs.readFileSync(limits+'memory.max','utf8').trim())};
         fs.writeFileSync(path.join(output,'verification.json'),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report));

@@ -26,7 +26,7 @@ gradle.projectsEvaluated {
     rootProject.tasks.register('packageWorkerOcr',Exec) {
         dependsOn 'packageWorkerEngine'
         commandLine 'python3',new File(rootProject.projectDir,'dev/teavm-audit/package_engine_ocr.py').absolutePath,
-            rootProject.projectDir.absolutePath
+            rootProject.projectDir.absolutePath,'--backend',rootProject.findProperty('ocrBackend') ?: 'tesseract-js'
     }
     rootProject.tasks.register('packageWorkerOffline',Exec) {
         dependsOn 'packageWorkerOcr'
