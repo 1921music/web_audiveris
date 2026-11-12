@@ -1,110 +1,45 @@
-# WARNING
-### Beware of sites [audiveris.com](https://audiveris.com/) and [audiveris.net](https://audiveris.net/)!
+# Web Audiveris
 
-```diff
-- The sites https://audiveris.com https://audiveris.net  (note the `.com` and `.net` extensions)
--  have nothing to do with Audiveris.
-- They are reported to be high-risk websites, flagged by online security scanners as potential scams.
-```
-| audiveris.com | audiveris.net |
-| :---:         | :---:         |
-|![](https://github.com/Audiveris/audiveris.github.io/blob/master/assets/images/audiveris.com.png)|![](https://github.com/Audiveris/audiveris.github.io/blob/master/assets/images/audiveris.net.png)|
+[Audiveris](https://github.com/Audiveris/audiveris)の楽譜認識エンジンをWebAssemblyへ移植した、ブラウザで動く楽譜認識アプリです。楽譜画像を選択すると、認識結果をMusicXML 4.0としてダウンロードできます。
 
-```diff
-- These twin sites are aesthetically pleasing and look like advertisement for the Audiveris software.
-- However, users report that links redirect to pages dedicated to cryptocurrencies, sports betting, etc.
-- They have all the hallmarks of phishing sites…
-```
+**公開URL：[https://1921music.github.io/web_audiveris/](https://1921music.github.io/web_audiveris/)**
 
-![](https://github.com/Audiveris/docs/blob/master/images/SplashLogo.png)
-Logo crafted by [Katka](https://www.facebook.com/katkastreetart/)
+## 使い方
 
-# Audiveris - Open-source Optical Music Recognition
+1. 公開URLをWebAssembly GC対応のブラウザで開きます。動作検証にはChromiumを使用しています。
+2. 楽譜画像を選択するか、画面にドラッグ＆ドロップします。
+3. 「認識を開始」を押します。処理中は進捗を表示し、キャンセルもできます。
+4. 認識が完了したら、MusicXMLをダウンロードします。
 
-The goal of an OMR application is to allow the end-user to transcribe a score image into
-its symbolic counterpart.
-This opens the door to its further use by many kinds of digital processing such as
-playback, music edition, searching, republishing, etc.
+画像の認識処理はブラウザ内で行い、楽譜画像をサーバーへアップロードしません。認識エンジン・フォント・OCRモデルは初期読み込み時に取得します。
 
-The Audiveris application is built around the tight integration of two main components:
-an OMR engine and an OMR editor.
-- The OMR engine combines many techniques, depending on the type of entities to be recognized
--- *ad-hoc* methods for lines, image morphological closing for beams, external OCR for texts,
-template matching for heads, neural network for all other fixed-size shapes.   
-Significant progresses have been made, especially regarding poor-quality scores,
-but experience tells us that a 100% recognition ratio is simply out of reach in many cases.
-- The OMR editor thus comes into play to overcome engine weaknesses in convenient ways.
-The user can preselect processing switches to adapt the OMR engine before launching the
-transcription of the current score.
-Then the remaining mistakes can generally be quickly fixed
-via the manual editing of a few music symbols.
+PNG・JPEG・WebP・BMPに対応しています。入力は1画像ずつで、上限は64 MiB・32 Miピクセル・各辺32,768ピクセルです。TIFF・PDFや、複数画像をまとめたブックの作成には対応していません。
 
-## Key characteristics
+## 認識結果について
 
-* Good recognition efficiency on real-world quality scores (as those seen on the [IMSLP][imslp] site)
-* Effective support for large scores (with up to hundreds of pages)
-* Convenient user-oriented interface to detect and correct most OMR errors
-* Available on Windows, Linux and macOS
-* Open source
+自動認識には誤りが含まれます。出力したMusicXMLを楽譜編集ソフトなどで確認・修正してください。このWeb版には認識結果を修正するエディタはありません。
 
-The core of engine music information (OMR data) is fully documented and made publicly available,
-either directly via XML-based `.omr` project files or via the Java API of this software.   
-Audiveris comes with an integrated exporter to write (a subset of) this OMR data into
-[MusicXML][musicxml] 4.0 format.
-In the future, other exporters are expected to build upon OMR data to support other target formats.
+1枚の画像から複数の曲が検出されると、MusicXMLも複数になります。段の字下げを曲の区切りと誤判定する場合があります。
 
-## Stable releases
+文字認識は、既定で英語モデルの **tesseract-wasm（LSTM）** を使います。upstream/JVM版との認識結果・MusicXMLの一致検証には **Tesseract.js（Legacy）** を使い、ビルド時に切り替えます。LSTM版の出力はupstream/JVM版と完全には一致しません。複雑な文字組みやフォントの代替にも制約があります。
 
-On a rather regular basis, typically every 6 to 12 months, a new release is made available
-on the dedicated [Audiveris Releases][releases] page.
+## オフライン版
 
-The goal of a release is to provide significant improvements, well tested and integrated,
-resulting in a software as easy as possible to install and use.
+エンジン・フォント・OCRモデルを同梱した単一HTMLも作成できます。`audiveris-offline.html` を直接開くことで、サーバーやネットワーク接続なしで使えます。
 
-Since the release 5.5, an installer is provided for each of the main OSes
-(**Windows**, **Linux** and **macOS**) and comes with a pre-installed Java Runtime Environment (JRE).
-You can download any installer file from the **Assets** section, at the end of the chosen release:
+既定のtesseract-wasm版は約12.3 MBです。Wasmとフォントはgzip圧縮後にBase64で埋め込みます。通常のWeb配布用 `index.html` はHTTP配信が必要です。
 
-| OS name | Installer file extension |
-| :---    | :---   |
-| Windows | `.msi` |
-| Linux   | `.deb` |
-| macOS   | `.dmg` |
+## 開発・ビルド
 
-Additional installation means:
-- Under **Windows**, the _`winget`_ or _`scoop`_ utilities can be directly used to install the application.
-- Under **Linux**, a _`flatpak`_ package, also with a suitable JRE included,
-can be installed from the [Flathub] site.
+JavaのエンジンをTeaVMでWebAssemblyへコンパイルし、楽譜認識とOCRをそれぞれWorkerで実行します。Windows側をソースの正本とし、専用WSL環境へ同期してビルドします。
 
-See installers details in the handbook [installation] section.
+- [開発・ビルドの入口](wasm-compat/README.md)
+- [WSL開発環境の構築](dev/wsl/README.md)
+- [設計方針](WASM-ENGINE-DESIGN.md)
+- [移植の開発経過・検証結果](wasm-compat/DEVELOPMENT_HISTORY.md)
 
-## Development versions
+## upstream・ライセンス
 
-The Audiveris project is developed on GitHub, the site you are reading.  
-Any one can clone, build and run this software. 
-The needed tools are `git`, `gradle` and a Java Development Kit (`jdk`),
-as described in the handbook [sources][sources] section.
+このリポジトリは[Audiveris](https://github.com/Audiveris/audiveris)をもとにしたWeb移植版です。upstreamの説明は[README.upstream.md](README.upstream.md)に保存しています。
 
-There are two main branches in the Audiveris project:
-- the `master` branch is the GitHub default branch;
-we use it for releases, and only for them.
-- the `development` branch is the one where all developments continuously take place;
-Periodically, when a release is to be made, we merge the development branch into the master branch.
-
-See details in the [Wiki article][workflow] dedicated to the chosen development workflow.
-
-## Further Information
-
-- For users: the Audiveris [User Handbook][handbook].
-- For developers: the [Project Structure][project] and the [Wiki][audiveris-wiki] set of articles.
-
-[audiveris-wiki]: https://github.com/Audiveris/audiveris/wiki
-[Flathub]:        https://flathub.org/apps/org.audiveris.audiveris
-[handbook]:       https://audiveris.github.io/audiveris/
-[imslp]:          https://imslp.org/
-[installation]:   https://audiveris.github.io/audiveris/_pages/tutorials/install/binaries/
-[musicxml]:       http://www.musicxml.com/
-[project]:        project-structure.md
-[releases]:       https://github.com/Audiveris/audiveris/releases
-[sources]:        https://audiveris.github.io/audiveris/_pages/tutorials/install/sources/
-[workflow]:       https://github.com/Audiveris/audiveris/wiki/Git-Workflow
+ライセンスは[GNU AGPL v3](LICENSE)です。フォント・OCRなどの依存物にはそれぞれのライセンスが適用され、ビルド成果物にもライセンス文書を同梱します。

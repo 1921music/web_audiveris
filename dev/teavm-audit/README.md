@@ -121,7 +121,7 @@ original-method roots can be compared. Compatibility audits also run the JVM ora
 probe before compiling the application roots. `compareWasmCompatibilityAudit` checks that the
 original root manifests match exactly and reports resolved/new diagnostics.
 
-See [wasm-compat/README](../../wasm-compat/README.md) for supported APIs, behavior tests and the remaining
+See [the WebAssembly development history](../../wasm-compat/DEVELOPMENT_HISTORY.md) for supported APIs, behavior tests and the remaining
 platform boundaries. Existing all-method and selected audit snapshots are kept as baselines.
 
 ## Class inclusion decisions
