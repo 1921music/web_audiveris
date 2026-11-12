@@ -45,8 +45,8 @@ After building `packageWorkerOcr` as below, start the local server through the c
   '--directory', '/home/dev/work/web_audiveris/build/wasm-engine/package')
 ```
 
-Open `http://127.0.0.1:8765/` in the browser. Serve over HTTP; directly opening the HTML file
-does not provide the module/Worker environment. The packaged Windows copy is under
+Open `http://127.0.0.1:8765/` in the browser. The regular `index.html` needs HTTP serving;
+use the single-file offline build below to open directly with `file://`. The packaged Windows copy is under
 `wsl-artifacts/wasm-engine/`.
 
 The browser UI test selects a real grayscale score image, cancels and retries recognition,
@@ -57,6 +57,32 @@ Compact verification and source provenance are in `ui-results/`.
 Run `node --max-old-space-size=768 --v8-pool-size=1 wasm-compat/tools/verify-engine-ui.cjs "$PWD"`
 from the mirrored repository inside the capped launcher. Screenshots and full downloaded XML
 are kept outside Git under `wsl-artifacts/wasm-components/ui/`.
+
+### Single-file offline UI
+
+`packageWorkerOffline` adds `build/wasm-engine/offline/audiveris-offline.html`, which can be
+opened directly from the filesystem. It includes the UI, recognition engine, fonts, classifier,
+English OCR core/model and license notices. No local server, CDN or browser security flags are needed.
+The Windows artifact is `wsl-artifacts/wasm-engine-offline/audiveris-offline.html`.
+
+Build with the same three Gradle init scripts as the engine build below, replacing the task with
+`packageWorkerOffline`. If `packageWorkerOcr` is already built, the HTML alone can be regenerated with
+`python3 dev/teavm-audit/package_engine_offline.py "$PWD"` inside the capped WSL environment.
+
+Wasm and font files are **gzip-compressed first, then Base64-encoded**. The browser decodes and
+decompresses them using `DecompressionStream`. Identical assets share one embedded payload. Files
+already compressed (such as the gzipped OCR model) are retained if further gzip provides no saving.
+The resulting HTML is about **22.7 MB**, with the original engine binary unchanged. Per-asset original,
+compressed and Base64 sizes are recorded in `build.json`.
+
+The offline bootstrap creates module and asset Blob URLs separately in each Worker. This is needed
+because Chromium's `file://` Worker cannot load Blob URLs owned by its parent document. Original
+engine/OCR modules are linked to those in-memory URLs; synthetic URL identifiers never go to the
+network. This loader is isolated to the offline build; the regular HTTP deployment uses original modules.
+
+Verification opens the HTML with `file://`, disables browser networking, uses no file-access security
+flags, cancels and retries recognition, downloads MusicXML, and compares the full XML tree with the
+native reference. Browser verification is under the shared eight-CPU / 8 GiB resource ceiling.
 
 ### Standalone engine integration
 

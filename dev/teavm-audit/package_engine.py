@@ -45,7 +45,7 @@ for source in (root / 'wasm-compat/host').iterdir():
     if source.suffix in ['.mjs', '.js', '.cjs']:
         copy(source, 'host/' + source.name)
 for source in (root / 'wasm-compat/web').iterdir():
-    if source.is_file():
+    if source.is_file() and source.name != 'offline-bootstrap.js':
         copy(source, source.name)
 manifest = {
     'format': 1,

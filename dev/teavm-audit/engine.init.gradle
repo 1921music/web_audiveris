@@ -28,6 +28,11 @@ gradle.projectsEvaluated {
         commandLine 'python3',new File(rootProject.projectDir,'dev/teavm-audit/package_engine_ocr.py').absolutePath,
             rootProject.projectDir.absolutePath
     }
+    rootProject.tasks.register('packageWorkerOffline',Exec) {
+        dependsOn 'packageWorkerOcr'
+        commandLine 'python3',new File(rootProject.projectDir,'dev/teavm-audit/package_engine_offline.py').absolutePath,
+            rootProject.projectDir.absolutePath
+    }
     rootProject.tasks.register('buildEngineTextFonts',JavaExec) {
         dependsOn 'compileWasmCompatibilityTests','compileTeaVMAudit','patchKxmlCompatibility','selectWasmLibraryImplementations'
         classpath=rootProject.tasks.named('testPageRecognitionJvm',JavaExec).get().classpath
