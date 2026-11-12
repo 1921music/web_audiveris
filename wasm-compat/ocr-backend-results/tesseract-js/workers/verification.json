@@ -1,0 +1,75 @@
+{
+  "backend": "tesseract-js",
+  "chromium": "158.0.8127.18",
+  "concurrentWorkers": 2,
+  "localFixture": false,
+  "decodedPng": true,
+  "bundledOcr": true,
+  "abortDuringInit": true,
+  "abortDuringRecognition": true,
+  "rejectedBusy": true,
+  "results": [
+    {
+      "id": "00",
+      "stage": "PAGE",
+      "stages": [
+        "BINARY",
+        "SCALE",
+        "GRID",
+        "HEADERS",
+        "STEM_SEEDS",
+        "BEAMS",
+        "LEDGERS",
+        "HEADS",
+        "STEMS",
+        "REDUCTION",
+        "CUE_BEAMS",
+        "TEXTS",
+        "MEASURES",
+        "CHORDS",
+        "CURVES",
+        "SYMBOLS",
+        "LINKS",
+        "RHYTHMS",
+        "PAGE"
+      ],
+      "ocrRequests": 1,
+      "ocrLayouts": [
+        "MULTI_BLOCK"
+      ],
+      "scores": 1,
+      "rehearsals": 0
+    },
+    {
+      "id": "04",
+      "stage": "PAGE",
+      "stages": [
+        "BINARY",
+        "SCALE",
+        "GRID",
+        "HEADERS",
+        "STEM_SEEDS",
+        "BEAMS",
+        "LEDGERS",
+        "HEADS",
+        "STEMS",
+        "REDUCTION",
+        "CUE_BEAMS",
+        "TEXTS",
+        "MEASURES",
+        "CHORDS",
+        "CURVES",
+        "SYMBOLS",
+        "LINKS",
+        "RHYTHMS",
+        "PAGE"
+      ],
+      "ocrRequests": 1,
+      "ocrLayouts": [
+        "MULTI_BLOCK"
+      ],
+      "scores": 1,
+      "rehearsals": 0
+    }
+  ]
+}

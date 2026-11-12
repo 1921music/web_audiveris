@@ -1,0 +1,18 @@
+{
+  "backend": "tesseract-js",
+  "recognitionMs": 39478.159186000004,
+  "chromium": "158.0.8127.18",
+  "imageSelection": true,
+  "invalidFileRejected": true,
+  "preview": true,
+  "cancelAndRetry": true,
+  "progress": true,
+  "musicXmlDownloaded": true,
+  "suggestedFilename": "MerryGoRound_p1.musicxml",
+  "responsiveNoHorizontalOverflow": true,
+  "recognitionFailureRecoverable": true,
+  "staleDownloadsCleared": true,
+  "pageErrors": [],
+  "cpuMax": "800000 100000",
+  "memoryMaxBytes": 8589934592
+}

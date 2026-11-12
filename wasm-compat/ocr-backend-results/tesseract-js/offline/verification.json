@@ -1,0 +1,17 @@
+{
+  "backend": "tesseract-js",
+  "recognitionMs": 39529.23969,
+  "chromium": "158.0.8127.18",
+  "protocol": "file:",
+  "specialFileAccessFlags": false,
+  "serverUsed": false,
+  "browserNetworkDisabled": true,
+  "networkRequests": [],
+  "initialization": true,
+  "cancelAndRetry": true,
+  "imageRecognition": true,
+  "musicXmlDownloaded": true,
+  "htmlBytes": 22703183,
+  "cpuMax": "800000 100000",
+  "memoryMaxBytes": 8589934592
+}

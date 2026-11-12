@@ -1,0 +1,410 @@
+{
+  "sourceCommit": "1015e7f7fbc172f916d4af6aeb7790f898d71c73",
+  "sourceSha256": {
+    "dev/teavm-audit/package_engine.py": "9149f97e8b0e50cdfe305af5f1d0fd85e2e84ad3e3a3ba0a5703e552dbc0adef",
+    "dev/teavm-audit/package_engine_ocr.py": "a8f017b15e734d2c02325cb1ebeae5e582979879906d75fed63b5dba1c21676e",
+    "dev/teavm-audit/package_engine_offline.py": "a4eb3bace051f40ba345a8e56b3c230e67b05b76f78b621bcf407e61afe8be4b",
+    "dev/teavm-audit/engine.init.gradle": "0bd0710ce08d375a6ab0aadd789dfccb695a021aa88ed867f0973e438026a234",
+    "wasm-compat/host/create-browser-ocr.mjs": "38b35aaa4b85571397cf40c52e1be40f3a31d6bde2f55bbc52d4b5960503d82e",
+    "wasm-compat/host/engine-worker.js": "f47e771f6e37324a80b5f0d551edffa576f6745295ed170d21d000013aa3943b",
+    "wasm-compat/host/engine.mjs": "4db40f29dfe35d2542c394df260a4c2d6040446420b7cd3bc4b5694151a238f6",
+    "wasm-compat/host/font-symbol-geometry.mjs": "75203d9c0355129bdac26a0b2bb3f36ddb3be8f5d0a6de1c5d6c44d1046d307d",
+    "wasm-compat/host/freetype-music-metrics.mjs": "c55d841162594f6085ee1b4dce4d3d711373c49f378ccd4e1b551a830718a7da",
+    "wasm-compat/host/freetype-music-symbols.mjs": "7f4106be913b5d84c81f917dd14e96262eb1b1f11a0f6eeeacab5b7cb09bcd7d",
+    "wasm-compat/host/gray8-png.mjs": "fab3b1da1e3f027ab38fc48eef5a5250988fd3a1a55720364e4ad94078b70bba",
+    "wasm-compat/host/tesseract-core-word-metadata.js": "1bdf211ea32a326f535d9d24d012b92b9eb62b2978b85dae3eeee0fc268802de",
+    "wasm-compat/host/tesseract-js-ocr.mjs": "b94b1ebaf55308521e1665eeef4454163cb5d896eb60f37c76284727b5b0b325",
+    "wasm-compat/host/tesseract-wasm-ocr.mjs": "fc59aad1d58ca2fe9b6e78c13a06cac27efcee8f68700e348cf836be1c71a827",
+    "wasm-compat/host/tesseract-wasm-worker.js": "798c533b71868fa050adbfee507f7d78d180409dea330ddbeb7ae303e857baa7",
+    "wasm-compat/host/tesseract-word-metadata-node.cjs": "b17efb04d34f1f7c641b96b01642c2405472653b94f15752bc556367e190df95",
+    "wasm-compat/host/tesseract-word-metadata.mjs": "f65724fedd53bf89e629e20bdaaa646a76e8961d64331e6976d36d7445f7379b",
+    "wasm-compat/host/worker-client.mjs": "8b4607ae2a78a8a74f94a4779354f1698e016f5cdca5f32f0b3be85dd8f284e7",
+    "wasm-compat/web/app.css": "ba36e7c72a2158afc081792b926efc43a102682f181720930359c25b2d46f55f",
+    "wasm-compat/web/app.mjs": "fc41d9f30fce8e3714539efc6dda00f341c23627de4335e972246acd4ce88eac",
+    "wasm-compat/web/index.html": "5a0d69728e708ef4c6e4b77eb1048420472272209b7de0bca40c85cca2dfc7b9",
+    "wasm-compat/web/offline-bootstrap.js": "d52308fc89356ced7fc6b479c49db9bc9fb513922b8591433e5b9e08884d85c9",
+    "wasm-compat/third-party/freetype/NOTICE.md": "0430c5f52391bf8749ab8044925f2f76653908a90e3c3da7d6410b186b95a043",
+    "wasm-compat/third-party/openjdk/LICENSE": "4b9abebc4338048a7c2dc184e9f800deb349366bdf28eb23c2677a77b4c87726",
+    "wasm-compat/third-party/openjdk/NOTICE.md": "93ba41b230f51cb673340fd56c97a65b4ec1f73edea4bbbd7181cacef3547b5a",
+    "wasm-compat/third-party/tesseract-wasm/Comlink-APACHE-2.0.txt": "bcf29b4fd3ec2cb5f9d40a0866da446f6da62170d2ccedf4aeca9cf9406dd20c",
+    "wasm-compat/third-party/tesseract-wasm/Leptonica-BSD.txt": "87829abb5bbb00b55a107365da89e9a33f86c4250169e5a1e5588505be7d5806",
+    "wasm-compat/third-party/tesseract-wasm/NOTICE.md": "ea4024d36f7c57c56f4eade5cd2a776613ec3f22ea33ebcacb6117cae8694067",
+    "wasm-compat/third-party/tesseract-wasm/Tesseract-APACHE-2.0.txt": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "wasm-compat/third-party/tesseract-wasm/sources.json": "ea063a21865d0990bf69559f0f469aada709df80bbfea006cee69c2cddcd4b09",
+    "wasm-compat/package.json": "fe33d22d7552023f7716bb9230064dfbb66dafe9243bb140fd7ea141824bcf07",
+    "wasm-compat/package-lock.json": "aac9b1d98f007972212443f091407b176b65e9e14661714a310a6753052258fc",
+    "wasm-compat/tools/verify-bundled-ocr.cjs": "516cf9f67b51889031828afa9a87ab7f7b39702f05eddf47c6c1dc250891d012",
+    "wasm-compat/tools/verify-engine-ui.cjs": "be4a209dec61eacffa3877a7e427354cba4a8db6a810b040bc6355e3fad6efb4",
+    "wasm-compat/tools/verify-engine-offline.cjs": "b3f204be4041fad84b4290593df90db3cbda3c0173eeffb1434cda0e065c5afa",
+    "wasm-compat/tools/verify-engine-workers.cjs": "975aa0d08f7b56994d7d4035a80c7f9a58c23589157caf84df90d79a8bbfb338"
+  },
+  "cpuMax": "800000 100000",
+  "memoryMaxBytes": 8589934592,
+  "swapMaxBytes": 0,
+  "memoryEvents": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0",
+  "timingMethod": "one capped browser run per backend; not a controlled benchmark",
+  "coverage": "MerryGoRound pages 00 and 04; synthetic text; two-enclosure fixture; Chromium only",
+  "backends": {
+    "tesseract-js": {
+      "manifest": {
+        "backend": "tesseract-js",
+        "library": "tesseract.esm.min.js",
+        "worker": "worker.min.js",
+        "core": "tesseract-core-simd.js",
+        "models": "models/",
+        "languages": [
+          "eng"
+        ],
+        "engineMode": "legacy",
+        "modelPackage": "@tesseract.js-data/eng@1.0.0/4.0.0",
+        "versions": {
+          "tesseract.js": "7.0.0",
+          "tesseract.js-core": "7.0.0",
+          "@tesseract.js-data/eng": "1.0.0"
+        }
+      },
+      "ocrFiles": {
+        "assets.json": {
+          "bytes": 393,
+          "gzipBytes": 210
+        },
+        "licenses/tesseract.js-LICENSE.md": {
+          "bytes": 11357,
+          "gzipBytes": 3967
+        },
+        "licenses/tesseract.js-core-LICENSE": {
+          "bytes": 11358,
+          "gzipBytes": 3967
+        },
+        "models/eng.traineddata.gz": {
+          "bytes": 10923060,
+          "gzipBytes": 10889693
+        },
+        "tesseract-core-simd.js": {
+          "bytes": 88977,
+          "gzipBytes": 24402
+        },
+        "tesseract-core-simd.wasm": {
+          "bytes": 3451410,
+          "gzipBytes": 1294899
+        },
+        "tesseract.esm.min.js": {
+          "bytes": 63220,
+          "gzipBytes": 10594
+        },
+        "tesseract.min.js.LICENSE.txt": {
+          "bytes": 149,
+          "gzipBytes": 147
+        },
+        "worker.min.js": {
+          "bytes": 111307,
+          "gzipBytes": 33611
+        },
+        "worker.min.js.LICENSE.txt": {
+          "bytes": 466,
+          "gzipBytes": 299
+        }
+      },
+      "ocrBytes": 14661697,
+      "offlineHtmlBytes": 22703183,
+      "offlineHtmlSha256": "8e061964a0059621910f024ee3e242ec4771b4b50a891c01b2910c64f349407d",
+      "engineSha256": "0f90e8afad81f22f7512aae4f1a6e2183d898c7e78ac4c462f86c12b7b0458d1",
+      "httpRecognitionMs": 39478.159186000004,
+      "offlineRecognitionMs": 39529.23969,
+      "httpAndOfflineSameXml": true,
+      "comparisons": [
+        {
+          "run": "ui",
+          "page": "00",
+          "jvmExact": true,
+          "actual": {
+            "notes": 170,
+            "elements": 2076,
+            "words": [
+              "cresc.",
+              ":",
+              "Moderato ",
+              "Allegretto J=96",
+              "C",
+              "Gm?",
+              "Cm?"
+            ],
+            "rehearsals": []
+          },
+          "jvm": {
+            "notes": 170,
+            "elements": 2076,
+            "words": [
+              "cresc.",
+              ":",
+              "Moderato ",
+              "Allegretto J=96",
+              "C",
+              "Gm?",
+              "Cm?"
+            ],
+            "rehearsals": []
+          }
+        },
+        {
+          "run": "offline",
+          "page": "00",
+          "jvmExact": true,
+          "actual": {
+            "notes": 170,
+            "elements": 2076,
+            "words": [
+              "cresc.",
+              ":",
+              "Moderato ",
+              "Allegretto J=96",
+              "C",
+              "Gm?",
+              "Cm?"
+            ],
+            "rehearsals": []
+          },
+          "jvm": {
+            "notes": 170,
+            "elements": 2076,
+            "words": [
+              "cresc.",
+              ":",
+              "Moderato ",
+              "Allegretto J=96",
+              "C",
+              "Gm?",
+              "Cm?"
+            ],
+            "rehearsals": []
+          }
+        },
+        {
+          "run": "workers",
+          "page": "00",
+          "jvmExact": true,
+          "actual": {
+            "notes": 170,
+            "elements": 2076,
+            "words": [
+              "cresc.",
+              ":",
+              "Moderato ",
+              "Allegretto J=96",
+              "C",
+              "Gm?",
+              "Cm?"
+            ],
+            "rehearsals": []
+          },
+          "jvm": {
+            "notes": 170,
+            "elements": 2076,
+            "words": [
+              "cresc.",
+              ":",
+              "Moderato ",
+              "Allegretto J=96",
+              "C",
+              "Gm?",
+              "Cm?"
+            ],
+            "rehearsals": []
+          }
+        },
+        {
+          "run": "workers",
+          "page": "04",
+          "jvmExact": true,
+          "actual": {
+            "notes": 220,
+            "elements": 2725,
+            "words": [
+              "lent.",
+              "Ema]?",
+              "Em7(\"5)",
+              "Outro."
+            ],
+            "rehearsals": []
+          },
+          "jvm": {
+            "notes": 220,
+            "elements": 2725,
+            "words": [
+              "lent.",
+              "Ema]?",
+              "Em7(\"5)",
+              "Outro."
+            ],
+            "rehearsals": []
+          }
+        }
+      ]
+    },
+    "tesseract-wasm": {
+      "manifest": {
+        "backend": "tesseract-wasm",
+        "library": "lib.js",
+        "core": "tesseract-core.wasm",
+        "fallbackCore": "tesseract-core-fallback.wasm",
+        "model": "models/eng.traineddata.gz",
+        "languages": [
+          "eng"
+        ],
+        "engineMode": "lstm",
+        "metadataPolicy": "lstm-plain-sans; native-characters; native-line-baseline; skip-missing-baseline",
+        "modelPackage": "@tesseract.js-data/eng@1.0.0/4.0.0_best_int",
+        "versions": {
+          "tesseract-wasm": "0.11.0",
+          "@tesseract.js-data/eng": "1.0.0"
+        }
+      },
+      "ocrFiles": {
+        "assets.json": {
+          "bytes": 495,
+          "gzipBytes": 274
+        },
+        "lib.js": {
+          "bytes": 97684,
+          "gzipBytes": 25476
+        },
+        "licenses/tesseract-wasm-LICENSE.md": {
+          "bytes": 1334,
+          "gzipBytes": 721
+        },
+        "models/eng.traineddata.gz": {
+          "bytes": 2952873,
+          "gzipBytes": 2948789
+        },
+        "tesseract-core-fallback.wasm": {
+          "bytes": 1808229,
+          "gzipBytes": 722465
+        },
+        "tesseract-core.wasm": {
+          "bytes": 1839004,
+          "gzipBytes": 729254
+        }
+      },
+      "ocrBytes": 6699619,
+      "offlineHtmlBytes": 12255684,
+      "offlineHtmlSha256": "8c91b7da77f3f19fd9fc4ea39c68ffaafde5fc4d180577d8c77336b24b04c8f2",
+      "engineSha256": "0f90e8afad81f22f7512aae4f1a6e2183d898c7e78ac4c462f86c12b7b0458d1",
+      "httpRecognitionMs": 37626.123139999996,
+      "offlineRecognitionMs": 36053.066378,
+      "httpAndOfflineSameXml": true,
+      "comparisons": [
+        {
+          "run": "ui",
+          "page": "00",
+          "jvmExact": false,
+          "actual": {
+            "notes": 169,
+            "elements": 2026,
+            "words": [
+              "Moderato",
+              "Allegretto J-96",
+              "Bbe"
+            ],
+            "rehearsals": []
+          },
+          "jvm": {
+            "notes": 170,
+            "elements": 2076,
+            "words": [
+              "cresc.",
+              ":",
+              "Moderato ",
+              "Allegretto J=96",
+              "C",
+              "Gm?",
+              "Cm?"
+            ],
+            "rehearsals": []
+          }
+        },
+        {
+          "run": "offline",
+          "page": "00",
+          "jvmExact": false,
+          "actual": {
+            "notes": 169,
+            "elements": 2026,
+            "words": [
+              "Moderato",
+              "Allegretto J-96",
+              "Bbe"
+            ],
+            "rehearsals": []
+          },
+          "jvm": {
+            "notes": 170,
+            "elements": 2076,
+            "words": [
+              "cresc.",
+              ":",
+              "Moderato ",
+              "Allegretto J=96",
+              "C",
+              "Gm?",
+              "Cm?"
+            ],
+            "rehearsals": []
+          }
+        },
+        {
+          "run": "workers",
+          "page": "00",
+          "jvmExact": false,
+          "actual": {
+            "notes": 169,
+            "elements": 2026,
+            "words": [
+              "Moderato",
+              "Allegretto J-96",
+              "Bbe"
+            ],
+            "rehearsals": []
+          },
+          "jvm": {
+            "notes": 170,
+            "elements": 2076,
+            "words": [
+              "cresc.",
+              ":",
+              "Moderato ",
+              "Allegretto J=96",
+              "C",
+              "Gm?",
+              "Cm?"
+            ],
+            "rehearsals": []
+          }
+        },
+        {
+          "run": "workers",
+          "page": "04",
+          "jvmExact": false,
+          "actual": {
+            "notes": 220,
+            "elements": 2733,
+            "words": [
+              "Outro."
+            ],
+            "rehearsals": []
+          },
+          "jvm": {
+            "notes": 220,
+            "elements": 2725,
+            "words": [
+              "lent.",
+              "Ema]?",
+              "Em7(\"5)",
+              "Outro."
+            ],
+            "rehearsals": []
+          }
+        }
+      ]
+    }
+  }
+}

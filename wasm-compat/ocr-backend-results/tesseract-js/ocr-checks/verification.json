@@ -1,0 +1,19 @@
+{
+  "backend": "tesseract-js",
+  "chromium": "158.0.8127.18",
+  "texts": [
+    "Hello OCR",
+    "Hello OCR"
+  ],
+  "timesMs": [
+    638.7000000000116,
+    9.39999999999418
+  ],
+  "initializationAbortAndRetry": true,
+  "queuedAbortIsolated": true,
+  "missingModelRejected": true,
+  "geometryChecks": false,
+  "pageErrors": [],
+  "cpuMax": "800000 100000",
+  "memoryMaxBytes": 8589934592
+}
