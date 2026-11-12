@@ -1,0 +1,105 @@
+{
+  "defaultFont" : "Sans Serif",
+  "faces" : [ {
+    "id" : "Text0",
+    "file" : "ae7b7855e115-DejaVuSans.ttf",
+    "sourceName" : "DejaVuSans.ttf",
+    "sha256" : "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280"
+  }, {
+    "id" : "Text1",
+    "file" : "5c1247acef7f-DejaVuSans-Bold.ttf",
+    "sourceName" : "DejaVuSans-Bold.ttf",
+    "sha256" : "5c1247acef7f2b8522a31742c76d6adcb5569bacc0be7ceaa4dc39dd252ce895"
+  }, {
+    "id" : "Text2",
+    "file" : "c805f9436dbc-DejaVuSansMono.ttf",
+    "sourceName" : "DejaVuSansMono.ttf",
+    "sha256" : "c805f9436dbc268644c1d9584f01a601a653e028e08fd74b9b949f6cf8304d88"
+  }, {
+    "id" : "Text3",
+    "file" : "3a3c502eeff6-DejaVuSansMono-Bold.ttf",
+    "sourceName" : "DejaVuSansMono-Bold.ttf",
+    "sha256" : "3a3c502eeff669a231549e80df9f7c49de109bafe303170409e905d0b31a38fe"
+  }, {
+    "id" : "Text4",
+    "file" : "3d7955616e69-DejaVuSansMono-Oblique.ttf",
+    "sourceName" : "DejaVuSansMono-Oblique.ttf",
+    "sha256" : "3d7955616e69721f7edb8e1b7a580f8fbd7d737111c6b54266ddc1d9ef13202f"
+  }, {
+    "id" : "Text5",
+    "file" : "a5251173370e-DejaVuSansMono-BoldOblique.ttf",
+    "sourceName" : "DejaVuSansMono-BoldOblique.ttf",
+    "sha256" : "a5251173370e30760e6919711dcd33e149d216ca4814eb74332bda03fcc7e834"
+  }, {
+    "id" : "Text6",
+    "file" : "8f2c103bfa3f-DejaVuSerif.ttf",
+    "sourceName" : "DejaVuSerif.ttf",
+    "sha256" : "8f2c103bfa3fd5de71f1b92b18f21906b5a26871fb7e19a9a4c9af539c3cc7ab"
+  }, {
+    "id" : "Text7",
+    "file" : "847b33e13925-DejaVuSerif-Bold.ttf",
+    "sourceName" : "DejaVuSerif-Bold.ttf",
+    "sha256" : "847b33e13925f19ff87e4d934d6b3cf7cac35ce16424f6f670e40c2f377cf2df"
+  } ],
+  "styles" : [ {
+    "name" : "Dialog.plain",
+    "face" : "Text0",
+    "syntheticItalic" : false,
+    "flags" : 0
+  }, {
+    "name" : "Dialog.bold",
+    "face" : "Text1",
+    "syntheticItalic" : false,
+    "flags" : 1
+  }, {
+    "name" : "Dialog.italic",
+    "face" : "Text0",
+    "syntheticItalic" : true,
+    "flags" : 2
+  }, {
+    "name" : "Dialog.bolditalic",
+    "face" : "Text1",
+    "syntheticItalic" : true,
+    "flags" : 3
+  }, {
+    "name" : "Monospaced.plain",
+    "face" : "Text2",
+    "syntheticItalic" : false,
+    "flags" : 8
+  }, {
+    "name" : "Monospaced.bold",
+    "face" : "Text3",
+    "syntheticItalic" : false,
+    "flags" : 9
+  }, {
+    "name" : "Monospaced.italic",
+    "face" : "Text4",
+    "syntheticItalic" : false,
+    "flags" : 10
+  }, {
+    "name" : "Monospaced.bolditalic",
+    "face" : "Text5",
+    "syntheticItalic" : false,
+    "flags" : 11
+  }, {
+    "name" : "Serif.plain",
+    "face" : "Text6",
+    "syntheticItalic" : false,
+    "flags" : 16
+  }, {
+    "name" : "Serif.bold",
+    "face" : "Text7",
+    "syntheticItalic" : false,
+    "flags" : 17
+  }, {
+    "name" : "Serif.italic",
+    "face" : "Text6",
+    "syntheticItalic" : true,
+    "flags" : 18
+  }, {
+    "name" : "Serif.bolditalic",
+    "face" : "Text7",
+    "syntheticItalic" : true,
+    "flags" : 19
+  } ]
+}

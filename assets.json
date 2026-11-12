@@ -1,0 +1,23 @@
+{
+  "format": 1,
+  "engine": "engine.wasm",
+  "runtime": "engine.wasm-runtime.js",
+  "classifier": "basic-classifier.zip",
+  "fontFactory": "fonts/music-symbols.mjs",
+  "fontWasm": "fonts/music-symbols.wasm",
+  "recipes": "fonts/recipes.json",
+  "intrinsics": "fonts/intrinsics.json",
+  "textFonts": "text-fonts/font-resources.json",
+  "musicFonts": {
+    "Bravura.otf": "fonts/fonts/Bravura.otf",
+    "FinaleJazz.otf": "fonts/fonts/FinaleJazz.otf",
+    "JazzPerc.ttf": "fonts/fonts/JazzPerc.ttf",
+    "Leland.otf": "fonts/fonts/Leland.otf",
+    "MusicalSymbols.ttf": "fonts/fonts/MusicalSymbols.ttf",
+    "Primus.ttf": "fonts/fonts/Primus.ttf",
+    "ae7b7855e115-DejaVuSans.ttf": "fonts/fonts/ae7b7855e115-DejaVuSans.ttf"
+  },
+  "textFamilies": {
+    "SansSerif": "DejaVu Sans"
+  }
+}

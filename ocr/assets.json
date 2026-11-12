@@ -1,0 +1,17 @@
+{
+  "backend": "tesseract-wasm",
+  "library": "lib.js",
+  "core": "tesseract-core.wasm",
+  "fallbackCore": "tesseract-core-fallback.wasm",
+  "model": "models/eng.traineddata.gz",
+  "languages": [
+    "eng"
+  ],
+  "engineMode": "lstm",
+  "metadataPolicy": "lstm-plain-sans; native-characters; native-line-baseline; skip-missing-baseline",
+  "modelPackage": "@tesseract.js-data/eng@1.0.0/4.0.0_best_int",
+  "versions": {
+    "tesseract-wasm": "0.11.0",
+    "@tesseract.js-data/eng": "1.0.0"
+  }
+}

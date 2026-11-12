@@ -1,0 +1,14 @@
+{
+  "Tesseract-APACHE-2.0.txt": {
+    "url": "https://raw.githubusercontent.com/tesseract-ocr/tesseract/080da83cc51c4ef8b324a7e03146fe0bd7e0944b/LICENSE",
+    "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+  },
+  "Leptonica-BSD.txt": {
+    "url": "https://raw.githubusercontent.com/DanBloomberg/leptonica/b667978e86c4bf74f7fdd75f833127d2de327550/leptonica-license.txt",
+    "sha256": "87829abb5bbb00b55a107365da89e9a33f86c4250169e5a1e5588505be7d5806"
+  },
+  "Comlink-APACHE-2.0.txt": {
+    "url": "https://raw.githubusercontent.com/GoogleChromeLabs/comlink/v4.4.2/LICENSE",
+    "sha256": "bcf29b4fd3ec2cb5f9d40a0866da446f6da62170d2ccedf4aeca9cf9406dd20c"
+  }
+}

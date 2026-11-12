@@ -1,0 +1,26 @@
+{
+  "assets.json": {
+    "bytes": 495,
+    "sha256": "33710b926bd9ae1dd08b9d9f6cc802539616cf6debea61a2094493e2aa58ad80"
+  },
+  "lib.js": {
+    "bytes": 97684,
+    "sha256": "ed6b39d775484081affa3d21bf491f705673c2a3fd616b2f7bce9020ed8eba13"
+  },
+  "licenses/tesseract-wasm-LICENSE.md": {
+    "bytes": 1334,
+    "sha256": "4b2021f2e93e321ff8bece6f84c221109dd0f72475eaeed37c5929cc5c0a11aa"
+  },
+  "models/eng.traineddata.gz": {
+    "bytes": 2952873,
+    "sha256": "45b4cb346724ac1774f1c36f42f182b887bcdb28ebe63e6fff90ac41f3fcff91"
+  },
+  "tesseract-core-fallback.wasm": {
+    "bytes": 1808229,
+    "sha256": "94d9ce820d31a75814d0b4e5d099405b8738b11633bcef8c0d078a53b2b1ded2"
+  },
+  "tesseract-core.wasm": {
+    "bytes": 1839004,
+    "sha256": "3822dc6ee83d507f2bd2f83b97a3dd5dabf3ea71a9836d951602c9054615137e"
+  }
+}
