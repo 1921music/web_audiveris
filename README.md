@@ -35,6 +35,7 @@ JavaのエンジンをTeaVMでWebAssemblyへコンパイルし、楽譜認識と
 
 - [開発・ビルドの入口](wasm-compat/README.md)
 - [WSL開発環境の構築](dev/wsl/README.md)
+- [GitHub Pagesへの公開・更新](dev/pages/README.md)
 - [設計方針](WASM-ENGINE-DESIGN.md)
 - [移植の開発経過・検証結果](wasm-compat/DEVELOPMENT_HISTORY.md)
 
