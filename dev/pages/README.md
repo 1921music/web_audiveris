@@ -19,6 +19,8 @@ git push origin wasm
 
 GitHub側の初回設定は、リポジトリの **Settings → Pages → Deploy from a branch → gh-pages / (root)** で行います。その後の更新は `gh-pages` へのpushで公開されます。`deployment.json` には公開元のソースコミット、OCRバックエンド、アセットのハッシュを記録します。
 
+通常版とオフライン版のフッターには、公開時の `git rev-parse HEAD` を使ったソースリンクを埋め込みます。画面には短いハッシュ、リンク先とツールチップには完全なハッシュを使います。ハッシュをソースへ固定してコミットする必要はありません。`offlineBuildSha256` は検証済みの入力HTML、`offlineHtmlSha256` はハッシュ表示を埋め込んだ公開HTMLの値です。
+
 公開後は次を確認します。
 
 - トップページと `ocr/assets.json` が取得でき、バックエンドが `tesseract-wasm` になっていること。

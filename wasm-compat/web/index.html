@@ -1,43 +1,43 @@
 <!doctype html>
-<html lang="ja">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Audiveris · 楽譜からMusicXMLへ</title>
+  <title>Web Audiveris · Sheet music to MusicXML / 楽譜からMusicXMLへ</title>
   <link rel="stylesheet" href="./app.css">
   <script type="module" src="./app.mjs"></script>
 </head>
 <body>
-  <header><a class="brand" href="./">Audiveris <span>Web</span></a><span class="privacy">画像はブラウザ内で処理します</span></header>
+  <header><a class="brand" href="./">Audiveris <span>Web</span></a><span class="privacy"><span>Images stay in your browser</span><span class="bilingual-ja" lang="ja">画像はブラウザ内で処理します</span></span></header>
   <main>
-    <div class="intro"><p class="eyebrow">SCORE TO MUSICXML</p><h1>楽譜画像を、MusicXMLへ。</h1><p>画像を選んで認識すると、楽譜編集ソフトで使えるMusicXMLを保存できます。</p></div>
+    <div class="intro"><p class="eyebrow">SCORE TO MUSICXML<span class="bilingual-ja" lang="ja">楽譜画像から楽譜データへ</span></p><h1>Sheet music to MusicXML.<span class="bilingual-ja" lang="ja">楽譜画像を、MusicXMLへ。</span></h1><p>Select a score image and save the recognized music as MusicXML for your score editor.<span class="bilingual-ja" lang="ja">画像を選んで認識すると、楽譜編集ソフトで使えるMusicXMLを保存できます。</span></p></div>
     <div class="workspace">
       <section class="image-panel" aria-labelledby="image-title">
-        <div class="panel-heading"><h2 id="image-title">楽譜画像</h2><span id="image-size"></span></div>
+        <div class="panel-heading"><h2 id="image-title">Score image<span class="bilingual-ja" lang="ja">楽譜画像</span></h2><span id="image-size"></span></div>
         <label class="picker" id="drop-zone">
           <span class="picker-icon" aria-hidden="true">＋</span>
-          <strong>画像を選択</strong><span>または、ここにドラッグ＆ドロップ</span>
-          <input id="image-file" type="file" accept="image/png,image/jpeg,image/webp,image/bmp,.png,.jpg,.jpeg,.webp,.bmp" aria-label="楽譜画像を選択">
+          <strong>Choose an image<span class="bilingual-ja" lang="ja">画像を選択</span></strong><span class="drop-hint">or drag and drop it here<span class="bilingual-ja" lang="ja">または、ここにドラッグ＆ドロップ</span></span>
+          <input id="image-file" type="file" accept="image/png,image/jpeg,image/webp,image/bmp,.png,.jpg,.jpeg,.webp,.bmp" aria-label="Choose a score image / 楽譜画像を選択">
         </label>
-        <p class="formats">PNG / JPEG / WebP / BMP · 1画像ずつ</p>
-        <div class="preview" id="preview" hidden><img id="image-preview" alt="選択した楽譜画像のプレビュー"></div>
-        <p class="filename" id="filename">画像が選択されていません</p>
+        <p class="formats">PNG / JPEG / WebP / BMP · One image at a time<span class="bilingual-ja" lang="ja">1画像ずつ選択できます</span></p>
+        <div class="preview" id="preview" hidden><img id="image-preview" alt="Preview of the selected score / 選択した楽譜画像のプレビュー"></div>
+        <p class="filename" id="filename">No image selected<span class="bilingual-ja" lang="ja">画像が選択されていません</span></p>
       </section>
       <section class="recognition-panel" aria-labelledby="recognition-title">
-        <div class="panel-heading"><h2 id="recognition-title">認識して保存</h2></div>
-        <p class="description">五線・音符・文字を読み取り、楽譜データに変換します。</p>
-        <div class="actions"><button id="recognize" class="primary" disabled>認識を開始</button><button id="cancel" class="secondary" hidden>キャンセル</button></div>
+        <div class="panel-heading"><h2 id="recognition-title">Recognize &amp; export<span class="bilingual-ja" lang="ja">認識して保存</span></h2></div>
+        <p class="description">Read staves, notes and text, then convert them into editable music data.<span class="bilingual-ja" lang="ja">五線・音符・文字を読み取り、楽譜データに変換します。</span></p>
+        <div class="actions"><button id="recognize" class="primary" disabled>Start recognition<span class="bilingual-ja" lang="ja">認識を開始</span></button><button id="cancel" class="secondary" hidden>Cancel<span class="bilingual-ja" lang="ja">キャンセル</span></button></div>
         <div class="status-card" id="status-card" data-state="idle" aria-busy="false">
-          <p id="status" role="status" aria-live="polite">楽譜画像を選択してください</p>
-          <progress id="progress" max="20" value="0" aria-label="認識工程の進み具合" hidden></progress>
+          <p id="status" role="status" aria-live="polite" aria-atomic="true">Choose a score image to begin<span class="bilingual-ja" lang="ja">楽譜画像を選択してください</span></p>
+          <progress id="progress" max="20" value="0" aria-label="Recognition progress / 認識工程の進み具合" hidden></progress>
           <p id="elapsed" class="muted" hidden></p>
         </div>
-        <div id="downloads" class="downloads" aria-label="MusicXMLのダウンロード" hidden></div>
-        <details id="error-details" hidden><summary>エラーの詳細</summary><pre id="error-message"></pre></details>
-        <div class="notes"><p>初回は認識用データの読み込みに少し時間がかかります。</p><p>文字認識は英語に対応しています。認識結果は楽譜編集ソフトで確認・修正してください。</p></div>
+        <div id="downloads" class="downloads" aria-label="MusicXML downloads / MusicXMLのダウンロード" hidden></div>
+        <details id="error-details" hidden><summary>Error details<span class="bilingual-ja" lang="ja">エラーの詳細</span></summary><pre id="error-message"></pre></details>
+        <div class="notes"><p>The first run may take a moment to load the recognition data.<span class="bilingual-ja" lang="ja">初回は認識用データの読み込みに少し時間がかかります。</span></p><p>Text recognition uses an English model. Review and correct the result in your score editor.<span class="bilingual-ja" lang="ja">文字認識は英語に対応しています。認識結果は楽譜編集ソフトで確認・修正してください。</span></p></div>
       </section>
     </div>
   </main>
-  <footer>Audiveris · ブラウザで動く楽譜認識エンジン</footer>
+  <footer>Audiveris · Music recognition in your browser<span class="bilingual-ja" lang="ja">ブラウザで動く楽譜認識エンジン</span><!-- source-revision --></footer>
 </body>
 </html>

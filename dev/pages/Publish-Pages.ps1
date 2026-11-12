@@ -22,6 +22,7 @@ function Package-File([string]$Name) {
 $origin = Invoke-RepoGit @('remote', 'get-url', 'origin')
 if ($origin -ne 'https://github.com/1921music/web_audiveris.git') { throw 'Unexpected origin repository.' }
 $sourceCommit = Invoke-RepoGit @('rev-parse', 'HEAD')
+if ($sourceCommit -notmatch '^[0-9a-f]{40,64}$') { throw 'Invalid source commit.' }
 $ocr = Read-Json (Join-Path $packageRoot 'ocr/assets.json')
 if ($ocr.backend -ne 'tesseract-wasm') { throw 'The application Pages build must use tesseract-wasm.' }
 $scratch = Join-Path $repoRoot ('build/pages/' + [Guid]::NewGuid().ToString('N'))
@@ -51,6 +52,19 @@ $offline = Read-Json (Join-Path $offlineRoot 'build.json')
 $offlineHtml = Join-Path $offlineRoot 'audiveris-offline.html'
 if ($offline.ocrBackend -ne 'tesseract-wasm' -or (Hash $offlineHtml) -ne $offline.htmlSha256) { throw 'Offline build is not the verified LSTM artifact.' }
 Copy-Item -LiteralPath $offlineHtml -Destination (Join-Path $site 'audiveris-offline.html')
+$shortCommit = $sourceCommit.Substring(0, 7)
+$revisionMarkup = '<div class="source-revision" id="source-revision"><a href="https://github.com/1921music/web_audiveris/tree/' + $sourceCommit + '" title="' + $sourceCommit + '"><span lang="en">Source commit: ' + $shortCommit + '</span><span class="bilingual-ja" lang="ja">&#x30BD;&#x30FC;&#x30B9;&#x30B3;&#x30DF;&#x30C3;&#x30C8;: ' + $shortCommit + '</span></a></div>'
+foreach ($name in @('index.html', 'audiveris-offline.html')) {
+    $path = Join-Path $site $name
+    $html = [IO.File]::ReadAllText($path)
+    if (-not $html.Contains('<!-- source-revision -->')) { throw 'Rebuild the UI before publishing: source revision placeholder is missing.' }
+    [IO.File]::WriteAllText($path, $html.Replace('<!-- source-revision -->', $revisionMarkup), [Text.UTF8Encoding]::new($false))
+}
+# The generated source link changes index.html after the source-build integrity check.
+$publishedIntegrity = Read-Json (Join-Path $site 'integrity.json')
+$publishedIntegrity.'index.html'.sha256 = Hash (Join-Path $site 'index.html')
+$publishedIntegrity.'index.html'.bytes = (Get-Item -LiteralPath (Join-Path $site 'index.html')).Length
+[IO.File]::WriteAllText((Join-Path $site 'integrity.json'), (ConvertTo-Json $publishedIntegrity -Depth 8) + "`n", [Text.UTF8Encoding]::new($false))
 [IO.File]::WriteAllText((Join-Path $site '.nojekyll'), '')
 $deployment = [ordered]@{
     sourceCommit = $sourceCommit
@@ -58,7 +72,8 @@ $deployment = [ordered]@{
     publishedAt = [DateTime]::UtcNow.ToString('o')
     url = 'https://1921music.github.io/web_audiveris/'
     engineSha256 = Hash (Package-File 'engine.wasm')
-    offlineHtmlSha256 = $offline.htmlSha256
+    offlineBuildSha256 = $offline.htmlSha256
+    offlineHtmlSha256 = Hash (Join-Path $site 'audiveris-offline.html')
     versions = $ocr.versions
 }
 [IO.File]::WriteAllText((Join-Path $site 'deployment.json'), (ConvertTo-Json $deployment -Depth 6) + "`n", [Text.UTF8Encoding]::new($false))

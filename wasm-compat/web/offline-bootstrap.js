@@ -111,8 +111,8 @@
     }
 
     async function start() {
-        const status = document.getElementById('status'), input = document.getElementById('image-file');
-        input.disabled = true; status.textContent = '同梱の認識データを準備しています…';
+        const input = document.getElementById('image-file');
+        input.disabled = true; showStatus('Preparing bundled recognition data…', '同梱の認識データを準備しています…');
         const element = document.getElementById('audiveris-embedded-assets');
         const data = JSON.parse(element.textContent); element.remove();
         const files = {};
@@ -129,11 +129,18 @@
         const runtime = await materialize(files, base);
         install(files, runtime.assetUrls, runtime.moduleUrls, base, base + 'index.html', materialize.toString());
         await import(runtime.moduleUrls['app.mjs']);
-        input.disabled = false; status.textContent = '楽譜画像を選択してください';
+        input.disabled = false; showStatus('Choose a score image to begin', '楽譜画像を選択してください');
+    }
+    // This must work even before the embedded modules have been decoded.
+    function showStatus(english, japanese) {
+        const en = document.createElement('span'), ja = document.createElement('span');
+        en.lang = 'en'; en.className = 'bilingual-en'; en.textContent = english;
+        ja.lang = 'ja'; ja.className = 'bilingual-ja'; ja.textContent = japanese;
+        document.getElementById('status').replaceChildren(en, ja);
     }
     start().catch(error => {
         document.getElementById('status-card').dataset.state = 'error';
-        document.getElementById('status').textContent = 'オフライン版を起動できませんでした。ブラウザを変更してお試しください。';
+        showStatus('Could not start the offline edition. Try another browser.', 'オフライン版を起動できませんでした。ブラウザを変更してお試しください。');
         document.getElementById('error-details').hidden = false;
         document.getElementById('error-message').textContent = String(error.stack || error);
         console.error(error);
