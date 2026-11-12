@@ -9,7 +9,7 @@ import argparse
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('root', type=Path)
-parser.add_argument('--backend', choices=['tesseract-js', 'tesseract-wasm'], default='tesseract-js')
+parser.add_argument('--backend', choices=['tesseract-js', 'tesseract-wasm'], default='tesseract-wasm')
 args = parser.parse_args()
 root = args.root.resolve()
 modules = root / 'wasm-compat/node_modules'

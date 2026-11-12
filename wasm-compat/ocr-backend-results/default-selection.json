@@ -1,0 +1,33 @@
+{
+  "defaultBackend": "tesseract-wasm",
+  "tesseractJsPurpose": "upstream/JVM equality verification",
+  "gradleChecks": [
+    {
+      "gradleProperties": [
+        "-PocrBackend=tesseract-js"
+      ],
+      "backend": "tesseract-js",
+      "task": "packageWorkerOcr",
+      "excludedTask": "packageWorkerEngine"
+    },
+    {
+      "gradleProperties": [],
+      "backend": "tesseract-wasm",
+      "task": "packageWorkerOcr",
+      "excludedTask": "packageWorkerEngine"
+    }
+  ],
+  "pythonDefaultVerified": true,
+  "packageIdenticalToVerifiedLstmBuild": true,
+  "offlineHtmlIdenticalToVerifiedLstmBuild": true,
+  "htmlSha256": "8c91b7da77f3f19fd9fc4ea39c68ffaafde5fc4d180577d8c77336b24b04c8f2",
+  "htmlBytes": 12255684,
+  "recognitionVerificationSourceCommit": "1015e7f7fbc172f916d4af6aeb7790f898d71c73",
+  "sourceSha256": {
+    "dev/teavm-audit/package_engine_ocr.py": "52748055858058c02cf168dbdc37c777074335b979174bca490f9e66d58310d4",
+    "dev/teavm-audit/engine.init.gradle": "0179bbf92bcd90261265c504dad84892485eae2246d9ea0b60b32170d92c0268"
+  },
+  "cpuMax": "800000 100000",
+  "memoryMaxBytes": 8589934592,
+  "swapMaxBytes": 0
+}

@@ -50,7 +50,7 @@ use the single-file offline build below to open directly with `file://`. The pac
 `wsl-artifacts/wasm-engine/`.
 
 The browser UI test selects a real grayscale score image, cancels and retries recognition,
-clicks the download link and checks the downloaded MusicXML against native JAXB output
+clicks the download link and, with the upstream-comparison Tesseract.js backend, checks the downloaded MusicXML against native JAXB output
 (170 notes, exact XML tree). It also checks invalid files, recognition failure, stale downloads,
 and a 390-pixel mobile layout. Verification runs inside the shared eight-CPU / 8 GiB WSL ceiling.
 Compact verification and source provenance are in `ui-results/`.
@@ -72,7 +72,8 @@ Build with the same three Gradle init scripts as the engine build below, replaci
 Wasm and font files are **gzip-compressed first, then Base64-encoded**. The browser decodes and
 decompresses them using `DecompressionStream`. Identical assets share one embedded payload. Files
 already compressed (such as the gzipped OCR model) are retained if further gzip provides no saving.
-The resulting HTML is about **22.7 MB**, with the original engine binary unchanged. Per-asset original,
+The default tesseract-wasm HTML is about **12.3 MB** (Tesseract.js comparison build: **22.7 MB**),
+with the original engine binary unchanged. Per-asset original,
 compressed and Base64 sizes are recorded in `build.json`.
 
 The offline bootstrap creates module and asset Blob URLs separately in each Worker. This is needed
@@ -81,8 +82,9 @@ engine/OCR modules are linked to those in-memory URLs; synthetic URL identifiers
 network. This loader is isolated to the offline build; the regular HTTP deployment uses original modules.
 
 Verification opens the HTML with `file://`, disables browser networking, uses no file-access security
-flags, cancels and retries recognition, downloads MusicXML, and compares the full XML tree with the
-native reference. Browser verification is under the shared eight-CPU / 8 GiB resource ceiling.
+flags, cancels and retries recognition, and downloads MusicXML. Tesseract.js comparison builds
+also check the full XML tree against the native reference; LSTM differences are recorded separately.
+Browser verification is under the shared eight-CPU / 8 GiB resource ceiling.
 
 ### Standalone engine integration
 
@@ -109,7 +111,8 @@ The focused entry has zero strict dependency diagnostics.
 
 The standalone engine Wasm is **4,735,744 bytes**; the separate FreeType Wasm is **497,135 bytes**.
 The complete core distribution (including fonts, classifier, runtime and notices) is about **10.9 MB**
-or **5.1 MB** summed per-file gzip. The optional English OCR assets add about **14.7 MB**. These
+or **5.1 MB** summed per-file gzip. The default English OCR assets add about **6.7 MB**
+(Tesseract.js comparison build: **14.7 MB**). These
 are separate downloads. In the capped Node run, five 2,480 × 3,506 grayscale pages took **33.7–45.2 s
 per page**, including OCR and MusicXML generation, excluding engine initialization. This records a
 functional baseline; it is not a controlled JVM/Wasm speed comparison.
@@ -134,8 +137,8 @@ The production build downloads/verifies the pinned FreeType source if absent and
 at most eight build jobs. It does not require earlier test/probe artifacts. The capped launcher keeps
 all build/test descendants within eight CPUs and 8 GiB, with swap disabled.
 
-OCR is an injected transport, so another backend can replace Tesseract.js. For a self-hosted English
-Tesseract.js configuration, first run `npm ci --prefix wasm-compat` inside the capped WSL environment,
+OCR is an injected transport. For the default self-hosted English tesseract-wasm configuration,
+first run `npm ci --prefix wasm-compat` inside the capped WSL environment,
 then use the same build command with task `packageWorkerOcr`. This adds optional `ocr/` assets
 (library, SIMD core, English model and notices). The core package works with other OCR adapters
 without downloading this optional bundle. Serve the package over HTTP with Wasm MIME support.
@@ -143,8 +146,10 @@ without downloading this optional bundle. Serve the package over HTTP with Wasm 
 ### Build-time OCR backend selection
 
 Both `packageWorkerOcr` and `packageWorkerOffline` accept
-`-PocrBackend=tesseract-js` (default) or `-PocrBackend=tesseract-wasm`.
-For example, append `'packageWorkerOffline', '-PocrBackend=tesseract-wasm'` to the
+`-PocrBackend=tesseract-wasm` (default) or `-PocrBackend=tesseract-js`.
+Tesseract-wasm is the normal application backend. Tesseract.js is primarily for checking
+recognition and MusicXML equality against upstream/JVM; select it explicitly for those comparisons.
+For example, append `'packageWorkerOffline'` to the
 three-init-script Gradle command above, after `npm ci --prefix wasm-compat` in WSL.
 Only the selected OCR runtime and English model are packaged. The common engine Wasm and fonts
 are unchanged. Switching builds replaces the generated `package/ocr/` directory.
@@ -152,7 +157,7 @@ To repack existing engine binaries without compiling Java, run inside the capped
 
 ```sh
 python3 dev/teavm-audit/package_engine.py "$PWD"
-python3 dev/teavm-audit/package_engine_ocr.py "$PWD" --backend tesseract-wasm
+python3 dev/teavm-audit/package_engine_ocr.py "$PWD"
 python3 dev/teavm-audit/package_engine_offline.py "$PWD"
 ```
 

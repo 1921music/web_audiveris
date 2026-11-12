@@ -63,9 +63,9 @@ for backend in ['tesseract-js', 'tesseract-wasm']:
             raise AssertionError('OCR asset changed: ' + name)
     # A switched build contains precisely the selected runtime/model plus notices.
     if backend == 'tesseract-wasm' and (package / 'ocr/worker.min.js').exists():
-        raise AssertionError('Tesseract.js runtime leaked into alternative build')
+        raise AssertionError('Tesseract.js runtime leaked into application build')
     if backend == 'tesseract-js' and (package / 'ocr/lib.js').exists():
-        raise AssertionError('Alternative runtime leaked into default build')
+        raise AssertionError('LSTM runtime leaked into upstream-comparison build')
     build = json.loads((offline / 'build.json').read_text())
     if hashlib.sha256((offline / 'audiveris-offline.html').read_bytes()).hexdigest() != build['htmlSha256']:
         raise AssertionError('Tested HTML changed')
@@ -83,7 +83,7 @@ for backend in ['tesseract-js', 'tesseract-wasm']:
     if backend == 'tesseract-js':
         for name in ['ui', 'offline', 'workers']:
             if not json.loads((source / name / 'xml-comparison.json').read_text())['exact']:
-                raise AssertionError('Default backend lost JVM parity')
+                raise AssertionError('Upstream-comparison backend lost JVM parity')
     destination = root / 'wsl-artifacts/wasm-ocr-backends' / backend
     raw = root / 'wsl-artifacts/wasm-components/ocr-backends' / backend
     shutil.copytree(package, destination / 'package', dirs_exist_ok=True)
