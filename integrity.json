@@ -1,11 +1,11 @@
 {
   "app.css": {
-    "bytes": 4262,
-    "sha256": "ba36e7c72a2158afc081792b926efc43a102682f181720930359c25b2d46f55f"
+    "bytes": 4846,
+    "sha256": "8c4bdb7bbf5ecda9ae2087725a84a99c8a06886e971691c903f81ddf124630c0"
   },
   "app.mjs": {
-    "bytes": 6937,
-    "sha256": "fc41d9f30fce8e3714539efc6dda00f341c23627de4335e972246acd4ce88eac"
+    "bytes": 7952,
+    "sha256": "bfc1facacd5ecbd16317c6ecba33c397e294a0ab8ce5dc844b1b458d2087cd4b"
   },
   "assets.json": {
     "bytes": 785,
@@ -14,6 +14,10 @@
   "basic-classifier.zip": {
     "bytes": 396100,
     "sha256": "327194c47116a8ebf5771d04cea08a4e563ec93d2955e1efd990a54a9245f29e"
+  },
+  "bilingual.mjs": {
+    "bytes": 468,
+    "sha256": "225a42818b3793123582e3b7b331e7051546292a05b905bcb3f5907138445da8"
   },
   "engine.wasm": {
     "bytes": 4735744,
@@ -124,8 +128,8 @@
     "sha256": "8b4607ae2a78a8a74f94a4779354f1698e016f5cdca5f32f0b3be85dd8f284e7"
   },
   "index.html": {
-    "bytes": 3005,
-    "sha256": "5a0d69728e708ef4c6e4b77eb1048420472272209b7de0bca40c85cca2dfc7b9"
+    "bytes": 4958,
+    "sha256": "cf431af18177b59dbb53188621c86954907e1060f22b9cd471628892896840a2"
   },
   "licenses/Audiveris-AGPL.txt": {
     "bytes": 35181,

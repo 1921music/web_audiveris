@@ -1,10 +1,11 @@
 {
-  "sourceCommit": "dfcca455b3a372992c83e26f59ce31e6342a213d",
+  "sourceCommit": "4d37a3abcfc0429e2102eb8d4c439645e05543ef",
   "backend": "tesseract-wasm",
-  "publishedAt": "2026-11-12T03:33:12.8406373Z",
+  "publishedAt": "2026-11-12T10:57:44.7086453Z",
   "url": "https://1921music.github.io/web_audiveris/",
   "engineSha256": "0f90e8afad81f22f7512aae4f1a6e2183d898c7e78ac4c462f86c12b7b0458d1",
-  "offlineHtmlSha256": "8c91b7da77f3f19fd9fc4ea39c68ffaafde5fc4d180577d8c77336b24b04c8f2",
+  "offlineBuildSha256": "e19b577d2505c8ab523afc6cf45c48a93212e395f8db709316e3731bca18aa94",
+  "offlineHtmlSha256": "c1de2b415fa974255ae0beb76017b366d7c1d7a165c06bed55d3243ae9902ba0",
   "versions": {
     "tesseract-wasm": "0.11.0",
     "@tesseract.js-data/eng": "1.0.0"
