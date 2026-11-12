@@ -1,0 +1,411 @@
+{
+  "htmlBytes": 22682774,
+  "htmlSha256": "9aaddb9c0202331ba5590d7628b094d1bcab62d09c3dc58958b5d1069d0a5f4f",
+  "embeddedFiles": 57,
+  "uniquePayloads": 56,
+  "assetSha256": {
+    "app.mjs": "fc41d9f30fce8e3714539efc6dda00f341c23627de4335e972246acd4ce88eac",
+    "assets.json": "0fcd206114b75860e1f776359957f1d3dc6e89f2ef91ed0f67d3b4b6254e1931",
+    "basic-classifier.zip": "327194c47116a8ebf5771d04cea08a4e563ec93d2955e1efd990a54a9245f29e",
+    "engine.wasm": "0f90e8afad81f22f7512aae4f1a6e2183d898c7e78ac4c462f86c12b7b0458d1",
+    "engine.wasm-runtime.js": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "fonts/fonts/Bravura.otf": "dca2d90c88437a701b1c2e71fa54e76f9fa41d7deee935d74dc871ea66ecfdd2",
+    "fonts/fonts/FinaleJazz.otf": "a8ea0408ef7628ca38ae29eaa1b4357d2b0bf11747f6eee3c5f9ed5cca358e08",
+    "fonts/fonts/JazzPerc.ttf": "310ef24d859055f1ba026fe3a86359eb3be1e3ebbcac6cb9029281952e958538",
+    "fonts/fonts/Leland.otf": "cacca69cb750d851023d52a8e41d3373904aa82afc7247085f37d4ee6823506c",
+    "fonts/fonts/MusicalSymbols.ttf": "07fb37d9fd2c6ccceb1124d0e9e7aa8a4ffe03ae2f0a3bff5e620b241b59d5cc",
+    "fonts/fonts/Primus.ttf": "25f73922f6462d50a250e98cbb3b69909a7546eae8167e99592c3d641b80facd",
+    "fonts/fonts/ae7b7855e115-DejaVuSans.ttf": "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280",
+    "fonts/intrinsics.json": "333c62b7a5c844e829bea1abc4f0150aa9daa8bf63d227bd9625d360a5c7b28f",
+    "fonts/music-symbols.mjs": "4ac52428cdf72e72e60cab3a5676f995243ecb31df75a6171963aa94d94468c6",
+    "fonts/music-symbols.wasm": "e6560a23de9a677ca49f5215fe0676fee3132ffbb3df72af0a08f5603a81a750",
+    "fonts/recipes.json": "5bbcede1a8cdb822d5d6774f6d2673d23ec275fb6f0063d146858dda96515359",
+    "host/create-browser-ocr.mjs": "939a5ff94402a810a54e530b4e334ea8da9e3f97c8969c7622aa272b36ca5b9a",
+    "host/engine-worker.js": "f47e771f6e37324a80b5f0d551edffa576f6745295ed170d21d000013aa3943b",
+    "host/engine.mjs": "4db40f29dfe35d2542c394df260a4c2d6040446420b7cd3bc4b5694151a238f6",
+    "host/font-symbol-geometry.mjs": "75203d9c0355129bdac26a0b2bb3f36ddb3be8f5d0a6de1c5d6c44d1046d307d",
+    "host/freetype-music-metrics.mjs": "c55d841162594f6085ee1b4dce4d3d711373c49f378ccd4e1b551a830718a7da",
+    "host/freetype-music-symbols.mjs": "7f4106be913b5d84c81f917dd14e96262eb1b1f11a0f6eeeacab5b7cb09bcd7d",
+    "host/gray8-png.mjs": "fab3b1da1e3f027ab38fc48eef5a5250988fd3a1a55720364e4ad94078b70bba",
+    "host/tesseract-core-word-metadata.js": "1bdf211ea32a326f535d9d24d012b92b9eb62b2978b85dae3eeee0fc268802de",
+    "host/tesseract-js-ocr.mjs": "b94b1ebaf55308521e1665eeef4454163cb5d896eb60f37c76284727b5b0b325",
+    "host/tesseract-word-metadata-node.cjs": "b17efb04d34f1f7c641b96b01642c2405472653b94f15752bc556367e190df95",
+    "host/tesseract-word-metadata.mjs": "f65724fedd53bf89e629e20bdaaa646a76e8961d64331e6976d36d7445f7379b",
+    "host/worker-client.mjs": "8b4607ae2a78a8a74f94a4779354f1698e016f5cdca5f32f0b3be85dd8f284e7",
+    "integrity.json": "df72151756ae23c80a266e8758359fb7ae0f86ed2f2a9ce4878cca294c5bb117",
+    "licenses/Audiveris-AGPL.txt": "6da1054eef20b8949622f2acc5a89c3243ff3b3d7aa8c2bb8fa5c04d15113c00",
+    "licenses/FTL.TXT": "5a5ee54c5001bbad1cdc1a57cc3dd4c42199b2da09d39c7ee41fab002d02967f",
+    "licenses/GPLv2.TXT": "c4120c6752c910c299e3bd9cb3a46ff262c268303ca2069b61f92f10a5656c18",
+    "licenses/LICENSE.TXT": "bd36c8b474855fa294c2ec5c184544478ef3720aad37d65a6296a4f264fd2d3b",
+    "licenses/freetype/NOTICE.md": "0430c5f52391bf8749ab8044925f2f76653908a90e3c3da7d6410b186b95a043",
+    "licenses/openjdk/LICENSE": "4b9abebc4338048a7c2dc184e9f800deb349366bdf28eb23c2677a77b4c87726",
+    "licenses/openjdk/NOTICE.md": "93ba41b230f51cb673340fd56c97a65b4ec1f73edea4bbbd7181cacef3547b5a",
+    "licenses/text-font-COPYRIGHT": "63d3ba759d12804c5b31a9d5940d855c1820d1f5999e6b0872eb1c7ff045fbc9",
+    "ocr/assets.json": "1142db63aee2c3868bfc2a8e5f974f6299c3603500041eedcd3fa4876dd099eb",
+    "ocr/integrity.json": "aa293018ae450a30977badccb94cd4afacaaf974b4131ba5c38daae648f87f7a",
+    "ocr/licenses/tesseract.js-LICENSE.md": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1",
+    "ocr/licenses/tesseract.js-core-LICENSE": "c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08",
+    "ocr/models/eng.traineddata.gz": "ed350f3752f81ee8f38769edc14d92d997dababe23b565c59879372cc46a2468",
+    "ocr/tesseract-core-simd.js": "da428fd7989ba749855ea16718a83b23e7ce04016fe31866ad2735813efc7133",
+    "ocr/tesseract-core-simd.wasm": "7d237a13edfeb0fa2f104744fccde0a00e0c076c3e23b7a8fc7af75ec9af2c3e",
+    "ocr/tesseract.esm.min.js": "64871d76c75609fd5413b88a8171e2ef40deedd77d5875ba23df104b2d05eb29",
+    "ocr/tesseract.min.js.LICENSE.txt": "cdf963ced7d25a0f98901a547647b4d6e2dbe0197fd78c87a059a87b0e542fe2",
+    "ocr/worker.min.js": "576b7df7e3393e137e51849357c9adb53fe7ac1bb69bfa06cf3d61520f182c6d",
+    "ocr/worker.min.js.LICENSE.txt": "45f54171aeaa1d10c0c1a66f374b7bba1f02472b1487fbe892eec04f840002ac",
+    "text-fonts/font-resources.json": "de12d956f2b1398ec604dc74866917021fc0f7119ed1a2abd9cabd5b7566d594",
+    "text-fonts/fonts/3a3c502eeff6-DejaVuSansMono-Bold.ttf": "3a3c502eeff669a231549e80df9f7c49de109bafe303170409e905d0b31a38fe",
+    "text-fonts/fonts/3d7955616e69-DejaVuSansMono-Oblique.ttf": "3d7955616e69721f7edb8e1b7a580f8fbd7d737111c6b54266ddc1d9ef13202f",
+    "text-fonts/fonts/5c1247acef7f-DejaVuSans-Bold.ttf": "5c1247acef7f2b8522a31742c76d6adcb5569bacc0be7ceaa4dc39dd252ce895",
+    "text-fonts/fonts/847b33e13925-DejaVuSerif-Bold.ttf": "847b33e13925f19ff87e4d934d6b3cf7cac35ce16424f6f670e40c2f377cf2df",
+    "text-fonts/fonts/8f2c103bfa3f-DejaVuSerif.ttf": "8f2c103bfa3fd5de71f1b92b18f21906b5a26871fb7e19a9a4c9af539c3cc7ab",
+    "text-fonts/fonts/a5251173370e-DejaVuSansMono-BoldOblique.ttf": "a5251173370e30760e6919711dcd33e149d216ca4814eb74332bda03fcc7e834",
+    "text-fonts/fonts/ae7b7855e115-DejaVuSans.ttf": "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280",
+    "text-fonts/fonts/c805f9436dbc-DejaVuSansMono.ttf": "c805f9436dbc268644c1d9584f01a601a653e028e08fd74b9b949f6cf8304d88"
+  },
+  "networkRequired": false,
+  "engineSha256": "0f90e8afad81f22f7512aae4f1a6e2183d898c7e78ac4c462f86c12b7b0458d1",
+  "assetEncoding": {
+    "app.mjs": {
+      "encoding": "gzip",
+      "originalBytes": 6937,
+      "storedBytes": 2735,
+      "base64Characters": 3648
+    },
+    "assets.json": {
+      "encoding": "gzip",
+      "originalBytes": 785,
+      "storedBytes": 312,
+      "base64Characters": 416
+    },
+    "basic-classifier.zip": {
+      "encoding": "gzip",
+      "originalBytes": 396100,
+      "storedBytes": 395952,
+      "base64Characters": 527936
+    },
+    "engine.wasm": {
+      "encoding": "gzip",
+      "originalBytes": 4735744,
+      "storedBytes": 1551993,
+      "base64Characters": 2069324
+    },
+    "engine.wasm-runtime.js": {
+      "encoding": "gzip",
+      "originalBytes": 17268,
+      "storedBytes": 6074,
+      "base64Characters": 8100
+    },
+    "fonts/fonts/Bravura.otf": {
+      "encoding": "gzip",
+      "originalBytes": 512924,
+      "storedBytes": 386597,
+      "base64Characters": 515464
+    },
+    "fonts/fonts/FinaleJazz.otf": {
+      "encoding": "gzip",
+      "originalBytes": 136984,
+      "storedBytes": 107606,
+      "base64Characters": 143476
+    },
+    "fonts/fonts/JazzPerc.ttf": {
+      "encoding": "gzip",
+      "originalBytes": 26748,
+      "storedBytes": 13590,
+      "base64Characters": 18120
+    },
+    "fonts/fonts/Leland.otf": {
+      "encoding": "gzip",
+      "originalBytes": 88132,
+      "storedBytes": 60241,
+      "base64Characters": 80324
+    },
+    "fonts/fonts/MusicalSymbols.ttf": {
+      "encoding": "gzip",
+      "originalBytes": 37644,
+      "storedBytes": 28472,
+      "base64Characters": 37964
+    },
+    "fonts/fonts/Primus.ttf": {
+      "encoding": "gzip",
+      "originalBytes": 48072,
+      "storedBytes": 26746,
+      "base64Characters": 35664
+    },
+    "fonts/fonts/ae7b7855e115-DejaVuSans.ttf": {
+      "encoding": "gzip",
+      "originalBytes": 759720,
+      "storedBytes": 381847,
+      "base64Characters": 509132
+    },
+    "fonts/intrinsics.json": {
+      "encoding": "gzip",
+      "originalBytes": 4989,
+      "storedBytes": 1297,
+      "base64Characters": 1732
+    },
+    "fonts/music-symbols.mjs": {
+      "encoding": "gzip",
+      "originalBytes": 13763,
+      "storedBytes": 4598,
+      "base64Characters": 6132
+    },
+    "fonts/music-symbols.wasm": {
+      "encoding": "gzip",
+      "originalBytes": 497135,
+      "storedBytes": 231256,
+      "base64Characters": 308344
+    },
+    "fonts/recipes.json": {
+      "encoding": "gzip",
+      "originalBytes": 93888,
+      "storedBytes": 7918,
+      "base64Characters": 10560
+    },
+    "host/create-browser-ocr.mjs": {
+      "encoding": "gzip",
+      "originalBytes": 1158,
+      "storedBytes": 562,
+      "base64Characters": 752
+    },
+    "host/engine-worker.js": {
+      "encoding": "gzip",
+      "originalBytes": 2497,
+      "storedBytes": 1004,
+      "base64Characters": 1340
+    },
+    "host/engine.mjs": {
+      "encoding": "gzip",
+      "originalBytes": 5278,
+      "storedBytes": 2092,
+      "base64Characters": 2792
+    },
+    "host/font-symbol-geometry.mjs": {
+      "encoding": "gzip",
+      "originalBytes": 1376,
+      "storedBytes": 674,
+      "base64Characters": 900
+    },
+    "host/freetype-music-metrics.mjs": {
+      "encoding": "gzip",
+      "originalBytes": 5943,
+      "storedBytes": 2049,
+      "base64Characters": 2732
+    },
+    "host/freetype-music-symbols.mjs": {
+      "encoding": "gzip",
+      "originalBytes": 10269,
+      "storedBytes": 3172,
+      "base64Characters": 4232
+    },
+    "host/gray8-png.mjs": {
+      "encoding": "gzip",
+      "originalBytes": 1759,
+      "storedBytes": 882,
+      "base64Characters": 1176
+    },
+    "host/tesseract-core-word-metadata.js": {
+      "encoding": "gzip",
+      "originalBytes": 859,
+      "storedBytes": 483,
+      "base64Characters": 644
+    },
+    "host/tesseract-js-ocr.mjs": {
+      "encoding": "gzip",
+      "originalBytes": 9561,
+      "storedBytes": 3157,
+      "base64Characters": 4212
+    },
+    "host/tesseract-word-metadata-node.cjs": {
+      "encoding": "gzip",
+      "originalBytes": 663,
+      "storedBytes": 379,
+      "base64Characters": 508
+    },
+    "host/tesseract-word-metadata.mjs": {
+      "encoding": "gzip",
+      "originalBytes": 5446,
+      "storedBytes": 1886,
+      "base64Characters": 2516
+    },
+    "host/worker-client.mjs": {
+      "encoding": "gzip",
+      "originalBytes": 3560,
+      "storedBytes": 1253,
+      "base64Characters": 1672
+    },
+    "integrity.json": {
+      "encoding": "gzip",
+      "originalBytes": 6656,
+      "storedBytes": 2676,
+      "base64Characters": 3568
+    },
+    "licenses/Audiveris-AGPL.txt": {
+      "encoding": "gzip",
+      "originalBytes": 35181,
+      "storedBytes": 11951,
+      "base64Characters": 15936
+    },
+    "licenses/FTL.TXT": {
+      "encoding": "gzip",
+      "originalBytes": 6743,
+      "storedBytes": 2874,
+      "base64Characters": 3832
+    },
+    "licenses/GPLv2.TXT": {
+      "encoding": "gzip",
+      "originalBytes": 17994,
+      "storedBytes": 6845,
+      "base64Characters": 9128
+    },
+    "licenses/LICENSE.TXT": {
+      "encoding": "gzip",
+      "originalBytes": 2149,
+      "storedBytes": 1064,
+      "base64Characters": 1420
+    },
+    "licenses/freetype/NOTICE.md": {
+      "encoding": "gzip",
+      "originalBytes": 1095,
+      "storedBytes": 665,
+      "base64Characters": 888
+    },
+    "licenses/openjdk/LICENSE": {
+      "encoding": "gzip",
+      "originalBytes": 19274,
+      "storedBytes": 7200,
+      "base64Characters": 9600
+    },
+    "licenses/openjdk/NOTICE.md": {
+      "encoding": "gzip",
+      "originalBytes": 3489,
+      "storedBytes": 1533,
+      "base64Characters": 2044
+    },
+    "licenses/text-font-COPYRIGHT": {
+      "encoding": "gzip",
+      "originalBytes": 3859,
+      "storedBytes": 1892,
+      "base64Characters": 2524
+    },
+    "ocr/assets.json": {
+      "encoding": "gzip",
+      "originalBytes": 160,
+      "storedBytes": 120,
+      "base64Characters": 160
+    },
+    "ocr/integrity.json": {
+      "encoding": "gzip",
+      "originalBytes": 1377,
+      "storedBytes": 638,
+      "base64Characters": 852
+    },
+    "ocr/licenses/tesseract.js-LICENSE.md": {
+      "encoding": "gzip",
+      "originalBytes": 11357,
+      "storedBytes": 3967,
+      "base64Characters": 5292
+    },
+    "ocr/licenses/tesseract.js-core-LICENSE": {
+      "encoding": "gzip",
+      "originalBytes": 11358,
+      "storedBytes": 3967,
+      "base64Characters": 5292
+    },
+    "ocr/models/eng.traineddata.gz": {
+      "encoding": "gzip",
+      "originalBytes": 10923060,
+      "storedBytes": 10889693,
+      "base64Characters": 14519592
+    },
+    "ocr/tesseract-core-simd.js": {
+      "encoding": "gzip",
+      "originalBytes": 88977,
+      "storedBytes": 24402,
+      "base64Characters": 32536
+    },
+    "ocr/tesseract-core-simd.wasm": {
+      "encoding": "gzip",
+      "originalBytes": 3451410,
+      "storedBytes": 1294899,
+      "base64Characters": 1726532
+    },
+    "ocr/tesseract.esm.min.js": {
+      "encoding": "gzip",
+      "originalBytes": 63220,
+      "storedBytes": 10594,
+      "base64Characters": 14128
+    },
+    "ocr/tesseract.min.js.LICENSE.txt": {
+      "encoding": "identity",
+      "originalBytes": 149,
+      "storedBytes": 149,
+      "base64Characters": 200
+    },
+    "ocr/worker.min.js": {
+      "encoding": "gzip",
+      "originalBytes": 111307,
+      "storedBytes": 33611,
+      "base64Characters": 44816
+    },
+    "ocr/worker.min.js.LICENSE.txt": {
+      "encoding": "gzip",
+      "originalBytes": 466,
+      "storedBytes": 299,
+      "base64Characters": 400
+    },
+    "text-fonts/font-resources.json": {
+      "encoding": "gzip",
+      "originalBytes": 2982,
+      "storedBytes": 752,
+      "base64Characters": 1004
+    },
+    "text-fonts/fonts/3a3c502eeff6-DejaVuSansMono-Bold.ttf": {
+      "encoding": "gzip",
+      "originalBytes": 334268,
+      "storedBytes": 200788,
+      "base64Characters": 267720
+    },
+    "text-fonts/fonts/3d7955616e69-DejaVuSansMono-Oblique.ttf": {
+      "encoding": "gzip",
+      "originalBytes": 253448,
+      "storedBytes": 150918,
+      "base64Characters": 201224
+    },
+    "text-fonts/fonts/5c1247acef7f-DejaVuSans-Bold.ttf": {
+      "encoding": "gzip",
+      "originalBytes": 708920,
+      "storedBytes": 352431,
+      "base64Characters": 469908
+    },
+    "text-fonts/fonts/847b33e13925-DejaVuSerif-Bold.ttf": {
+      "encoding": "gzip",
+      "originalBytes": 356668,
+      "storedBytes": 195125,
+      "base64Characters": 260168
+    },
+    "text-fonts/fonts/8f2c103bfa3f-DejaVuSerif.ttf": {
+      "encoding": "gzip",
+      "originalBytes": 380660,
+      "storedBytes": 212246,
+      "base64Characters": 282996
+    },
+    "text-fonts/fonts/a5251173370e-DejaVuSansMono-BoldOblique.ttf": {
+      "encoding": "gzip",
+      "originalBytes": 254960,
+      "storedBytes": 152210,
+      "base64Characters": 202948
+    },
+    "text-fonts/fonts/ae7b7855e115-DejaVuSans.ttf": {
+      "encoding": "gzip",
+      "originalBytes": 759720,
+      "storedBytes": 381847,
+      "base64Characters": 509132
+    },
+    "text-fonts/fonts/c805f9436dbc-DejaVuSansMono.ttf": {
+      "encoding": "gzip",
+      "originalBytes": 343140,
+      "storedBytes": 203155,
+      "base64Characters": 270876
+    }
+  }
+}

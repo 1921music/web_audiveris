@@ -1,0 +1,20 @@
+{
+  "sourceCommit": "ff3b6e5fe5dd0aa7d7ed55083e8a2378a47db804",
+  "sourceSha256": {
+    "wasm-compat/web/offline-bootstrap.js": "7dbefd73f360ca58195ebd25aa5234ba47de8cdce44dd4c9748321ae97a20f50",
+    "dev/teavm-audit/package_engine_offline.py": "8947b4922113c601fbb1d738fdc71c1ddbe0b95f9edea312d8cd57f054b164f0",
+    "wasm-compat/tools/verify-engine-offline.cjs": "bd9f3e57419983cca01fb012f6673cbd5f13d5341f1e72f09a65113cd40a7d82",
+    "wasm-compat/web/index.html": "5a0d69728e708ef4c6e4b77eb1048420472272209b7de0bca40c85cca2dfc7b9",
+    "wasm-compat/web/app.mjs": "fc41d9f30fce8e3714539efc6dda00f341c23627de4335e972246acd4ce88eac",
+    "wasm-compat/web/app.css": "ba36e7c72a2158afc081792b926efc43a102682f181720930359c25b2d46f55f"
+  },
+  "htmlSha256": "9aaddb9c0202331ba5590d7628b094d1bcab62d09c3dc58958b5d1069d0a5f4f",
+  "engineSha256": "0f90e8afad81f22f7512aae4f1a6e2183d898c7e78ac4c462f86c12b7b0458d1",
+  "htmlBytes": 22682774,
+  "file": "wsl-artifacts/wasm-engine-offline/audiveris-offline.html",
+  "rawArtifacts": "wsl-artifacts/wasm-components/offline",
+  "cpuMax": "800000 100000",
+  "memoryMaxBytes": 8589934592,
+  "swapMaxBytes": 0,
+  "memoryEvents": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0"
+}

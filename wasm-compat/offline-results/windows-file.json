@@ -1,0 +1,6 @@
+{
+  "verifiedHtmlBytes": 22682774,
+  "htmlSha256": "9aaddb9c0202331ba5590d7628b094d1bcab62d09c3dc58958b5d1069d0a5f4f",
+  "wasmAndFontFilesGzippedBeforeBase64": 18,
+  "verifiedFile": "wsl-artifacts/wasm-engine-offline/audiveris-offline.html"
+}
