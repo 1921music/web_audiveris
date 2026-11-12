@@ -1,0 +1,62 @@
+{
+  "sourceCommit": "89ec845a12b242bfe3afde2d8877fb07022f1fd6",
+  "sourceSha256": {
+    "wasm-compat/web/app.css": "8c4bdb7bbf5ecda9ae2087725a84a99c8a06886e971691c903f81ddf124630c0",
+    "wasm-compat/web/app.mjs": "bfc1facacd5ecbd16317c6ecba33c397e294a0ab8ce5dc844b1b458d2087cd4b",
+    "wasm-compat/web/bilingual.mjs": "225a42818b3793123582e3b7b331e7051546292a05b905bcb3f5907138445da8",
+    "wasm-compat/web/index.html": "d4ed2143cd2617fbce1c81ff424223a4e8e0570e89fd351a6d24bea50aa852a1",
+    "wasm-compat/web/offline-bootstrap.js": "204a110677bd36ce7752d4b7c4dbcf3636d558c561dcaae58f44452b30fc513d",
+    "dev/teavm-audit/package_engine_offline.py": "27b82ce3299a95e782ac38ef01c032be1f0b68fd704f1d5e840512cb33aa2fbd",
+    "wasm-compat/tools/verify-engine-ui.cjs": "c5705d2eece5ced2aaf0a0f8f5fefa58cacc0ef15426c214fca33db8da49bbf6",
+    "wasm-compat/tools/verify-engine-offline.cjs": "6a4f35971cd95e9355425b8d821e661a5298c00671bf2e3a967899322609395b"
+  },
+  "checks": {
+    "ui": {
+      "backend": "tesseract-wasm",
+      "recognitionMs": 36439.131816,
+      "chromium": "158.0.8127.18",
+      "imageSelection": true,
+      "invalidFileRejected": true,
+      "preview": true,
+      "cancelAndRetry": true,
+      "progress": true,
+      "musicXmlDownloaded": true,
+      "suggestedFilename": "MerryGoRound_p1.musicxml",
+      "responsiveNoHorizontalOverflow": true,
+      "recognitionFailureRecoverable": true,
+      "staleDownloadsCleared": true,
+      "bilingualEnglishPrimary": true,
+      "japaneseSecondarySmaller": true,
+      "bilingualDynamicStatusAndDownloads": true,
+      "pageErrors": [],
+      "cpuMax": "800000 100000",
+      "memoryMaxBytes": 8589934592
+    },
+    "offline": {
+      "backend": "tesseract-wasm",
+      "recognitionMs": 38830.815019999995,
+      "chromium": "158.0.8127.18",
+      "protocol": "file:",
+      "specialFileAccessFlags": false,
+      "serverUsed": false,
+      "browserNetworkDisabled": true,
+      "networkRequests": [],
+      "initialization": true,
+      "cancelAndRetry": true,
+      "imageRecognition": true,
+      "musicXmlDownloaded": true,
+      "bilingualEnglishPrimary": true,
+      "bilingualBootstrapAndStatus": true,
+      "htmlBytes": 12259607,
+      "cpuMax": "800000 100000",
+      "memoryMaxBytes": 8589934592
+    }
+  },
+  "matchesVerifiedLstmXmlTree": true,
+  "sourceBuildHtmlSha256": "e19b577d2505c8ab523afc6cf45c48a93212e395f8db709316e3731bca18aa94",
+  "sourceBuildHtmlBytes": 12259607,
+  "engineSha256": "0f90e8afad81f22f7512aae4f1a6e2183d898c7e78ac4c462f86c12b7b0458d1",
+  "cpuMax": "800000 100000",
+  "memoryMaxBytes": 8589934592,
+  "swapMaxBytes": 0
+}

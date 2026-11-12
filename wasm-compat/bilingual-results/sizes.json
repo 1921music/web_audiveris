@@ -1,0 +1,49 @@
+{
+  "engine": {
+    "files": 1,
+    "bytes": 4735744,
+    "embeddedBytes": 1551993
+  },
+  "freetype": {
+    "files": 1,
+    "bytes": 497135,
+    "embeddedBytes": 231256
+  },
+  "musicFonts": {
+    "files": 7,
+    "bytes": 1610224,
+    "embeddedBytes": 1005099
+  },
+  "textFonts": {
+    "files": 8,
+    "bytes": 3391784,
+    "embeddedBytes": 1848720
+  },
+  "classifier": {
+    "files": 1,
+    "bytes": 396100,
+    "embeddedBytes": 395952
+  },
+  "ocrJs": {
+    "files": 1,
+    "bytes": 97684,
+    "embeddedBytes": 25476
+  },
+  "ocrSimd": {
+    "files": 1,
+    "bytes": 1839004,
+    "embeddedBytes": 729254
+  },
+  "ocrFallback": {
+    "files": 1,
+    "bytes": 1808229,
+    "embeddedBytes": 722465
+  },
+  "ocrModel": {
+    "files": 1,
+    "bytes": 2952873,
+    "embeddedBytes": 2948789
+  },
+  "httpTotalBytes": 17665581,
+  "offlineHtmlBytes": 12259607
+}
